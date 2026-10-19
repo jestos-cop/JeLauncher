@@ -1,6 +1,5 @@
 use std::path::{Path, PathBuf};
 
-use md5::{Digest, Md5};
 use serde::Deserialize;
 
 use super::{ManagedPack, ModpackTarget, PackInstall};
@@ -9,7 +8,7 @@ use crate::instance::{DraftGuard, Instance, NewInstance, create_instance};
 use crate::minecraft::{LoaderKind, LoaderSpec};
 use crate::modplatform::Provider;
 use crate::modplatform::technic::{Technic, TechnicFiles};
-use crate::net::{Download, DownloadProgress, HttpClient};
+use crate::net::{Download, DownloadProgress, HttpClient, verify_md5};
 use crate::{Error, Result};
 
 /// Technic packs ship their loader as a version file, either loose or inside this jar.
@@ -107,20 +106,6 @@ async fn populate(
         archive::extract(&download.path, &game_dir, |name| Some(PathBuf::from(name)))?;
     }
     Ok(())
-}
-
-fn verify_md5(path: &Path, expected: &str) -> Result<()> {
-    let bytes = std::fs::read(path).map_err(|err| Error::io(path, err))?;
-    let actual = hex::encode(Md5::digest(&bytes));
-    if actual.eq_ignore_ascii_case(expected) {
-        Ok(())
-    } else {
-        Err(Error::Checksum {
-            path: path.to_path_buf(),
-            expected: expected.to_owned(),
-            actual,
-        })
-    }
 }
 
 /// Reads the Minecraft version and loader from the extracted pack.

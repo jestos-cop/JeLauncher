@@ -1,5 +1,6 @@
 use std::collections::{HashSet, VecDeque};
 
+use super::atlauncher::AtLauncher;
 use super::curseforge::CurseForge;
 use super::ftb::Ftb;
 use super::modrinth::Modrinth;
@@ -10,8 +11,8 @@ use super::{
 };
 use crate::minecraft::LoaderKind;
 use crate::modpack::{
-    ModpackTarget, PackInstall, PackSource, install_curseforge_pack, install_ftb_pack,
-    install_technic_pack,
+    ModpackTarget, PackInstall, PackSource, install_atlauncher_pack, install_curseforge_pack,
+    install_ftb_pack, install_technic_pack,
 };
 use crate::net::{DownloadProgress, HttpClient};
 use crate::{Error, Result};
@@ -23,6 +24,7 @@ pub struct ModPlatforms {
     pub curseforge: CurseForge,
     pub ftb: Ftb,
     pub technic: Technic,
+    pub atlauncher: AtLauncher,
     http: HttpClient,
 }
 
@@ -33,6 +35,7 @@ impl ModPlatforms {
             curseforge: CurseForge::new(http.clone(), curseforge_api_key),
             ftb: Ftb::new(http.clone()),
             technic: Technic::new(http.clone()),
+            atlauncher: AtLauncher::new(http.clone()),
             http,
         }
     }
@@ -100,6 +103,17 @@ impl ModPlatforms {
                 )
                 .await
             }
+            Provider::AtLauncher => {
+                install_atlauncher_pack(
+                    &self.atlauncher,
+                    &self.http,
+                    project_id,
+                    version_id,
+                    target,
+                    on_progress,
+                )
+                .await
+            }
         }
     }
 
@@ -111,7 +125,12 @@ impl ModPlatforms {
             Provider::Technic if query.kind == ResourceKind::Modpack => {
                 self.technic.search(query).await
             }
-            Provider::Ftb | Provider::Technic => Err(packs_only(query.provider)),
+            Provider::AtLauncher if query.kind == ResourceKind::Modpack => {
+                self.atlauncher.search(query).await
+            }
+            Provider::Ftb | Provider::Technic | Provider::AtLauncher => {
+                Err(packs_only(query.provider))
+            }
         }
     }
 
@@ -138,7 +157,10 @@ impl ModPlatforms {
             Provider::Technic if kind == ResourceKind::Modpack => {
                 self.technic.versions(project_id).await
             }
-            Provider::Ftb | Provider::Technic => Err(packs_only(provider)),
+            Provider::AtLauncher if kind == ResourceKind::Modpack => {
+                self.atlauncher.versions(project_id).await
+            }
+            Provider::Ftb | Provider::Technic | Provider::AtLauncher => Err(packs_only(provider)),
         }
     }
 
@@ -153,6 +175,7 @@ impl ModPlatforms {
             Provider::CurseForge => self.curseforge.version(project_id, version_id).await,
             Provider::Ftb => self.ftb.version(project_id, version_id).await,
             Provider::Technic => self.technic.version(project_id, version_id).await,
+            Provider::AtLauncher => self.atlauncher.version(project_id, version_id).await,
         }
     }
 

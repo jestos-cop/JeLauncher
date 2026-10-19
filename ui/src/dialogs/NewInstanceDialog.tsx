@@ -13,8 +13,14 @@ import { Progress } from '@/components/ui/progress'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useCreateInstance } from '@/hooks/use-create-instance'
 import { BlockedFilesDialog } from '@/dialogs/BlockedFilesDialog'
+import { OptionalModsDialog } from '@/dialogs/OptionalModsDialog'
 import { useModpackProgress } from '@/hooks/use-modpack-progress'
-import { type ModpackSelection, useImportInstance, useInstallModpack } from '@/hooks/use-modpacks'
+import {
+  type ModpackSelection,
+  useImportInstance,
+  useInstallModpack,
+  useOptionalMods,
+} from '@/hooks/use-modpacks'
 import { failure, untrustedHosts } from '@/lib/command'
 
 type Source = 'vanilla' | Provider | 'import'
@@ -35,6 +41,9 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
   const [modpack, setModpack] = useState<ModpackSelection | null>(null)
   const [pendingDownloads, setPendingDownloads] = useState<InstalledPack | null>(null)
   const [importSource, setImportSource] = useState(initialImport ?? '')
+  const [isChoosingMods, setIsChoosingMods] = useState(false)
+  const [optionalChoice, setOptionalChoice] = useState<string[] | null>(null)
+  const optionalMods = useOptionalMods(modpack?.provider === 'atLauncher' ? modpack : null)
   const createInstance = useCreateInstance()
   const installModpack = useInstallModpack()
   const importInstance = useImportInstance()
@@ -53,6 +62,7 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
     setVersion(null)
     setLoader(null)
     setModpack(null)
+    setOptionalChoice(null)
     setPendingDownloads(null)
     setImportSource('')
     createInstance.reset()
@@ -61,25 +71,27 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
     onOpenChange(false)
   }
 
-  const canCreate = {
-    vanilla: version !== null && (loader === null || loader.version !== ''),
-    modrinth: modpack?.provider === 'modrinth',
-    curseForge: modpack?.provider === 'curseForge',
-    ftb: modpack?.provider === 'ftb',
-    technic: modpack?.provider === 'technic',
-    import: importSource.trim() !== '',
-  }[source]
+  const canCreate =
+    source === 'vanilla'
+      ? version !== null && (loader === null || loader.version !== '')
+      : source === 'import'
+        ? importSource.trim() !== ''
+        : modpack?.provider === source
 
   const finish = (installed: InstalledPack) =>
     installed.blocked.length > 0 ? setPendingDownloads(installed) : close()
 
-  const create = (allowUntrustedHosts = false) => {
-    const pack = { name: name.trim() || null, allowUntrustedHosts }
+  const create = (allowUntrustedHosts = false, chosenMods = optionalChoice) => {
+    const options = { name: name.trim() || null, allowUntrustedHosts, optionalMods: chosenMods }
     setTrustDeclined(false)
     if (source === 'import') {
-      importInstance.mutate({ ...pack, source: importSource }, { onSuccess: finish })
+      importInstance.mutate({ source: importSource, options }, { onSuccess: finish })
     } else if (source !== 'vanilla' && modpack) {
-      installModpack.mutate({ ...pack, selection: modpack }, { onSuccess: finish })
+      if (chosenMods === null && optionalMods.data && optionalMods.data.length > 0) {
+        setIsChoosingMods(true)
+        return
+      }
+      installModpack.mutate({ selection: modpack, options }, { onSuccess: finish })
     } else if (version) {
       createInstance.mutate(
         {
@@ -111,6 +123,7 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
             <ToggleGroupItem value="curseForge">CurseForge</ToggleGroupItem>
             <ToggleGroupItem value="ftb">FTB</ToggleGroupItem>
             <ToggleGroupItem value="technic">Technic</ToggleGroupItem>
+            <ToggleGroupItem value="atLauncher">ATLauncher</ToggleGroupItem>
             <ToggleGroupItem value="import">Import</ToggleGroupItem>
           </ToggleGroup>
         </DialogHeader>
@@ -142,7 +155,15 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
             <LoaderPicker minecraftVersion={version} value={loader} onChange={setLoader} />
           </>
         ) : source !== 'import' ? (
-          <ModpackBrowser key={source} provider={source} selected={modpack} onSelect={setModpack} />
+          <ModpackBrowser
+            key={source}
+            provider={source}
+            selected={modpack}
+            onSelect={(selection) => {
+              setModpack(selection)
+              setOptionalChoice(null)
+            }}
+          />
         ) : (
           <ImportSource value={importSource} onChange={setImportSource} />
         )}
@@ -166,7 +187,7 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
           >
             Cancel
           </Button>
-          <Button onClick={() => create()} disabled={!canCreate || busy}>
+          <Button onClick={() => create()} disabled={!canCreate || busy || optionalMods.isFetching}>
             Create
           </Button>
         </DialogFooter>
@@ -178,6 +199,18 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
           confirmLabel="Download Anyway"
           onConfirm={() => create(true)}
           onClose={() => setTrustDeclined(true)}
+        />
+      )}
+      {isChoosingMods && modpack && optionalMods.data && (
+        <OptionalModsDialog
+          selection={modpack}
+          mods={optionalMods.data}
+          onConfirm={(chosen) => {
+            setIsChoosingMods(false)
+            setOptionalChoice(chosen)
+            create(false, chosen)
+          }}
+          onClose={() => setIsChoosingMods(false)}
         />
       )}
       {pendingDownloads && <BlockedFilesDialog installed={pendingDownloads} onClose={close} />}

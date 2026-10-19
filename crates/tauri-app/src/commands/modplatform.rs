@@ -4,10 +4,11 @@ use std::path::Path;
 use jelauncher_core::instance::Instance;
 
 use jelauncher_core::modpack::{self, BlockedFile, ModpackTarget, PackInstall};
+use jelauncher_core::modplatform::atlauncher::OptionalMod;
 use jelauncher_core::modplatform::{
     InstallTarget, ProjectVersion, Provider, ResourceKind, ResourceUpdate, SearchPage, SearchQuery,
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, State};
 use tauri_specta::Event;
 use tokio::sync::oneshot;
@@ -139,6 +140,49 @@ impl From<PackInstall> for InstalledPack {
     }
 }
 
+/// Choices the user made for a new pack instance.
+#[derive(Debug, Clone, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct PackOptions {
+    /// `None` takes the pack's name.
+    pub name: Option<String>,
+    pub allow_untrusted_hosts: bool,
+    /// Picked optional mods; `None` keeps the pack's defaults.
+    pub optional_mods: Option<Vec<String>>,
+}
+
+/// Optional mods of an ATLauncher pack version.
+#[tauri::command]
+#[specta::specta]
+pub async fn list_optional_mods(
+    state: State<'_, AppState>,
+    project_id: String,
+    version_id: String,
+) -> CommandResult<Vec<OptionalMod>> {
+    Ok(state
+        .platforms
+        .atlauncher
+        .pack_version(&project_id, &version_id)
+        .await?
+        .optional_mods())
+}
+
+/// The optional mods an ATLauncher share code selects.
+#[tauri::command]
+#[specta::specta]
+pub async fn resolve_share_code(
+    state: State<'_, AppState>,
+    project_id: String,
+    version_id: String,
+    code: String,
+) -> CommandResult<Vec<String>> {
+    Ok(state
+        .platforms
+        .atlauncher
+        .share_code(&project_id, &version_id, &code)
+        .await?)
+}
+
 /// All published versions of a modpack, newest first.
 #[tauri::command]
 #[specta::specta]
@@ -162,17 +206,10 @@ pub async fn install_modpack(
     provider: Provider,
     project_id: String,
     version_id: String,
-    name: Option<String>,
-    allow_untrusted_hosts: bool,
+    options: PackOptions,
 ) -> CommandResult<InstalledPack> {
     let (instances_dir, download_dir) = (state.paths.instances(), state.paths.downloads_cache());
-    let target = modpack_target(
-        &state,
-        &instances_dir,
-        &download_dir,
-        name,
-        allow_untrusted_hosts,
-    )?;
+    let target = modpack_target(&state, &instances_dir, &download_dir, options)?;
     let install =
         state
             .platforms
@@ -189,17 +226,10 @@ pub async fn import_instance(
     app: AppHandle,
     state: State<'_, AppState>,
     source: String,
-    name: Option<String>,
-    allow_untrusted_hosts: bool,
+    options: PackOptions,
 ) -> CommandResult<InstalledPack> {
     let (instances_dir, download_dir) = (state.paths.instances(), state.paths.downloads_cache());
-    let target = modpack_target(
-        &state,
-        &instances_dir,
-        &download_dir,
-        name,
-        allow_untrusted_hosts,
-    )?;
+    let target = modpack_target(&state, &instances_dir, &download_dir, options)?;
     let import = modpack::import_instance(&state.platforms, source.trim(), &target, |progress| {
         let _ = ModpackProgressEvent { progress }.emit(&app);
     });
@@ -272,15 +302,15 @@ fn modpack_target<'a>(
     state: &AppState,
     instances_dir: &'a Path,
     download_dir: &'a Path,
-    name: Option<String>,
-    allow_untrusted_hosts: bool,
+    options: PackOptions,
 ) -> CommandResult<ModpackTarget<'a>> {
     Ok(ModpackTarget {
         instances_dir,
         download_dir,
-        name: name.filter(|name| !name.trim().is_empty()),
+        name: options.name.filter(|name| !name.trim().is_empty()),
         concurrency: concurrent_downloads(state)?,
-        allow_untrusted_hosts,
+        allow_untrusted_hosts: options.allow_untrusted_hosts,
+        optional_mods: options.optional_mods,
     })
 }
 

@@ -133,6 +133,21 @@ async fn is_up_to_date(download: &Download) -> Result<bool> {
     }
 }
 
+/// Checks a file against the MD5 some platforms publish instead of SHA-1.
+pub fn verify_md5(path: &Path, expected: &str) -> Result<()> {
+    let bytes = std::fs::read(path).map_err(|err| Error::io(path, err))?;
+    let actual = hex::encode(md5::Md5::digest(&bytes));
+    if actual.eq_ignore_ascii_case(expected) {
+        Ok(())
+    } else {
+        Err(Error::Checksum {
+            path: path.to_path_buf(),
+            expected: expected.to_owned(),
+            actual,
+        })
+    }
+}
+
 pub async fn sha1_of(path: &Path) -> Result<String> {
     let bytes = fs::read(path).await.map_err(|err| Error::io(path, err))?;
     Ok(hex::encode(Sha1::digest(&bytes)))

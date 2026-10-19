@@ -5,6 +5,7 @@ export const PROVIDER_NAMES: Record<Provider, string> = {
   curseForge: 'CurseForge',
   ftb: 'FTB',
   technic: 'Technic',
+  atLauncher: 'ATLauncher',
 }
 
 /** Platforms that publish single mods and packs, not just modpacks. */

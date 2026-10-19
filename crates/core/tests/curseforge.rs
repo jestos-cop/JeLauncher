@@ -116,6 +116,7 @@ async fn installs_a_curseforge_modpack() -> jelauncher_core::Result<()> {
         name: None,
         concurrency: 8,
         allow_untrusted_hosts: false,
+        optional_mods: None,
     };
     let installed = platforms
         .install_modpack(Provider::CurseForge, &pack.id, &latest.id, &target, |_| {})

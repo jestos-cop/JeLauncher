@@ -1,3 +1,4 @@
+pub mod atlauncher;
 pub mod curseforge;
 pub mod ftb;
 pub mod modrinth;
@@ -23,6 +24,7 @@ pub enum Provider {
     CurseForge,
     Ftb,
     Technic,
+    AtLauncher,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]

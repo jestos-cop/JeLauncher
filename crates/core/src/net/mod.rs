@@ -3,4 +3,4 @@ mod client;
 mod download;
 
 pub use client::HttpClient;
-pub use download::{Download, DownloadProgress, sha1_of};
+pub use download::{Download, DownloadProgress, sha1_of, verify_md5};

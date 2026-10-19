@@ -183,6 +183,7 @@ async fn launches_a_fabric_modpack() -> jelauncher_core::Result<()> {
                 name: None,
                 concurrency: 8,
                 allow_untrusted_hosts: false,
+                optional_mods: None,
             },
             |_| {},
         )

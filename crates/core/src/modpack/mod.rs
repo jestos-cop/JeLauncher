@@ -1,3 +1,4 @@
+mod atlauncher_pack;
 mod curseforge_export;
 mod curseforge_pack;
 mod export_files;
@@ -11,6 +12,7 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
+pub use atlauncher_pack::install_atlauncher_pack;
 pub use curseforge_export::{CurseForgeExport, export_curseforge_pack};
 pub use curseforge_pack::{
     BlockedFile, CURSEFORGE_MANIFEST, CurseManifest, ManifestFile, ManifestLoader,
@@ -53,6 +55,8 @@ pub struct ModpackTarget<'a> {
     pub concurrency: usize,
     /// Lets `.mrpack` files download from hosts outside the platform allow list.
     pub allow_untrusted_hosts: bool,
+    /// Optional mods the user picked, for platforms that offer them; `None` keeps the defaults.
+    pub optional_mods: Option<Vec<String>>,
 }
 
 /// A newly created pack instance plus the files the user still has to download by hand.

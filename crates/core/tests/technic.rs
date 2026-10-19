@@ -51,6 +51,7 @@ async fn installs_a_solder_pack() -> jelauncher_core::Result<()> {
         name: None,
         concurrency: 8,
         allow_untrusted_hosts: false,
+        optional_mods: None,
     };
     let installed = platforms
         .install_modpack(Provider::Technic, &pack.id, &latest.id, &target, |_| {})

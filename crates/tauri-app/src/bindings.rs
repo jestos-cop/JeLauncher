@@ -56,6 +56,8 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::modplatform::update_resource,
             commands::modplatform::install_project_version,
             commands::modplatform::list_modpack_versions,
+            commands::modplatform::list_optional_mods,
+            commands::modplatform::resolve_share_code,
             commands::modplatform::list_project_versions,
             commands::modplatform::search_resources,
             commands::resources::list_resources,

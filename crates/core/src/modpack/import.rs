@@ -208,6 +208,7 @@ mod tests {
             name: Some("Copy".into()),
             concurrency: 1,
             allow_untrusted_hosts: false,
+            optional_mods: None,
         };
         let platforms = ModPlatforms::new(
             crate::net::HttpClient::new(&crate::settings::NetworkSettings::default())?,

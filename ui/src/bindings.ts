@@ -392,9 +392,9 @@ async cancelModpackInstall() : Promise<Result<null, CommandError>> {
 /**
  * Installs a modpack version as a new instance.
  */
-async installModpack(provider: Provider, projectId: string, versionId: string, name: string | null, allowUntrustedHosts: boolean) : Promise<Result<InstalledPack, CommandError>> {
+async installModpack(provider: Provider, projectId: string, versionId: string, options: PackOptions) : Promise<Result<InstalledPack, CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("install_modpack", { provider, projectId, versionId, name, allowUntrustedHosts }) };
+    return { status: "ok", data: await TAURI_INVOKE("install_modpack", { provider, projectId, versionId, options }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -403,9 +403,9 @@ async installModpack(provider: Provider, projectId: string, versionId: string, n
 /**
  * Imports an instance from a `.mrpack`, CurseForge pack or exported instance (path or URL).
  */
-async importInstance(source: string, name: string | null, allowUntrustedHosts: boolean) : Promise<Result<InstalledPack, CommandError>> {
+async importInstance(source: string, options: PackOptions) : Promise<Result<InstalledPack, CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("import_instance", { source, name, allowUntrustedHosts }) };
+    return { status: "ok", data: await TAURI_INVOKE("import_instance", { source, options }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -461,6 +461,28 @@ async installProjectVersion(instanceId: string, kind: ResourceKind, provider: Pr
 async listModpackVersions(provider: Provider, projectId: string) : Promise<Result<ProjectVersion[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_modpack_versions", { provider, projectId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Optional mods of an ATLauncher pack version.
+ */
+async listOptionalMods(projectId: string, versionId: string) : Promise<Result<OptionalMod[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_optional_mods", { projectId, versionId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * The optional mods an ATLauncher share code selects.
+ */
+async resolveShareCode(projectId: string, versionId: string, code: string) : Promise<Result<string[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("resolve_share_code", { projectId, versionId, code }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -839,6 +861,26 @@ export type NewsEntry = { id: string; title: string; text: string;
  * `YYYY-MM-DD`.
  */
 date: string; url: string; imageUrl: string | null }
+/**
+ * An optional mod of a pack version the user can pick before installing.
+ */
+export type OptionalMod = { name: string; description: string; 
+/**
+ * Picked unless the user unticks it.
+ */
+selected: boolean; recommended: boolean }
+/**
+ * Choices the user made for a new pack instance.
+ */
+export type PackOptions = { 
+/**
+ * `None` takes the pack's name.
+ */
+name: string | null; allowUntrustedHosts: boolean; 
+/**
+ * Picked optional mods; `None` keeps the pack's defaults.
+ */
+optionalMods: string[] | null }
 export type Profiler = "jprofiler" | "visualVm"
 export type ProjectHit = { provider: Provider; id: string; slug: string; title: string; description: string; author: string; iconUrl: string | null; downloads: number }
 export type ProjectVersion = { id: string; projectId: string; name: string; versionNumber: string; releaseType: ReleaseType; published: string; 
@@ -846,7 +888,7 @@ export type ProjectVersion = { id: string; projectId: string; name: string; vers
  * Markdown release notes.
  */
 changelog: string | null; files: VersionFile[]; dependencies: Dependency[] }
-export type Provider = "modrinth" | "curseForge" | "ftb" | "technic"
+export type Provider = "modrinth" | "curseForge" | "ftb" | "technic" | "atLauncher"
 /**
  * Where the game should go right after starting.
  */

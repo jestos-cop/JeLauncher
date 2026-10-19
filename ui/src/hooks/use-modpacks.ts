@@ -1,16 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { commands, type Provider } from '@/bindings'
+import { commands, type PackOptions, type Provider } from '@/bindings'
 import { unwrap } from '@/lib/command'
 
 export interface ModpackSelection {
   provider: Provider
   projectId: string
   versionId: string
-}
-
-interface ModpackInstall {
-  name: string | null
-  allowUntrustedHosts: boolean
 }
 
 export function useModpackVersions(provider: Provider, projectId: string | null) {
@@ -24,20 +19,8 @@ export function useModpackVersions(provider: Provider, projectId: string | null)
 export function useInstallModpack() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({
-      selection,
-      name,
-      allowUntrustedHosts,
-    }: ModpackInstall & { selection: ModpackSelection }) =>
-      unwrap(
-        commands.installModpack(
-          selection.provider,
-          selection.projectId,
-          selection.versionId,
-          name,
-          allowUntrustedHosts,
-        ),
-      ),
+    mutationFn: ({ selection, options }: { selection: ModpackSelection; options: PackOptions }) =>
+      unwrap(commands.installModpack(selection.provider, selection.projectId, selection.versionId, options)),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['instances'] }),
   })
 }
@@ -45,9 +28,17 @@ export function useInstallModpack() {
 export function useImportInstance() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ source, name, allowUntrustedHosts }: ModpackInstall & { source: string }) =>
-      unwrap(commands.importInstance(source, name, allowUntrustedHosts)),
+    mutationFn: ({ source, options }: { source: string; options: PackOptions }) =>
+      unwrap(commands.importInstance(source, options)),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['instances'] }),
+  })
+}
+
+export function useOptionalMods(selection: ModpackSelection | null) {
+  return useQuery({
+    queryKey: ['optional-mods', selection?.projectId, selection?.versionId],
+    queryFn: () => unwrap(commands.listOptionalMods(selection!.projectId, selection!.versionId)),
+    enabled: selection !== null,
   })
 }
 
