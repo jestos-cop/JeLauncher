@@ -247,3 +247,58 @@ async fn exported_modpack_references_modrinth_files_and_reimports() -> jelaunche
     assert_eq!(copy.config.loader, original.config.loader);
     Ok(())
 }
+
+#[tokio::test]
+#[ignore = "downloads two modpack versions"]
+async fn updates_a_modpack_to_another_version() -> jelauncher_core::Result<()> {
+    use jelauncher_core::modpack::ModpackTarget;
+
+    let modrinth = Modrinth::new(HttpClient::new(&NetworkSettings::default())?);
+    let versions = modrinth
+        .versions(
+            "fabulously-optimized",
+            ResourceKind::Modpack,
+            Some("1.21.4"),
+            Some(LoaderKind::Fabric),
+        )
+        .await?;
+    let (Some(newer), Some(older)) = (versions.first(), versions.get(1)) else {
+        panic!("need two Fabulously Optimized versions for 1.21.4");
+    };
+    let dir = tempfile::tempdir().map_err(|err| jelauncher_core::Error::Io {
+        path: "tempdir".into(),
+        source: err,
+    })?;
+    let download_dir = dir.path().join("downloads");
+    let target = ModpackTarget {
+        instances_dir: &dir.path().join("instances"),
+        download_dir: &download_dir,
+        name: None,
+        concurrency: 8,
+    };
+    let mut instance = modrinth.install_modpack(&older.id, &target, |_| {}).await?;
+    let saves = instance.saves_dir().join("My World");
+    std::fs::create_dir_all(&saves).map_err(|err| jelauncher_core::Error::Io {
+        path: saves.clone(),
+        source: err,
+    })?;
+
+    modrinth
+        .update_modpack(&mut instance, &newer.id, &download_dir, 8, |_| {})
+        .await?;
+
+    let mods = list_resources(&instance.resource_dir(ResourceKind::Mod), ResourceKind::Mod)?;
+    println!(
+        "{} -> {}: {} mods",
+        older.version_number,
+        newer.version_number,
+        mods.len()
+    );
+    assert_eq!(
+        instance.config.managed_pack.map(|pack| pack.version_id),
+        Some(newer.id.clone())
+    );
+    assert!(mods.len() > 10);
+    assert!(saves.is_dir(), "user worlds must survive an update");
+    Ok(())
+}

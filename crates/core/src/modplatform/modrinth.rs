@@ -9,7 +9,7 @@ use super::{
 };
 use crate::instance::Instance;
 use crate::minecraft::LoaderKind;
-use crate::modpack::{ModpackTarget, PackSource, install_mrpack};
+use crate::modpack::{ModpackTarget, PackSource, install_mrpack, update_mrpack};
 use crate::net::{DownloadProgress, HttpClient};
 use crate::{Error, Result};
 
@@ -154,14 +154,9 @@ impl Modrinth {
         target: &ModpackTarget<'_>,
         on_progress: impl Fn(DownloadProgress),
     ) -> Result<Instance> {
-        let version = self.version(version_id).await?;
-        let archive_name = self.install(&version, target.download_dir).await?;
-        let archive = target.download_dir.join(archive_name);
-        let source = PackSource {
-            provider: Provider::Modrinth,
-            project_id: version.project_id,
-            version_id: version.id,
-        };
+        let (archive, source) = self
+            .download_modpack(version_id, target.download_dir)
+            .await?;
         let instance = install_mrpack(
             &self.http,
             &archive,
@@ -174,6 +169,44 @@ impl Modrinth {
         .await;
         let _ = std::fs::remove_file(&archive);
         instance
+    }
+
+    /// Switches a modpack instance to another version of the same pack.
+    pub async fn update_modpack(
+        &self,
+        instance: &mut Instance,
+        version_id: &str,
+        download_dir: &Path,
+        concurrency: usize,
+        on_progress: impl Fn(DownloadProgress),
+    ) -> Result<()> {
+        let (archive, source) = self.download_modpack(version_id, download_dir).await?;
+        let updated = update_mrpack(
+            &self.http,
+            &archive,
+            instance,
+            source,
+            concurrency,
+            on_progress,
+        )
+        .await;
+        let _ = std::fs::remove_file(&archive);
+        updated
+    }
+
+    async fn download_modpack(
+        &self,
+        version_id: &str,
+        download_dir: &Path,
+    ) -> Result<(std::path::PathBuf, PackSource)> {
+        let version = self.version(version_id).await?;
+        let archive_name = self.install(&version, download_dir).await?;
+        let source = PackSource {
+            provider: Provider::Modrinth,
+            project_id: version.project_id,
+            version_id: version.id,
+        };
+        Ok((download_dir.join(archive_name), source))
     }
 
     /// Downloads the version's primary file into `dir` and returns the file name.
@@ -274,6 +307,8 @@ struct ApiVersion {
     version_number: String,
     version_type: String,
     date_published: String,
+    #[serde(default)]
+    changelog: Option<String>,
     files: Vec<ApiFile>,
     #[serde(default)]
     dependencies: Vec<ApiDependency>,
@@ -339,6 +374,9 @@ impl TryFrom<ApiVersion> for ProjectVersion {
                 _ => ReleaseType::Release,
             },
             published: version.date_published,
+            changelog: version
+                .changelog
+                .filter(|changelog| !changelog.trim().is_empty()),
             files,
             dependencies: version
                 .dependencies

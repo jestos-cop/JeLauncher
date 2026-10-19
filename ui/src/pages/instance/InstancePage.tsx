@@ -5,6 +5,7 @@ import {
   Image,
   Layers,
   NotebookPen,
+  Package,
   Puzzle,
   ScrollText,
   Server,
@@ -18,6 +19,7 @@ import { LogView } from '@/components/LogView'
 import { SidebarLayout, type SidebarTab } from '@/components/SidebarLayout'
 import { useInstances } from '@/hooks/use-instances'
 import { InstanceSettingsPage } from '@/pages/instance/InstanceSettingsPage'
+import { ModpackPage } from '@/pages/instance/ModpackPage'
 import { NotesPage } from '@/pages/instance/NotesPage'
 import { ResourcesPage } from '@/pages/instance/ResourcesPage'
 import { ScreenshotsPage } from '@/pages/instance/ScreenshotsPage'
@@ -27,6 +29,7 @@ import { WorldsPage } from '@/pages/instance/WorldsPage'
 
 const TABS: SidebarTab<InstanceTab>[] = [
   { tab: 'log', label: 'Minecraft Log', icon: ScrollText },
+  { tab: 'modpack', label: 'Modpack', icon: Package },
   { tab: 'version', label: 'Version', icon: Layers },
   { tab: 'mod', label: 'Mods', icon: Puzzle },
   { tab: 'resourcePack', label: 'Resource Packs', icon: Image },
@@ -48,6 +51,7 @@ export function InstancePage({ instanceId, tab }: InstancePageProps) {
   const { navigate } = useNavigation()
   const { data: instances } = useInstances()
   const instance = instances?.find((candidate) => candidate.id === instanceId)
+  const tabs = TABS.filter((entry) => entry.tab !== 'modpack' || instance?.managedPack)
 
   return (
     <SidebarLayout
@@ -61,12 +65,15 @@ export function InstancePage({ instanceId, tab }: InstancePageProps) {
           <LaunchControls instanceId={instanceId} />
         </div>
       }
-      tabs={TABS}
+      tabs={tabs}
       current={tab}
       onTabChange={(next) => navigate({ page: 'instance', instanceId, tab: next })}
       onBack={() => navigate({ page: 'main' })}
     >
       {tab === 'log' && <InstanceLog instanceId={instanceId} />}
+      {tab === 'modpack' && instance?.managedPack && (
+        <ModpackPage instance={instance} pack={instance.managedPack} />
+      )}
       {tab === 'version' && instance && <VersionPage instance={instance} />}
       {(tab === 'mod' || tab === 'resourcePack' || tab === 'shaderPack' || tab === 'dataPack') &&
         instance && <ResourcesPage key={tab} instance={instance} kind={tab} />}

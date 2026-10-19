@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
@@ -8,9 +8,11 @@ use crate::archive::{self, safe_relative_path};
 use crate::instance::{Instance, NewInstance, create_instance};
 use crate::minecraft::{LoaderKind, LoaderSpec};
 use crate::net::{Download, DownloadProgress, HttpClient};
-use crate::{Error, Result};
+use crate::{Error, Result, fs};
 
 pub const MRPACK_INDEX: &str = "modrinth.index.json";
+/// Copy of the installed pack's index in the instance root, used to update the pack later.
+const INSTALLED_INDEX: &str = "mrpack.index.json";
 
 const LOADER_KEYS: [(&str, LoaderKind); 4] = [
     ("fabric-loader", LoaderKind::Fabric),
@@ -150,15 +152,72 @@ pub async fn install_mrpack(
         let _ = std::fs::remove_dir_all(&instance.root);
         return Err(err);
     }
-    instance.config.managed_pack = source.map(|source| ManagedPack {
+    instance.config.managed_pack = source.map(|source| managed_pack(source, &index));
+    instance.save()?;
+    fs::write_json(&instance.root.join(INSTALLED_INDEX), &index)?;
+    Ok(instance)
+}
+
+/// Switches an instance to another version of its pack: files the old version installed
+/// are removed, the new ones downloaded and its overrides applied. User files are kept.
+pub async fn update_mrpack(
+    http: &HttpClient,
+    archive_path: &Path,
+    instance: &mut Instance,
+    source: PackSource,
+    concurrency: usize,
+    on_progress: impl Fn(DownloadProgress),
+) -> Result<()> {
+    let index = read_mrpack_index(archive_path)?;
+    let installed_index = instance.root.join(INSTALLED_INDEX);
+    if let Some(previous) = fs::read_json::<MrpackIndex>(&installed_index)? {
+        remove_dropped_files(&previous, &index, &instance.game_dir())?;
+    }
+    populate(
+        http,
+        archive_path,
+        &index,
+        instance,
+        concurrency,
+        on_progress,
+    )
+    .await?;
+    instance.config.minecraft_version = index.minecraft_version()?.to_owned();
+    instance.config.loader = index.loader();
+    instance.config.managed_pack = Some(managed_pack(source, &index));
+    instance.save()?;
+    fs::write_json(&installed_index, &index)
+}
+
+fn remove_dropped_files(previous: &MrpackIndex, next: &MrpackIndex, game_dir: &Path) -> Result<()> {
+    let kept: HashSet<&str> = next.files.iter().map(|file| file.path.as_str()).collect();
+    for file in previous
+        .files
+        .iter()
+        .filter(|file| !kept.contains(file.path.as_str()))
+    {
+        let Some(relative) = safe_relative_path(&file.path) else {
+            continue;
+        };
+        let path = game_dir.join(relative);
+        match std::fs::remove_file(&path) {
+            Err(err) if err.kind() != std::io::ErrorKind::NotFound => {
+                return Err(Error::io(&path, err));
+            }
+            _ => {}
+        }
+    }
+    Ok(())
+}
+
+fn managed_pack(source: PackSource, index: &MrpackIndex) -> ManagedPack {
+    ManagedPack {
         provider: source.provider,
         project_id: source.project_id,
         version_id: source.version_id,
         name: index.name.clone(),
         version: index.version_id.clone(),
-    });
-    instance.save()?;
-    Ok(instance)
+    }
 }
 
 async fn populate(

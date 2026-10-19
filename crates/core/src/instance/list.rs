@@ -6,6 +6,7 @@ use serde::Serialize;
 
 use super::{INSTANCE_CONFIG_FILE, InstanceConfig};
 use crate::minecraft::LoaderSpec;
+use crate::modpack::ManagedPack;
 use crate::{Error, Result};
 
 #[derive(Debug, Clone, Serialize, specta::Type)]
@@ -17,6 +18,7 @@ pub struct InstanceSummary {
     pub group: Option<String>,
     pub minecraft_version: String,
     pub loader: Option<LoaderSpec>,
+    pub managed_pack: Option<ManagedPack>,
     pub last_launch_time: i64,
     pub total_time_played: i64,
 }
@@ -46,6 +48,7 @@ pub fn discover_instances(root: &Path) -> Result<Vec<InstanceSummary>> {
             group: config.group,
             minecraft_version: config.minecraft_version,
             loader: config.loader,
+            managed_pack: config.managed_pack,
             last_launch_time: config.last_launch_time,
             total_time_played: config.total_time_played,
         });

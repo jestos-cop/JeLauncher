@@ -117,22 +117,59 @@ pub async fn import_instance(
     Ok(instance.id)
 }
 
+/// Switches a modpack instance to another version of its pack.
+#[tauri::command]
+#[specta::specta]
+pub async fn update_modpack(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    instance_id: String,
+    version_id: String,
+) -> CommandResult<()> {
+    if state
+        .running
+        .lock()
+        .map_err(|_| CommandError::poisoned())?
+        .contains_key(&instance_id)
+    {
+        return Err(CommandError::new("stop the instance before updating it"));
+    }
+    let mut instance = Instance::open(&state.paths.instances(), &instance_id)?;
+    let concurrency = concurrent_downloads(&state)?;
+    state
+        .modrinth
+        .update_modpack(
+            &mut instance,
+            &version_id,
+            &state.paths.downloads_cache(),
+            concurrency,
+            |progress| {
+                let _ = ModpackProgressEvent { progress }.emit(&app);
+            },
+        )
+        .await?;
+    Ok(())
+}
+
 fn modpack_target<'a>(
     state: &AppState,
     instances_dir: &'a Path,
     download_dir: &'a Path,
     name: Option<String>,
 ) -> CommandResult<ModpackTarget<'a>> {
-    let concurrency = state
-        .settings
-        .read()
-        .map_err(|_| CommandError::poisoned())?
-        .network
-        .concurrent_downloads as usize;
     Ok(ModpackTarget {
         instances_dir,
         download_dir,
         name: name.filter(|name| !name.trim().is_empty()),
-        concurrency,
+        concurrency: concurrent_downloads(state)?,
     })
+}
+
+fn concurrent_downloads(state: &AppState) -> CommandResult<usize> {
+    Ok(state
+        .settings
+        .read()
+        .map_err(|_| CommandError::poisoned())?
+        .network
+        .concurrent_downloads as usize)
 }

@@ -277,6 +277,17 @@ async importInstance(source: string, name: string | null) : Promise<Result<strin
 }
 },
 /**
+ * Switches a modpack instance to another version of its pack.
+ */
+async updateModpack(instanceId: string, versionId: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("update_modpack", { instanceId, versionId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Installs a version plus its required dependencies; returns the installed file names.
  */
 async installProjectVersion(instanceId: string, kind: ResourceKind, versionId: string) : Promise<Result<string[], CommandError>> {
@@ -529,7 +540,7 @@ export type InstanceLogEvent = { instanceId: string; line: string; level: LogLev
  * Per-instance overrides; `None` falls back to the global value.
  */
 export type InstanceSettings = { javaPath: string | null; minMemoryMb: number | null; maxMemoryMb: number | null; jvmArgs: string | null; windowWidth: number | null; windowHeight: number | null; windowMaximized: boolean | null; commands: CommandSettings | null }
-export type InstanceSummary = { id: string; name: string; iconKey: string; group: string | null; minecraftVersion: string; loader: LoaderSpec | null; lastLaunchTime: number; totalTimePlayed: number }
+export type InstanceSummary = { id: string; name: string; iconKey: string; group: string | null; minecraftVersion: string; loader: LoaderSpec | null; managedPack: ManagedPack | null; lastLaunchTime: number; totalTimePlayed: number }
 export type JavaInstall = { path: string; version: string; major: number; arch: string; vendor: string }
 export type JavaSettings = { 
 /**
@@ -550,12 +561,20 @@ export type LoaderKind = "fabric" | "quilt" | "forge" | "neoforge"
 export type LoaderSpec = { kind: LoaderKind; version: string }
 export type LoaderVersion = { version: string; stable: boolean }
 export type LogLevel = "launcher" | "debug" | "info" | "warning" | "error" | "fatal" | "unknown"
+/**
+ * Where an instance created from a modpack came from, for updates and display.
+ */
+export type ManagedPack = { provider: Provider; projectId: string; versionId: string; name: string; version: string }
 export type MinecraftVersions = { latest: LatestVersions; versions: VersionEntry[] }
 export type ModpackProgressEvent = { progress: DownloadProgress }
 export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs: number; retries: number }
 export type NewInstance = { name: string; minecraftVersion: string; loader: LoaderSpec | null; group: string | null; iconKey: string | null }
 export type ProjectHit = { provider: Provider; id: string; slug: string; title: string; description: string; author: string; iconUrl: string | null; downloads: number }
-export type ProjectVersion = { id: string; projectId: string; name: string; versionNumber: string; releaseType: ReleaseType; published: string; files: VersionFile[]; dependencies: Dependency[] }
+export type ProjectVersion = { id: string; projectId: string; name: string; versionNumber: string; releaseType: ReleaseType; published: string; 
+/**
+ * Markdown release notes.
+ */
+changelog: string | null; files: VersionFile[]; dependencies: Dependency[] }
 export type Provider = "modrinth"
 /**
  * Where the game should go right after starting.

@@ -27,3 +27,11 @@ export function useImportInstance() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['instances'] }),
   })
 }
+
+export function useUpdateModpack(instanceId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (versionId: string) => unwrap(commands.updateModpack(instanceId, versionId)),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['instances'] }),
+  })
+}

@@ -7,7 +7,9 @@ use std::path::Path;
 use serde::{Deserialize, Serialize};
 
 pub use import::{ArchiveKind, detect_archive, import_instance};
-pub use mrpack::{MRPACK_INDEX, MrpackFile, MrpackIndex, install_mrpack, read_mrpack_index};
+pub use mrpack::{
+    MRPACK_INDEX, MrpackFile, MrpackIndex, install_mrpack, read_mrpack_index, update_mrpack,
+};
 pub use mrpack_export::{MrpackExport, export_mrpack};
 
 use crate::modplatform::Provider;

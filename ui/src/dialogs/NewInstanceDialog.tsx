@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { events, type DownloadProgress, type LoaderSpec } from '@/bindings'
+import { useState } from 'react'
+import type { LoaderSpec } from '@/bindings'
 import { ImportSource } from '@/components/ImportSource'
 import { LoaderPicker } from '@/components/LoaderPicker'
 import { ModpackBrowser } from '@/components/ModpackBrowser'
@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useCreateInstance } from '@/hooks/use-create-instance'
+import { useModpackProgress } from '@/hooks/use-modpack-progress'
 import { useImportInstance, useInstallModpack } from '@/hooks/use-modpacks'
 
 type Source = 'vanilla' | 'modrinth' | 'import'
@@ -147,17 +148,4 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
       </DialogContent>
     </Dialog>
   )
-}
-
-function useModpackProgress(active: boolean) {
-  const [progress, setProgress] = useState<DownloadProgress | null>(null)
-  useEffect(() => {
-    if (!active) return
-    const unlisten = events.modpackProgressEvent.listen(({ payload }) => setProgress(payload.progress))
-    return () => {
-      void unlisten.then((stop) => stop())
-      setProgress(null)
-    }
-  }, [active])
-  return progress
 }

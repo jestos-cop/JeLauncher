@@ -2,6 +2,7 @@ import { createContext, useContext } from 'react'
 
 export type InstanceTab =
   | 'log'
+  | 'modpack'
   | 'version'
   | 'mod'
   | 'resourcePack'

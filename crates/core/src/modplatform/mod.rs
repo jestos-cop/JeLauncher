@@ -71,6 +71,8 @@ pub struct ProjectVersion {
     pub version_number: String,
     pub release_type: ReleaseType,
     pub published: String,
+    /// Markdown release notes.
+    pub changelog: Option<String>,
     pub files: Vec<VersionFile>,
     pub dependencies: Vec<Dependency>,
 }
