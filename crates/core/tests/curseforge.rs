@@ -139,3 +139,78 @@ async fn installs_a_curseforge_modpack() -> jelauncher_core::Result<()> {
     assert!(instance.config.managed_pack.is_some());
     Ok(())
 }
+
+#[tokio::test]
+#[ignore = "requires network access and an API key"]
+async fn exports_a_pack_that_references_curseforge_files() -> jelauncher_core::Result<()> {
+    use jelauncher_core::archive::{entry_names, read_entry_to_string};
+    use jelauncher_core::instance::{NewInstance, create_instance};
+    use jelauncher_core::minecraft::LoaderSpec;
+    use jelauncher_core::modpack::{CurseForgeExport, CurseManifest, export_curseforge_pack};
+
+    let platforms = ModPlatforms::new(
+        HttpClient::new(&NetworkSettings::default())?,
+        std::env::var("CURSEFORGE_API_KEY").ok(),
+    );
+    let io = |err| jelauncher_core::Error::Io {
+        path: "tempdir".into(),
+        source: err,
+    };
+    let dir = tempfile::tempdir().map_err(io)?;
+    let instance = create_instance(
+        dir.path(),
+        NewInstance {
+            name: "Export".into(),
+            minecraft_version: "1.21.1".into(),
+            loader: Some(LoaderSpec {
+                kind: LoaderKind::NeoForge,
+                version: "21.1.77".into(),
+            }),
+            group: None,
+            icon_key: None,
+        },
+    )?;
+    let mods_dir = instance.resource_dir(ResourceKind::Mod);
+    let versions = platforms
+        .versions(
+            Provider::CurseForge,
+            "238222",
+            ResourceKind::Mod,
+            Some("1.21.1"),
+            Some(LoaderKind::NeoForge),
+        )
+        .await?;
+    let Some(jei) = versions.into_iter().next() else {
+        panic!("no JEI for 1.21.1");
+    };
+    let target = InstallTarget {
+        dir: &mods_dir,
+        kind: ResourceKind::Mod,
+        game_version: "1.21.1",
+        loader: Some(LoaderKind::NeoForge),
+    };
+    let installed = platforms
+        .install_with_dependencies(Provider::CurseForge, jei, &target)
+        .await?;
+    std::fs::write(mods_dir.join("homemade.jar"), b"not on curseforge").map_err(io)?;
+
+    let output = dir.path().join("pack.zip");
+    export_curseforge_pack(
+        &platforms.curseforge,
+        &instance,
+        &CurseForgeExport {
+            output: &output,
+            version: "1.0".into(),
+            author: "JeTester".into(),
+            blocked: &[],
+        },
+    )
+    .await?;
+    let manifest: CurseManifest =
+        serde_json::from_str(&read_entry_to_string(&output, "manifest.json")?)
+            .unwrap_or_else(|err| panic!("{err}"));
+    println!("{} files in the manifest", manifest.files.len());
+    assert_eq!(manifest.files.len(), installed.len());
+    assert!(entry_names(&output)?.contains(&"overrides/mods/homemade.jar".to_owned()));
+    Ok(())
+}

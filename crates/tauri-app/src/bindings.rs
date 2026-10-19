@@ -19,6 +19,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::cli::take_cli_request,
             commands::export::export_instance,
             commands::export::export_mrpack,
+            commands::export::export_curseforge_pack,
             commands::export::list_export_entries,
             commands::folders::open_launcher_folder,
             commands::folders::open_launcher_log,

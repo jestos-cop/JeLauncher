@@ -125,6 +125,14 @@ async exportMrpack(instanceId: string, output: string, blockedPaths: string[], v
     else return { status: "error", error: e  as any };
 }
 },
+async exportCurseforgePack(instanceId: string, output: string, blockedPaths: string[], version: string, author: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("export_curseforge_pack", { instanceId, output, blockedPaths, version, author }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 /**
  * Top-level game folder entries, marked when the last export left them out.
  */

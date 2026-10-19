@@ -1,4 +1,6 @@
+mod curseforge_export;
 mod curseforge_pack;
+mod export_files;
 mod ftb_pack;
 mod import;
 mod mrpack;
@@ -9,9 +11,10 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
+pub use curseforge_export::{CurseForgeExport, export_curseforge_pack};
 pub use curseforge_pack::{
-    BlockedFile, CURSEFORGE_MANIFEST, CurseManifest, install_curseforge_pack,
-    read_curseforge_manifest,
+    BlockedFile, CURSEFORGE_MANIFEST, CurseManifest, ManifestFile, ManifestLoader,
+    ManifestMinecraft, install_curseforge_pack, read_curseforge_manifest,
 };
 pub use ftb_pack::install_ftb_pack;
 pub use import::{ArchiveKind, detect_archive, import_instance};

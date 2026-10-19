@@ -23,6 +23,24 @@ interface ExportInstanceDialogProps {
   onClose: () => void
 }
 
+const FORMATS: Record<ExportFormat, { label: string; extension: string; description: string }> = {
+  zip: {
+    label: 'Instance archive',
+    extension: 'zip',
+    description: 'A full copy of the instance that can be imported again.',
+  },
+  mrpack: {
+    label: 'Modrinth pack',
+    extension: 'mrpack',
+    description: 'Files published on Modrinth are linked, everything else is bundled as overrides.',
+  },
+  curseforge: {
+    label: 'CurseForge pack',
+    extension: 'zip',
+    description: 'Files published on CurseForge are linked, everything else is bundled as overrides.',
+  },
+}
+
 export function ExportInstanceDialog({ instance, onClose }: ExportInstanceDialogProps) {
   const [format, setFormat] = useState<ExportFormat>('zip')
   const [version, setVersion] = useState('1.0.0')
@@ -40,9 +58,10 @@ export function ExportInstanceDialog({ instance, onClose }: ExportInstanceDialog
     })
 
   const submit = async () => {
+    const { label, extension } = FORMATS[format]
     const output = await save({
-      defaultPath: `${instance.name}.${format}`,
-      filters: [{ name: format === 'zip' ? 'Instance archive' : 'Modrinth pack', extensions: [format] }],
+      defaultPath: `${instance.name}.${extension}`,
+      filters: [{ name: label, extensions: [extension] }],
     })
     if (!output) return
     const blockedPaths = (entries.data ?? []).filter(isBlocked).map((entry) => entry.path)
@@ -54,11 +73,7 @@ export function ExportInstanceDialog({ instance, onClose }: ExportInstanceDialog
       <DialogContent className="flex max-h-[85vh] flex-col sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Export {instance.name}</DialogTitle>
-          <DialogDescription>
-            {format === 'zip'
-              ? 'A full copy of the instance that can be imported again.'
-              : 'Files published on Modrinth are linked, everything else is bundled as overrides.'}
-          </DialogDescription>
+          <DialogDescription>{FORMATS[format].description}</DialogDescription>
         </DialogHeader>
 
         <ToggleGroup
@@ -71,13 +86,14 @@ export function ExportInstanceDialog({ instance, onClose }: ExportInstanceDialog
         >
           <ToggleGroupItem value="zip">Instance (.zip)</ToggleGroupItem>
           <ToggleGroupItem value="mrpack">Modrinth (.mrpack)</ToggleGroupItem>
+          <ToggleGroupItem value="curseforge">CurseForge (.zip)</ToggleGroupItem>
         </ToggleGroup>
 
-        {format === 'mrpack' && (
+        {format !== 'zip' && (
           <div className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2">
             <Label htmlFor="export-version">Version</Label>
             <Input id="export-version" value={version} onChange={(event) => setVersion(event.target.value)} />
-            <Label htmlFor="export-summary">Summary</Label>
+            <Label htmlFor="export-summary">{format === 'mrpack' ? 'Summary' : 'Author'}</Label>
             <Input
               id="export-summary"
               placeholder="Optional"
@@ -118,7 +134,7 @@ export function ExportInstanceDialog({ instance, onClose }: ExportInstanceDialog
             Cancel
           </Button>
           <Button
-            disabled={!entries.data || exportInstance.isPending || (format === 'mrpack' && !version.trim())}
+            disabled={!entries.data || exportInstance.isPending || (format !== 'zip' && !version.trim())}
             onClick={() => void submit()}
           >
             {exportInstance.isPending ? 'Exporting…' : 'Export…'}

@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use jelauncher_core::instance::{self, ExportEntry, Instance};
-use jelauncher_core::modpack::{self, MrpackExport};
+use jelauncher_core::modpack::{self, CurseForgeExport, MrpackExport};
 use tauri::State;
 
 use crate::error::CommandResult;
@@ -52,4 +52,24 @@ pub async fn export_mrpack(
         blocked: &blocked_paths,
     };
     Ok(modpack::export_mrpack(&state.platforms.modrinth, &instance, &options).await?)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn export_curseforge_pack(
+    state: State<'_, AppState>,
+    instance_id: String,
+    output: String,
+    blocked_paths: Vec<String>,
+    version: String,
+    author: String,
+) -> CommandResult<()> {
+    let instance = Instance::open(&state.paths.instances(), &instance_id)?;
+    let options = CurseForgeExport {
+        output: Path::new(&output),
+        version,
+        author,
+        blocked: &blocked_paths,
+    };
+    Ok(modpack::export_curseforge_pack(&state.platforms.curseforge, &instance, &options).await?)
 }

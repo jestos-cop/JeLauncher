@@ -13,20 +13,26 @@ use crate::{Error, Result};
 
 pub const CURSEFORGE_MANIFEST: &str = "manifest.json";
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CurseManifest {
     pub minecraft: ManifestMinecraft,
+    #[serde(default = "manifest_type")]
+    pub manifest_type: String,
+    #[serde(default = "manifest_version")]
+    pub manifest_version: u32,
     pub name: String,
     #[serde(default)]
     pub version: String,
+    #[serde(default)]
+    pub author: String,
     #[serde(default)]
     pub files: Vec<ManifestFile>,
     #[serde(default = "default_overrides")]
     pub overrides: String,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ManifestMinecraft {
     pub version: String,
@@ -34,14 +40,14 @@ pub struct ManifestMinecraft {
     pub mod_loaders: Vec<ManifestLoader>,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ManifestLoader {
     pub id: String,
     #[serde(default)]
     pub primary: bool,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ManifestFile {
     #[serde(rename = "projectID")]
     pub project_id: u64,
@@ -49,6 +55,14 @@ pub struct ManifestFile {
     pub file_id: u64,
     #[serde(default = "required_by_default")]
     pub required: bool,
+}
+
+fn manifest_type() -> String {
+    "minecraftModpack".into()
+}
+
+fn manifest_version() -> u32 {
+    1
 }
 
 fn default_overrides() -> String {

@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::Deserialize;
 
 use super::{
@@ -101,6 +103,26 @@ impl CurseForge {
         let body = serde_json::json!({ "modIds": mod_ids });
         let response: Single<Vec<ApiProject>> = self.post("/mods", &body).await?;
         Ok(response.data.into_iter().map(Into::into).collect())
+    }
+
+    /// Published files whose fingerprint matches, as `fingerprint -> (project id, file id)`.
+    pub async fn match_fingerprints(
+        &self,
+        fingerprints: &[u32],
+    ) -> Result<HashMap<u32, (u64, u64)>> {
+        if fingerprints.is_empty() {
+            return Ok(HashMap::new());
+        }
+        let body = serde_json::json!({ "fingerprints": fingerprints });
+        let response: Single<FingerprintMatches> = self
+            .post(&format!("/fingerprints/{MINECRAFT_GAME_ID}"), &body)
+            .await?;
+        Ok(response
+            .data
+            .exact_matches
+            .into_iter()
+            .map(|found| (found.file.file_fingerprint, (found.id, found.file.id)))
+            .collect())
     }
 
     fn key(&self) -> Result<&str> {
@@ -343,6 +365,55 @@ impl TryFrom<ApiFile> for ProjectVersion {
                 .collect(),
         })
     }
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct FingerprintMatches {
+    #[serde(default)]
+    exact_matches: Vec<FingerprintMatch>,
+}
+
+#[derive(Deserialize)]
+struct FingerprintMatch {
+    id: u64,
+    file: MatchedFile,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct MatchedFile {
+    id: u64,
+    file_fingerprint: u32,
+}
+
+/// CurseForge's file fingerprint: MurmurHash2 with seed 1 over the bytes without whitespace.
+pub fn fingerprint(bytes: &[u8]) -> u32 {
+    const M: u32 = 0x5bd1_e995;
+    let data: Vec<u8> = bytes
+        .iter()
+        .copied()
+        .filter(|byte| !matches!(byte, 9 | 10 | 13 | 32))
+        .collect();
+    let mut hash = 1 ^ data.len() as u32;
+    let mut chunks = data.chunks_exact(4);
+    for chunk in &mut chunks {
+        let mut k = u32::from_le_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]);
+        k = k.wrapping_mul(M);
+        k ^= k >> 24;
+        k = k.wrapping_mul(M);
+        hash = hash.wrapping_mul(M) ^ k;
+    }
+    let rest = chunks.remainder();
+    if !rest.is_empty() {
+        for (index, byte) in rest.iter().enumerate() {
+            hash ^= u32::from(*byte) << (8 * index);
+        }
+        hash = hash.wrapping_mul(M);
+    }
+    hash ^= hash >> 13;
+    hash = hash.wrapping_mul(M);
+    hash ^ (hash >> 15)
 }
 
 #[cfg(test)]

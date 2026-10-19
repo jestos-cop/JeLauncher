@@ -1,6 +1,7 @@
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
+use super::export_files::{OVERRIDES_DIR, entry_name, is_resolvable};
 use super::{MRPACK_INDEX, MrpackFile, MrpackIndex};
 use crate::archive::ZipBuilder;
 use crate::instance::Instance;
@@ -8,10 +9,6 @@ use crate::modplatform::ProjectVersion;
 use crate::modplatform::modrinth::Modrinth;
 use crate::net::sha1_of;
 use crate::{Error, Result};
-
-/// Folders whose files may be published on Modrinth and can be referenced instead of bundled.
-const RESOLVABLE_DIRS: [&str; 3] = ["mods", "resourcepacks", "shaderpacks"];
-const OVERRIDES_DIR: &str = "overrides";
 
 pub struct MrpackExport<'a> {
     pub output: &'a Path,
@@ -72,15 +69,6 @@ pub async fn export_mrpack(
     zip.finish()
 }
 
-fn is_resolvable(path: &Path) -> bool {
-    let in_resolvable_dir = path
-        .parent()
-        .and_then(|parent| parent.to_str())
-        .is_some_and(|parent| RESOLVABLE_DIRS.contains(&parent));
-    let extension = path.extension().and_then(|extension| extension.to_str());
-    in_resolvable_dir && matches!(extension, Some("jar" | "zip"))
-}
-
 fn published_file(sha1: &str, version: &ProjectVersion) -> Option<MrpackFile> {
     let file = version
         .files
@@ -96,22 +84,4 @@ fn published_file(sha1: &str, version: &ProjectVersion) -> Option<MrpackFile> {
         downloads: vec![file.url.clone()],
         file_size: file.size,
     })
-}
-
-fn entry_name(path: &Path) -> String {
-    path.to_string_lossy().replace('\\', "/")
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn only_top_level_archives_in_content_folders_are_resolvable() {
-        assert!(is_resolvable(Path::new("mods/sodium.jar")));
-        assert!(is_resolvable(Path::new("resourcepacks/faithful.zip")));
-        assert!(!is_resolvable(Path::new("mods/sodium.jar.disabled")));
-        assert!(!is_resolvable(Path::new("mods/nested/a.jar")));
-        assert!(!is_resolvable(Path::new("config/a.jar")));
-    }
 }
