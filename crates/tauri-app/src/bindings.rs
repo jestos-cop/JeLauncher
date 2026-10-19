@@ -1,20 +1,27 @@
-use tauri_specta::{Builder, collect_commands};
+use tauri_specta::{Builder, collect_commands, collect_events};
 
-use crate::commands;
+use crate::{commands, events};
 
 pub fn builder() -> Builder<tauri::Wry> {
-    Builder::<tauri::Wry>::new().commands(collect_commands![
-        commands::accounts::add_offline_account,
-        commands::accounts::list_accounts,
-        commands::accounts::remove_account,
-        commands::accounts::set_default_account,
-        commands::instance::list_instances,
-        commands::instance::create_instance,
-        commands::java::detect_java,
-        commands::meta::list_minecraft_versions,
-        commands::settings::get_settings,
-        commands::settings::update_settings,
-    ])
+    Builder::<tauri::Wry>::new()
+        .commands(collect_commands![
+            commands::accounts::add_offline_account,
+            commands::accounts::list_accounts,
+            commands::accounts::remove_account,
+            commands::accounts::set_default_account,
+            commands::instance::list_instances,
+            commands::instance::create_instance,
+            commands::java::detect_java,
+            commands::launch::launch_instance,
+            commands::meta::list_minecraft_versions,
+            commands::settings::get_settings,
+            commands::settings::update_settings,
+        ])
+        .events(collect_events![
+            events::LaunchProgressEvent,
+            events::InstanceLogEvent,
+            events::InstanceExitedEvent,
+        ])
 }
 
 #[cfg(debug_assertions)]

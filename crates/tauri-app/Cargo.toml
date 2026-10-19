@@ -16,6 +16,7 @@ specta.workspace = true
 specta-typescript.workspace = true
 tauri.workspace = true
 tauri-specta.workspace = true
+tokio.workspace = true
 
 [lints]
 workspace = true

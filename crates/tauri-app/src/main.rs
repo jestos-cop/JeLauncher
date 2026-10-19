@@ -3,6 +3,7 @@
 mod bindings;
 mod commands;
 mod error;
+mod events;
 mod state;
 
 use tauri::Manager;

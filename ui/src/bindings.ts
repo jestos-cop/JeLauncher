@@ -61,6 +61,14 @@ async detectJava() : Promise<Result<JavaInstall[], CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
+async launchInstance(instanceId: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("launch_instance", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async listMinecraftVersions() : Promise<Result<MinecraftVersions, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_minecraft_versions") };
@@ -90,6 +98,15 @@ async updateSettings(settings: GlobalSettings) : Promise<Result<null, CommandErr
 /** user-defined events **/
 
 
+export const events = __makeEvents__<{
+instanceExitedEvent: InstanceExitedEvent,
+instanceLogEvent: InstanceLogEvent,
+launchProgressEvent: LaunchProgressEvent
+}>({
+instanceExitedEvent: "instance-exited-event",
+instanceLogEvent: "instance-log-event",
+launchProgressEvent: "launch-progress-event"
+})
 
 /** user-defined constants **/
 
@@ -100,7 +117,10 @@ async updateSettings(settings: GlobalSettings) : Promise<Result<null, CommandErr
 export type AccountKind = { type: "offline" }
 export type AccountSummary = { id: string; username: string; kind: AccountKind; isDefault: boolean }
 export type CommandError = { message: string }
+export type DownloadProgress = { completed: number; total: number; downloadedBytes: number }
 export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings }
+export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
+export type InstanceLogEvent = { instanceId: string; line: string; level: LogLevel }
 export type InstanceSummary = { id: string; name: string; iconKey: string; group: string | null; minecraftVersion: string; lastLaunchTime: number; totalTimePlayed: number }
 export type JavaInstall = { path: string; version: string; major: number; arch: string; vendor: string }
 export type JavaSettings = { 
@@ -109,7 +129,10 @@ export type JavaSettings = {
  */
 path: string | null; minMemoryMb: number; maxMemoryMb: number; jvmArgs: string }
 export type LatestVersions = { release: string; snapshot: string }
+export type LaunchProgress = { stage: "preparing" } | ({ stage: "downloading" } & DownloadProgress) | { stage: "starting" }
+export type LaunchProgressEvent = { instanceId: string; progress: LaunchProgress }
 export type LauncherSettings = { showConsole: boolean; showConsoleOnError: boolean; autoCloseConsole: boolean; recordGameTime: boolean }
+export type LogLevel = "launcher" | "debug" | "info" | "warning" | "error" | "fatal" | "unknown"
 export type MinecraftVersions = { latest: LatestVersions; versions: VersionEntry[] }
 export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs: number; retries: number }
 export type NewInstance = { name: string; minecraftVersion: string; group: string | null; iconKey: string | null }

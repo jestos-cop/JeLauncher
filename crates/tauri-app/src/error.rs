@@ -14,10 +14,14 @@ impl From<jelauncher_core::Error> for CommandError {
 }
 
 impl CommandError {
-    pub fn poisoned() -> Self {
+    pub fn new(message: impl Into<String>) -> Self {
         Self {
-            message: "internal state lock was poisoned".into(),
+            message: message.into(),
         }
+    }
+
+    pub fn poisoned() -> Self {
+        Self::new("internal state lock was poisoned")
     }
 }
 

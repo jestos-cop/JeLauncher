@@ -1,4 +1,5 @@
-use std::sync::RwLock;
+use std::collections::HashSet;
+use std::sync::{Mutex, RwLock};
 
 use jelauncher_core::auth::AccountStore;
 use jelauncher_core::meta::MetaService;
@@ -10,7 +11,10 @@ pub struct AppState {
     pub paths: DataPaths,
     pub settings: RwLock<GlobalSettings>,
     pub accounts: RwLock<AccountStore>,
+    pub http: HttpClient,
     pub meta: MetaService,
+    /// Ids of instances whose game process is alive or being prepared.
+    pub running: Mutex<HashSet<String>>,
 }
 
 impl AppState {
@@ -19,12 +23,14 @@ impl AppState {
         let settings = GlobalSettings::load(&paths.settings_file())?;
         let accounts = AccountStore::load(&paths.accounts_file())?;
         let http = HttpClient::new(&settings.network)?;
-        let meta = MetaService::new(http, paths.meta());
+        let meta = MetaService::new(http.clone(), paths.meta());
         Ok(Self {
             paths,
             settings: RwLock::new(settings),
             accounts: RwLock::new(accounts),
+            http,
             meta,
+            running: Mutex::default(),
         })
     }
 }
