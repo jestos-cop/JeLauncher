@@ -61,9 +61,9 @@ async deleteInstance(instanceId: string) : Promise<Result<null, CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
-async openInstanceFolder(instanceId: string) : Promise<Result<null, CommandError>> {
+async openInstanceFolder(instanceId: string, folder: InstanceFolder) : Promise<Result<null, CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("open_instance_folder", { instanceId }) };
+    return { status: "ok", data: await TAURI_INVOKE("open_instance_folder", { instanceId, folder }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -200,6 +200,7 @@ export type CommandError = { message: string }
 export type DownloadProgress = { completed: number; total: number; downloadedBytes: number }
 export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings }
 export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
+export type InstanceFolder = "game" | "mods"
 export type InstanceLogEvent = { instanceId: string; line: string; level: LogLevel }
 export type InstanceSummary = { id: string; name: string; iconKey: string; group: string | null; minecraftVersion: string; loader: LoaderSpec | null; lastLaunchTime: number; totalTimePlayed: number }
 export type JavaInstall = { path: string; version: string; major: number; arch: string; vendor: string }

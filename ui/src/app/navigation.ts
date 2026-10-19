@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-export type InstanceTab = 'log'
+export type InstanceTab = 'log' | 'mods'
 
 export type View = { page: 'main' } | { page: 'instance'; instanceId: string; tab: InstanceTab }
 

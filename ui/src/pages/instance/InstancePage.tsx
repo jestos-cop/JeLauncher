@@ -1,4 +1,4 @@
-import { ArrowLeft, ScrollText, type LucideIcon } from 'lucide-react'
+import { ArrowLeft, Puzzle, ScrollText, type LucideIcon } from 'lucide-react'
 import { useNavigation, type InstanceTab } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
 import { LaunchControls } from '@/components/LaunchControls'
@@ -6,9 +6,11 @@ import { LogView } from '@/components/LogView'
 import { Button } from '@/components/ui/button'
 import { useInstances } from '@/hooks/use-instances'
 import { cn } from '@/lib/utils'
+import { ModsPage } from '@/pages/instance/ModsPage'
 
 const TABS: { tab: InstanceTab; label: string; icon: LucideIcon }[] = [
   { tab: 'log', label: 'Minecraft Log', icon: ScrollText },
+  { tab: 'mods', label: 'Mods', icon: Puzzle },
 ]
 
 interface InstancePageProps {
@@ -55,6 +57,7 @@ export function InstancePage({ instanceId, tab }: InstancePageProps) {
         </nav>
         <main className="flex min-h-0 flex-1 flex-col p-4">
           {tab === 'log' && <InstanceLog instanceId={instanceId} />}
+          {tab === 'mods' && <ModsPage instanceId={instanceId} />}
         </main>
       </div>
     </div>

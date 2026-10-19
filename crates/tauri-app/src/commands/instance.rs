@@ -1,4 +1,5 @@
 use jelauncher_core::instance::{self, Instance, InstanceSummary, NewInstance};
+use serde::Deserialize;
 use tauri::State;
 use tauri_plugin_opener::OpenerExt;
 
@@ -65,15 +66,28 @@ pub fn delete_instance(state: State<'_, AppState>, instance_id: String) -> Comma
     )?)
 }
 
+#[derive(Debug, Clone, Copy, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub enum InstanceFolder {
+    Game,
+    Mods,
+}
+
 #[tauri::command]
 #[specta::specta]
 pub fn open_instance_folder(
     app: tauri::AppHandle,
     state: State<'_, AppState>,
     instance_id: String,
+    folder: InstanceFolder,
 ) -> CommandResult<()> {
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
+    let path = match folder {
+        InstanceFolder::Game => instance.game_dir(),
+        InstanceFolder::Mods => instance.mods_dir(),
+    };
+    std::fs::create_dir_all(&path).map_err(|err| CommandError::new(err.to_string()))?;
     app.opener()
-        .open_path(instance.game_dir().to_string_lossy(), None::<&str>)
+        .open_path(path.to_string_lossy(), None::<&str>)
         .map_err(|err| CommandError::new(err.to_string()))
 }
