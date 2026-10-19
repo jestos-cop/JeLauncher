@@ -55,9 +55,15 @@ pub async fn launch_instance(
             .emit(&app);
         })
         .await;
-    let child = prepared.and_then(|command| command.spawn());
-    let mut child = match child {
-        Ok(child) => child,
+    let started = match prepared {
+        Ok(command) => match command.run_pre_launch().await {
+            Ok(()) => command.spawn().map(|child| (command, child)),
+            Err(err) => Err(err),
+        },
+        Err(err) => Err(err),
+    };
+    let (command, mut child) = match started {
+        Ok(started) => started,
         Err(err) => {
             mark_stopped(&app, &instance_id);
             return Err(err.into());
@@ -92,6 +98,14 @@ pub async fn launch_instance(
             instance.config.total_time_played +=
                 i64::try_from(started.elapsed().as_secs()).unwrap_or(0);
             let _ = instance.save();
+        }
+        if let Err(err) = command.run_post_exit().await {
+            let _ = InstanceLogEvent {
+                instance_id: instance.id.clone(),
+                line: format!("Post-exit command failed: {err}"),
+                level: LogLevel::Launcher,
+            }
+            .emit(&app);
         }
         mark_stopped(&app, &instance.id);
         let _ = InstanceExitedEvent {

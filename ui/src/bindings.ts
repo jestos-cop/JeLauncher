@@ -267,15 +267,23 @@ modpackProgressEvent: "modpack-progress-event"
 export type AccountKind = { type: "offline" }
 export type AccountSummary = { id: string; username: string; kind: AccountKind; isDefault: boolean }
 export type CommandError = { message: string }
+/**
+ * Commands run around the game and extra environment variables for it.
+ */
+export type CommandSettings = { preLaunch: string; 
+/**
+ * Prefix for the Java invocation, e.g. `mangohud` or `prime-run`.
+ */
+wrapper: string; postExit: string; environment: Partial<{ [key in string]: string }> }
 export type Dependency = { projectId: string | null; versionId: string | null; required: boolean }
 export type DownloadProgress = { completed: number; total: number; downloadedBytes: number }
-export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings }
+export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings; commands: CommandSettings }
 export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
 export type InstanceLogEvent = { instanceId: string; line: string; level: LogLevel }
 /**
  * Per-instance overrides; `None` falls back to the global value.
  */
-export type InstanceSettings = { javaPath: string | null; minMemoryMb: number | null; maxMemoryMb: number | null; jvmArgs: string | null; windowWidth: number | null; windowHeight: number | null; windowMaximized: boolean | null }
+export type InstanceSettings = { javaPath: string | null; minMemoryMb: number | null; maxMemoryMb: number | null; jvmArgs: string | null; windowWidth: number | null; windowHeight: number | null; windowMaximized: boolean | null; commands: CommandSettings | null }
 export type InstanceSummary = { id: string; name: string; iconKey: string; group: string | null; minecraftVersion: string; loader: LoaderSpec | null; lastLaunchTime: number; totalTimePlayed: number }
 export type JavaInstall = { path: string; version: string; major: number; arch: string; vendor: string }
 export type JavaSettings = { 

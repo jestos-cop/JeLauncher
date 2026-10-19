@@ -1,0 +1,79 @@
+import { Plus, X } from 'lucide-react'
+import type { CommandSettings } from '@/bindings'
+import { Field } from '@/components/SettingsFields'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+
+const VARIABLES_HINT = 'Available as variables: $INST_NAME, $INST_ID, $INST_DIR, $INST_MC_DIR, $INST_JAVA.'
+
+interface CommandFieldsProps {
+  value: CommandSettings
+  onChange: (value: CommandSettings) => void
+}
+
+export function CommandFields({ value, onChange }: CommandFieldsProps) {
+  const set = (patch: Partial<CommandSettings>) => onChange({ ...value, ...patch })
+  const entries = Object.entries(value.environment).map(([key, entry]) => [key, entry ?? ''] as const)
+
+  const setEntry = (index: number, key: string, entryValue: string) =>
+    set({
+      environment: Object.fromEntries(entries.map((entry, i) => (i === index ? [key, entryValue] : entry))),
+    })
+  const removeEntry = (index: number) =>
+    set({ environment: Object.fromEntries(entries.filter((_, i) => i !== index)) })
+  const addEntry = () => set({ environment: { ...value.environment, [uniqueKey(value.environment)]: '' } })
+
+  return (
+    <>
+      <Field
+        label="Pre-launch command"
+        hint={`Runs before the game; a failure cancels the launch. ${VARIABLES_HINT}`}
+      >
+        <Input value={value.preLaunch} onChange={(event) => set({ preLaunch: event.target.value })} />
+      </Field>
+      <Field label="Wrapper command" hint="Prefixes the Java invocation, e.g. mangohud or prime-run.">
+        <Input value={value.wrapper} onChange={(event) => set({ wrapper: event.target.value })} />
+      </Field>
+      <Field label="Post-exit command" hint="Runs after the game closes.">
+        <Input value={value.postExit} onChange={(event) => set({ postExit: event.target.value })} />
+      </Field>
+      <Field label="Environment variables">
+        <div className="flex flex-col gap-2">
+          {entries.map(([key, entryValue], index) => (
+            <div key={index} className="flex gap-2">
+              <Input
+                className="w-56 font-mono"
+                placeholder="NAME"
+                value={key}
+                onChange={(event) => setEntry(index, event.target.value, entryValue)}
+              />
+              <Input
+                className="font-mono"
+                placeholder="value"
+                value={entryValue}
+                onChange={(event) => setEntry(index, key, event.target.value)}
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                aria-label={`Remove ${key}`}
+                onClick={() => removeEntry(index)}
+              >
+                <X />
+              </Button>
+            </div>
+          ))}
+          <Button size="sm" variant="ghost" className="self-start" onClick={addEntry}>
+            <Plus /> Add variable
+          </Button>
+        </div>
+      </Field>
+    </>
+  )
+}
+
+function uniqueKey(environment: CommandSettings['environment']) {
+  let index = 1
+  while (`VARIABLE_${index}` in environment) index += 1
+  return `VARIABLE_${index}`
+}

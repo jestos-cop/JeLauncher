@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import type { GlobalSettings, InstanceSettings } from '@/bindings'
+import { CommandFields } from '@/components/CommandFields'
 import { Field, JavaPicker, NumberInput } from '@/components/SettingsFields'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -114,6 +115,16 @@ function SettingsForm({ instanceId, saved, global }: SettingsFormProps) {
             onCheckedChange={(checked) => set({ windowMaximized: checked === true })}
           />
         </Field>
+      </OverrideGroup>
+
+      <OverrideGroup
+        title="Custom commands"
+
+        overridden={draft.commands !== null}
+
+        onToggle={(on) => set({ commands: on ? global.commands : null })}
+      >
+        <CommandFields value={draft.commands ?? global.commands} onChange={(commands) => set({ commands })} />
       </OverrideGroup>
 
       {minMemory > maxMemory && (

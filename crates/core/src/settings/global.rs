@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use std::path::Path;
 
 use serde::{Deserialize, Serialize};
@@ -11,6 +12,7 @@ pub struct GlobalSettings {
     pub window: WindowSettings,
     pub launcher: LauncherSettings,
     pub network: NetworkSettings,
+    pub commands: CommandSettings,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
@@ -91,6 +93,17 @@ impl Default for NetworkSettings {
             retries: 1,
         }
     }
+}
+
+/// Commands run around the game and extra environment variables for it.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
+#[serde(default, rename_all = "camelCase")]
+pub struct CommandSettings {
+    pub pre_launch: String,
+    /// Prefix for the Java invocation, e.g. `mangohud` or `prime-run`.
+    pub wrapper: String,
+    pub post_exit: String,
+    pub environment: BTreeMap<String, String>,
 }
 
 impl GlobalSettings {

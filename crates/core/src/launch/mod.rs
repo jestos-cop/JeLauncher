@@ -41,6 +41,10 @@ pub struct LaunchCommand {
     pub java: PathBuf,
     pub args: Vec<String>,
     pub working_dir: PathBuf,
+    pub env: Vec<(String, String)>,
+    pub wrapper: Vec<String>,
+    pub pre_launch: Option<String>,
+    pub post_exit: Option<String>,
 }
 
 impl Launcher<'_> {
@@ -102,11 +106,44 @@ impl Launcher<'_> {
             ),
             libraries_dir: &self.paths.libraries(),
         });
+        let commands = &settings.commands;
+        let wrapper = shlex::split(&commands.wrapper).ok_or_else(|| {
+            Error::InvalidInput(format!(
+                "cannot parse wrapper command: {}",
+                commands.wrapper
+            ))
+        })?;
+        let mut env = vec![
+            ("INST_NAME".to_owned(), instance.config.name.clone()),
+            ("INST_ID".to_owned(), instance.id.clone()),
+            (
+                "INST_DIR".to_owned(),
+                instance.root.to_string_lossy().into_owned(),
+            ),
+            (
+                "INST_MC_DIR".to_owned(),
+                game_dir.to_string_lossy().into_owned(),
+            ),
+            ("INST_JAVA".to_owned(), java.to_string_lossy().into_owned()),
+        ];
+        env.extend(
+            commands
+                .environment
+                .iter()
+                .map(|(key, value)| (key.clone(), value.clone())),
+        );
+        let non_empty =
+            |command: &String| Some(command.trim().to_owned()).filter(|c| !c.is_empty());
+
         on_progress(LaunchProgress::Starting);
         Ok(LaunchCommand {
             java,
             args,
             working_dir: game_dir,
+            env,
+            wrapper,
+            pre_launch: non_empty(&commands.pre_launch),
+            post_exit: non_empty(&commands.post_exit),
         })
     }
 
@@ -152,13 +189,103 @@ impl LaunchCommand {
     pub fn spawn(&self) -> Result<Child> {
         std::fs::create_dir_all(&self.working_dir)
             .map_err(|err| Error::io(&self.working_dir, err))?;
-        Command::new(&self.java)
+        let (program, prefix) = match self.wrapper.split_first() {
+            Some((program, rest)) => (PathBuf::from(program), rest.to_vec()),
+            None => (self.java.clone(), Vec::new()),
+        };
+        let mut command = Command::new(&program);
+        command.args(&prefix);
+        if !self.wrapper.is_empty() {
+            command.arg(&self.java);
+        }
+        command
             .args(&self.args)
+            .envs(self.env.iter().cloned())
             .current_dir(&self.working_dir)
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()
-            .map_err(|err| Error::io(&self.java, err))
+            .map_err(|err| Error::io(&program, err))
+    }
+
+    /// Runs the pre-launch command; a non-zero exit cancels the launch.
+    pub async fn run_pre_launch(&self) -> Result<()> {
+        match &self.pre_launch {
+            Some(command) => self.run_hook(command).await,
+            None => Ok(()),
+        }
+    }
+
+    pub async fn run_post_exit(&self) -> Result<()> {
+        match &self.post_exit {
+            Some(command) => self.run_hook(command).await,
+            None => Ok(()),
+        }
+    }
+
+    async fn run_hook(&self, command: &str) -> Result<()> {
+        let (shell, flag) = if cfg!(windows) {
+            ("cmd", "/C")
+        } else {
+            ("sh", "-c")
+        };
+        let status = Command::new(shell)
+            .args([flag, command])
+            .envs(self.env.iter().cloned())
+            .current_dir(&self.working_dir)
+            .stdin(Stdio::null())
+            .status()
+            .await
+            .map_err(|err| Error::io(shell, err))?;
+        if status.success() {
+            Ok(())
+        } else {
+            Err(Error::InvalidInput(format!(
+                "`{command}` exited with {status}"
+            )))
+        }
+    }
+}
+
+#[cfg(all(test, unix))]
+mod tests {
+    use super::*;
+
+    fn command(pre_launch: &str, wrapper: Vec<String>) -> LaunchCommand {
+        LaunchCommand {
+            java: PathBuf::from("echo"),
+            args: vec!["game-args".into()],
+            working_dir: std::env::temp_dir(),
+            env: vec![("INST_NAME".into(), "My Pack".into())],
+            wrapper,
+            pre_launch: Some(pre_launch.into()),
+            post_exit: None,
+        }
+    }
+
+    #[tokio::test]
+    async fn hooks_see_instance_variables_and_fail_on_non_zero_exit() {
+        assert!(
+            command(r#"test "$INST_NAME" = "My Pack""#, vec![])
+                .run_pre_launch()
+                .await
+                .is_ok()
+        );
+        assert!(command("exit 3", vec![]).run_pre_launch().await.is_err());
+    }
+
+    #[tokio::test]
+    async fn wrapper_prefixes_the_java_invocation() -> Result<()> {
+        let output = command("true", vec!["echo".into(), "wrapped".into()])
+            .spawn()?
+            .wait_with_output()
+            .await
+            .map_err(|err| Error::io("echo", err))?;
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout).trim(),
+            "wrapped echo game-args"
+        );
+        Ok(())
     }
 }

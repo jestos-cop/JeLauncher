@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react'
 
 export type InstanceTab = 'log' | 'mod' | 'resourcePack' | 'shaderPack' | 'dataPack' | 'settings'
 
-export type SettingsTab = 'java' | 'minecraft'
+export type SettingsTab = 'java' | 'minecraft' | 'commands'
 
 export type View =
   | { page: 'main' }

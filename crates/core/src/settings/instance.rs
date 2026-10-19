@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::GlobalSettings;
+use super::{CommandSettings, GlobalSettings};
 
 /// Per-instance overrides; `None` falls back to the global value.
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
@@ -13,6 +13,7 @@ pub struct InstanceSettings {
     pub window_width: Option<u32>,
     pub window_height: Option<u32>,
     pub window_maximized: Option<bool>,
+    pub commands: Option<CommandSettings>,
 }
 
 /// Settings an instance actually launches with.
@@ -25,6 +26,7 @@ pub struct EffectiveSettings {
     pub window_width: u32,
     pub window_height: u32,
     pub window_maximized: bool,
+    pub commands: CommandSettings,
 }
 
 impl InstanceSettings {
@@ -40,6 +42,10 @@ impl InstanceSettings {
             window_width: self.window_width.unwrap_or(global.window.width),
             window_height: self.window_height.unwrap_or(global.window.height),
             window_maximized: self.window_maximized.unwrap_or(global.window.maximized),
+            commands: self
+                .commands
+                .clone()
+                .unwrap_or_else(|| global.commands.clone()),
         }
     }
 }

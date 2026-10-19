@@ -1,7 +1,8 @@
-import { Coffee, Monitor } from 'lucide-react'
+import { Coffee, Monitor, Terminal } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigation, type SettingsTab } from '@/app/navigation'
 import type { GlobalSettings } from '@/bindings'
+import { CommandFields } from '@/components/CommandFields'
 import { Field, JavaPicker, NumberInput } from '@/components/SettingsFields'
 import { SidebarLayout, type SidebarTab } from '@/components/SidebarLayout'
 import { Button } from '@/components/ui/button'
@@ -12,6 +13,7 @@ import { useSettings, useUpdateSettings } from '@/hooks/use-settings'
 const TABS: SidebarTab<SettingsTab>[] = [
   { tab: 'java', label: 'Java', icon: Coffee },
   { tab: 'minecraft', label: 'Minecraft', icon: Monitor },
+  { tab: 'commands', label: 'Commands', icon: Terminal },
 ]
 
 export function SettingsPage({ tab }: { tab: SettingsTab }) {
@@ -104,6 +106,13 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
             />
           </Field>
         </>
+      )}
+
+      {tab === 'commands' && (
+        <CommandFields
+          value={draft.commands}
+          onChange={(commands) => setDraft((current) => ({ ...current, commands }))}
+        />
       )}
 
       {draft.java.minMemoryMb > draft.java.maxMemoryMb && (
