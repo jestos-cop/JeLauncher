@@ -1,3 +1,4 @@
+mod loader;
 mod manifest;
 
 use std::path::PathBuf;

@@ -35,6 +35,7 @@ async fn launches_latest_release() -> jelauncher_core::Result<()> {
         NewInstance {
             name: "Launch Test".into(),
             minecraft_version: latest,
+            loader: None,
             group: None,
             icon_key: None,
         },

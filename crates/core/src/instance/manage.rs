@@ -39,6 +39,7 @@ mod tests {
             NewInstance {
                 name: "Old".into(),
                 minecraft_version: "1.21.4".into(),
+                loader: None,
                 group: None,
                 icon_key: None,
             },

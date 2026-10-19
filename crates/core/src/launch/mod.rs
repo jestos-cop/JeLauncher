@@ -52,10 +52,11 @@ impl Launcher<'_> {
         on_progress: impl Fn(LaunchProgress),
     ) -> Result<LaunchCommand> {
         on_progress(LaunchProgress::Preparing);
-        let version = self
-            .meta
-            .version_json(&instance.config.minecraft_version)
-            .await?;
+        let game_version = &instance.config.minecraft_version;
+        let mut version = self.meta.version_json(game_version).await?;
+        if let Some(loader) = &instance.config.loader {
+            version.apply_loader(self.meta.loader_profile(loader, game_version).await?);
+        }
         let settings = instance.config.settings.resolve(self.settings);
         let env = Environment::current(Features {
             custom_resolution: !settings.window_maximized,

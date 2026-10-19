@@ -5,6 +5,7 @@ use std::path::Path;
 use serde::Serialize;
 
 use super::{INSTANCE_CONFIG_FILE, InstanceConfig};
+use crate::minecraft::LoaderSpec;
 use crate::{Error, Result};
 
 #[derive(Debug, Clone, Serialize, specta::Type)]
@@ -15,6 +16,7 @@ pub struct InstanceSummary {
     pub icon_key: String,
     pub group: Option<String>,
     pub minecraft_version: String,
+    pub loader: Option<LoaderSpec>,
     pub last_launch_time: i64,
     pub total_time_played: i64,
 }
@@ -43,6 +45,7 @@ pub fn discover_instances(root: &Path) -> Result<Vec<InstanceSummary>> {
             icon_key: config.icon_key,
             group: config.group,
             minecraft_version: config.minecraft_version,
+            loader: config.loader,
             last_launch_time: config.last_launch_time,
             total_time_played: config.total_time_played,
         });

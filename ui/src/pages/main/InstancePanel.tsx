@@ -17,7 +17,10 @@ export function InstancePanel({ instance }: { instance: InstanceSummary }) {
       <div className="flex flex-col items-center gap-2 text-center">
         <Box className="size-16 text-muted-foreground" />
         <h2 className="font-semibold">{instance.name}</h2>
-        <p className="text-sm text-muted-foreground">Minecraft {instance.minecraftVersion}</p>
+        <p className="text-sm text-muted-foreground">
+          Minecraft {instance.minecraftVersion}
+          {instance.loader && ` · ${instance.loader.kind} ${instance.loader.version}`}
+        </p>
         <p className="text-xs text-muted-foreground">
           Played {formatPlayTime(instance.totalTimePlayed)}
         </p>

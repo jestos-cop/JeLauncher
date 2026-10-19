@@ -19,6 +19,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::launch::kill_instance,
             commands::launch::launch_instance,
             commands::launch::list_running_instances,
+            commands::meta::list_loader_versions,
             commands::meta::list_minecraft_versions,
             commands::settings::get_settings,
             commands::settings::update_settings,

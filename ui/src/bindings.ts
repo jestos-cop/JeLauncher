@@ -117,6 +117,14 @@ async listRunningInstances() : Promise<Result<string[], CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
+async listLoaderVersions(kind: LoaderKind, minecraftVersion: string) : Promise<Result<LoaderVersion[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_loader_versions", { kind, minecraftVersion }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async listMinecraftVersions() : Promise<Result<MinecraftVersions, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_minecraft_versions") };
@@ -169,7 +177,7 @@ export type DownloadProgress = { completed: number; total: number; downloadedByt
 export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings }
 export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
 export type InstanceLogEvent = { instanceId: string; line: string; level: LogLevel }
-export type InstanceSummary = { id: string; name: string; iconKey: string; group: string | null; minecraftVersion: string; lastLaunchTime: number; totalTimePlayed: number }
+export type InstanceSummary = { id: string; name: string; iconKey: string; group: string | null; minecraftVersion: string; loader: LoaderSpec | null; lastLaunchTime: number; totalTimePlayed: number }
 export type JavaInstall = { path: string; version: string; major: number; arch: string; vendor: string }
 export type JavaSettings = { 
 /**
@@ -180,10 +188,13 @@ export type LatestVersions = { release: string; snapshot: string }
 export type LaunchProgress = { stage: "preparing" } | ({ stage: "downloading" } & DownloadProgress) | { stage: "starting" }
 export type LaunchProgressEvent = { instanceId: string; progress: LaunchProgress }
 export type LauncherSettings = { showConsole: boolean; showConsoleOnError: boolean; autoCloseConsole: boolean; recordGameTime: boolean }
+export type LoaderKind = "fabric" | "quilt"
+export type LoaderSpec = { kind: LoaderKind; version: string }
+export type LoaderVersion = { version: string; stable: boolean }
 export type LogLevel = "launcher" | "debug" | "info" | "warning" | "error" | "fatal" | "unknown"
 export type MinecraftVersions = { latest: LatestVersions; versions: VersionEntry[] }
 export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs: number; retries: number }
-export type NewInstance = { name: string; minecraftVersion: string; group: string | null; iconKey: string | null }
+export type NewInstance = { name: string; minecraftVersion: string; loader: LoaderSpec | null; group: string | null; iconKey: string | null }
 export type VersionEntry = { id: string; type: VersionType; url: string; sha1: string; releaseTime: string }
 export type VersionType = "release" | "snapshot" | "old_beta" | "old_alpha" | "other"
 export type WindowSettings = { width: number; height: number; maximized: boolean }

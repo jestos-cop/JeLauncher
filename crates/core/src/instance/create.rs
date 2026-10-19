@@ -4,6 +4,7 @@ use std::path::Path;
 use serde::Deserialize;
 
 use super::{INSTANCE_CONFIG_FILE, Instance, InstanceConfig};
+use crate::minecraft::LoaderSpec;
 use crate::{Error, Result};
 
 #[derive(Debug, Clone, Deserialize, specta::Type)]
@@ -11,6 +12,7 @@ use crate::{Error, Result};
 pub struct NewInstance {
     pub name: String,
     pub minecraft_version: String,
+    pub loader: Option<LoaderSpec>,
     pub group: Option<String>,
     pub icon_key: Option<String>,
 }
@@ -31,6 +33,7 @@ pub fn create_instance(instances_dir: &Path, new: NewInstance) -> Result<Instanc
         config: InstanceConfig {
             name: name.to_owned(),
             minecraft_version: new.minecraft_version,
+            loader: new.loader,
             group: new.group.filter(|group| !group.trim().is_empty()),
             icon_key: new.icon_key.unwrap_or_else(|| "default".into()),
             ..Default::default()
@@ -74,6 +77,7 @@ mod tests {
         NewInstance {
             name: name.into(),
             minecraft_version: "1.21.4".into(),
+            loader: None,
             group: None,
             icon_key: None,
         }

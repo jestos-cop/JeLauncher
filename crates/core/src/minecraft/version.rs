@@ -128,6 +128,11 @@ pub struct Library {
     /// Maven repository base URL for libraries without explicit downloads.
     #[serde(default)]
     pub url: Option<String>,
+    /// Loader profiles put the checksum next to the Maven coordinates.
+    #[serde(default)]
+    pub sha1: Option<String>,
+    #[serde(default)]
+    pub size: Option<u64>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize)]
@@ -158,9 +163,19 @@ impl Library {
         Some(Artifact {
             url: format!("{}/{path}", base.trim_end_matches('/')),
             path: Some(path),
-            sha1: String::new(),
-            size: 0,
+            sha1: self.sha1.clone().unwrap_or_default(),
+            size: self.size.unwrap_or_default(),
         })
+    }
+
+    /// `group:artifact[:classifier]`, used to let one library replace another of a different version.
+    pub fn identity(&self) -> String {
+        let parts: Vec<&str> = self.name.split(':').collect();
+        match parts.as_slice() {
+            [group, artifact, _, classifier, ..] => format!("{group}:{artifact}:{classifier}"),
+            [group, artifact, ..] => format!("{group}:{artifact}"),
+            _ => self.name.clone(),
+        }
     }
 
     /// Legacy native jar that must be extracted before launch.

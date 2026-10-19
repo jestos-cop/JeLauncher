@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import type { LoaderSpec } from '@/bindings'
+import { LoaderPicker } from '@/components/LoaderPicker'
 import { VersionList } from '@/components/VersionList'
 import { Button } from '@/components/ui/button'
 import {
@@ -21,20 +23,22 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
   const [name, setName] = useState('')
   const [group, setGroup] = useState('')
   const [version, setVersion] = useState<string | null>(null)
+  const [loader, setLoader] = useState<LoaderSpec | null>(null)
   const createInstance = useCreateInstance()
 
   const close = () => {
     setName('')
     setGroup('')
     setVersion(null)
+    setLoader(null)
     createInstance.reset()
     onOpenChange(false)
   }
 
   const create = () => {
-    if (!version) return
+    if (!version || (loader && !loader.version)) return
     createInstance.mutate(
-      { name: name.trim() || version, minecraftVersion: version, group: group || null, iconKey: null },
+      { name: name.trim() || version, minecraftVersion: version, loader, group: group || null, iconKey: null },
       { onSuccess: close },
     )
   }
@@ -64,6 +68,7 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
         </div>
 
         <VersionList selected={version} onSelect={setVersion} />
+        <LoaderPicker minecraftVersion={version} value={loader} onChange={setLoader} />
 
         {createInstance.error && (
           <p className="text-sm text-destructive">{createInstance.error.message}</p>
@@ -72,7 +77,7 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
           <Button variant="ghost" onClick={close}>
             Cancel
           </Button>
-          <Button onClick={create} disabled={!version || createInstance.isPending}>
+          <Button onClick={create} disabled={!version || (loader !== null && !loader.version) || createInstance.isPending}>
             Create
           </Button>
         </DialogFooter>

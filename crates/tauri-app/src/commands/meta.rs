@@ -1,4 +1,5 @@
 use jelauncher_core::meta::{LatestVersions, VersionEntry};
+use jelauncher_core::minecraft::{LoaderKind, LoaderVersion};
 use serde::Serialize;
 use tauri::State;
 
@@ -21,4 +22,14 @@ pub async fn list_minecraft_versions(
         latest: manifest.latest,
         versions: manifest.versions,
     })
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn list_loader_versions(
+    state: State<'_, AppState>,
+    kind: LoaderKind,
+    minecraft_version: String,
+) -> CommandResult<Vec<LoaderVersion>> {
+    Ok(state.meta.loader_versions(kind, &minecraft_version).await?)
 }
