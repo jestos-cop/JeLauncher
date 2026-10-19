@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ConsoleBehavior } from '@/app/ConsoleBehavior'
 import { useNavigation } from '@/app/navigation'
 import { NavigationProvider } from '@/app/NavigationProvider'
 import { SessionsProvider } from '@/app/SessionsProvider'
@@ -13,6 +14,7 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <SessionsProvider>
         <NavigationProvider>
+          <ConsoleBehavior />
           <CurrentPage />
         </NavigationProvider>
       </SessionsProvider>

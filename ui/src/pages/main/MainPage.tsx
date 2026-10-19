@@ -32,7 +32,7 @@ export function MainPage() {
           <RefreshCw /> Refresh
         </Button>
         <FoldersMenu />
-        <Button size="sm" variant="ghost" onClick={() => navigate({ page: 'settings', tab: 'java' })}>
+        <Button size="sm" variant="ghost" onClick={() => navigate({ page: 'settings', tab: 'launcher' })}>
           <Settings /> Settings
         </Button>
         <div className="ml-auto flex items-center gap-2">

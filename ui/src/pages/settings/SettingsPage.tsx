@@ -1,4 +1,4 @@
-import { Coffee, Monitor, Terminal } from 'lucide-react'
+import { Coffee, Monitor, Rocket, Terminal } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigation, type SettingsTab } from '@/app/navigation'
 import type { GlobalSettings } from '@/bindings'
@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { useSettings, useUpdateSettings } from '@/hooks/use-settings'
 
 const TABS: SidebarTab<SettingsTab>[] = [
+  { tab: 'launcher', label: 'Launcher', icon: Rocket },
   { tab: 'java', label: 'Java', icon: Coffee },
   { tab: 'minecraft', label: 'Minecraft', icon: Monitor },
   { tab: 'commands', label: 'Commands', icon: Terminal },
@@ -42,9 +43,68 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
     setDraft((current) => ({ ...current, java: { ...current.java, ...patch } }))
   const setWindow = (patch: Partial<GlobalSettings['window']>) =>
     setDraft((current) => ({ ...current, window: { ...current.window, ...patch } }))
+  const setLauncher = (patch: Partial<GlobalSettings['launcher']>) =>
+    setDraft((current) => ({ ...current, launcher: { ...current.launcher, ...patch } }))
+  const setNetwork = (patch: Partial<GlobalSettings['network']>) =>
+    setDraft((current) => ({ ...current, network: { ...current.network, ...patch } }))
 
   return (
     <div className="flex max-w-4xl flex-col gap-5">
+      {tab === 'launcher' && (
+        <>
+          <h3 className="text-sm font-semibold">Console</h3>
+          <Field label="Open log on launch">
+            <Checkbox
+              checked={draft.launcher.showConsole}
+              onCheckedChange={(checked) => setLauncher({ showConsole: checked === true })}
+            />
+          </Field>
+          <Field label="Open log on crash">
+            <Checkbox
+              checked={draft.launcher.showConsoleOnError}
+              onCheckedChange={(checked) => setLauncher({ showConsoleOnError: checked === true })}
+            />
+          </Field>
+          <Field label="Close log on clean exit">
+            <Checkbox
+              checked={draft.launcher.autoCloseConsole}
+              onCheckedChange={(checked) => setLauncher({ autoCloseConsole: checked === true })}
+            />
+          </Field>
+          <h3 className="text-sm font-semibold">Game time</h3>
+          <Field label="Record play time">
+            <Checkbox
+              checked={draft.launcher.recordGameTime}
+              onCheckedChange={(checked) => setLauncher({ recordGameTime: checked === true })}
+            />
+          </Field>
+          <h3 className="text-sm font-semibold">Network</h3>
+          <Field label="Parallel downloads">
+            <NumberInput
+              value={draft.network.concurrentDownloads}
+              min={1}
+              max={64}
+              onChange={(concurrentDownloads) => setNetwork({ concurrentDownloads })}
+            />
+          </Field>
+          <Field label="Request timeout" hint="Timeout and retries apply after restarting the launcher.">
+            <NumberInput
+              value={draft.network.requestTimeoutSecs}
+              min={5}
+              suffix="s"
+              onChange={(requestTimeoutSecs) => setNetwork({ requestTimeoutSecs })}
+            />
+          </Field>
+          <Field label="Retries">
+            <NumberInput
+              value={draft.network.retries}
+              min={0}
+              max={10}
+              onChange={(retries) => setNetwork({ retries })}
+            />
+          </Field>
+        </>
+      )}
       {tab === 'java' && (
         <>
           <Field label="Java installation">

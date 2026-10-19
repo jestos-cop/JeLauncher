@@ -24,20 +24,29 @@ interface NumberInputProps {
   value: number
   onChange: (value: number) => void
   min?: number
+  max?: number
   step?: number
   suffix?: string
 }
 
-export function NumberInput({ value, onChange, min = 0, step = 1, suffix }: NumberInputProps) {
+export function NumberInput({
+  value,
+  onChange,
+  min = 0,
+  max = Number.MAX_SAFE_INTEGER,
+  step = 1,
+  suffix,
+}: NumberInputProps) {
   return (
     <div className="flex items-center gap-2">
       <Input
         type="number"
         className="w-32"
         min={min}
+        max={max}
         step={step}
         value={value}
-        onChange={(event) => onChange(Math.max(min, Number(event.target.value) || 0))}
+        onChange={(event) => onChange(Math.min(max, Math.max(min, Number(event.target.value) || 0)))}
       />
       {suffix && <span className="text-sm text-muted-foreground">{suffix}</span>}
     </div>
