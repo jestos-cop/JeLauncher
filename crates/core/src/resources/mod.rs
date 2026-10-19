@@ -1,3 +1,4 @@
+mod mod_list;
 mod mod_metadata;
 mod pack_metadata;
 
@@ -6,6 +7,7 @@ use std::time::UNIX_EPOCH;
 
 use serde::{Deserialize, Serialize};
 
+pub use mod_list::{ModListFormat, format_mod_list};
 pub use mod_metadata::read_mod_metadata;
 pub use pack_metadata::read_pack_metadata;
 

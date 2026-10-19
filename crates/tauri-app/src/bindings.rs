@@ -48,6 +48,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::modplatform::search_resources,
             commands::resources::list_resources,
             commands::resources::remove_resource,
+            commands::resources::export_mod_list,
             commands::screenshots::delete_screenshot,
             commands::screenshots::list_screenshots,
             commands::screenshots::open_screenshots_folder,

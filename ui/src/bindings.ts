@@ -380,6 +380,17 @@ async removeResource(instanceId: string, kind: ResourceKind, fileName: string) :
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Writes the instance's enabled mods as a list in `format` to `output`.
+ */
+async exportModList(instanceId: string, format: ModListFormat, output: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("export_mod_list", { instanceId, format, output }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async deleteScreenshot(instanceId: string, fileName: string) : Promise<Result<null, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("delete_screenshot", { instanceId, fileName }) };
@@ -604,6 +615,7 @@ export type LogLevel = "launcher" | "debug" | "info" | "warning" | "error" | "fa
  */
 export type ManagedPack = { provider: Provider; projectId: string; versionId: string; name: string; version: string }
 export type MinecraftVersions = { latest: LatestVersions; versions: VersionEntry[] }
+export type ModListFormat = "plainText" | "markdown" | "html" | "json" | "csv"
 export type ModpackProgressEvent = { progress: DownloadProgress }
 export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs: number; retries: number }
 export type NewInstance = { name: string; minecraftVersion: string; loader: LoaderSpec | null; group: string | null; iconKey: string | null }

@@ -2,6 +2,7 @@ import { ArrowUpCircle, Download, FolderOpen, RefreshCw, Trash2 } from 'lucide-r
 import { useMemo, useState } from 'react'
 import type { InstanceSummary, ResourceFile, ResourceKind } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
+import { ModListExportMenu } from '@/components/ModListExportMenu'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
@@ -76,6 +77,7 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
           <Button size="sm" variant="ghost" onClick={() => refetch()}>
             <RefreshCw /> Refresh
           </Button>
+          {kind === 'mod' && <ModListExportMenu instance={instance} />}
           <Button size="sm" variant="ghost" onClick={() => void openInstanceFolder(instance.id, kind)}>
             <FolderOpen /> Open Folder
           </Button>

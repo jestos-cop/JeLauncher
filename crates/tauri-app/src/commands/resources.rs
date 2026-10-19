@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use jelauncher_core::instance::Instance;
-use jelauncher_core::resources::{self, ResourceFile, ResourceKind};
+use jelauncher_core::resources::{self, ModListFormat, ResourceFile, ResourceKind};
 use tauri::State;
 
 use crate::error::{CommandError, CommandResult};
@@ -51,4 +51,23 @@ pub fn remove_resource(
         &resource_dir(&state, &instance_id, kind)?,
         &file_name,
     )?)
+}
+
+/// Writes the instance's enabled mods as a list in `format` to `output`.
+#[tauri::command]
+#[specta::specta]
+pub async fn export_mod_list(
+    state: State<'_, AppState>,
+    instance_id: String,
+    format: ModListFormat,
+    output: String,
+) -> CommandResult<()> {
+    let dir = resource_dir(&state, &instance_id, ResourceKind::Mod)?;
+    let files = tauri::async_runtime::spawn_blocking(move || {
+        resources::list_resources(&dir, ResourceKind::Mod)
+    })
+    .await
+    .map_err(|err| CommandError::new(err.to_string()))??;
+    let list = resources::format_mod_list(&files, format);
+    std::fs::write(&output, list).map_err(|err| CommandError::new(err.to_string()))
 }
