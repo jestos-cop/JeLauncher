@@ -11,6 +11,8 @@ export default defineConfig({
     alias: { '@': path.resolve(import.meta.dirname, './src') },
   },
   clearScreen: false,
+  // Served from disk by Tauri, so bundle size does not affect load time over a network.
+  build: { chunkSizeWarningLimit: 2000 },
   server: {
     port: 1420,
     strictPort: true,

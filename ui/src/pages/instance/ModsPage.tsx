@@ -1,20 +1,23 @@
-import { FolderOpen, RefreshCw, Trash2 } from 'lucide-react'
+import { Download, FolderOpen, RefreshCw, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import type { ModFile } from '@/bindings'
+import type { InstanceSummary, ModFile } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import { ResourceDownloadDialog } from '@/dialogs/ResourceDownloadDialog'
 import { openInstanceFolder } from '@/hooks/use-instance-actions'
 import { useMods, useRemoveMod, useSetModEnabled } from '@/hooks/use-mods'
 import { cn } from '@/lib/utils'
 
-export function ModsPage({ instanceId }: { instanceId: string }) {
+export function ModsPage({ instance }: { instance: InstanceSummary }) {
+  const instanceId = instance.id
   const { data: mods = [], error, isPending, refetch } = useMods(instanceId)
   const setEnabled = useSetModEnabled(instanceId)
   const removeMod = useRemoveMod(instanceId)
   const [search, setSearch] = useState('')
   const [pendingRemoval, setPendingRemoval] = useState<ModFile | null>(null)
+  const [isDownloading, setIsDownloading] = useState(false)
 
   const visible = useMemo(() => {
     const query = search.trim().toLowerCase()
@@ -36,6 +39,9 @@ export function ModsPage({ instanceId }: { instanceId: string }) {
           {mods.filter((mod) => mod.enabled).length} of {mods.length} enabled
         </span>
         <div className="ml-auto flex gap-1">
+          <Button size="sm" onClick={() => setIsDownloading(true)}>
+            <Download /> Download Mods
+          </Button>
           <Button size="sm" variant="ghost" onClick={() => refetch()}>
             <RefreshCw /> Refresh
           </Button>
@@ -117,6 +123,13 @@ export function ModsPage({ instanceId }: { instanceId: string }) {
           onClose={() => setPendingRemoval(null)}
         />
       )}
+
+      <ResourceDownloadDialog
+        instance={instance}
+        kind="mod"
+        open={isDownloading}
+        onOpenChange={setIsDownloading}
+      />
     </div>
   )
 }

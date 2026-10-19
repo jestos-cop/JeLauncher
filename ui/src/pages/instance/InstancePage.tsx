@@ -57,7 +57,7 @@ export function InstancePage({ instanceId, tab }: InstancePageProps) {
         </nav>
         <main className="flex min-h-0 flex-1 flex-col p-4">
           {tab === 'log' && <InstanceLog instanceId={instanceId} />}
-          {tab === 'mods' && <ModsPage instanceId={instanceId} />}
+          {tab === 'mods' && instance && <ModsPage instance={instance} />}
         </main>
       </div>
     </div>
