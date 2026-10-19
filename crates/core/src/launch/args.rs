@@ -219,14 +219,15 @@ mod tests {
             kind: AccountKind::Offline,
             microsoft: None,
         };
-        let classpath = [PathBuf::from("/lib/a.jar"), PathBuf::from("/client.jar")];
+        let jars = [PathBuf::from("/lib/a.jar"), PathBuf::from("/client.jar")];
+        let classpath = format!("/lib/a.jar{CLASSPATH_SEPARATOR}/client.jar");
         let dir = Path::new("/x");
         let args = build_arguments(&ArgsInput {
             version: &version,
             env: &env,
             settings: &settings,
             account: &account,
-            classpath: &classpath,
+            classpath: &jars,
             game_dir: dir,
             natives_dir: Path::new("/natives"),
             assets_dir: dir,
@@ -245,7 +246,7 @@ mod tests {
                 "-Xmx4096M",
                 "-Djava.library.path=/natives",
                 "-cp",
-                "/lib/a.jar:/client.jar",
+                classpath.as_str(),
                 "net.minecraft.client.main.Main",
                 "--username",
                 "Steve",
