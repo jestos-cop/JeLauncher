@@ -114,7 +114,7 @@ pub fn read_world(dir: &Path) -> Result<World> {
 }
 
 pub fn delete_world(saves_dir: &Path, folder: &str) -> Result<()> {
-    let path = world_path(saves_dir, folder)?;
+    let path = crate::fs::child_path(saves_dir, folder)?;
     std::fs::remove_dir_all(&path).map_err(|err| Error::io(&path, err))
 }
 
@@ -125,21 +125,11 @@ pub fn backup_world(
     backups_dir: &Path,
     timestamp: &str,
 ) -> Result<PathBuf> {
-    let source = world_path(saves_dir, folder)?;
+    let source = crate::fs::child_path(saves_dir, folder)?;
     std::fs::create_dir_all(backups_dir).map_err(|err| Error::io(backups_dir, err))?;
     let target = backups_dir.join(format!("{folder}-{timestamp}.zip"));
     crate::archive::zip_dir(&source, &target, Path::new(folder))?;
     Ok(target)
-}
-
-fn world_path(saves_dir: &Path, folder: &str) -> Result<PathBuf> {
-    let is_plain_name = Path::new(folder).file_name().and_then(|n| n.to_str()) == Some(folder);
-    if !is_plain_name {
-        return Err(Error::InvalidInput(format!(
-            "invalid world folder: {folder}"
-        )));
-    }
-    Ok(saves_dir.join(folder))
 }
 
 #[cfg(test)]

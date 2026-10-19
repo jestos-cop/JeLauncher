@@ -13,6 +13,7 @@ pub mod modplatform;
 pub mod net;
 pub mod paths;
 pub mod resources;
+pub mod screenshots;
 pub mod settings;
 pub mod worlds;
 

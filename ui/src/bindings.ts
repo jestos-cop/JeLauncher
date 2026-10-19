@@ -255,6 +255,38 @@ async removeResource(instanceId: string, kind: ResourceKind, fileName: string) :
     else return { status: "error", error: e  as any };
 }
 },
+async deleteScreenshot(instanceId: string, fileName: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("delete_screenshot", { instanceId, fileName }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async listScreenshots(instanceId: string) : Promise<Result<Screenshot[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_screenshots", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async openScreenshotsFolder(instanceId: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("open_screenshots_folder", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async renameScreenshot(instanceId: string, fileName: string, newName: string) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("rename_screenshot", { instanceId, fileName, newName }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async setResourceEnabled(instanceId: string, kind: ResourceKind, fileName: string, enabled: boolean) : Promise<Result<string, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_resource_enabled", { instanceId, kind, fileName, enabled }) };
@@ -396,6 +428,11 @@ export type ResourceFile = { fileName: string; enabled: boolean; size: number;
 modified: number; metadata: ResourceMetadata | null }
 export type ResourceKind = "mod" | "resourcePack" | "shaderPack" | "dataPack" | "modpack"
 export type ResourceMetadata = { id: string; name: string; version: string; description: string; authors: string[]; homepage: string | null }
+export type Screenshot = { fileName: string; path: string; size: number; 
+/**
+ * Unix time in milliseconds.
+ */
+modified: number }
 export type SearchPage = { hits: ProjectHit[]; total: number }
 export type SearchQuery = { text: string; kind: ResourceKind; gameVersion: string | null; loader: LoaderKind | null; sort: SortOrder; offset: number; limit: number }
 export type SortOrder = "relevance" | "downloads" | "updated" | "newest"

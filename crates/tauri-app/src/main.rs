@@ -21,7 +21,11 @@ fn main() {
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
             builder.mount_events(app);
-            app.manage(AppState::load()?);
+            let state = AppState::load()?;
+            // Lets the frontend display screenshots and other images stored with instances.
+            app.asset_protocol_scope()
+                .allow_directory(state.paths.instances(), true)?;
+            app.manage(state);
             Ok(())
         })
         .run(tauri::generate_context!());

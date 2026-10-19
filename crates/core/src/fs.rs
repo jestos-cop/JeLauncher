@@ -1,11 +1,20 @@
 use std::fs;
 use std::io::ErrorKind;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use serde::Serialize;
 use serde::de::DeserializeOwned;
 
 use crate::{Error, Result};
+
+/// Joins a single file or folder name to `dir`, rejecting anything that could escape it.
+pub fn child_path(dir: &Path, name: &str) -> Result<PathBuf> {
+    let is_plain_name = Path::new(name).file_name().and_then(|n| n.to_str()) == Some(name);
+    if !is_plain_name {
+        return Err(Error::InvalidInput(format!("invalid name: {name}")));
+    }
+    Ok(dir.join(name))
+}
 
 /// Reads a JSON file, or returns `None` if it does not exist.
 pub fn read_json<T: DeserializeOwned>(path: &Path) -> Result<Option<T>> {

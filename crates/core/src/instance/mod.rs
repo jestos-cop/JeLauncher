@@ -47,6 +47,10 @@ impl Instance {
         self.game_dir().join("saves")
     }
 
+    pub fn screenshots_dir(&self) -> PathBuf {
+        self.game_dir().join("screenshots")
+    }
+
     pub fn backups_dir(&self) -> PathBuf {
         self.root.join("backups")
     }

@@ -2,7 +2,6 @@ use jelauncher_core::instance::{self, Instance, InstanceSummary, NewInstance};
 use jelauncher_core::resources::ResourceKind;
 use jelauncher_core::settings::InstanceSettings;
 use tauri::State;
-use tauri_plugin_opener::OpenerExt;
 
 use crate::error::{CommandError, CommandResult};
 use crate::state::AppState;
@@ -102,8 +101,5 @@ pub fn open_instance_folder(
 ) -> CommandResult<()> {
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
     let path = kind.map_or_else(|| instance.game_dir(), |kind| instance.resource_dir(kind));
-    std::fs::create_dir_all(&path).map_err(|err| CommandError::new(err.to_string()))?;
-    app.opener()
-        .open_path(path.to_string_lossy(), None::<&str>)
-        .map_err(|err| CommandError::new(err.to_string()))
+    super::open_folder(&app, &path)
 }

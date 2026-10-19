@@ -1,7 +1,6 @@
 use jelauncher_core::instance::Instance;
 use jelauncher_core::worlds::{self, World};
 use tauri::{AppHandle, State};
-use tauri_plugin_opener::OpenerExt;
 
 use crate::error::{CommandError, CommandResult};
 use crate::state::AppState;
@@ -64,9 +63,5 @@ pub fn open_saves_folder(
     state: State<'_, AppState>,
     instance_id: String,
 ) -> CommandResult<()> {
-    let saves = open_instance(&state, &instance_id)?.saves_dir();
-    std::fs::create_dir_all(&saves).map_err(|err| CommandError::new(err.to_string()))?;
-    app.opener()
-        .open_path(saves.to_string_lossy(), None::<&str>)
-        .map_err(|err| CommandError::new(err.to_string()))
+    super::open_folder(&app, &open_instance(&state, &instance_id)?.saves_dir())
 }
