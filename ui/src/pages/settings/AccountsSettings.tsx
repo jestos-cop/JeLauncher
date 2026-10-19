@@ -1,9 +1,10 @@
-import { Check, Trash2, UserPlus, UserRound } from 'lucide-react'
-import { useState } from 'react'
+import { Check, LogIn, Trash2, UserPlus, UserRound } from 'lucide-react'
+import { useCallback, useState } from 'react'
 import type { AccountSummary } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { MicrosoftLoginDialog } from '@/dialogs/MicrosoftLoginDialog'
 import { OfflineAccountDialog } from '@/dialogs/OfflineAccountDialog'
 import { useAccounts, useRemoveAccount, useSetDefaultAccount } from '@/hooks/use-accounts'
 
@@ -12,7 +13,9 @@ export function AccountsSettings() {
   const setDefault = useSetDefaultAccount()
   const removeAccount = useRemoveAccount()
   const [isAdding, setIsAdding] = useState(false)
+  const [isSigningIn, setIsSigningIn] = useState(false)
   const [pendingRemoval, setPendingRemoval] = useState<AccountSummary | null>(null)
+  const closeSignIn = useCallback(() => setIsSigningIn(false), [])
   const mutationError = setDefault.error ?? removeAccount.error
 
   return (
@@ -22,8 +25,8 @@ export function AccountsSettings() {
           The default account is used to launch every instance.
         </span>
         <div className="ml-auto flex gap-1">
-          <Button size="sm" disabled title="Microsoft sign-in is not available yet">
-            Add Microsoft Account
+          <Button size="sm" onClick={() => setIsSigningIn(true)}>
+            <LogIn /> Add Microsoft Account
           </Button>
           <Button size="sm" variant="outline" onClick={() => setIsAdding(true)}>
             <UserPlus /> Add Offline Account
@@ -70,6 +73,7 @@ export function AccountsSettings() {
       </div>
 
       <OfflineAccountDialog open={isAdding} onOpenChange={setIsAdding} />
+      {isSigningIn && <MicrosoftLoginDialog onClose={closeSignIn} />}
       {pendingRemoval && (
         <ConfirmDialog
           title={`Remove ${pendingRemoval.username}?`}

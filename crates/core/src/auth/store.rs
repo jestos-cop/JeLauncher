@@ -2,6 +2,7 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
+use super::MicrosoftSession;
 use crate::{Error, Result, fs};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -11,12 +12,15 @@ pub struct Account {
     pub id: String,
     pub username: String,
     pub kind: AccountKind,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub microsoft: Option<MicrosoftSession>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(tag = "type", rename_all = "camelCase")]
 pub enum AccountKind {
     Offline,
+    Microsoft,
 }
 
 #[derive(Debug, Clone, Serialize, specta::Type)]
@@ -104,6 +108,7 @@ mod tests {
             id: id.into(),
             username: format!("player-{id}"),
             kind: AccountKind::Offline,
+            microsoft: None,
         }
     }
 

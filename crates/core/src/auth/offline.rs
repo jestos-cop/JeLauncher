@@ -20,6 +20,7 @@ pub fn offline_account(username: &str) -> Result<Account> {
         id: offline_uuid(username),
         username: username.to_owned(),
         kind: AccountKind::Offline,
+        microsoft: None,
     })
 }
 

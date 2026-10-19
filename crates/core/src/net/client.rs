@@ -79,6 +79,33 @@ impl HttpClient {
         .await
     }
 
+    /// Posts a form and returns the status with the JSON body, even for error statuses.
+    pub async fn post_form_with_status(
+        &self,
+        url: &str,
+        form: &[(&str, &str)],
+    ) -> Result<(u16, serde_json::Value)> {
+        send_with_status(url, self.inner.post(url).form(form)).await
+    }
+
+    /// Posts JSON and returns the status with the JSON body, even for error statuses.
+    pub async fn post_json_with_status<B: Serialize + ?Sized>(
+        &self,
+        url: &str,
+        body: &B,
+    ) -> Result<(u16, serde_json::Value)> {
+        send_with_status(url, self.inner.post(url).json(body)).await
+    }
+
+    /// GET with a bearer token, returning the status with the JSON body.
+    pub async fn get_bearer_with_status(
+        &self,
+        url: &str,
+        token: &str,
+    ) -> Result<(u16, serde_json::Value)> {
+        send_with_status(url, self.inner.get(url).bearer_auth(token)).await
+    }
+
     pub async fn post_json<B: Serialize + ?Sized, T: DeserializeOwned>(
         &self,
         url: &str,
@@ -86,6 +113,19 @@ impl HttpClient {
     ) -> Result<T> {
         send_json(url, self.inner.post(url).json(body)).await
     }
+}
+
+async fn send_with_status(
+    url: &str,
+    request: reqwest::RequestBuilder,
+) -> Result<(u16, serde_json::Value)> {
+    let response = request.send().await.map_err(|err| Error::http(url, err))?;
+    let status = response.status().as_u16();
+    let bytes = response
+        .bytes()
+        .await
+        .map_err(|err| Error::http(url, err))?;
+    Ok((status, serde_json::from_slice(&bytes).unwrap_or_default()))
 }
 
 async fn send_json<T: DeserializeOwned>(url: &str, request: reqwest::RequestBuilder) -> Result<T> {

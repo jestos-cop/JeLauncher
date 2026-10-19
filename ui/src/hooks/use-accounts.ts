@@ -30,3 +30,17 @@ export function useSetDefaultAccount() {
 export function useRemoveAccount() {
   return useAccountMutation((id: string) => unwrap(commands.removeAccount(id)))
 }
+
+export function useMicrosoftLogin() {
+  const queryClient = useQueryClient()
+  const begin = useMutation({ mutationFn: () => unwrap(commands.beginMicrosoftLogin()) })
+  const finish = useMutation({
+    mutationFn: () => unwrap(commands.finishMicrosoftLogin()),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ACCOUNTS_KEY }),
+  })
+  return { begin, finish }
+}
+
+export function cancelMicrosoftLogin() {
+  return commands.cancelMicrosoftLogin()
+}

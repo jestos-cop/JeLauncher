@@ -1,7 +1,8 @@
 use std::collections::HashMap;
+use std::sync::atomic::AtomicU64;
 use std::sync::{Mutex, RwLock};
 
-use jelauncher_core::auth::AccountStore;
+use jelauncher_core::auth::{AccountStore, DeviceCode};
 use jelauncher_core::meta::MetaService;
 use jelauncher_core::modplatform::ModPlatforms;
 use jelauncher_core::net::HttpClient;
@@ -16,6 +17,12 @@ pub struct AppState {
     pub http: HttpClient,
     pub meta: MetaService,
     pub platforms: ModPlatforms,
+    /// Azure application id used for Microsoft sign-in, set at build time.
+    pub microsoft_client_id: Option<&'static str>,
+    /// The device code of the Microsoft sign-in in progress, tagged with its attempt number.
+    pub pending_login: Mutex<Option<(u64, DeviceCode)>>,
+    /// Bumped by every new or cancelled sign-in so an older attempt stops polling.
+    pub login_attempt: AtomicU64,
     /// Instances being prepared (`None`) or running, with a channel that kills the game.
     pub running: Mutex<HashMap<String, Option<oneshot::Sender<()>>>>,
 }
@@ -38,6 +45,9 @@ impl AppState {
             http,
             meta,
             platforms,
+            microsoft_client_id: option_env!("MICROSOFT_CLIENT_ID").filter(|id| !id.is_empty()),
+            pending_login: Mutex::default(),
+            login_attempt: AtomicU64::default(),
             running: Mutex::default(),
         })
     }

@@ -102,12 +102,25 @@ fn variables(input: &ArgsInput) -> HashMap<&'static str, String> {
         .join(CLASSPATH_SEPARATOR);
     let user_type = match input.account.kind {
         AccountKind::Offline => "legacy",
+        AccountKind::Microsoft => "msa",
     };
+    let access_token = input
+        .account
+        .microsoft
+        .as_ref()
+        .map_or_else(|| "0".to_owned(), |session| session.access_token.clone());
     HashMap::from([
         ("auth_player_name", input.account.username.clone()),
         ("auth_uuid", input.account.id.clone()),
-        ("auth_access_token", "0".into()),
-        ("auth_session", "0".into()),
+        // Pre-1.6 versions pass the session as one `token:<access token>:<uuid>` argument.
+        (
+            "auth_session",
+            input.account.microsoft.as_ref().map_or_else(
+                || "0".to_owned(),
+                |session| format!("token:{}:{}", session.access_token, input.account.id),
+            ),
+        ),
+        ("auth_access_token", access_token),
         ("auth_xuid", "0".into()),
         ("clientid", String::new()),
         ("user_type", user_type.into()),
@@ -204,6 +217,7 @@ mod tests {
             id: "abc".into(),
             username: "Steve".into(),
             kind: AccountKind::Offline,
+            microsoft: None,
         };
         let classpath = [PathBuf::from("/lib/a.jar"), PathBuf::from("/client.jar")];
         let dir = Path::new("/x");

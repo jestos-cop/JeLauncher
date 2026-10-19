@@ -38,6 +38,31 @@ async addOfflineAccount(username: string) : Promise<Result<AccountSummary, Comma
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Starts a Microsoft sign-in and returns the code the user enters on the Microsoft page.
+ */
+async beginMicrosoftLogin() : Promise<Result<DeviceCodePrompt, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("begin_microsoft_login") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async cancelMicrosoftLogin() : Promise<void> {
+    await TAURI_INVOKE("cancel_microsoft_login");
+},
+/**
+ * Waits until the user approves the code from [`begin_microsoft_login`], then adds the account.
+ */
+async finishMicrosoftLogin() : Promise<Result<AccountSummary, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("finish_microsoft_login") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async listAccounts() : Promise<Result<AccountSummary[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_accounts") };
@@ -567,7 +592,7 @@ modpackProgressEvent: "modpack-progress-event"
 
 /** user-defined types **/
 
-export type AccountKind = { type: "offline" }
+export type AccountKind = { type: "offline" } | { type: "microsoft" }
 export type AccountSummary = { id: string; username: string; kind: AccountKind; isDefault: boolean }
 export type AppInfo = { version: string; license: string; repository: string }
 export type AppearanceSettings = { theme: Theme }
@@ -599,6 +624,10 @@ export type CopyOptions = { name: string; group: string | null; copySaves: boole
 useHardLinks: boolean }
 export type CustomIcon = { key: string; path: string }
 export type Dependency = { projectId: string | null; versionId: string | null; required: boolean }
+/**
+ * What the user needs to finish signing in on another device or in the browser.
+ */
+export type DeviceCodePrompt = { userCode: string; verificationUri: string; expiresIn: number }
 export type DownloadProgress = { completed: number; total: number; downloadedBytes: number }
 /**
  * A top-level entry of the game directory as offered for export.

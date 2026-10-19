@@ -25,13 +25,7 @@ pub async fn launch_instance(
         .read()
         .map_err(|_| CommandError::poisoned())?
         .clone();
-    let account = state
-        .accounts
-        .read()
-        .map_err(|_| CommandError::poisoned())?
-        .default_account()
-        .cloned()
-        .ok_or_else(|| CommandError::new("add an account before launching"))?;
+    let account = super::accounts::launch_account(&state).await?;
     let mut instance = Instance::open(&state.paths.instances(), &instance_id)?;
 
     {
