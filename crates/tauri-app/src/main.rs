@@ -1,13 +1,16 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod bindings;
+mod cli;
 mod commands;
 mod error;
 mod events;
 mod state;
 
 use tauri::Manager;
+use tauri_specta::Event;
 
+use crate::cli::CliRequest;
 use crate::commands::folders::LogFile;
 use crate::state::AppState;
 
@@ -16,11 +19,34 @@ fn main() {
     #[cfg(debug_assertions)]
     bindings::export(&builder);
 
+    let request = match CliRequest::parse(std::env::args().skip(1)) {
+        Ok(request) => request,
+        Err(message) => {
+            eprintln!("{message}");
+            std::process::exit(2);
+        }
+    };
+
     let result = tauri::Builder::default()
+        // Registered first: a second launch hands its arguments over and exits right away.
+        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.unminimize();
+                let _ = window.set_focus();
+            }
+            match CliRequest::parse(args.into_iter().skip(1)) {
+                Ok(Some(request)) => {
+                    let _ = request.emit(app);
+                }
+                Ok(None) => {}
+                Err(message) => log::warn!("{message}"),
+            }
+        }))
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
+            let request = request.clone();
             builder.mount_events(app);
             let state = AppState::load()?;
             let log_file =
@@ -37,6 +63,10 @@ fn main() {
             let assets = app.asset_protocol_scope();
             assets.allow_directory(state.paths.instances(), true)?;
             assets.allow_directory(state.paths.icons(), true)?;
+            *state
+                .pending_cli
+                .lock()
+                .map_err(|_| "state lock poisoned")? = request.clone();
             app.manage(state);
             Ok(())
         })

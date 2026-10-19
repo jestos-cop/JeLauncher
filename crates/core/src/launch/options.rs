@@ -1,9 +1,9 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::minecraft::{Features, VersionJson};
 
 /// Where the game should go right after starting.
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, specta::Type)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(tag = "type", content = "target", rename_all = "camelCase")]
 pub enum QuickPlay {
     /// A server address, `host[:port]`.

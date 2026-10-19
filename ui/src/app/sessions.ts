@@ -82,3 +82,8 @@ export function useActiveInstanceIds() {
     .filter(([, session]) => session.status !== 'idle')
     .map(([id]) => id)
 }
+
+/** Starts any instance; for one known instance prefer [`useSession`]. */
+export function useLaunch() {
+  return useSessionsContext().launch
+}

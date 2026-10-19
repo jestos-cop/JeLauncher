@@ -98,6 +98,17 @@ async setDefaultAccount(id: string) : Promise<Result<null, CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * The command line request the launcher started with, handed out once.
+ */
+async takeCliRequest() : Promise<Result<CliRequest | null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("take_cli_request") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async exportInstance(instanceId: string, output: string, blockedPaths: string[]) : Promise<Result<null, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("export_instance", { instanceId, output, blockedPaths }) };
@@ -614,11 +625,13 @@ async openSavesFolder(instanceId: string) : Promise<Result<null, CommandError>> 
 
 
 export const events = __makeEvents__<{
+cliRequest: CliRequest,
 instanceExitedEvent: InstanceExitedEvent,
 instanceLogEvent: InstanceLogEvent,
 launchProgressEvent: LaunchProgressEvent,
 modpackProgressEvent: ModpackProgressEvent
 }>({
+cliRequest: "cli-request",
 instanceExitedEvent: "instance-exited-event",
 instanceLogEvent: "instance-log-event",
 launchProgressEvent: "launch-progress-event",
@@ -647,6 +660,18 @@ url: string;
  * Folder inside the game directory the file belongs in, e.g. `mods`.
  */
 installDir: string }
+/**
+ * What the launcher was asked to do on its command line.
+ */
+export type CliRequest = { 
+/**
+ * Instance id to launch.
+ */
+launch: string | null; quickPlay: QuickPlay | null; 
+/**
+ * Archive path or URL to import.
+ */
+import: string | null }
 export type CommandError = { message: string }
 /**
  * Commands run around the game and extra environment variables for it.

@@ -20,17 +20,19 @@ type Source = 'vanilla' | 'modrinth' | 'curseForge' | 'import'
 interface NewInstanceDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  /** Opens the Import tab with this file or URL filled in. */
+  initialImport?: string
 }
 
-export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps) {
-  const [source, setSource] = useState<Source>('vanilla')
+export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInstanceDialogProps) {
+  const [source, setSource] = useState<Source>(initialImport ? 'import' : 'vanilla')
   const [name, setName] = useState('')
   const [group, setGroup] = useState('')
   const [version, setVersion] = useState<string | null>(null)
   const [loader, setLoader] = useState<LoaderSpec | null>(null)
   const [modpack, setModpack] = useState<ModpackSelection | null>(null)
   const [pendingDownloads, setPendingDownloads] = useState<InstalledPack | null>(null)
-  const [importSource, setImportSource] = useState('')
+  const [importSource, setImportSource] = useState(initialImport ?? '')
   const createInstance = useCreateInstance()
   const installModpack = useInstallModpack()
   const importInstance = useImportInstance()

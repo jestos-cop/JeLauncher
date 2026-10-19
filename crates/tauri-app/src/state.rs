@@ -10,6 +10,8 @@ use jelauncher_core::paths::DataPaths;
 use jelauncher_core::settings::GlobalSettings;
 use tokio::sync::oneshot;
 
+use crate::cli::CliRequest;
+
 pub struct AppState {
     pub paths: DataPaths,
     pub settings: RwLock<GlobalSettings>,
@@ -23,6 +25,8 @@ pub struct AppState {
     pub pending_login: Mutex<Option<(u64, DeviceCode)>>,
     /// Bumped by every new or cancelled sign-in so an older attempt stops polling.
     pub login_attempt: AtomicU64,
+    /// Command line request waiting for the UI to pick it up after startup.
+    pub pending_cli: Mutex<Option<CliRequest>>,
     /// Instances being prepared (`None`) or running, with a channel that kills the game.
     pub running: Mutex<HashMap<String, Option<oneshot::Sender<()>>>>,
 }
@@ -47,6 +51,7 @@ impl AppState {
             platforms,
             microsoft_client_id: option_env!("MICROSOFT_CLIENT_ID").filter(|id| !id.is_empty()),
             pending_login: Mutex::default(),
+            pending_cli: Mutex::default(),
             login_attempt: AtomicU64::default(),
             running: Mutex::default(),
         })

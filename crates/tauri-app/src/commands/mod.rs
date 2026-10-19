@@ -1,5 +1,6 @@
 pub mod about;
 pub mod accounts;
+pub mod cli;
 pub mod export;
 pub mod folders;
 pub mod icons;

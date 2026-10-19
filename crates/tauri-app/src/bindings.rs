@@ -16,6 +16,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::accounts::refresh_account,
             commands::accounts::remove_account,
             commands::accounts::set_default_account,
+            commands::cli::take_cli_request,
             commands::export::export_instance,
             commands::export::export_mrpack,
             commands::export::list_export_entries,
@@ -80,6 +81,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             events::InstanceLogEvent,
             events::InstanceExitedEvent,
             events::ModpackProgressEvent,
+            crate::cli::CliRequest,
         ])
 }
 
