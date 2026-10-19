@@ -5,6 +5,20 @@
 
 
 export const commands = {
+async appInfo() : Promise<AppInfo> {
+    return await TAURI_INVOKE("app_info");
+},
+/**
+ * Opens the source code repository in the browser.
+ */
+async openRepository() : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("open_repository") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async addOfflineAccount(username: string) : Promise<Result<AccountSummary, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("add_offline_account", { username }) };
@@ -533,6 +547,7 @@ modpackProgressEvent: "modpack-progress-event"
 
 export type AccountKind = { type: "offline" }
 export type AccountSummary = { id: string; username: string; kind: AccountKind; isDefault: boolean }
+export type AppInfo = { version: string; license: string; repository: string }
 export type AppearanceSettings = { theme: Theme }
 export type CommandError = { message: string }
 /**

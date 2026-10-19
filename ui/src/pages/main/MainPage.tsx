@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useNavigation } from '@/app/navigation'
 import { AccountsMenu } from '@/components/AccountsMenu'
 import { FoldersMenu } from '@/components/FoldersMenu'
+import { HelpMenu } from '@/components/HelpMenu'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -35,6 +36,7 @@ export function MainPage() {
         <Button size="sm" variant="ghost" onClick={() => navigate({ page: 'settings', tab: 'launcher' })}>
           <Settings /> Settings
         </Button>
+        <HelpMenu />
         <div className="ml-auto flex items-center gap-2">
           <Input
             className="h-8 w-48"

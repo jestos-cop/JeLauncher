@@ -1,3 +1,4 @@
+pub mod about;
 pub mod accounts;
 pub mod export;
 pub mod folders;
