@@ -66,6 +66,19 @@ impl HttpClient {
             .map_err(|err| Error::http(url, err))
     }
 
+    pub async fn post_json_with_header<B: Serialize + ?Sized, T: DeserializeOwned>(
+        &self,
+        url: &str,
+        body: &B,
+        header: (&str, &str),
+    ) -> Result<T> {
+        send_json(
+            url,
+            self.inner.post(url).json(body).header(header.0, header.1),
+        )
+        .await
+    }
+
     pub async fn post_json<B: Serialize + ?Sized, T: DeserializeOwned>(
         &self,
         url: &str,

@@ -2,10 +2,11 @@ use std::path::Path;
 
 use jelauncher_core::instance::Instance;
 
-use jelauncher_core::modpack::{self, ModpackTarget};
+use jelauncher_core::modpack::{self, BlockedFile, ModpackTarget, PackInstall};
 use jelauncher_core::modplatform::{
     InstallTarget, ProjectVersion, Provider, ResourceKind, ResourceUpdate, SearchPage, SearchQuery,
 };
+use serde::Serialize;
 use tauri::{AppHandle, State};
 use tauri_specta::Event;
 
@@ -118,42 +119,60 @@ fn install_target<'a>(
     }
 }
 
+/// A created instance and the pack files the user still has to download by hand.
+#[derive(Debug, Clone, Serialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct InstalledPack {
+    pub instance_id: String,
+    pub blocked: Vec<BlockedFile>,
+}
+
+impl From<PackInstall> for InstalledPack {
+    fn from(install: PackInstall) -> Self {
+        Self {
+            instance_id: install.instance.id,
+            blocked: install.blocked,
+        }
+    }
+}
+
 /// All published versions of a modpack, newest first.
 #[tauri::command]
 #[specta::specta]
 pub async fn list_modpack_versions(
     state: State<'_, AppState>,
+    provider: Provider,
     project_id: String,
 ) -> CommandResult<Vec<ProjectVersion>> {
     Ok(state
         .platforms
-        .modrinth
-        .versions(&project_id, ResourceKind::Modpack, None, None)
+        .versions(provider, &project_id, ResourceKind::Modpack, None, None)
         .await?)
 }
 
-/// Installs a modpack version as a new instance and returns its id.
+/// Installs a modpack version as a new instance.
 #[tauri::command]
 #[specta::specta]
 pub async fn install_modpack(
     app: AppHandle,
     state: State<'_, AppState>,
+    provider: Provider,
+    project_id: String,
     version_id: String,
     name: Option<String>,
-) -> CommandResult<String> {
+) -> CommandResult<InstalledPack> {
     let (instances_dir, download_dir) = (state.paths.instances(), state.paths.downloads_cache());
     let target = modpack_target(&state, &instances_dir, &download_dir, name)?;
-    let instance = state
+    let installed = state
         .platforms
-        .modrinth
-        .install_modpack(&version_id, &target, |progress| {
+        .install_modpack(provider, &project_id, &version_id, &target, |progress| {
             let _ = ModpackProgressEvent { progress }.emit(&app);
         })
         .await?;
-    Ok(instance.id)
+    Ok(installed.into())
 }
 
-/// Imports an instance from a `.mrpack` or exported instance archive (path or URL); returns its id.
+/// Imports an instance from a `.mrpack`, CurseForge pack or exported instance (path or URL).
 #[tauri::command]
 #[specta::specta]
 pub async fn import_instance(
@@ -161,14 +180,14 @@ pub async fn import_instance(
     state: State<'_, AppState>,
     source: String,
     name: Option<String>,
-) -> CommandResult<String> {
+) -> CommandResult<InstalledPack> {
     let (instances_dir, download_dir) = (state.paths.instances(), state.paths.downloads_cache());
     let target = modpack_target(&state, &instances_dir, &download_dir, name)?;
-    let instance = modpack::import_instance(&state.http, source.trim(), &target, |progress| {
+    let imported = modpack::import_instance(&state.platforms, source.trim(), &target, |progress| {
         let _ = ModpackProgressEvent { progress }.emit(&app);
     })
     .await?;
-    Ok(instance.id)
+    Ok(imported.into())
 }
 
 /// Switches a modpack instance to another version of its pack.

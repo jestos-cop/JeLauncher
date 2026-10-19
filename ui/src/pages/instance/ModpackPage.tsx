@@ -11,13 +11,14 @@ import { useModpackVersions, useUpdateModpack } from '@/hooks/use-modpacks'
 import { cn } from '@/lib/utils'
 
 export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pack: ManagedPack }) {
-  const { data: versions = [], error, isPending } = useModpackVersions(pack.projectId)
+  const { data: versions = [], error, isPending } = useModpackVersions(pack.provider, pack.projectId)
   const update = useUpdateModpack(instance.id)
   const progress = useModpackProgress(update.isPending)
   const { session } = useSession(instance.id)
   const [selectedId, setSelectedId] = useState(pack.versionId)
   const [isConfirming, setIsConfirming] = useState(false)
   const selected = versions.find((version) => version.id === selectedId)
+  const canSwitch = pack.provider === 'modrinth'
   const latest = versions.find((version) => version.releaseType === 'release') ?? versions[0]
 
   return (
@@ -26,7 +27,7 @@ export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pac
         <div>
           <p className="font-medium">{pack.name}</p>
           <p className="text-sm text-muted-foreground">
-            Version {pack.version} from Modrinth
+            Version {pack.version} from {canSwitch ? 'Modrinth' : 'CurseForge'}
             {latest && latest.id !== pack.versionId && ` · ${latest.versionNumber} is available`}
           </p>
         </div>
@@ -34,7 +35,11 @@ export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pac
           size="sm"
           className="ml-auto"
           disabled={
-            !selected || selected.id === pack.versionId || update.isPending || session.status !== 'idle'
+            !canSwitch ||
+            !selected ||
+            selected.id === pack.versionId ||
+            update.isPending ||
+            session.status !== 'idle'
           }
           onClick={() => setIsConfirming(true)}
         >
@@ -45,6 +50,11 @@ export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pac
         </Button>
       </div>
 
+      {!canSwitch && (
+        <p className="text-sm text-muted-foreground">
+          Switching versions of CurseForge packs is not supported yet.
+        </p>
+      )}
       {update.isPending && (
         <div className="flex flex-col gap-1">
           <p className="text-sm text-muted-foreground">

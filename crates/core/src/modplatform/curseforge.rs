@@ -84,17 +84,91 @@ impl CurseForge {
         response.data.try_into()
     }
 
+    /// Several files at once, e.g. everything a modpack manifest lists.
+    pub async fn files(&self, file_ids: &[u64]) -> Result<Vec<ProjectVersion>> {
+        if file_ids.is_empty() {
+            return Ok(Vec::new());
+        }
+        let body = serde_json::json!({ "fileIds": file_ids });
+        let response: Single<Vec<ApiFile>> = self.post("/mods/files", &body).await?;
+        response.data.into_iter().map(TryInto::try_into).collect()
+    }
+
+    pub async fn projects(&self, mod_ids: &[u64]) -> Result<Vec<CurseProject>> {
+        if mod_ids.is_empty() {
+            return Ok(Vec::new());
+        }
+        let body = serde_json::json!({ "modIds": mod_ids });
+        let response: Single<Vec<ApiProject>> = self.post("/mods", &body).await?;
+        Ok(response.data.into_iter().map(Into::into).collect())
+    }
+
+    fn key(&self) -> Result<&str> {
+        self.api_key.as_deref().ok_or_else(|| {
+            Error::InvalidInput("CurseForge is not available: no API key is configured".into())
+        })
+    }
+
     async fn get<T: serde::de::DeserializeOwned>(
         &self,
         path: &str,
         params: &[(&str, String)],
     ) -> Result<T> {
-        let key = self.api_key.as_deref().ok_or_else(|| {
-            Error::InvalidInput("CurseForge is not available: no API key is configured".into())
-        })?;
         self.http
-            .get_json_with_header(&format!("{API}{path}"), params, ("x-api-key", key))
+            .get_json_with_header(&format!("{API}{path}"), params, ("x-api-key", self.key()?))
             .await
+    }
+
+    async fn post<T: serde::de::DeserializeOwned>(
+        &self,
+        path: &str,
+        body: &serde_json::Value,
+    ) -> Result<T> {
+        self.http
+            .post_json_with_header(&format!("{API}{path}"), body, ("x-api-key", self.key()?))
+            .await
+    }
+}
+
+/// Project details needed to place and attribute modpack files.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CurseProject {
+    pub id: String,
+    pub name: String,
+    pub website_url: String,
+    /// Where files of this project go inside the game directory.
+    pub install_dir: &'static str,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ApiProject {
+    id: u64,
+    name: String,
+    class_id: Option<u32>,
+    links: ApiLinks,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ApiLinks {
+    #[serde(default)]
+    website_url: String,
+}
+
+impl From<ApiProject> for CurseProject {
+    fn from(project: ApiProject) -> Self {
+        let kind = match project.class_id {
+            Some(12) => ResourceKind::ResourcePack,
+            Some(6552) => ResourceKind::ShaderPack,
+            _ => ResourceKind::Mod,
+        };
+        Self {
+            id: project.id.to_string(),
+            name: project.name,
+            website_url: project.links.website_url,
+            install_dir: kind.install_dir(),
+        }
     }
 }
 

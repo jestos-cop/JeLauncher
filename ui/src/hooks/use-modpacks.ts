@@ -1,11 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { commands } from '@/bindings'
+import { commands, type Provider } from '@/bindings'
 import { unwrap } from '@/lib/command'
 
-export function useModpackVersions(projectId: string | null) {
+export interface ModpackSelection {
+  provider: Provider
+  projectId: string
+  versionId: string
+}
+
+export function useModpackVersions(provider: Provider, projectId: string | null) {
   return useQuery({
-    queryKey: ['modpack-versions', projectId],
-    queryFn: () => unwrap(commands.listModpackVersions(projectId!)),
+    queryKey: ['modpack-versions', provider, projectId],
+    queryFn: () => unwrap(commands.listModpackVersions(provider, projectId!)),
     enabled: projectId !== null,
   })
 }
@@ -13,8 +19,8 @@ export function useModpackVersions(projectId: string | null) {
 export function useInstallModpack() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ versionId, name }: { versionId: string; name: string | null }) =>
-      unwrap(commands.installModpack(versionId, name)),
+    mutationFn: ({ selection, name }: { selection: ModpackSelection; name: string | null }) =>
+      unwrap(commands.installModpack(selection.provider, selection.projectId, selection.versionId, name)),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['instances'] }),
   })
 }

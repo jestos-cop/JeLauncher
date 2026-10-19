@@ -1,23 +1,24 @@
 import { useDeferredValue, useState } from 'react'
-import type { ProjectHit } from '@/bindings'
+import type { ProjectHit, Provider } from '@/bindings'
 import { ProjectRow } from '@/components/ProjectRow'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useModpackVersions } from '@/hooks/use-modpacks'
+import { type ModpackSelection, useModpackVersions } from '@/hooks/use-modpacks'
 import { useResourceSearch } from '@/hooks/use-modplatform'
 import { cn } from '@/lib/utils'
 
 interface ModpackBrowserProps {
-  selectedVersionId: string | null
-  onSelectVersion: (versionId: string | null) => void
+  provider: Provider
+  selected: ModpackSelection | null
+  onSelect: (selection: ModpackSelection | null) => void
 }
 
-export function ModpackBrowser({ selectedVersionId, onSelectVersion }: ModpackBrowserProps) {
+export function ModpackBrowser({ provider, selected, onSelect }: ModpackBrowserProps) {
   const [text, setText] = useState('')
   const [project, setProject] = useState<ProjectHit | null>(null)
   const search = useResourceSearch({
-    provider: 'modrinth',
+    provider,
     text: useDeferredValue(text),
     kind: 'modpack',
     sort: 'relevance',
@@ -28,13 +29,13 @@ export function ModpackBrowser({ selectedVersionId, onSelectVersion }: ModpackBr
 
   const selectProject = (hit: ProjectHit) => {
     setProject(hit)
-    onSelectVersion(null)
+    onSelect(null)
   }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-2">
       <Input
-        placeholder="Search Modrinth modpacks"
+        placeholder={`Search ${provider === 'modrinth' ? 'Modrinth' : 'CurseForge'} modpacks`}
         value={text}
         onChange={(event) => setText(event.target.value)}
       />
@@ -63,7 +64,12 @@ export function ModpackBrowser({ selectedVersionId, onSelectVersion }: ModpackBr
           )}
         </div>
         {project ? (
-          <ModpackVersions projectId={project.id} selected={selectedVersionId} onSelect={onSelectVersion} />
+          <ModpackVersions
+            provider={provider}
+            projectId={project.id}
+            selected={selected?.versionId ?? null}
+            onSelect={(versionId) => onSelect({ provider, projectId: project.id, versionId })}
+          />
         ) : (
           <p className="p-3 text-sm text-muted-foreground">Select a modpack to choose a version.</p>
         )}
@@ -73,13 +79,14 @@ export function ModpackBrowser({ selectedVersionId, onSelectVersion }: ModpackBr
 }
 
 interface ModpackVersionsProps {
+  provider: Provider
   projectId: string
   selected: string | null
   onSelect: (versionId: string) => void
 }
 
-function ModpackVersions({ projectId, selected, onSelect }: ModpackVersionsProps) {
-  const { data: versions, error, isPending } = useModpackVersions(projectId)
+function ModpackVersions({ provider, projectId, selected, onSelect }: ModpackVersionsProps) {
+  const { data: versions, error, isPending } = useModpackVersions(provider, projectId)
   return (
     <div className="min-h-0 overflow-auto rounded-md border">
       {isPending && <p className="p-3 text-sm text-muted-foreground">Loading versions…</p>}

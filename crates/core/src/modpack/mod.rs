@@ -1,3 +1,4 @@
+mod curseforge_pack;
 mod import;
 mod mrpack;
 mod mrpack_export;
@@ -6,6 +7,10 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
+pub use curseforge_pack::{
+    BlockedFile, CURSEFORGE_MANIFEST, CurseManifest, install_curseforge_pack,
+    read_curseforge_manifest,
+};
 pub use import::{ArchiveKind, detect_archive, import_instance};
 pub use mrpack::{
     MRPACK_INDEX, MrpackFile, MrpackIndex, install_mrpack, read_mrpack_index, update_mrpack,
@@ -39,4 +44,20 @@ pub struct ModpackTarget<'a> {
     pub download_dir: &'a Path,
     pub name: Option<String>,
     pub concurrency: usize,
+}
+
+/// A newly created pack instance plus the files the user still has to download by hand.
+#[derive(Debug, Clone)]
+pub struct PackInstall {
+    pub instance: crate::instance::Instance,
+    pub blocked: Vec<BlockedFile>,
+}
+
+impl PackInstall {
+    pub fn complete(instance: crate::instance::Instance) -> Self {
+        Self {
+            instance,
+            blocked: Vec::new(),
+        }
+    }
 }

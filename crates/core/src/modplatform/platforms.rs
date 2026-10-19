@@ -7,7 +7,8 @@ use super::{
     download_version,
 };
 use crate::minecraft::LoaderKind;
-use crate::net::HttpClient;
+use crate::modpack::{ModpackTarget, PackInstall, PackSource, install_curseforge_pack};
+use crate::net::{DownloadProgress, HttpClient};
 use crate::{Error, Result};
 
 /// Every supported mod platform behind one interface, chosen per call by [`Provider`].
@@ -24,6 +25,50 @@ impl ModPlatforms {
             modrinth: Modrinth::new(http.clone()),
             curseforge: CurseForge::new(http.clone(), curseforge_api_key),
             http,
+        }
+    }
+
+    pub fn http(&self) -> &HttpClient {
+        &self.http
+    }
+
+    /// Downloads a modpack version and installs it as a new instance.
+    pub async fn install_modpack(
+        &self,
+        provider: Provider,
+        project_id: &str,
+        version_id: &str,
+        target: &ModpackTarget<'_>,
+        on_progress: impl Fn(DownloadProgress),
+    ) -> Result<PackInstall> {
+        match provider {
+            Provider::Modrinth => self
+                .modrinth
+                .install_modpack(version_id, target, on_progress)
+                .await
+                .map(PackInstall::complete),
+            Provider::CurseForge => {
+                let version = self.curseforge.version(project_id, version_id).await?;
+                let archive_name =
+                    download_version(&self.http, &version, target.download_dir).await?;
+                let archive = target.download_dir.join(archive_name);
+                let source = PackSource {
+                    provider,
+                    project_id: version.project_id,
+                    version_id: version.id,
+                };
+                let installed = install_curseforge_pack(
+                    &self.curseforge,
+                    &self.http,
+                    &archive,
+                    target,
+                    Some(source),
+                    on_progress,
+                )
+                .await;
+                let _ = std::fs::remove_file(&archive);
+                installed
+            }
         }
     }
 

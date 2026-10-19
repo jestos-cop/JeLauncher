@@ -7,6 +7,7 @@ pub fn builder() -> Builder<tauri::Wry> {
         .commands(collect_commands![
             commands::about::app_info,
             commands::about::open_repository,
+            commands::about::open_url,
             commands::accounts::add_offline_account,
             commands::accounts::list_accounts,
             commands::accounts::remove_account,

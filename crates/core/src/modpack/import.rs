@@ -2,17 +2,22 @@ use std::path::{Path, PathBuf};
 
 use sha1::{Digest, Sha1};
 
-use super::{MRPACK_INDEX, ModpackTarget, install_mrpack};
+use super::{
+    CURSEFORGE_MANIFEST, MRPACK_INDEX, ModpackTarget, PackInstall, install_curseforge_pack,
+    install_mrpack,
+};
 use crate::archive;
 use crate::instance::{
     INSTANCE_CONFIG_FILE, Instance, InstanceConfig, NewInstance, create_instance,
 };
-use crate::net::{Download, DownloadProgress, HttpClient};
+use crate::modplatform::ModPlatforms;
+use crate::net::{Download, DownloadProgress};
 use crate::{Error, Result};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ArchiveKind {
     Mrpack,
+    CurseForge,
     /// An exported instance; `config_entry` is the archive entry holding its config.
     Native {
         config_entry: String,
@@ -24,6 +29,9 @@ pub fn detect_archive(archive_path: &Path) -> Result<ArchiveKind> {
     if names.iter().any(|name| name == MRPACK_INDEX) {
         return Ok(ArchiveKind::Mrpack);
     }
+    if names.iter().any(|name| name == CURSEFORGE_MANIFEST) {
+        return Ok(ArchiveKind::CurseForge);
+    }
     names
         .into_iter()
         .filter(|name| Path::new(name).file_name() == Some(INSTANCE_CONFIG_FILE.as_ref()))
@@ -31,56 +39,70 @@ pub fn detect_archive(archive_path: &Path) -> Result<ArchiveKind> {
         .map(|config_entry| ArchiveKind::Native { config_entry })
         .ok_or_else(|| {
             Error::InvalidInput(
-                "unsupported archive: expected a .mrpack or an exported instance".into(),
+                "unsupported archive: expected a .mrpack, a CurseForge pack or an exported instance".into(),
             )
         })
 }
 
 /// Imports an instance from a local archive path or an http(s) URL.
 pub async fn import_instance(
-    http: &HttpClient,
+    platforms: &ModPlatforms,
     source: &str,
     target: &ModpackTarget<'_>,
     on_progress: impl Fn(DownloadProgress),
-) -> Result<Instance> {
+) -> Result<PackInstall> {
     if !(source.starts_with("https://") || source.starts_with("http://")) {
-        return import_archive(http, Path::new(source), target, on_progress).await;
+        return import_archive(platforms, Path::new(source), target, on_progress).await;
     }
     let archive_path = target
         .download_dir
         .join(format!("import-{}.zip", hex::encode(Sha1::digest(source))));
-    http.download(&Download {
-        url: source.to_owned(),
-        path: archive_path.clone(),
-        sha1: None,
-        size: None,
-    })
-    .await?;
-    let instance = import_archive(http, &archive_path, target, on_progress).await;
+    platforms
+        .http()
+        .download(&Download {
+            url: source.to_owned(),
+            path: archive_path.clone(),
+            sha1: None,
+            size: None,
+        })
+        .await?;
+    let imported = import_archive(platforms, &archive_path, target, on_progress).await;
     let _ = std::fs::remove_file(&archive_path);
-    instance
+    imported
 }
 
 async fn import_archive(
-    http: &HttpClient,
+    platforms: &ModPlatforms,
     archive_path: &Path,
     target: &ModpackTarget<'_>,
     on_progress: impl Fn(DownloadProgress),
-) -> Result<Instance> {
+) -> Result<PackInstall> {
     match detect_archive(archive_path)? {
-        ArchiveKind::Mrpack => {
-            install_mrpack(
-                http,
+        ArchiveKind::Mrpack => install_mrpack(
+            platforms.http(),
+            archive_path,
+            target.instances_dir,
+            target.name.clone(),
+            None,
+            target.concurrency,
+            on_progress,
+        )
+        .await
+        .map(PackInstall::complete),
+        ArchiveKind::CurseForge => {
+            install_curseforge_pack(
+                &platforms.curseforge,
+                platforms.http(),
                 archive_path,
-                target.instances_dir,
-                target.name.clone(),
+                target,
                 None,
-                target.concurrency,
                 on_progress,
             )
             .await
         }
-        ArchiveKind::Native { config_entry } => import_native(archive_path, &config_entry, target),
+        ArchiveKind::Native { config_entry } => {
+            import_native(archive_path, &config_entry, target).map(PackInstall::complete)
+        }
     }
 }
 
@@ -194,13 +216,14 @@ mod tests {
             name: Some("Copy".into()),
             concurrency: 1,
         };
-        let instance = import_instance(
-            &HttpClient::new(&crate::settings::NetworkSettings::default())?,
-            &archive_path.to_string_lossy(),
-            &target,
-            |_| {},
-        )
-        .await?;
+        let platforms = ModPlatforms::new(
+            crate::net::HttpClient::new(&crate::settings::NetworkSettings::default())?,
+            None,
+        );
+        let instance =
+            import_instance(&platforms, &archive_path.to_string_lossy(), &target, |_| {})
+                .await?
+                .instance;
 
         let reopened = Instance::open(&instances, &instance.id)?;
         assert_eq!(reopened.config.name, "Copy");

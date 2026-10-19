@@ -65,3 +65,76 @@ async fn searches_and_installs_a_mod_with_dependencies() -> jelauncher_core::Res
     assert!(installed[0].starts_with("jei-"));
     Ok(())
 }
+
+#[tokio::test]
+#[ignore = "requires network access and an API key; downloads a modpack"]
+async fn installs_a_curseforge_modpack() -> jelauncher_core::Result<()> {
+    use jelauncher_core::modpack::ModpackTarget;
+
+    let platforms = ModPlatforms::new(
+        HttpClient::new(&NetworkSettings::default())?,
+        std::env::var("CURSEFORGE_API_KEY").ok(),
+    );
+    let page = platforms
+        .search(&SearchQuery {
+            provider: Provider::CurseForge,
+            text: "Fabulously Optimized".into(),
+            kind: ResourceKind::Modpack,
+            game_version: Some("1.21.4".into()),
+            loader: Some(LoaderKind::Fabric),
+            sort: SortOrder::Downloads,
+            offset: 0,
+            limit: 5,
+        })
+        .await?;
+    let Some(pack) = page
+        .hits
+        .iter()
+        .find(|hit| hit.slug == "fabulously-optimized")
+    else {
+        panic!("Fabulously Optimized not found");
+    };
+    let versions = platforms
+        .versions(
+            Provider::CurseForge,
+            &pack.id,
+            ResourceKind::Modpack,
+            Some("1.21.4"),
+            Some(LoaderKind::Fabric),
+        )
+        .await?;
+    let Some(latest) = versions.first() else {
+        panic!("no pack version for 1.21.4");
+    };
+    let dir = tempfile::tempdir().map_err(|err| jelauncher_core::Error::Io {
+        path: "tempdir".into(),
+        source: err,
+    })?;
+    let target = ModpackTarget {
+        instances_dir: &dir.path().join("instances"),
+        download_dir: &dir.path().join("downloads"),
+        name: None,
+        concurrency: 8,
+    };
+    let installed = platforms
+        .install_modpack(Provider::CurseForge, &pack.id, &latest.id, &target, |_| {})
+        .await?;
+    let instance = &installed.instance;
+    let mods = list_resources(&instance.resource_dir(ResourceKind::Mod), ResourceKind::Mod)?;
+    println!(
+        "{} {} with {:?}: {} mods, {} blocked: {:?}",
+        instance.config.name,
+        instance.config.minecraft_version,
+        instance.config.loader,
+        mods.len(),
+        installed.blocked.len(),
+        installed
+            .blocked
+            .iter()
+            .map(|file| &file.file_name)
+            .collect::<Vec<_>>()
+    );
+    assert!(mods.len() + installed.blocked.len() > 10);
+    assert!(instance.config.managed_pack.is_some());
+    Ok(())
+}

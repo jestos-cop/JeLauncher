@@ -176,7 +176,10 @@ async fn imports_a_modpack_from_its_url() -> jelauncher_core::Result<()> {
         name: Some("Imported".into()),
         concurrency: 8,
     };
-    let instance = import_instance(&http, &url, &target, |_| {}).await?;
+    let platforms = jelauncher_core::modplatform::ModPlatforms::new(http.clone(), None);
+    let instance = import_instance(&platforms, &url, &target, |_| {})
+        .await?
+        .instance;
 
     let mods = list_resources(&instance.resource_dir(ResourceKind::Mod), ResourceKind::Mod)?;
     assert_eq!(instance.config.name, "Imported");
@@ -244,7 +247,10 @@ async fn exported_modpack_references_modrinth_files_and_reimports() -> jelaunche
     assert!(index.files.len() > 10);
     assert_eq!(index.minecraft_version()?, "1.21.4");
 
-    let copy = import_instance(&http, &output.to_string_lossy(), &target, |_| {}).await?;
+    let platforms = jelauncher_core::modplatform::ModPlatforms::new(http.clone(), None);
+    let copy = import_instance(&platforms, &output.to_string_lossy(), &target, |_| {})
+        .await?
+        .instance;
     let copied_mods =
         list_resources(&copy.resource_dir(ResourceKind::Mod), ResourceKind::Mod)?.len();
     assert_eq!(copied_mods, original_mods);

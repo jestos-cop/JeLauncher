@@ -47,9 +47,7 @@ export function OfflineAccountDialog({ open, onOpenChange }: OfflineAccountDialo
             value={username}
             onChange={(event) => setUsername(event.target.value)}
           />
-          {addAccount.error && (
-            <p className="text-sm text-destructive">{addAccount.error.message}</p>
-          )}
+          {addAccount.error && <p className="text-sm text-destructive">{addAccount.error.message}</p>}
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={close}>
               Cancel

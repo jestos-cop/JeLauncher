@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { LoaderSpec } from '@/bindings'
+import type { InstalledPack, LoaderSpec } from '@/bindings'
 import { ImportSource } from '@/components/ImportSource'
 import { LoaderPicker } from '@/components/LoaderPicker'
 import { ModpackBrowser } from '@/components/ModpackBrowser'
@@ -11,10 +11,11 @@ import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useCreateInstance } from '@/hooks/use-create-instance'
+import { BlockedFilesDialog } from '@/dialogs/BlockedFilesDialog'
 import { useModpackProgress } from '@/hooks/use-modpack-progress'
-import { useImportInstance, useInstallModpack } from '@/hooks/use-modpacks'
+import { type ModpackSelection, useImportInstance, useInstallModpack } from '@/hooks/use-modpacks'
 
-type Source = 'vanilla' | 'modrinth' | 'import'
+type Source = 'vanilla' | 'modrinth' | 'curseForge' | 'import'
 
 interface NewInstanceDialogProps {
   open: boolean
@@ -27,7 +28,8 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
   const [group, setGroup] = useState('')
   const [version, setVersion] = useState<string | null>(null)
   const [loader, setLoader] = useState<LoaderSpec | null>(null)
-  const [modpackVersion, setModpackVersion] = useState<string | null>(null)
+  const [modpack, setModpack] = useState<ModpackSelection | null>(null)
+  const [pendingDownloads, setPendingDownloads] = useState<InstalledPack | null>(null)
   const [importSource, setImportSource] = useState('')
   const createInstance = useCreateInstance()
   const installModpack = useInstallModpack()
@@ -43,7 +45,8 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
     setGroup('')
     setVersion(null)
     setLoader(null)
-    setModpackVersion(null)
+    setModpack(null)
+    setPendingDownloads(null)
     setImportSource('')
     createInstance.reset()
     installModpack.reset()
@@ -53,15 +56,19 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
 
   const canCreate = {
     vanilla: version !== null && (loader === null || loader.version !== ''),
-    modrinth: modpackVersion !== null,
+    modrinth: modpack?.provider === 'modrinth',
+    curseForge: modpack?.provider === 'curseForge',
     import: importSource.trim() !== '',
   }[source]
 
+  const finish = (installed: InstalledPack) =>
+    installed.blocked.length > 0 ? setPendingDownloads(installed) : close()
+
   const create = () => {
     if (source === 'import') {
-      importInstance.mutate({ source: importSource, name: name.trim() || null }, { onSuccess: close })
-    } else if (source === 'modrinth' && modpackVersion) {
-      installModpack.mutate({ versionId: modpackVersion, name: name.trim() || null }, { onSuccess: close })
+      importInstance.mutate({ source: importSource, name: name.trim() || null }, { onSuccess: finish })
+    } else if (source !== 'vanilla' && modpack) {
+      installModpack.mutate({ selection: modpack, name: name.trim() || null }, { onSuccess: finish })
     } else if (version) {
       createInstance.mutate(
         {
@@ -90,6 +97,7 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
           >
             <ToggleGroupItem value="vanilla">Custom</ToggleGroupItem>
             <ToggleGroupItem value="modrinth">Modrinth</ToggleGroupItem>
+            <ToggleGroupItem value="curseForge">CurseForge</ToggleGroupItem>
             <ToggleGroupItem value="import">Import</ToggleGroupItem>
           </ToggleGroup>
         </DialogHeader>
@@ -120,8 +128,8 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
             <VersionList selected={version} onSelect={setVersion} />
             <LoaderPicker minecraftVersion={version} value={loader} onChange={setLoader} />
           </>
-        ) : source === 'modrinth' ? (
-          <ModpackBrowser selectedVersionId={modpackVersion} onSelectVersion={setModpackVersion} />
+        ) : source === 'modrinth' || source === 'curseForge' ? (
+          <ModpackBrowser key={source} provider={source} selected={modpack} onSelect={setModpack} />
         ) : (
           <ImportSource value={importSource} onChange={setImportSource} />
         )}
@@ -146,6 +154,7 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
           </Button>
         </DialogFooter>
       </DialogContent>
+      {pendingDownloads && <BlockedFilesDialog installed={pendingDownloads} onClose={close} />}
     </Dialog>
   )
 }

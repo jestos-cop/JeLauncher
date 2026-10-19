@@ -19,6 +19,17 @@ async openRepository() : Promise<Result<null, CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Opens a web page in the browser; only http(s) links are allowed.
+ */
+async openUrl(url: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("open_url", { url }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async addOfflineAccount(username: string) : Promise<Result<AccountSummary, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("add_offline_account", { username }) };
@@ -269,20 +280,20 @@ async listMinecraftVersions() : Promise<Result<MinecraftVersions, CommandError>>
 }
 },
 /**
- * Installs a modpack version as a new instance and returns its id.
+ * Installs a modpack version as a new instance.
  */
-async installModpack(versionId: string, name: string | null) : Promise<Result<string, CommandError>> {
+async installModpack(provider: Provider, projectId: string, versionId: string, name: string | null) : Promise<Result<InstalledPack, CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("install_modpack", { versionId, name }) };
+    return { status: "ok", data: await TAURI_INVOKE("install_modpack", { provider, projectId, versionId, name }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
 },
 /**
- * Imports an instance from a `.mrpack` or exported instance archive (path or URL); returns its id.
+ * Imports an instance from a `.mrpack`, CurseForge pack or exported instance (path or URL).
  */
-async importInstance(source: string, name: string | null) : Promise<Result<string, CommandError>> {
+async importInstance(source: string, name: string | null) : Promise<Result<InstalledPack, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("import_instance", { source, name }) };
 } catch (e) {
@@ -337,9 +348,9 @@ async installProjectVersion(instanceId: string, kind: ResourceKind, provider: Pr
 /**
  * All published versions of a modpack, newest first.
  */
-async listModpackVersions(projectId: string) : Promise<Result<ProjectVersion[], CommandError>> {
+async listModpackVersions(provider: Provider, projectId: string) : Promise<Result<ProjectVersion[], CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("list_modpack_versions", { projectId }) };
+    return { status: "ok", data: await TAURI_INVOKE("list_modpack_versions", { provider, projectId }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -560,6 +571,18 @@ export type AccountKind = { type: "offline" }
 export type AccountSummary = { id: string; username: string; kind: AccountKind; isDefault: boolean }
 export type AppInfo = { version: string; license: string; repository: string }
 export type AppearanceSettings = { theme: Theme }
+/**
+ * A pack file whose author only allows downloads from the CurseForge website.
+ */
+export type BlockedFile = { projectName: string; fileName: string; 
+/**
+ * Page to download the file from by hand.
+ */
+url: string; 
+/**
+ * Folder inside the game directory the file belongs in, e.g. `mods`.
+ */
+installDir: string }
 export type CommandError = { message: string }
 /**
  * Commands run around the game and extra environment variables for it.
@@ -583,6 +606,10 @@ export type DownloadProgress = { completed: number; total: number; downloadedByt
 export type ExportEntry = { path: string; isDir: boolean; blocked: boolean }
 export type GameMode = "survival" | "creative" | "adventure" | "spectator" | "unknown"
 export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings; commands: CommandSettings; appearance: AppearanceSettings }
+/**
+ * A created instance and the pack files the user still has to download by hand.
+ */
+export type InstalledPack = { instanceId: string; blocked: BlockedFile[] }
 export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
 export type InstanceLogEvent = { instanceId: string; line: string; level: LogLevel }
 /**

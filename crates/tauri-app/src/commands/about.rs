@@ -30,3 +30,15 @@ pub fn open_repository(app: AppHandle) -> CommandResult<()> {
         .open_url(env!("CARGO_PKG_REPOSITORY"), None::<&str>)
         .map_err(|err| CommandError::new(err.to_string()))
 }
+
+/// Opens a web page in the browser; only http(s) links are allowed.
+#[tauri::command]
+#[specta::specta]
+pub fn open_url(app: AppHandle, url: String) -> CommandResult<()> {
+    if !(url.starts_with("https://") || url.starts_with("http://")) {
+        return Err(CommandError::new(format!("not a web link: {url}")));
+    }
+    app.opener()
+        .open_url(url, None::<&str>)
+        .map_err(|err| CommandError::new(err.to_string()))
+}
