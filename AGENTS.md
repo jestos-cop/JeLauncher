@@ -51,10 +51,9 @@ ui/                 React + TypeScript + Vite + Tailwind + shadcn/ui
 
 - Never add co-authors to commits: no `Co-Authored-By:`, `Generated with ...` or
   any other agent/bot attribution — neither in commits nor in PRs.
-- Commit and push only when explicitly asked.
-- Commit messages are short and in the imperative mood
-  (`Add instance list loading`, `Fix Java detection on macOS`).
-- One commit per logical change.
+- Commit locally as soon as a task is finished — one commit per task. Never push unless explicitly asked.
+- Conventional Commits, short and imperative, ending with the Plane id
+  (`feat: add Java detection (JL-29)`, `fix: handle missing asset index (JL-31)`).
 
 ## Clean code
 
