@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::sync::{Mutex, RwLock};
 
 use jelauncher_core::auth::AccountStore;
@@ -6,6 +6,7 @@ use jelauncher_core::meta::MetaService;
 use jelauncher_core::net::HttpClient;
 use jelauncher_core::paths::DataPaths;
 use jelauncher_core::settings::GlobalSettings;
+use tokio::sync::oneshot;
 
 pub struct AppState {
     pub paths: DataPaths,
@@ -13,8 +14,8 @@ pub struct AppState {
     pub accounts: RwLock<AccountStore>,
     pub http: HttpClient,
     pub meta: MetaService,
-    /// Ids of instances whose game process is alive or being prepared.
-    pub running: Mutex<HashSet<String>>,
+    /// Instances being prepared (`None`) or running, with a channel that kills the game.
+    pub running: Mutex<HashMap<String, Option<oneshot::Sender<()>>>>,
 }
 
 impl AppState {
