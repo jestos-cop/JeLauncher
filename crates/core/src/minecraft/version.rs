@@ -65,6 +65,23 @@ impl Argument {
             Self::Conditional { .. } => Vec::new(),
         }
     }
+
+    /// Every value this argument can contribute, regardless of its rules.
+    pub fn all_values(&self) -> Vec<&str> {
+        match self {
+            Self::Plain(value)
+            | Self::Conditional {
+                value: ArgumentValue::One(value),
+                ..
+            } => {
+                vec![value.as_str()]
+            }
+            Self::Conditional {
+                value: ArgumentValue::Many(values),
+                ..
+            } => values.iter().map(String::as_str).collect(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]

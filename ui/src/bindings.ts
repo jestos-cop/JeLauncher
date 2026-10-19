@@ -222,9 +222,9 @@ async killInstance(instanceId: string) : Promise<Result<null, CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
-async launchInstance(instanceId: string) : Promise<Result<null, CommandError>> {
+async launchInstance(instanceId: string, options: LaunchOptions) : Promise<Result<null, CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("launch_instance", { instanceId }) };
+    return { status: "ok", data: await TAURI_INVOKE("launch_instance", { instanceId, options }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -541,6 +541,7 @@ path: string | null; minMemoryMb: number; maxMemoryMb: number; jvmArgs: string;
  */
 autoDownload: boolean }
 export type LatestVersions = { release: string; snapshot: string }
+export type LaunchOptions = { quickPlay: QuickPlay | null; demo: boolean }
 export type LaunchProgress = { stage: "preparing" } | ({ stage: "downloading" } & DownloadProgress) | { stage: "installingLoader" } | { stage: "starting" }
 export type LaunchProgressEvent = { instanceId: string; progress: LaunchProgress }
 export type LauncherFolder = "root" | "instances" | "java"
@@ -556,6 +557,18 @@ export type NewInstance = { name: string; minecraftVersion: string; loader: Load
 export type ProjectHit = { provider: Provider; id: string; slug: string; title: string; description: string; author: string; iconUrl: string | null; downloads: number }
 export type ProjectVersion = { id: string; projectId: string; name: string; versionNumber: string; releaseType: ReleaseType; published: string; files: VersionFile[]; dependencies: Dependency[] }
 export type Provider = "modrinth"
+/**
+ * Where the game should go right after starting.
+ */
+export type QuickPlay = 
+/**
+ * A server address, `host[:port]`.
+ */
+{ type: "server"; target: string } | 
+/**
+ * A world folder name inside `saves`.
+ */
+{ type: "world"; target: string }
 export type ReleaseType = "release" | "beta" | "alpha"
 export type ResourceFile = { fileName: string; enabled: boolean; size: number; 
 /**

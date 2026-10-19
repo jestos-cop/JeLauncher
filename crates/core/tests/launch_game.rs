@@ -7,7 +7,7 @@ use std::time::Duration;
 
 use jelauncher_core::auth::offline_account;
 use jelauncher_core::instance::{Instance, NewInstance, create_instance};
-use jelauncher_core::launch::{LaunchProgress, Launcher};
+use jelauncher_core::launch::{LaunchOptions, LaunchProgress, Launcher, QuickPlay};
 use jelauncher_core::meta::MetaService;
 use jelauncher_core::minecraft::{LoaderKind, LoaderSpec};
 use jelauncher_core::net::HttpClient;
@@ -62,11 +62,22 @@ impl Harness {
         )
     }
 
-    /// Launches the instance, echoes its output for `seconds` and reports whether a line
-    /// containing `marker` appeared while the game kept running.
     async fn launch(
         &self,
         instance: &Instance,
+        seconds: u64,
+        marker: &str,
+    ) -> jelauncher_core::Result<bool> {
+        self.launch_with(instance, &LaunchOptions::default(), seconds, marker)
+            .await
+    }
+
+    /// Launches the instance, echoes its output for `seconds` and reports whether a line
+    /// containing `marker` appeared while the game kept running.
+    async fn launch_with(
+        &self,
+        instance: &Instance,
+        options: &LaunchOptions,
         seconds: u64,
         marker: &str,
     ) -> jelauncher_core::Result<bool> {
@@ -77,18 +88,30 @@ impl Harness {
             settings: &self.settings,
         };
         let command = launcher
-            .prepare(instance, &offline_account("JeTester")?, |progress| {
-                if !matches!(progress, LaunchProgress::Downloading(_)) {
-                    println!("{progress:?}");
-                }
-            })
+            .prepare(
+                instance,
+                &offline_account("JeTester")?,
+                options,
+                |progress| {
+                    if !matches!(progress, LaunchProgress::Downloading(_)) {
+                        println!("{progress:?}");
+                    }
+                },
+            )
             .await?;
         println!("java: {}", command.java.display());
 
         let mut child = command.spawn()?;
-        let Some(stdout) = child.stdout.take() else {
-            panic!("stdout is not piped");
+        let (Some(stdout), Some(stderr)) = (child.stdout.take(), child.stderr.take()) else {
+            panic!("output is not piped");
         };
+        // An unread stderr pipe fills up and blocks the game.
+        tokio::spawn(async move {
+            let mut errors = BufReader::new(stderr).lines();
+            while let Ok(Some(line)) = errors.next_line().await {
+                println!("! {line}");
+            }
+        });
         let mut lines = BufReader::new(stdout).lines();
         let mut saw_marker = false;
         let watch = async {
@@ -191,5 +214,30 @@ async fn launches_forge() -> jelauncher_core::Result<()> {
     let instance = harness.create("1.21.4", Some(loader))?;
     let loaded = harness.launch(&instance, 90, "Forge").await?;
     assert!(loaded, "Forge did not report starting");
+    Ok(())
+}
+
+#[tokio::test]
+#[ignore = "downloads the game and opens a window"]
+async fn quick_play_joins_a_server() -> jelauncher_core::Result<()> {
+    let io = |err| jelauncher_core::Error::Io {
+        path: "listener".into(),
+        source: err,
+    };
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .map_err(io)?;
+    let port = listener.local_addr().map_err(io)?.port();
+    let connection = tokio::spawn(async move { listener.accept().await.is_ok() });
+
+    let harness = Harness::new()?;
+    let instance = harness.create("1.21.4", None)?;
+    let options = LaunchOptions {
+        quick_play: Some(QuickPlay::Server(format!("127.0.0.1:{port}"))),
+        demo: false,
+    };
+    harness.launch_with(&instance, &options, 90, "").await?;
+    let connected = connection.is_finished() && connection.await.unwrap_or(false);
+    assert!(connected, "the game did not connect to the server");
     Ok(())
 }

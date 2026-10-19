@@ -1,4 +1,5 @@
 mod args;
+mod options;
 
 use std::path::{Path, PathBuf};
 use std::process::Stdio;
@@ -7,6 +8,7 @@ use serde::Serialize;
 use tokio::process::{Child, Command};
 
 pub use args::{ArgsInput, LAUNCHER_NAME, build_arguments};
+pub use options::{LaunchOptions, QuickPlay};
 
 use crate::auth::Account;
 use crate::forge::{ForgeInstaller, InstallProgress};
@@ -14,8 +16,8 @@ use crate::instance::Instance;
 use crate::java::{self, check_java};
 use crate::meta::MetaService;
 use crate::minecraft::{
-    Environment, Features, GameFiles, JavaVersion, LoaderProfile, LoaderSpec, VersionJson,
-    artifact_download, client_jar_path,
+    Environment, GameFiles, JavaVersion, LoaderProfile, LoaderSpec, VersionJson, artifact_download,
+    client_jar_path,
 };
 use crate::net::{DownloadProgress, HttpClient};
 use crate::paths::DataPaths;
@@ -58,6 +60,7 @@ impl Launcher<'_> {
         &self,
         instance: &Instance,
         account: &Account,
+        options: &LaunchOptions,
         on_progress: impl Fn(LaunchProgress),
     ) -> Result<LaunchCommand> {
         on_progress(LaunchProgress::Preparing);
@@ -80,10 +83,7 @@ impl Launcher<'_> {
             };
             version.apply_loader(profile);
         }
-        let env = Environment::current(Features {
-            custom_resolution: !settings.window_maximized,
-            ..Features::default()
-        });
+        let env = Environment::current(options.features(&version, !settings.window_maximized));
 
         let files = GameFiles::resolve(&version, &env, self.paths);
         let game_dir = instance.game_dir();
@@ -115,6 +115,7 @@ impl Launcher<'_> {
                 &game_dir,
             ),
             libraries_dir: &self.paths.libraries(),
+            options,
         });
         let commands = &settings.commands;
         let wrapper = shlex::split(&commands.wrapper).ok_or_else(|| {

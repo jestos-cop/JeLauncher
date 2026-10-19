@@ -1,8 +1,10 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
+use super::options::{LaunchOptions, QuickPlay, supports_quick_play};
 use crate::auth::{Account, AccountKind};
 use crate::minecraft::{Environment, VersionJson};
+use crate::servers::parse_address;
 use crate::settings::EffectiveSettings;
 
 pub const LAUNCHER_NAME: &str = "JeLauncher";
@@ -20,6 +22,7 @@ pub struct ArgsInput<'a> {
     pub assets_dir: &'a Path,
     pub legacy_assets_dir: &'a Path,
     pub libraries_dir: &'a Path,
+    pub options: &'a LaunchOptions,
 }
 
 /// JVM arguments, main class and game arguments, in launch order.
@@ -67,8 +70,26 @@ pub fn build_arguments(input: &ArgsInput) -> Vec<String> {
             args.extend(["--width".into(), substitute("${resolution_width}")]);
             args.extend(["--height".into(), substitute("${resolution_height}")]);
         }
+        if input.options.demo {
+            args.push("--demo".into());
+        }
     }
+    args.extend(legacy_server_arguments(input));
     args
+}
+
+/// Versions before quick play join a server through `--server` and `--port`.
+fn legacy_server_arguments(input: &ArgsInput) -> Vec<String> {
+    let Some(QuickPlay::Server(address)) = &input.options.quick_play else {
+        return Vec::new();
+    };
+    if supports_quick_play(input.version) {
+        return Vec::new();
+    }
+    match parse_address(address) {
+        Ok((host, port)) => vec!["--server".into(), host, "--port".into(), port.to_string()],
+        Err(_) => Vec::new(),
+    }
 }
 
 fn variables(input: &ArgsInput) -> HashMap<&'static str, String> {
@@ -108,7 +129,22 @@ fn variables(input: &ArgsInput) -> HashMap<&'static str, String> {
             "resolution_height",
             input.settings.window_height.to_string(),
         ),
+        (
+            "quickPlayPath",
+            path(&input.game_dir.join("quickPlay").join("log.json")),
+        ),
+        ("quickPlayMultiplayer", quick_play_target(input, true)),
+        ("quickPlaySingleplayer", quick_play_target(input, false)),
     ])
+}
+
+fn quick_play_target(input: &ArgsInput, server: bool) -> String {
+    match (&input.options.quick_play, server) {
+        (Some(QuickPlay::Server(address)), true) | (Some(QuickPlay::World(address)), false) => {
+            address.clone()
+        }
+        _ => String::new(),
+    }
 }
 
 /// Replaces every `${name}` with its value; unknown names are left untouched.
@@ -182,6 +218,10 @@ mod tests {
             assets_dir: dir,
             legacy_assets_dir: dir,
             libraries_dir: dir,
+            options: &LaunchOptions {
+                quick_play: Some(QuickPlay::Server("mc.example.com:25570".into())),
+                demo: true,
+            },
         });
         assert_eq!(
             args,
@@ -198,6 +238,11 @@ mod tests {
                 "1.7.10",
                 "--uuid",
                 "abc",
+                "--demo",
+                "--server",
+                "mc.example.com",
+                "--port",
+                "25570",
             ]
         );
         Ok(())

@@ -63,7 +63,12 @@ async fn prepares_fabric_and_quilt() -> jelauncher_core::Result<()> {
             },
         )?;
         let command = launcher
-            .prepare(&instance, &offline_account("JeTester")?, |_| {})
+            .prepare(
+                &instance,
+                &offline_account("JeTester")?,
+                &Default::default(),
+                |_| {},
+            )
             .await?;
         println!("{kind:?} {} on {game_version}", loader.version);
         assert!(command.args.iter().any(|arg| arg == main_class));

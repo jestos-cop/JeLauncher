@@ -1,7 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useReducer, type ReactNode } from 'react'
 import { reducer, SessionsContext } from '@/app/sessions'
-import { commands, events } from '@/bindings'
+import { commands, events, type LaunchOptions } from '@/bindings'
+
+const DEFAULT_LAUNCH: LaunchOptions = { quickPlay: null, demo: false }
 
 export function SessionsProvider({ children }: { children: ReactNode }) {
   const [sessions, dispatch] = useReducer(reducer, {})
@@ -26,9 +28,9 @@ export function SessionsProvider({ children }: { children: ReactNode }) {
     return () => subscriptions.forEach((subscription) => void subscription.then((unlisten) => unlisten()))
   }, [queryClient])
 
-  const launch = useCallback(async (id: string) => {
+  const launch = useCallback(async (id: string, options: LaunchOptions = DEFAULT_LAUNCH) => {
     dispatch({ type: 'preparing', id })
-    const result = await commands.launchInstance(id)
+    const result = await commands.launchInstance(id, options)
     if (result.status === 'ok') dispatch({ type: 'running', id })
     else dispatch({ type: 'failed', id, error: result.error.message })
   }, [])

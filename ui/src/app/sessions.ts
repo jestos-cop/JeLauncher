@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { LaunchProgress, LogLevel } from '@/bindings'
+import type { LaunchOptions, LaunchProgress, LogLevel } from '@/bindings'
 
 const MAX_LOG_LINES = 10_000
 
@@ -52,7 +52,7 @@ export function reducer(sessions: Record<string, Session>, action: Action): Reco
 
 interface SessionsContextValue {
   sessions: Record<string, Session>
-  launch: (id: string) => Promise<void>
+  launch: (id: string, options?: LaunchOptions) => Promise<void>
   kill: (id: string) => Promise<void>
   clearLog: (id: string) => void
 }
@@ -69,7 +69,7 @@ export function useSession(id: string) {
   const { sessions, launch, kill, clearLog } = useSessionsContext()
   return {
     session: sessions[id] ?? IDLE,
-    launch: () => launch(id),
+    launch: (options?: LaunchOptions) => launch(id, options),
     kill: () => kill(id),
     clearLog: () => clearLog(id),
   }

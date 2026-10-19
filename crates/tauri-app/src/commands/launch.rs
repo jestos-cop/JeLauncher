@@ -1,7 +1,7 @@
 use std::time::{Instant, SystemTime, UNIX_EPOCH};
 
 use jelauncher_core::instance::Instance;
-use jelauncher_core::launch::Launcher;
+use jelauncher_core::launch::{LaunchOptions, Launcher};
 use jelauncher_core::logs::{LogLevel, detect_level};
 use tauri::{AppHandle, Manager, State};
 use tauri_specta::Event;
@@ -18,6 +18,7 @@ pub async fn launch_instance(
     app: AppHandle,
     state: State<'_, AppState>,
     instance_id: String,
+    options: LaunchOptions,
 ) -> CommandResult<()> {
     let settings = state
         .settings
@@ -47,7 +48,7 @@ pub async fn launch_instance(
         settings: &settings,
     };
     let prepared = launcher
-        .prepare(&instance, &account, |progress| {
+        .prepare(&instance, &account, &options, |progress| {
             let _ = LaunchProgressEvent {
                 instance_id: instance_id.clone(),
                 progress,

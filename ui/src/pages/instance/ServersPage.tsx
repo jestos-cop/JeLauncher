@@ -1,6 +1,7 @@
-import { ArrowUp, Pencil, Plus, RefreshCw, Server as ServerIcon, Trash2 } from 'lucide-react'
+import { ArrowUp, Pencil, Play, Plus, RefreshCw, Server as ServerIcon, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { useSession } from '@/app/sessions'
 import type { Server } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,7 @@ type PendingAction = { kind: 'edit'; index: number | null } | { kind: 'delete'; 
 
 export function ServersPage({ instanceId }: { instanceId: string }) {
   const queryClient = useQueryClient()
+  const { session, launch } = useSession(instanceId)
   const { data: servers = [], error, isPending } = useServers(instanceId)
   const save = useSaveServer(instanceId)
   const remove = useRemoveServer(instanceId)
@@ -53,6 +55,8 @@ export function ServersPage({ instanceId }: { instanceId: string }) {
             key={`${index}-${server.address}`}
             server={server}
             canMoveUp={index > 0}
+            canJoin={session.status === 'idle'}
+            onJoin={() => void launch({ quickPlay: { type: 'server', target: server.address }, demo: false })}
             onEdit={() => setAction({ kind: 'edit', index })}
             onMoveUp={() => moveUp.mutate(index)}
             onDelete={() => setAction({ kind: 'delete', index })}
@@ -89,12 +93,14 @@ export function ServersPage({ instanceId }: { instanceId: string }) {
 interface ServerRowProps {
   server: Server
   canMoveUp: boolean
+  canJoin: boolean
+  onJoin: () => void
   onEdit: () => void
   onMoveUp: () => void
   onDelete: () => void
 }
 
-function ServerRow({ server, canMoveUp, onEdit, onMoveUp, onDelete }: ServerRowProps) {
+function ServerRow({ server, canMoveUp, canJoin, onJoin, onEdit, onMoveUp, onDelete }: ServerRowProps) {
   const status = useServerStatus(server.address)
   const icon = status.data?.favicon ?? (server.icon && `data:image/png;base64,${server.icon}`)
 
@@ -128,6 +134,9 @@ function ServerRow({ server, canMoveUp, onEdit, onMoveUp, onDelete }: ServerRowP
           </p>
         </div>
       )}
+      <Button size="sm" variant="outline" disabled={!canJoin} onClick={onJoin}>
+        <Play /> Join
+      </Button>
       <div className="flex shrink-0 gap-2 text-muted-foreground">
         <button
           type="button"

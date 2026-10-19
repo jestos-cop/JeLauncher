@@ -4,7 +4,7 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
-pub use ping::{ServerStatus, ping_server};
+pub use ping::{ServerStatus, parse_address, ping_server};
 
 use crate::{Error, Result};
 

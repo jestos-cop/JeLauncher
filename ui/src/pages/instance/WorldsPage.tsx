@@ -1,5 +1,6 @@
-import { Archive, Copy, FolderOpen, RefreshCw, Trash2 } from 'lucide-react'
+import { Archive, Copy, FolderOpen, Play, RefreshCw, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useSession } from '@/app/sessions'
 import type { World } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Button } from '@/components/ui/button'
@@ -9,6 +10,7 @@ export function WorldsPage({ instanceId }: { instanceId: string }) {
   const { data: worlds = [], error, isPending, refetch } = useWorlds(instanceId)
   const remove = useDeleteWorld(instanceId)
   const backup = useBackupWorld(instanceId)
+  const { session, launch } = useSession(instanceId)
   const [pendingRemoval, setPendingRemoval] = useState<World | null>(null)
 
   return (
@@ -38,7 +40,7 @@ export function WorldsPage({ instanceId }: { instanceId: string }) {
               <th className="p-2 font-medium">Version</th>
               <th className="p-2 font-medium">Last played</th>
               <th className="p-2 font-medium">Seed</th>
-              <th className="w-20 p-2" />
+              <th className="w-28 p-2" />
             </tr>
           </thead>
           <tbody>
@@ -69,6 +71,18 @@ export function WorldsPage({ instanceId }: { instanceId: string }) {
                 </td>
                 <td className="p-2">
                   <div className="flex gap-2 text-muted-foreground">
+                    <button
+                      type="button"
+                      aria-label={`Play ${world.name}`}
+                      title="Play"
+                      className="hover:text-foreground disabled:opacity-50"
+                      disabled={session.status !== 'idle'}
+                      onClick={() =>
+                        void launch({ quickPlay: { type: 'world', target: world.folder }, demo: false })
+                      }
+                    >
+                      <Play className="size-4" />
+                    </button>
                     <button
                       type="button"
                       aria-label={`Back up ${world.name}`}

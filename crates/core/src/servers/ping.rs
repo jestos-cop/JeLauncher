@@ -106,7 +106,7 @@ async fn query(host: &str, port: u16) -> std::io::Result<ServerStatus> {
     })
 }
 
-fn parse_address(address: &str) -> Result<(String, u16)> {
+pub fn parse_address(address: &str) -> Result<(String, u16)> {
     let address = address.trim();
     let invalid_address = || Error::InvalidInput(format!("invalid server address: {address}"));
     let (host, port) = if let Some(rest) = address.strip_prefix('[') {

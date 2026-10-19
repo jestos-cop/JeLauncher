@@ -21,9 +21,14 @@ export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
             <Square /> Kill
           </ContextMenuItem>
         ) : (
-          <ContextMenuItem onSelect={() => void launch()}>
-            <Play /> Launch
-          </ContextMenuItem>
+          <>
+            <ContextMenuItem onSelect={() => void launch()}>
+              <Play /> Launch
+            </ContextMenuItem>
+            <ContextMenuItem onSelect={() => void launch({ quickPlay: null, demo: true })}>
+              <Play /> Launch Demo
+            </ContextMenuItem>
+          </>
         )}
         <ContextMenuItem onSelect={() => navigate({ page: 'instance', instanceId: instance.id, tab: 'log' })}>
           <Settings2 /> Edit
