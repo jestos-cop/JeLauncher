@@ -1,7 +1,7 @@
-use std::collections::{HashSet, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::path::Path;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use super::{
     Dependency, ProjectHit, ProjectVersion, Provider, ReleaseType, ResourceKind, SearchPage,
@@ -69,6 +69,28 @@ impl Modrinth {
             .get_json(&format!("{API}/version/{version_id}"))
             .await?;
         version.try_into()
+    }
+
+    /// Looks up the published versions that contain files with the given SHA-1 hashes.
+    pub async fn versions_by_sha1(
+        &self,
+        hashes: &[String],
+    ) -> Result<HashMap<String, ProjectVersion>> {
+        if hashes.is_empty() {
+            return Ok(HashMap::new());
+        }
+        let body = HashLookup {
+            hashes,
+            algorithm: "sha1",
+        };
+        let versions: HashMap<String, ApiVersion> = self
+            .http
+            .post_json(&format!("{API}/version_files"), &body)
+            .await?;
+        versions
+            .into_iter()
+            .map(|(hash, version)| Ok((hash, version.try_into()?)))
+            .collect()
     }
 
     /// Installs the version and, recursively, the required dependencies that fit the target.
@@ -213,6 +235,12 @@ fn sort_index(sort: SortOrder) -> &'static str {
     }
 }
 
+#[derive(Serialize)]
+struct HashLookup<'a> {
+    hashes: &'a [String],
+    algorithm: &'a str,
+}
+
 #[derive(Deserialize)]
 struct SearchResponse {
     hits: Vec<ApiHit>,
@@ -270,6 +298,7 @@ struct ApiFile {
 #[derive(Deserialize)]
 struct ApiHashes {
     sha1: Option<String>,
+    sha512: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -300,6 +329,7 @@ impl TryFrom<ApiVersion> for ProjectVersion {
                     url: file.url,
                     file_name,
                     sha1: file.hashes.sha1,
+                    sha512: file.hashes.sha512,
                     size: file.size,
                     primary: file.primary,
                 })

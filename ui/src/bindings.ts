@@ -37,6 +37,33 @@ async setDefaultAccount(id: string) : Promise<Result<null, CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
+async exportInstance(instanceId: string, output: string, blockedPaths: string[]) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("export_instance", { instanceId, output, blockedPaths }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async exportMrpack(instanceId: string, output: string, blockedPaths: string[], version: string, summary: string | null) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("export_mrpack", { instanceId, output, blockedPaths, version, summary }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Top-level game folder entries, marked when the last export left them out.
+ */
+async listExportEntries(instanceId: string) : Promise<Result<ExportEntry[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_export_entries", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async listInstances() : Promise<Result<InstanceSummary[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_instances") };
@@ -323,6 +350,10 @@ export type CommandSettings = { preLaunch: string;
 wrapper: string; postExit: string; environment: Partial<{ [key in string]: string }> }
 export type Dependency = { projectId: string | null; versionId: string | null; required: boolean }
 export type DownloadProgress = { completed: number; total: number; downloadedBytes: number }
+/**
+ * A top-level entry of the game directory as offered for export.
+ */
+export type ExportEntry = { path: string; isDir: boolean; blocked: boolean }
 export type GameMode = "survival" | "creative" | "adventure" | "spectator" | "unknown"
 export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings; commands: CommandSettings }
 export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
@@ -369,7 +400,7 @@ export type SearchPage = { hits: ProjectHit[]; total: number }
 export type SearchQuery = { text: string; kind: ResourceKind; gameVersion: string | null; loader: LoaderKind | null; sort: SortOrder; offset: number; limit: number }
 export type SortOrder = "relevance" | "downloads" | "updated" | "newest"
 export type VersionEntry = { id: string; type: VersionType; url: string; sha1: string; releaseTime: string }
-export type VersionFile = { url: string; fileName: string; sha1: string | null; size: number; primary: boolean }
+export type VersionFile = { url: string; fileName: string; sha1: string | null; sha512: string | null; size: number; primary: boolean }
 export type VersionType = "release" | "snapshot" | "old_beta" | "old_alpha" | "other"
 export type WindowSettings = { width: number; height: number; maximized: boolean }
 export type World = { 

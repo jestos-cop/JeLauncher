@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use super::{ManagedPack, PackSource};
 use crate::archive::{self, safe_relative_path};
@@ -12,21 +12,32 @@ use crate::{Error, Result};
 
 pub const MRPACK_INDEX: &str = "modrinth.index.json";
 
-#[derive(Debug, Clone, Deserialize)]
+const LOADER_KEYS: [(&str, LoaderKind); 2] = [
+    ("fabric-loader", LoaderKind::Fabric),
+    ("quilt-loader", LoaderKind::Quilt),
+];
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MrpackIndex {
+    #[serde(default)]
+    pub format_version: u32,
+    #[serde(default)]
+    pub game: String,
     pub name: String,
     pub version_id: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub summary: Option<String>,
     pub files: Vec<MrpackFile>,
     pub dependencies: HashMap<String, String>,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MrpackFile {
     pub path: String,
     pub hashes: HashMap<String, String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<HashMap<String, String>>,
     pub downloads: Vec<String>,
     pub file_size: u64,
@@ -42,6 +53,20 @@ impl MrpackFile {
 }
 
 impl MrpackIndex {
+    pub fn dependencies_for(
+        minecraft_version: &str,
+        loader: Option<&LoaderSpec>,
+    ) -> HashMap<String, String> {
+        let mut dependencies =
+            HashMap::from([("minecraft".to_owned(), minecraft_version.to_owned())]);
+        if let Some(loader) = loader
+            && let Some((key, _)) = LOADER_KEYS.iter().find(|(_, kind)| *kind == loader.kind)
+        {
+            dependencies.insert((*key).to_owned(), loader.version.clone());
+        }
+        dependencies
+    }
+
     pub fn minecraft_version(&self) -> Result<&str> {
         self.dependencies
             .get("minecraft")
@@ -52,10 +77,7 @@ impl MrpackIndex {
     }
 
     pub fn loader(&self) -> Result<Option<LoaderSpec>> {
-        for (key, kind) in [
-            ("fabric-loader", LoaderKind::Fabric),
-            ("quilt-loader", LoaderKind::Quilt),
-        ] {
+        for (key, kind) in LOADER_KEYS {
             if let Some(version) = self.dependencies.get(key) {
                 return Ok(Some(LoaderSpec {
                     kind,

@@ -1,5 +1,6 @@
 mod config;
 mod create;
+mod export;
 mod list;
 mod manage;
 
@@ -7,11 +8,12 @@ use std::path::{Path, PathBuf};
 
 pub use config::InstanceConfig;
 pub use create::{NewInstance, create_instance};
+pub use export::{ExportEntry, export_instance};
 pub use list::{InstanceSummary, discover_instances};
 pub use manage::{delete_instance, rename_instance, set_instance_group, set_instance_settings};
 
 pub const INSTANCE_CONFIG_FILE: &str = "instance.json";
-const GAME_DIR: &str = "minecraft";
+pub const GAME_DIR: &str = "minecraft";
 
 /// An instance directory on disk together with its parsed config.
 #[derive(Debug, Clone)]

@@ -1,4 +1,4 @@
-import { FolderOpen, Pencil, Play, Settings2, Square, Tags, Trash2 } from 'lucide-react'
+import { FolderOpen, Package, Pencil, Play, Settings2, Square, Tags, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigation } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
@@ -6,6 +6,7 @@ import type { InstanceSummary } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { PromptDialog } from '@/components/PromptDialog'
 import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@/components/ui/context-menu'
+import { ExportInstanceDialog } from '@/dialogs/ExportInstanceDialog'
 import {
   openInstanceFolder,
   useDeleteInstance,
@@ -13,7 +14,7 @@ import {
   useSetInstanceGroup,
 } from '@/hooks/use-instance-actions'
 
-type OpenDialog = 'rename' | 'group' | 'delete' | null
+type OpenDialog = 'rename' | 'group' | 'export' | 'delete' | null
 
 export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
   const { session, launch, kill } = useSession(instance.id)
@@ -50,6 +51,9 @@ export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
         <ContextMenuItem onSelect={() => setDialog('group')}>
           <Tags /> Change Group
         </ContextMenuItem>
+        <ContextMenuItem onSelect={() => setDialog('export')}>
+          <Package /> Export…
+        </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem variant="destructive" disabled={isActive} onSelect={() => setDialog('delete')}>
           <Trash2 /> Delete
@@ -74,10 +78,13 @@ export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
           confirmLabel="Save"
           allowEmpty
           error={setGroup.error?.message}
-          onConfirm={(group) => setGroup.mutate({ id: instance.id, group: group || null }, { onSuccess: close })}
+          onConfirm={(group) =>
+            setGroup.mutate({ id: instance.id, group: group || null }, { onSuccess: close })
+          }
           onClose={close}
         />
       )}
+      {dialog === 'export' && <ExportInstanceDialog instance={instance} onClose={close} />}
       {dialog === 'delete' && (
         <ConfirmDialog
           title={`Delete ${instance.name}?`}

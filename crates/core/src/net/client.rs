@@ -1,5 +1,6 @@
 use std::time::Duration;
 
+use serde::Serialize;
 use serde::de::DeserializeOwned;
 
 use crate::settings::NetworkSettings;
@@ -39,6 +40,23 @@ impl HttpClient {
         self.inner
             .get(url)
             .query(query)
+            .send()
+            .await
+            .and_then(reqwest::Response::error_for_status)
+            .map_err(|err| Error::http(url, err))?
+            .json()
+            .await
+            .map_err(|err| Error::http(url, err))
+    }
+
+    pub async fn post_json<B: Serialize + ?Sized, T: DeserializeOwned>(
+        &self,
+        url: &str,
+        body: &B,
+    ) -> Result<T> {
+        self.inner
+            .post(url)
+            .json(body)
             .send()
             .await
             .and_then(reqwest::Response::error_for_status)

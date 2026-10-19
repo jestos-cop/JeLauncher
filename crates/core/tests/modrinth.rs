@@ -180,3 +180,70 @@ async fn imports_a_modpack_from_its_url() -> jelauncher_core::Result<()> {
     assert!(instance.config.managed_pack.is_none());
     Ok(())
 }
+
+#[tokio::test]
+#[ignore = "downloads a full modpack"]
+async fn exported_modpack_references_modrinth_files_and_reimports() -> jelauncher_core::Result<()> {
+    use jelauncher_core::archive;
+    use jelauncher_core::modpack::{
+        ModpackTarget, MrpackExport, export_mrpack, import_instance, read_mrpack_index,
+    };
+
+    let http = HttpClient::new(&NetworkSettings::default())?;
+    let modrinth = Modrinth::new(http.clone());
+    let versions = modrinth
+        .versions(
+            "fabulously-optimized",
+            ResourceKind::Modpack,
+            Some("1.21.4"),
+            Some(LoaderKind::Fabric),
+        )
+        .await?;
+    let Some(pack) = versions.first() else {
+        panic!("no Fabulously Optimized for 1.21.4");
+    };
+    let dir = tempfile::tempdir().map_err(|err| jelauncher_core::Error::Io {
+        path: "tempdir".into(),
+        source: err,
+    })?;
+    let target = ModpackTarget {
+        instances_dir: &dir.path().join("instances"),
+        download_dir: &dir.path().join("downloads"),
+        name: None,
+        concurrency: 8,
+    };
+    let original = modrinth.install_modpack(&pack.id, &target, |_| {}).await?;
+    let original_mods =
+        list_resources(&original.resource_dir(ResourceKind::Mod), ResourceKind::Mod)?.len();
+
+    let output = dir.path().join("export.mrpack");
+    export_mrpack(
+        &modrinth,
+        &original,
+        &MrpackExport {
+            output: &output,
+            version: "1.0.0".into(),
+            summary: None,
+            blocked: &[],
+        },
+    )
+    .await?;
+    let index = read_mrpack_index(&output)?;
+    let bundled_mods = archive::entry_names(&output)?
+        .iter()
+        .filter(|name| name.starts_with("overrides/mods/"))
+        .count();
+    println!(
+        "{original_mods} mods: {} referenced, {bundled_mods} bundled",
+        index.files.len()
+    );
+    assert!(index.files.len() > 10);
+    assert_eq!(index.minecraft_version()?, "1.21.4");
+
+    let copy = import_instance(&http, &output.to_string_lossy(), &target, |_| {}).await?;
+    let copied_mods =
+        list_resources(&copy.resource_dir(ResourceKind::Mod), ResourceKind::Mod)?.len();
+    assert_eq!(copied_mods, original_mods);
+    assert_eq!(copy.config.loader, original.config.loader);
+    Ok(())
+}
