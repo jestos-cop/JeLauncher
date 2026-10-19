@@ -2,7 +2,7 @@ mod global;
 mod instance;
 
 pub use global::{
-    CommandSettings, GlobalSettings, JavaSettings, LauncherSettings, NetworkSettings,
-    WindowSettings,
+    AppearanceSettings, CommandSettings, GlobalSettings, JavaSettings, LauncherSettings,
+    NetworkSettings, Theme, WindowSettings,
 };
 pub use instance::{EffectiveSettings, InstanceSettings};

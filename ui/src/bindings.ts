@@ -533,6 +533,7 @@ modpackProgressEvent: "modpack-progress-event"
 
 export type AccountKind = { type: "offline" }
 export type AccountSummary = { id: string; username: string; kind: AccountKind; isDefault: boolean }
+export type AppearanceSettings = { theme: Theme }
 export type CommandError = { message: string }
 /**
  * Commands run around the game and extra environment variables for it.
@@ -555,7 +556,7 @@ export type DownloadProgress = { completed: number; total: number; downloadedByt
  */
 export type ExportEntry = { path: string; isDir: boolean; blocked: boolean }
 export type GameMode = "survival" | "creative" | "adventure" | "spectator" | "unknown"
-export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings; commands: CommandSettings }
+export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings; commands: CommandSettings; appearance: AppearanceSettings }
 export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
 export type InstanceLogEvent = { instanceId: string; line: string; level: LogLevel }
 /**
@@ -641,6 +642,7 @@ export type ServerStatus = { version: string; playersOnline: number; playersMax:
  */
 favicon: string | null; latencyMs: number }
 export type SortOrder = "relevance" | "downloads" | "updated" | "newest"
+export type Theme = "system" | "light" | "dark"
 export type VersionEntry = { id: string; type: VersionType; url: string; sha1: string; releaseTime: string }
 export type VersionFile = { url: string; fileName: string; sha1: string | null; sha512: string | null; size: number; primary: boolean }
 export type VersionType = "release" | "snapshot" | "old_beta" | "old_alpha" | "other"

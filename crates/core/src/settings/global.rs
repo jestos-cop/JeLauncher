@@ -13,6 +13,22 @@ pub struct GlobalSettings {
     pub launcher: LauncherSettings,
     pub network: NetworkSettings,
     pub commands: CommandSettings,
+    pub appearance: AppearanceSettings,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub enum Theme {
+    #[default]
+    System,
+    Light,
+    Dark,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
+#[serde(default, rename_all = "camelCase")]
+pub struct AppearanceSettings {
+    pub theme: Theme,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
