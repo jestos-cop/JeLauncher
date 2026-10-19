@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { commands, type CopyOptions, type LoaderSpec, type ResourceKind } from '@/bindings'
+import { commands, type CopyOptions, type InstanceFile, type LoaderSpec, type ResourceKind } from '@/bindings'
 import { unwrap } from '@/lib/command'
 
 function useInstanceMutation<T>(mutationFn: (input: T) => Promise<unknown>) {
@@ -24,6 +24,14 @@ export function useSetInstanceGroup() {
 
 export function useDeleteInstance() {
   return useInstanceMutation((id: string) => unwrap(commands.deleteInstance(id)))
+}
+
+/** Opens an instance file in the configured editor; the promise rejects with the reason it could not. */
+export function useOpenInstanceFile() {
+  return useMutation({
+    mutationFn: ({ id, file }: { id: string; file: InstanceFile }) =>
+      unwrap(commands.openInstanceFile(id, file)),
+  })
 }
 
 export function openInstanceFolder(id: string, kind: ResourceKind | null = null) {

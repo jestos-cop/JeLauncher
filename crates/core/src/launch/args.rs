@@ -235,6 +235,7 @@ mod tests {
             options: &LaunchOptions {
                 quick_play: Some(QuickPlay::Server("mc.example.com:25570".into())),
                 demo: true,
+                profiler: None,
             },
         });
         assert_eq!(

@@ -15,6 +15,30 @@ pub struct GlobalSettings {
     pub commands: CommandSettings,
     pub appearance: AppearanceSettings,
     pub apis: ApiSettings,
+    pub tools: ToolSettings,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
+#[serde(default, rename_all = "camelCase")]
+pub struct ToolSettings {
+    /// JProfiler installation folder.
+    pub jprofiler_path: Option<String>,
+    pub jprofiler_port: u16,
+    /// VisualVM program; `None` looks for `jvisualvm` or `visualvm` on the PATH.
+    pub visualvm_path: Option<String>,
+    /// Command that opens instance files, e.g. `code`; `None` uses the system default app.
+    pub editor: Option<String>,
+}
+
+impl Default for ToolSettings {
+    fn default() -> Self {
+        Self {
+            jprofiler_path: None,
+            jprofiler_port: 42042,
+            visualvm_path: None,
+            editor: None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]

@@ -156,6 +156,17 @@ async openLauncherLog() : Promise<Result<null, CommandError>> {
 }
 },
 /**
+ * Opens an instance file in the configured editor, or the system default app.
+ */
+async openInstanceFile(instanceId: string, file: InstanceFile) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("open_instance_file", { instanceId, file }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Copies an image into the icons folder and returns its icon key.
  */
 async addCustomIcon(source: string) : Promise<Result<string, CommandError>> {
@@ -750,12 +761,13 @@ export type ErrorKind = { type: "failed" } |
  */
 export type ExportEntry = { path: string; isDir: boolean; blocked: boolean }
 export type GameMode = "survival" | "creative" | "adventure" | "spectator" | "unknown"
-export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings; commands: CommandSettings; appearance: AppearanceSettings; apis: ApiSettings }
+export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings; commands: CommandSettings; appearance: AppearanceSettings; apis: ApiSettings; tools: ToolSettings }
 /**
  * A created instance and the pack files the user still has to download by hand.
  */
 export type InstalledPack = { instanceId: string; blocked: BlockedFile[] }
 export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
+export type InstanceFile = "config" | "gameOptions"
 export type InstanceLogEvent = { instanceId: string; line: string; level: LogLevel }
 /**
  * Per-instance overrides; `None` falls back to the global value.
@@ -777,7 +789,11 @@ path: string | null; minMemoryMb: number; maxMemoryMb: number; jvmArgs: string;
  */
 autoDownload: boolean }
 export type LatestVersions = { release: string; snapshot: string }
-export type LaunchOptions = { quickPlay: QuickPlay | null; demo: boolean }
+export type LaunchOptions = { quickPlay: QuickPlay | null; demo: boolean; 
+/**
+ * Attached to the game once it has started.
+ */
+profiler: Profiler | null }
 export type LaunchProgress = { stage: "preparing" } | ({ stage: "downloading" } & DownloadProgress) | { stage: "installingLoader" } | { stage: "starting" }
 export type LaunchProgressEvent = { instanceId: string; progress: LaunchProgress }
 export type LauncherFolder = "root" | "instances" | "java"
@@ -808,6 +824,7 @@ export type NewsEntry = { id: string; title: string; text: string;
  * `YYYY-MM-DD`.
  */
 date: string; url: string; imageUrl: string | null }
+export type Profiler = "jprofiler" | "visualVm"
 export type ProjectHit = { provider: Provider; id: string; slug: string; title: string; description: string; author: string; iconUrl: string | null; downloads: number }
 export type ProjectVersion = { id: string; projectId: string; name: string; versionNumber: string; releaseType: ReleaseType; published: string; 
 /**
@@ -859,6 +876,19 @@ export type ServerStatus = { version: string; playersOnline: number; playersMax:
 favicon: string | null; latencyMs: number }
 export type SortOrder = "relevance" | "downloads" | "updated" | "newest"
 export type Theme = "system" | "light" | "dark"
+export type ToolSettings = { 
+/**
+ * JProfiler installation folder.
+ */
+jprofilerPath: string | null; jprofilerPort: number; 
+/**
+ * VisualVM program; `None` looks for `jvisualvm` or `visualvm` on the PATH.
+ */
+visualvmPath: string | null; 
+/**
+ * Command that opens instance files, e.g. `code`; `None` uses the system default app.
+ */
+editor: string | null }
 export type VersionEntry = { id: string; type: VersionType; url: string; sha1: string; releaseTime: string }
 export type VersionFile = { url: string; fileName: string; sha1: string | null; sha512: string | null; size: number; primary: boolean }
 export type VersionType = "release" | "snapshot" | "old_beta" | "old_alpha" | "other"

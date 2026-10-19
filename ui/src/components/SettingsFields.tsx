@@ -1,4 +1,5 @@
-import { RefreshCw } from 'lucide-react'
+import { open } from '@tauri-apps/plugin-dialog'
+import { FolderOpen, RefreshCw } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -99,5 +100,32 @@ export function ThemeSelect({ value, onChange }: { value: Theme; onChange: (them
         <SelectItem value="dark">Dark</SelectItem>
       </SelectContent>
     </Select>
+  )
+}
+
+interface PathInputProps {
+  value: string | null
+  onChange: (path: string | null) => void
+  placeholder: string
+  directory?: boolean
+}
+
+/** A path typed by hand or picked with the system file dialog; empty means unset. */
+export function PathInput({ value, onChange, placeholder, directory = false }: PathInputProps) {
+  const browse = async () => {
+    const picked = await open({ directory, multiple: false })
+    if (typeof picked === 'string') onChange(picked)
+  }
+  return (
+    <div className="flex gap-2">
+      <Input
+        placeholder={placeholder}
+        value={value ?? ''}
+        onChange={(event) => onChange(event.target.value || null)}
+      />
+      <Button variant="outline" onClick={() => void browse()}>
+        <FolderOpen /> Browse
+      </Button>
+    </div>
   )
 }

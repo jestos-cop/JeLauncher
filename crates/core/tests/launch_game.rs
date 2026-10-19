@@ -236,6 +236,7 @@ async fn quick_play_joins_a_server() -> jelauncher_core::Result<()> {
     let options = LaunchOptions {
         quick_play: Some(QuickPlay::Server(format!("127.0.0.1:{port}"))),
         demo: false,
+        profiler: None,
     };
     harness.launch_with(&instance, &options, 90, "").await?;
     let connected = connection.is_finished() && connection.await.unwrap_or(false);

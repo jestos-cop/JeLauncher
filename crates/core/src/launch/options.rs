@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::minecraft::{Features, VersionJson};
+use crate::tools::Profiler;
 
 /// Where the game should go right after starting.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
@@ -17,6 +18,8 @@ pub enum QuickPlay {
 pub struct LaunchOptions {
     pub quick_play: Option<QuickPlay>,
     pub demo: bool,
+    /// Attached to the game once it has started.
+    pub profiler: Option<Profiler>,
 }
 
 impl LaunchOptions {
@@ -69,6 +72,7 @@ mod tests {
         let options = LaunchOptions {
             quick_play: Some(QuickPlay::Server("mc.example.com".into())),
             demo: false,
+            profiler: None,
         };
         assert!(options.features(&modern, false).quick_play_multiplayer);
         assert!(!options.features(&legacy, false).quick_play_multiplayer);

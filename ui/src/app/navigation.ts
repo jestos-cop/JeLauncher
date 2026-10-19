@@ -14,7 +14,7 @@ export type InstanceTab =
   | 'notes'
   | 'settings'
 
-export type SettingsTab = 'launcher' | 'accounts' | 'java' | 'minecraft' | 'commands'
+export type SettingsTab = 'launcher' | 'accounts' | 'java' | 'minecraft' | 'commands' | 'tools'
 
 export type View =
   | { page: 'main' }

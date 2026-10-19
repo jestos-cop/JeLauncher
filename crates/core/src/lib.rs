@@ -22,6 +22,7 @@ pub mod servers;
 pub mod settings;
 pub mod shortcuts;
 pub mod system;
+pub mod tools;
 pub mod worlds;
 
 pub use error::{Error, Result};

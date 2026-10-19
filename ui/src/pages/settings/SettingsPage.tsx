@@ -1,9 +1,9 @@
-import { Coffee, Monitor, Rocket, Terminal, UsersRound } from 'lucide-react'
+import { Coffee, Monitor, Rocket, Terminal, UsersRound, Wrench } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigation, type SettingsTab } from '@/app/navigation'
 import type { GlobalSettings } from '@/bindings'
 import { CommandFields } from '@/components/CommandFields'
-import { Field, JavaPicker, NumberInput, ThemeSelect } from '@/components/SettingsFields'
+import { Field, JavaPicker, NumberInput, PathInput, ThemeSelect } from '@/components/SettingsFields'
 import { SidebarLayout, type SidebarTab } from '@/components/SidebarLayout'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -17,6 +17,7 @@ const TABS: SidebarTab<SettingsTab>[] = [
   { tab: 'java', label: 'Java', icon: Coffee },
   { tab: 'minecraft', label: 'Minecraft', icon: Monitor },
   { tab: 'commands', label: 'Commands', icon: Terminal },
+  { tab: 'tools', label: 'Tools', icon: Wrench },
 ]
 
 export function SettingsPage({ tab }: { tab: SettingsTab }) {
@@ -52,6 +53,8 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
     setDraft((current) => ({ ...current, window: { ...current.window, ...patch } }))
   const setLauncher = (patch: Partial<GlobalSettings['launcher']>) =>
     setDraft((current) => ({ ...current, launcher: { ...current.launcher, ...patch } }))
+  const setTools = (patch: Partial<GlobalSettings['tools']>) =>
+    setDraft((current) => ({ ...current, tools: { ...current.tools, ...patch } }))
   const setNetwork = (patch: Partial<GlobalSettings['network']>) =>
     setDraft((current) => ({ ...current, network: { ...current.network, ...patch } }))
 
@@ -217,6 +220,46 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
           value={draft.commands}
           onChange={(commands) => setDraft((current) => ({ ...current, commands }))}
         />
+      )}
+
+      {tab === 'tools' && (
+        <>
+          <h3 className="text-sm font-semibold">Profilers</h3>
+          <Field label="JProfiler folder" hint="The installation folder that contains bin/jpenable.">
+            <PathInput
+              directory
+              placeholder="Not set"
+              value={draft.tools.jprofilerPath}
+              onChange={(jprofilerPath) => setTools({ jprofilerPath })}
+            />
+          </Field>
+          <Field label="JProfiler port">
+            <NumberInput
+              value={draft.tools.jprofilerPort}
+              min={1024}
+              max={65535}
+              onChange={(jprofilerPort) => setTools({ jprofilerPort })}
+            />
+          </Field>
+          <Field label="VisualVM" hint="Leave empty to look for jvisualvm or visualvm on the PATH.">
+            <PathInput
+              placeholder="Found on the PATH"
+              value={draft.tools.visualvmPath}
+              onChange={(visualvmPath) => setTools({ visualvmPath })}
+            />
+          </Field>
+          <h3 className="text-sm font-semibold">Editor</h3>
+          <Field
+            label="Text editor"
+            hint="Command that opens instance files, for example code or subl. Leave empty to use the default app."
+          >
+            <Input
+              placeholder="Default app"
+              value={draft.tools.editor ?? ''}
+              onChange={(event) => setTools({ editor: event.target.value || null })}
+            />
+          </Field>
+        </>
       )}
 
       {draft.java.minMemoryMb > draft.java.maxMemoryMb && (

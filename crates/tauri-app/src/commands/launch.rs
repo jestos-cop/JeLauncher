@@ -28,6 +28,9 @@ pub async fn launch_instance(
         .clone();
     let account = super::accounts::launch_account(&state).await?;
     let mut instance = Instance::open(&state.paths.instances(), &instance_id)?;
+    if let Some(profiler) = options.profiler {
+        profiler.check(&settings.tools)?;
+    }
 
     let (kill_tx, mut kill_rx) = oneshot::channel();
     {
@@ -65,6 +68,16 @@ pub async fn launch_instance(
         }
     };
 
+    if let (Some(profiler), Some(pid)) = (options.profiler, child.id())
+        && let Err(err) = profiler.attach(&settings.tools, pid)
+    {
+        let _ = InstanceLogEvent {
+            instance_id: instance_id.clone(),
+            line: format!("Could not start the profiler: {err}"),
+            level: LogLevel::Launcher,
+        }
+        .emit(&app);
+    }
     instance.config.last_launch_time = unix_millis();
     instance.save()?;
 

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useReducer, type ReactNode } from 'rea
 import { reducer, SessionsContext } from '@/app/sessions'
 import { commands, events, type LaunchOptions } from '@/bindings'
 
-const DEFAULT_LAUNCH: LaunchOptions = { quickPlay: null, demo: false }
+const DEFAULT_LAUNCH: LaunchOptions = { quickPlay: null, demo: false, profiler: null }
 
 export function SessionsProvider({ children }: { children: ReactNode }) {
   const [sessions, dispatch] = useReducer(reducer, {})
@@ -28,9 +28,9 @@ export function SessionsProvider({ children }: { children: ReactNode }) {
     return () => subscriptions.forEach((subscription) => void subscription.then((unlisten) => unlisten()))
   }, [queryClient])
 
-  const launch = useCallback(async (id: string, options: LaunchOptions = DEFAULT_LAUNCH) => {
+  const launch = useCallback(async (id: string, options: Partial<LaunchOptions> = {}) => {
     dispatch({ type: 'preparing', id })
-    const result = await commands.launchInstance(id, options)
+    const result = await commands.launchInstance(id, { ...DEFAULT_LAUNCH, ...options })
     if (result.status === 'ok') dispatch({ type: 'running', id })
     else
       dispatch({

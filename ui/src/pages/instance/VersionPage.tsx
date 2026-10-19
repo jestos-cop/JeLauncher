@@ -1,10 +1,10 @@
-import { Pencil, Trash2 } from 'lucide-react'
+import { FileCode, Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import type { InstanceSummary } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Button } from '@/components/ui/button'
 import { ChangeVersionDialog } from '@/dialogs/ChangeVersionDialog'
-import { useSetInstanceVersion } from '@/hooks/use-instance-actions'
+import { useOpenInstanceFile, useSetInstanceVersion } from '@/hooks/use-instance-actions'
 
 const LOADER_NAMES = {
   fabric: 'Fabric Loader',
@@ -16,6 +16,7 @@ const LOADER_NAMES = {
 export function VersionPage({ instance }: { instance: InstanceSummary }) {
   const [dialog, setDialog] = useState<'change' | 'removeLoader' | null>(null)
   const setInstanceVersion = useSetInstanceVersion()
+  const openFile = useOpenInstanceFile()
   const close = () => setDialog(null)
   const { loader } = instance
 
@@ -23,11 +24,27 @@ export function VersionPage({ instance }: { instance: InstanceSummary }) {
     <div className="flex min-h-0 flex-1 flex-col gap-3">
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">Components</span>
-        <Button size="sm" variant="ghost" className="ml-auto" onClick={() => setDialog('change')}>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="ml-auto"
+          onClick={() => openFile.mutate({ id: instance.id, file: 'config' })}
+        >
+          <FileCode /> Edit instance.json
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => openFile.mutate({ id: instance.id, file: 'gameOptions' })}
+        >
+          <FileCode /> Edit options.txt
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => setDialog('change')}>
           <Pencil /> {loader ? 'Change Version' : 'Change Version or Install Loader'}
         </Button>
       </div>
 
+      {openFile.error && <p className="text-sm text-destructive">{openFile.error.message}</p>}
       {setInstanceVersion.error && (
         <p className="text-sm text-destructive">{setInstanceVersion.error.message}</p>
       )}

@@ -5,6 +5,7 @@ import {
   Link,
   Package,
   Pencil,
+  Gauge,
   Play,
   Settings2,
   Square,
@@ -15,7 +16,14 @@ import { useState } from 'react'
 import { useNavigation } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
 import type { InstanceSummary } from '@/bindings'
-import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@/components/ui/context-menu'
+import {
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+} from '@/components/ui/context-menu'
 import { openInstanceFolder } from '@/hooks/use-instance-actions'
 import { type InstanceDialog, InstanceDialogs } from '@/pages/main/InstanceDialogs'
 
@@ -37,9 +45,22 @@ export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
             <ContextMenuItem onSelect={() => void launch()}>
               <Play /> Launch
             </ContextMenuItem>
-            <ContextMenuItem onSelect={() => void launch({ quickPlay: null, demo: true })}>
+            <ContextMenuItem onSelect={() => void launch({ demo: true })}>
               <Play /> Launch Demo
             </ContextMenuItem>
+            <ContextMenuSub>
+              <ContextMenuSubTrigger>
+                <Gauge /> Launch with Profiler
+              </ContextMenuSubTrigger>
+              <ContextMenuSubContent>
+                <ContextMenuItem onSelect={() => void launch({ profiler: 'jprofiler' })}>
+                  JProfiler
+                </ContextMenuItem>
+                <ContextMenuItem onSelect={() => void launch({ profiler: 'visualVm' })}>
+                  VisualVM
+                </ContextMenuItem>
+              </ContextMenuSubContent>
+            </ContextMenuSub>
           </>
         )}
         <ContextMenuItem onSelect={() => navigate({ page: 'instance', instanceId: instance.id, tab: 'log' })}>

@@ -52,7 +52,7 @@ export function reducer(sessions: Record<string, Session>, action: Action): Reco
 
 interface SessionsContextValue {
   sessions: Record<string, Session>
-  launch: (id: string, options?: LaunchOptions) => Promise<void>
+  launch: (id: string, options?: Partial<LaunchOptions>) => Promise<void>
   kill: (id: string) => Promise<void>
   clearLog: (id: string) => void
 }
@@ -69,7 +69,7 @@ export function useSession(id: string) {
   const { sessions, launch, kill, clearLog } = useSessionsContext()
   return {
     session: sessions[id] ?? IDLE,
-    launch: (options?: LaunchOptions) => launch(id, options),
+    launch: (options?: Partial<LaunchOptions>) => launch(id, options),
     kill: () => kill(id),
     clearLog: () => clearLog(id),
   }

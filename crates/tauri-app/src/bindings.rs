@@ -22,6 +22,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::export::list_export_entries,
             commands::folders::open_launcher_folder,
             commands::folders::open_launcher_log,
+            commands::folders::open_instance_file,
             commands::icons::add_custom_icon,
             commands::icons::list_custom_icons,
             commands::icons::remove_custom_icon,
