@@ -69,6 +69,9 @@ impl MenuText {
             "uk" => include_str!("../locales/menu.uk.json"),
             "ru" => include_str!("../locales/menu.ru.json"),
             "es" => include_str!("../locales/menu.es.json"),
+            "fr" => include_str!("../locales/menu.fr.json"),
+            "pl" => include_str!("../locales/menu.pl.json"),
+            "sr" => include_str!("../locales/menu.sr.json"),
             _ => include_str!("../locales/menu.en.json"),
         };
         Self(serde_json::from_str(json).unwrap_or_default())

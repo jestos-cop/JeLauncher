@@ -1,0 +1,23 @@
+{
+  "progress": {
+    "preparing": "Przygotowywanie…",
+    "downloading": "Pobieranie plików {{completed}}/{{total}}",
+    "installingLoader": "Instalowanie loadera modów…",
+    "starting": "Uruchamianie gry…"
+  },
+  "log": {
+    "searchPlaceholder": "Szukaj w dzienniku",
+    "lines_one": "{{count}} wiersz",
+    "lines_few": "{{count}} wiersze",
+    "lines_many": "{{count}} wierszy",
+    "lines_other": "{{count}} wiersza",
+    "wrap": "Zawijaj",
+    "upload": "Wyślij",
+    "uploading": "Wysyłanie…",
+    "clear": "Wyczyść",
+    "uploaded": "Dziennik wysłany: <link>{{url}}</link>",
+    "copyLink": "Kopiuj link",
+    "confirmUploadTitle": "Wysłać ten dziennik?",
+    "confirmUploadDescription": "Cały dziennik zostanie opublikowany na mclo.gs i każdy, kto ma link, będzie mógł go przeczytać. Twój folder domowy jest ukrywany w ścieżkach plików."
+  }
+}

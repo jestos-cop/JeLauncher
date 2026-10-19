@@ -1,0 +1,13 @@
+{
+  "about": {
+    "description": "Minecraft лаунчер направљен помоћу Rust-а, Tauri-ја и React-а.",
+    "version": "Верзија",
+    "license": "Лиценца",
+    "trademark": "Minecraft је заштитни знак компаније Mojang Studios. JeLauncher није повезан са компанијама Mojang или Microsoft.",
+    "sourceCode": "Изворни код"
+  },
+  "news": {
+    "title": "Minecraft вести",
+    "readMore": "Прочитај више"
+  }
+}

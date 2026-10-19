@@ -11,6 +11,7 @@
   "autoDownloadHint": "Recomendado: se descarga la versión de Java adecuada para cada versión del juego.",
   "existingAccounts_one": "Ya tienes una cuenta.",
   "existingAccounts_other": "Ya tienes {{count}} cuentas.",
+  "existingAccounts_many": "Ya tienes {{count}} cuentas.",
   "offlineIntro": "Añade una cuenta sin conexión para jugar en modo un jugador y en servidores sin conexión. Podrás iniciar sesión con Microsoft más adelante.",
   "skip": "Omitir configuración"
 }

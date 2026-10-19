@@ -1,0 +1,67 @@
+{
+  "toolbar": {
+    "addInstance": "Додај инстанцу",
+    "settings": "Подешавања",
+    "searchPlaceholder": "Претражи инстанце",
+    "sortByName": "По имену",
+    "sortLastPlayed": "Последње играно"
+  },
+  "folders": {
+    "title": "Фасцикле",
+    "instances": "Инстанце",
+    "java": "Java окружења",
+    "root": "Подаци лаунчера"
+  },
+  "help": {
+    "title": "Помоћ",
+    "sourceCode": "Изворни код и пријаве проблема",
+    "launcherLog": "Отвори дневник лаунчера",
+    "about": "О програму JeLauncher"
+  },
+  "accounts": {
+    "none": "Нема налога",
+    "remove": "Уклони {{name}}",
+    "addMicrosoft": "Додај Microsoft налог…",
+    "addOffline": "Додај офлајн налог…",
+    "manage": "Управљај налозима…"
+  },
+  "news": {
+    "more": "Још вести"
+  },
+  "grid": {
+    "loading": "Учитавање инстанци…",
+    "empty": "Још нема инстанци.",
+    "noMatch": "Ниједна инстанца не одговара упиту „{{search}}”.",
+    "ungrouped": "Без групе"
+  },
+  "panel": {
+    "played": "Време играња: {{time}}"
+  },
+  "actions": {
+    "launchDemo": "Покрени демо",
+    "launchWithProfiler": "Покрени са профајлером",
+    "cancelLaunch": "Откажи покретање",
+    "changeGroup": "Промени групу",
+    "changeIcon": "Промени иконицу",
+    "copy": "Копирај…",
+    "export": "Извези…",
+    "createShortcut": "Направи пречицу"
+  },
+  "dialogs": {
+    "renameTitle": "Преименуј инстанцу",
+    "noGroup": "Без групе",
+    "deleteTitle": "Обрисати {{name}}?",
+    "deleteDescription": "Фасцикла инстанце, укључујући светове и модове, биће трајно уклоњена."
+  },
+  "status": {
+    "instances_one": "{{count}} инстанца",
+    "instances_few": "{{count}} инстанце",
+    "instances_other": "{{count}} инстанци",
+    "totalPlayTime": "Укупно време играња: {{time}}",
+    "running": "Покренуто: {{names}}"
+  },
+  "playTime": {
+    "hoursMinutes": "{{hours}} ч {{minutes}} мин",
+    "minutes": "{{minutes}} мин"
+  }
+}

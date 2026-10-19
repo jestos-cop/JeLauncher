@@ -9,6 +9,7 @@
     "searchPlaceholder": "Buscar en el registro",
     "lines_one": "{{count}} línea",
     "lines_other": "{{count}} líneas",
+    "lines_many": "{{count}} líneas",
     "wrap": "Ajustar líneas",
     "upload": "Subir",
     "uploading": "Subiendo…",

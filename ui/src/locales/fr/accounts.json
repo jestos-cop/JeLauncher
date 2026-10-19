@@ -1,0 +1,32 @@
+{
+  "defaultHint": "Le compte par défaut est utilisé pour lancer toutes les instances.",
+  "addMicrosoft": "Ajouter un compte Microsoft",
+  "addOffline": "Ajouter un compte hors ligne",
+  "kind": {
+    "microsoft": "Microsoft",
+    "offline": "Hors ligne"
+  },
+  "default": "Par défaut",
+  "useByDefault": "Utiliser par défaut",
+  "signInAgain": "Se reconnecter",
+  "refresh": "Actualiser {{username}}",
+  "remove": "Supprimer {{username}}",
+  "loading": "Chargement des comptes…",
+  "empty": "Ajoutez un compte pour lancer le jeu.",
+  "removeDialog": {
+    "title": "Supprimer {{username}} ?",
+    "description": "Le compte est retiré du launcher. Vos mondes et instances ne sont pas affectés."
+  },
+  "microsoft": {
+    "title": "Se connecter avec Microsoft",
+    "description": "Ouvrez la page Microsoft, saisissez le code et approuvez la connexion. Cette fenêtre se met à jour automatiquement.",
+    "copyCode": "Copier le code",
+    "open": "Ouvrir {{url}}",
+    "waiting": "En attente d'approbation…",
+    "requesting": "Demande d'un code de connexion…"
+  },
+  "offline": {
+    "description": "Les comptes hors ligne ne permettent de jouer qu'en solo et sur les serveurs en mode hors ligne.",
+    "username": "Nom d'utilisateur"
+  }
+}

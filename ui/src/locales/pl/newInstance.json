@@ -1,0 +1,86 @@
+{
+  "title": "Nowa instancja",
+  "source": {
+    "custom": "Własna",
+    "import": "Import"
+  },
+  "field": {
+    "name": "Nazwa",
+    "group": "Grupa"
+  },
+  "placeholder": {
+    "instanceName": "Nazwa instancji",
+    "nameFromPack": "Nazwa z paczki",
+    "noGroup": "Bez grupy"
+  },
+  "progress": {
+    "downloading": "Pobieranie plików {{completed}}/{{total}}",
+    "preparing": "Przygotowywanie…"
+  },
+  "untrustedHosts": {
+    "title": "Pobrać z niezaufanych serwerów?",
+    "description": "Ten modpack pobiera pliki z {{hosts}}. Te serwery nie są weryfikowane przez platformę i mogą udostępniać szkodliwe pliki. Kontynuuj tylko, jeśli ufasz autorowi paczki.",
+    "confirm": "Pobierz mimo to"
+  },
+  "optionalMods": {
+    "title": "Mody opcjonalne",
+    "description": "Wybierz dodatki do zainstalowania. Mody, od których zależą, zostaną dodane automatycznie.",
+    "recommended": "zalecane",
+    "shareCode": "Kod udostępniania",
+    "useShareCode": "Użyj kodu udostępniania"
+  },
+  "blockedFiles": {
+    "title": "Niektóre pliki trzeba pobrać ręcznie",
+    "description": "Instancja została utworzona, ale autorzy tych plików zezwalają na pobieranie tylko ze strony CurseForge. Pobierz każdy plik i umieść go w folderze podanym obok.",
+    "downloadPage": "Strona pobierania",
+    "openModsFolder": "Otwórz folder mods"
+  },
+  "modpackBrowser": {
+    "search": "Szukaj modpacków {{provider}}",
+    "loadMore": "Wczytaj więcej",
+    "selectModpack": "Wybierz modpack, aby wybrać wersję.",
+    "loadingVersions": "Wczytywanie wersji…"
+  },
+  "releaseType": {
+    "release": "wydanie",
+    "beta": "beta",
+    "alpha": "alfa"
+  },
+  "projectRow": {
+    "author": "autor: {{author}}",
+    "downloads_one": "{{downloads}} pobranie",
+    "downloads_few": "{{downloads}} pobrania",
+    "downloads_many": "{{downloads}} pobrań",
+    "downloads_other": "{{downloads}} pobrania"
+  },
+  "versionList": {
+    "search": "Szukaj wersji",
+    "filter": {
+      "release": "Wydania",
+      "snapshot": "Snapshoty",
+      "beta": "Bety",
+      "alpha": "Alfy"
+    },
+    "loadingVersions": "Wczytywanie wersji…",
+    "latest": "Najnowsza",
+    "type": {
+      "release": "wydanie",
+      "snapshot": "snapshot",
+      "beta": "beta",
+      "alpha": "alfa",
+      "other": "inna"
+    }
+  },
+  "loaderPicker": {
+    "label": "Loader",
+    "none": "Brak",
+    "noVersions": "Brak wersji",
+    "beta": "beta"
+  },
+  "importSource": {
+    "description": "Zaimportuj paczkę Modrinth (.mrpack) lub wyeksportowaną instancję (.zip) z pliku lub adresu URL.",
+    "placeholder": "Ścieżka pliku lub adres https://",
+    "browse": "Przeglądaj…",
+    "filter": "Archiwa instancji"
+  }
+}

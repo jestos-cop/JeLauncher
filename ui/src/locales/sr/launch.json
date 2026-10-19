@@ -1,0 +1,22 @@
+{
+  "progress": {
+    "preparing": "Припрема…",
+    "downloading": "Преузимање датотека {{completed}}/{{total}}",
+    "installingLoader": "Инсталирање учитавача модова…",
+    "starting": "Покретање игре…"
+  },
+  "log": {
+    "searchPlaceholder": "Претражи дневник",
+    "lines_one": "{{count}} ред",
+    "lines_few": "{{count}} реда",
+    "lines_other": "{{count}} редова",
+    "wrap": "Преломи редове",
+    "upload": "Отпреми",
+    "uploading": "Отпремање…",
+    "clear": "Очисти",
+    "uploaded": "Дневник је отпремљен: <link>{{url}}</link>",
+    "copyLink": "Копирај везу",
+    "confirmUploadTitle": "Отпремити овај дневник?",
+    "confirmUploadDescription": "Цео дневник се објављује на mclo.gs и свако ко има везу може да га прочита. Ваша кућна фасцикла се скрива из путања датотека."
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "releaseType": {
+    "release": "издање",
+    "beta": "бета",
+    "alpha": "алфа"
+  },
+  "resourceDownload": {
+    "title": "Преузимање за {{instance}} · Minecraft {{version}}",
+    "titleWithLoader": "Преузимање за {{instance}} · Minecraft {{version}} · {{loader}}",
+    "search": "Претражи {{provider}}",
+    "sort": {
+      "relevance": "Релевантност",
+      "downloads": "Преузимања",
+      "updated": "Недавно ажурирано",
+      "newest": "Најновије"
+    },
+    "loadMore": "Учитај још",
+    "searching": "Претрага…",
+    "selectProject": "Изаберите пројекат да бисте видели компатибилне верзије.",
+    "alsoInstalled": "Такође инсталирано: {{names}}",
+    "loadingVersions": "Учитавање верзија…",
+    "noVersions": "Нема верзија за ову инстанцу.",
+    "installed": "Инсталирано"
+  },
+  "resourceUpdate": {
+    "title": "Преглед ажурирања",
+    "description": "Изаберите ажурирања за инсталацију. Искључене датотеке остају искључене.",
+    "select": "Ажурирај {{name}}",
+    "changelog": "Листа измена",
+    "noChangelog": "Нема листе измена за ову верзију.",
+    "apply": "Ажурирај {{selected}} од {{total}}"
+  },
+  "export": {
+    "title": "Извоз: {{name}}",
+    "format": {
+      "zip": {
+        "label": "Архива инстанце",
+        "description": "Потпуна копија инстанце која се може поново увести."
+      },
+      "mrpack": {
+        "label": "Modrinth пакет",
+        "description": "Датотеке објављене на Modrinth-у се повезују, а све остало се пакује као замене (overrides)."
+      },
+      "curseforge": {
+        "label": "CurseForge пакет",
+        "description": "Датотеке објављене на CurseForge-у се повезују, а све остало се пакује као замене (overrides)."
+      }
+    },
+    "instanceZip": "Инстанца (.zip)",
+    "version": "Верзија",
+    "summary": "Кратак опис",
+    "author": "Аутор",
+    "optional": "Опционо",
+    "includedFiles": "Укључене датотеке",
+    "noFiles": "Инстанца још нема датотеке игре.",
+    "exporting": "Извоз…",
+    "submit": "Извези…"
+  },
+  "copy": {
+    "title": "Копирање: {{name}}",
+    "defaultName": "Копија од {{name}}",
+    "name": "Назив",
+    "group": "Група",
+    "noGroup": "Без групе",
+    "flag": {
+      "copySaves": "Светови",
+      "copyMods": "Модови и конфигурације",
+      "copyResourcePacks": "Пакети ресурса",
+      "copyShaderPacks": "Пакети шејдера",
+      "copyServers": "Сервери",
+      "copyScreenshots": "Снимци екрана",
+      "copyGameOptions": "Опције игре",
+      "keepPlayTime": "Задржи време играња",
+      "useHardLinks": "Користи чврсте везе уместо копирања (светови се увек копирају)"
+    },
+    "copying": "Копирање…"
+  },
+  "shortcut": {
+    "title": "Пречица на радној површини",
+    "creating": "Прављење пречице за {{name}}…",
+    "created": "Двапут кликните на пречицу да бисте директно покренули ову инстанцу."
+  },
+  "iconPicker": {
+    "title": "Изаберите иконицу",
+    "images": "Слике",
+    "remove": "Уклони иконицу",
+    "add": "Додај иконицу…"
+  },
+  "changeVersion": {
+    "title": "Промени верзију",
+    "description": "Датотеке игре за нову верзију се преузимају при следећем покретању. Модове ће можда требати ажурирати."
+  },
+  "server": {
+    "addTitle": "Додај сервер",
+    "editTitle": "Уреди сервер",
+    "defaultName": "Minecraft сервер",
+    "name": "Назив",
+    "address": "Адреса",
+    "resourcePacks": "Пакети ресурса",
+    "policy": {
+      "prompt": "Питај",
+      "enabled": "Укључено",
+      "disabled": "Искључено"
+    }
+  },
+  "modListExport": {
+    "button": "Извези листу",
+    "fileType": "Листа модова",
+    "plainText": "Обичан текст"
+  }
+}

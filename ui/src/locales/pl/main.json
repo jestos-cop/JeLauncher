@@ -1,0 +1,68 @@
+{
+  "toolbar": {
+    "addInstance": "Dodaj instancję",
+    "settings": "Ustawienia",
+    "searchPlaceholder": "Szukaj instancji",
+    "sortByName": "Według nazwy",
+    "sortLastPlayed": "Ostatnio grane"
+  },
+  "folders": {
+    "title": "Foldery",
+    "instances": "Instancje",
+    "java": "Środowiska Java",
+    "root": "Dane launchera"
+  },
+  "help": {
+    "title": "Pomoc",
+    "sourceCode": "Kod źródłowy i zgłoszenia",
+    "launcherLog": "Otwórz dziennik launchera",
+    "about": "O JeLauncher"
+  },
+  "accounts": {
+    "none": "Brak konta",
+    "remove": "Usuń {{name}}",
+    "addMicrosoft": "Dodaj konto Microsoft…",
+    "addOffline": "Dodaj konto offline…",
+    "manage": "Zarządzaj kontami…"
+  },
+  "news": {
+    "more": "Więcej aktualności"
+  },
+  "grid": {
+    "loading": "Wczytywanie instancji…",
+    "empty": "Brak instancji.",
+    "noMatch": "Brak instancji pasujących do „{{search}}”.",
+    "ungrouped": "Bez grupy"
+  },
+  "panel": {
+    "played": "Czas gry: {{time}}"
+  },
+  "actions": {
+    "launchDemo": "Graj w wersję demo",
+    "launchWithProfiler": "Graj z profilerem",
+    "cancelLaunch": "Anuluj uruchamianie",
+    "changeGroup": "Zmień grupę",
+    "changeIcon": "Zmień ikonę",
+    "copy": "Kopiuj…",
+    "export": "Eksportuj…",
+    "createShortcut": "Utwórz skrót"
+  },
+  "dialogs": {
+    "renameTitle": "Zmień nazwę instancji",
+    "noGroup": "Bez grupy",
+    "deleteTitle": "Usunąć {{name}}?",
+    "deleteDescription": "Folder instancji, wraz ze światami i modami, zostanie trwale usunięty."
+  },
+  "status": {
+    "instances_one": "{{count}} instancja",
+    "instances_few": "{{count}} instancje",
+    "instances_many": "{{count}} instancji",
+    "instances_other": "{{count}} instancji",
+    "totalPlayTime": "Łączny czas gry: {{time}}",
+    "running": "Uruchomione: {{names}}"
+  },
+  "playTime": {
+    "hoursMinutes": "{{hours}} godz. {{minutes}} min",
+    "minutes": "{{minutes}} min"
+  }
+}

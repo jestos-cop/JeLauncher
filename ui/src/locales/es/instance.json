@@ -96,6 +96,7 @@
     "checkUpdates": "Buscar actualizaciones",
     "updatesAvailable_one": "{{count}} actualización disponible.",
     "updatesAvailable_other": "{{count}} actualizaciones disponibles.",
+    "updatesAvailable_many": "{{count}} actualizaciones disponibles.",
     "updating": "Actualizando…",
     "reviewUpdates": "Revisar actualizaciones",
     "reading": "Leyendo archivos…",
@@ -104,6 +105,7 @@
   "worlds": {
     "count_one": "{{count}} mundo",
     "count_other": "{{count}} mundos",
+    "count_many": "{{count}} mundos",
     "backupSaved": "Copia de seguridad guardada en {{path}}",
     "gameMode": {
       "survival": "Supervivencia",
@@ -123,6 +125,7 @@
   "servers": {
     "count_one": "{{count}} servidor",
     "count_other": "{{count}} servidores",
+    "count_many": "{{count}} servidores",
     "add": "Añadir servidor",
     "reading": "Leyendo servidores…",
     "empty": "Aún no hay servidores.",
@@ -131,6 +134,7 @@
     "pinging": "Comprobando conexión…",
     "players_one": "{{online}}/{{count}} jugador",
     "players_other": "{{online}}/{{count}} jugadores",
+    "players_many": "{{online}}/{{count}} jugadores",
     "versionLatency": "{{version}} · {{latency}} ms",
     "join": "Unirse",
     "moveUp": "Subir"
@@ -138,6 +142,7 @@
   "screenshots": {
     "count_one": "{{count}} captura de pantalla",
     "count_other": "{{count}} capturas de pantalla",
+    "count_many": "{{count}} capturas de pantalla",
     "reading": "Leyendo capturas de pantalla…",
     "empty": "Aún no hay capturas de pantalla. Pulsa F2 en el juego para hacer una.",
     "renameTitle": "Renombrar captura de pantalla",

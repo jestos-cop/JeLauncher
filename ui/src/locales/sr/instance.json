@@ -1,0 +1,170 @@
+{
+  "tabs": {
+    "log": "Minecraft дневник",
+    "modpack": "Модпак",
+    "version": "Верзија",
+    "mod": "Модови",
+    "resourcePack": "Пакети ресурса",
+    "shaderPack": "Пакети шејдера",
+    "dataPack": "Пакети података",
+    "worlds": "Светови",
+    "servers": "Сервери",
+    "screenshots": "Снимци екрана",
+    "notes": "Белешке",
+    "settings": "Подешавања"
+  },
+  "columns": {
+    "name": "Назив",
+    "version": "Верзија",
+    "authors": "Аутори",
+    "description": "Опис",
+    "file": "Датотека",
+    "mode": "Режим",
+    "lastPlayed": "Последње играно",
+    "seed": "Семе"
+  },
+  "item": {
+    "enable": "Укључи {{name}}",
+    "remove": "Уклони {{name}}",
+    "delete": "Обриши {{name}}",
+    "rename": "Преименуј {{name}}",
+    "edit": "Уреди {{name}}",
+    "play": "Играј {{name}}",
+    "backUp": "Направи резервну копију: {{name}}",
+    "moveUp": "Помери {{name}} нагоре"
+  },
+  "confirm": {
+    "remove": "Уклонити {{name}}?",
+    "delete": "Обрисати {{name}}?"
+  },
+  "version": {
+    "components": "Компоненте",
+    "editFile": "Уреди {{file}}",
+    "change": "Промени верзију",
+    "changeOrInstallLoader": "Промени верзију или инсталирај учитавач",
+    "removeLoader": "Уклони учитавач",
+    "removeLoaderDescription": "Инстанца ће се покретати као обичан Minecraft; инсталирани модови остају у фасцикли mods."
+  },
+  "modpack": {
+    "source": "Верзија {{version}} са {{provider}}",
+    "sourceWithUpdate": "Верзија {{version}} са {{provider}} · доступна је {{latest}}",
+    "switchTo": "Пређи на {{version}}",
+    "switchVersion": "Промени верзију",
+    "switchUnsupported": "Промена верзије {{provider}} пакета још није подржана.",
+    "downloadingFiles": "Преузимање датотека {{completed}}/{{total}}",
+    "downloading": "Преузимање модпака…",
+    "loadingVersions": "Учитавање верзија…",
+    "installed": "Инсталирано",
+    "releaseType": {
+      "release": "Издање",
+      "beta": "Бета",
+      "alpha": "Алфа"
+    },
+    "noChangelog": "Нема листе измена за ову верзију.",
+    "selectVersion": "Изаберите верзију да бисте видели листу измена.",
+    "confirmTitle": "Прећи на {{version}}?",
+    "confirmDescription": "Датотеке тренутне верзије пакета биће замењене. Светови, снимци екрана и ваше датотеке се задржавају.",
+    "confirmSwitch": "Пређи"
+  },
+  "resources": {
+    "mod": {
+      "search": "Претражи модове",
+      "download": "Преузми модове",
+      "empty": "Нема инсталираних модова. Ставите .jar датотеке у фасциклу mods.",
+      "upToDate": "Сви модови са Modrinth-а су ажурни."
+    },
+    "resourcePack": {
+      "search": "Претражи пакете ресурса",
+      "download": "Преузми пакете ресурса",
+      "empty": "Нема инсталираних пакета ресурса.",
+      "upToDate": "Сви пакети ресурса са Modrinth-а су ажурни."
+    },
+    "shaderPack": {
+      "search": "Претражи пакете шејдера",
+      "download": "Преузми пакете шејдера",
+      "empty": "Нема инсталираних пакета шејдера.",
+      "upToDate": "Сви пакети шејдера са Modrinth-а су ажурни."
+    },
+    "dataPack": {
+      "search": "Претражи пакете података",
+      "download": "Преузми пакете података",
+      "empty": "Нема инсталираних пакета података.",
+      "upToDate": "Сви пакети података са Modrinth-а су ажурни."
+    },
+    "enabledCount": "Укључено {{enabled}} од {{total}}",
+    "checking": "Провера…",
+    "checkUpdates": "Провери ажурирања",
+    "updatesAvailable_one": "Доступно је {{count}} ажурирање.",
+    "updatesAvailable_few": "Доступна су {{count}} ажурирања.",
+    "updatesAvailable_other": "Доступно је {{count}} ажурирања.",
+    "updating": "Ажурирање…",
+    "reviewUpdates": "Прегледај ажурирања",
+    "reading": "Читање датотека…",
+    "removeDescription": "{{file}} ће бити обрисана из инстанце."
+  },
+  "worlds": {
+    "count_one": "{{count}} свет",
+    "count_few": "{{count}} света",
+    "count_other": "{{count}} светова",
+    "backupSaved": "Резервна копија је сачувана у {{path}}",
+    "gameMode": {
+      "survival": "Преживљавање",
+      "creative": "Креативни",
+      "adventure": "Авантура",
+      "spectator": "Посматрач",
+      "hardcore": "Хардкор",
+      "unknown": "Непознато"
+    },
+    "copySeed": "Копирај семе",
+    "play": "Играј",
+    "backUp": "Резервна копија",
+    "reading": "Читање светова…",
+    "empty": "Још нема светова.",
+    "deleteDescription": "Свет ће бити трајно уклоњен. Размислите о томе да прво направите резервну копију."
+  },
+  "servers": {
+    "count_one": "{{count}} сервер",
+    "count_few": "{{count}} сервера",
+    "count_other": "{{count}} сервера",
+    "add": "Додај сервер",
+    "reading": "Читање сервера…",
+    "empty": "Још нема сервера.",
+    "unnamed": "сервер",
+    "removeDescription": "Сервер ће бити уклоњен са листе за више играча ове инстанце.",
+    "pinging": "Провера везе…",
+    "players_one": "{{online}}/{{count}} играч",
+    "players_few": "{{online}}/{{count}} играча",
+    "players_other": "{{online}}/{{count}} играча",
+    "versionLatency": "{{version}} · {{latency}} ms",
+    "join": "Придружи се",
+    "moveUp": "Помери нагоре"
+  },
+  "screenshots": {
+    "count_one": "{{count}} снимак екрана",
+    "count_few": "{{count}} снимка екрана",
+    "count_other": "{{count}} снимака екрана",
+    "reading": "Читање снимака екрана…",
+    "empty": "Још нема снимака екрана. Притисните F2 у игри да бисте направили снимак.",
+    "renameTitle": "Преименуј снимак екрана",
+    "deleteDescription": "Снимак екрана ће бити трајно уклоњен."
+  },
+  "notes": {
+    "loading": "Учитавање белешки…",
+    "unsaved": "Несачуване измене",
+    "hint": "Белешке се чувају уз инстанцу.",
+    "placeholder": "Семена, координате, лозинке сервера, белешке о подешавању модова…"
+  },
+  "settings": {
+    "javaInstallation": "Java инсталација",
+    "minMemory": "Минимална меморија",
+    "maxMemory": "Максимална меморија",
+    "mib": "MiB",
+    "jvmArgs": "JVM аргументи",
+    "gameWindow": "Прозор игре",
+    "windowSize": "Величина прозора",
+    "startMaximized": "Покрени увећано",
+    "customCommands": "Прилагођене команде",
+    "memoryError": "Минимална меморија не сме бити већа од максималне.",
+    "override": "Замени глобална подешавања"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "steps": {
+    "welcome": "Bienvenue",
+    "appearance": "Apparence",
+    "java": "Java",
+    "account": "Compte"
+  },
+  "welcomeTitle": "Bienvenue dans JeLauncher",
+  "progress": "Étape {{step}} sur {{total}}",
+  "intro": "Quelques questions rapides avant de jouer. Tout peut être modifié plus tard dans les Paramètres.",
+  "autoDownloadHint": "Recommandé : le bon Java est récupéré pour chaque version du jeu.",
+  "existingAccounts_one": "Vous avez déjà un compte.",
+  "existingAccounts_many": "Vous avez déjà {{count}} de comptes.",
+  "existingAccounts_other": "Vous avez déjà {{count}} comptes.",
+  "offlineIntro": "Ajoutez un compte hors ligne pour jouer en solo et sur les serveurs en mode hors ligne. La connexion Microsoft pourra se faire plus tard.",
+  "skip": "Passer la configuration"
+}

@@ -1,0 +1,170 @@
+{
+  "tabs": {
+    "log": "Journal Minecraft",
+    "modpack": "Modpack",
+    "version": "Version",
+    "mod": "Mods",
+    "resourcePack": "Packs de ressources",
+    "shaderPack": "Packs de shaders",
+    "dataPack": "Packs de données",
+    "worlds": "Mondes",
+    "servers": "Serveurs",
+    "screenshots": "Captures d'écran",
+    "notes": "Notes",
+    "settings": "Paramètres"
+  },
+  "columns": {
+    "name": "Nom",
+    "version": "Version",
+    "authors": "Auteurs",
+    "description": "Description",
+    "file": "Fichier",
+    "mode": "Mode",
+    "lastPlayed": "Dernière partie",
+    "seed": "Graine"
+  },
+  "item": {
+    "enable": "Activer {{name}}",
+    "remove": "Retirer {{name}}",
+    "delete": "Supprimer {{name}}",
+    "rename": "Renommer {{name}}",
+    "edit": "Modifier {{name}}",
+    "play": "Jouer à {{name}}",
+    "backUp": "Sauvegarder {{name}}",
+    "moveUp": "Monter {{name}}"
+  },
+  "confirm": {
+    "remove": "Retirer {{name}} ?",
+    "delete": "Supprimer {{name}} ?"
+  },
+  "version": {
+    "components": "Composants",
+    "editFile": "Modifier {{file}}",
+    "change": "Changer de version",
+    "changeOrInstallLoader": "Changer de version ou installer un chargeur",
+    "removeLoader": "Retirer le chargeur",
+    "removeLoaderDescription": "L'instance se lancera en Minecraft vanilla ; les mods installés restent dans le dossier mods."
+  },
+  "modpack": {
+    "source": "Version {{version}} de {{provider}}",
+    "sourceWithUpdate": "Version {{version}} de {{provider}} · {{latest}} est disponible",
+    "switchTo": "Passer à {{version}}",
+    "switchVersion": "Changer de version",
+    "switchUnsupported": "Le changement de version des packs {{provider}} n'est pas encore pris en charge.",
+    "downloadingFiles": "Téléchargement des fichiers {{completed}}/{{total}}",
+    "downloading": "Téléchargement du modpack…",
+    "loadingVersions": "Chargement des versions…",
+    "installed": "Installée",
+    "releaseType": {
+      "release": "Release",
+      "beta": "Bêta",
+      "alpha": "Alpha"
+    },
+    "noChangelog": "Aucun journal des modifications pour cette version.",
+    "selectVersion": "Sélectionnez une version pour voir son journal des modifications.",
+    "confirmTitle": "Passer à {{version}} ?",
+    "confirmDescription": "Les fichiers de la version actuelle du pack sont remplacés. Les mondes, les captures d'écran et vos propres fichiers sont conservés.",
+    "confirmSwitch": "Changer"
+  },
+  "resources": {
+    "mod": {
+      "search": "Rechercher des mods",
+      "download": "Télécharger des mods",
+      "empty": "Aucun mod installé. Placez des fichiers .jar dans le dossier mods.",
+      "upToDate": "Tous les mods de Modrinth sont à jour."
+    },
+    "resourcePack": {
+      "search": "Rechercher des packs de ressources",
+      "download": "Télécharger des packs de ressources",
+      "empty": "Aucun pack de ressources installé.",
+      "upToDate": "Tous les packs de ressources de Modrinth sont à jour."
+    },
+    "shaderPack": {
+      "search": "Rechercher des packs de shaders",
+      "download": "Télécharger des packs de shaders",
+      "empty": "Aucun pack de shaders installé.",
+      "upToDate": "Tous les packs de shaders de Modrinth sont à jour."
+    },
+    "dataPack": {
+      "search": "Rechercher des packs de données",
+      "download": "Télécharger des packs de données",
+      "empty": "Aucun pack de données installé.",
+      "upToDate": "Tous les packs de données de Modrinth sont à jour."
+    },
+    "enabledCount": "{{enabled}} sur {{total}} activés",
+    "checking": "Vérification…",
+    "checkUpdates": "Rechercher des mises à jour",
+    "updatesAvailable_one": "{{count}} mise à jour disponible.",
+    "updatesAvailable_many": "{{count}} de mises à jour disponibles.",
+    "updatesAvailable_other": "{{count}} mises à jour disponibles.",
+    "updating": "Mise à jour…",
+    "reviewUpdates": "Examiner les mises à jour",
+    "reading": "Lecture des fichiers…",
+    "removeDescription": "{{file}} sera supprimé de l'instance."
+  },
+  "worlds": {
+    "count_one": "{{count}} monde",
+    "count_many": "{{count}} de mondes",
+    "count_other": "{{count}} mondes",
+    "backupSaved": "Sauvegarde enregistrée dans {{path}}",
+    "gameMode": {
+      "survival": "Survie",
+      "creative": "Créatif",
+      "adventure": "Aventure",
+      "spectator": "Spectateur",
+      "hardcore": "Hardcore",
+      "unknown": "Inconnu"
+    },
+    "copySeed": "Copier la graine",
+    "play": "Jouer",
+    "backUp": "Sauvegarder",
+    "reading": "Lecture des mondes…",
+    "empty": "Aucun monde pour l'instant.",
+    "deleteDescription": "Le monde sera définitivement supprimé. Pensez à faire une sauvegarde avant."
+  },
+  "servers": {
+    "count_one": "{{count}} serveur",
+    "count_many": "{{count}} de serveurs",
+    "count_other": "{{count}} serveurs",
+    "add": "Ajouter un serveur",
+    "reading": "Lecture des serveurs…",
+    "empty": "Aucun serveur pour l'instant.",
+    "unnamed": "serveur",
+    "removeDescription": "Le serveur sera retiré de la liste multijoueur de cette instance.",
+    "pinging": "Ping…",
+    "players_one": "{{online}}/{{count}} joueur",
+    "players_many": "{{online}}/{{count}} joueurs",
+    "players_other": "{{online}}/{{count}} joueurs",
+    "versionLatency": "{{version}} · {{latency}} ms",
+    "join": "Rejoindre",
+    "moveUp": "Monter"
+  },
+  "screenshots": {
+    "count_one": "{{count}} capture d'écran",
+    "count_many": "{{count}} de captures d'écran",
+    "count_other": "{{count}} captures d'écran",
+    "reading": "Lecture des captures d'écran…",
+    "empty": "Aucune capture d'écran pour l'instant. Appuyez sur F2 en jeu pour en prendre une.",
+    "renameTitle": "Renommer la capture d'écran",
+    "deleteDescription": "La capture d'écran sera définitivement supprimée."
+  },
+  "notes": {
+    "loading": "Chargement des notes…",
+    "unsaved": "Modifications non enregistrées",
+    "hint": "Les notes sont stockées avec l'instance.",
+    "placeholder": "Graines, coordonnées, mots de passe de serveurs, notes de configuration des mods…"
+  },
+  "settings": {
+    "javaInstallation": "Installation Java",
+    "minMemory": "Mémoire minimale",
+    "maxMemory": "Mémoire maximale",
+    "mib": "Mio",
+    "jvmArgs": "Arguments JVM",
+    "gameWindow": "Fenêtre du jeu",
+    "windowSize": "Taille de la fenêtre",
+    "startMaximized": "Démarrer en fenêtre agrandie",
+    "customCommands": "Commandes personnalisées",
+    "memoryError": "La mémoire minimale ne doit pas dépasser la mémoire maximale.",
+    "override": "Remplacer les paramètres globaux"
+  }
+}

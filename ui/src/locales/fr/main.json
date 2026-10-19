@@ -1,0 +1,67 @@
+{
+  "toolbar": {
+    "addInstance": "Ajouter une instance",
+    "settings": "Paramètres",
+    "searchPlaceholder": "Rechercher des instances",
+    "sortByName": "Par nom",
+    "sortLastPlayed": "Dernière partie"
+  },
+  "folders": {
+    "title": "Dossiers",
+    "instances": "Instances",
+    "java": "Environnements Java",
+    "root": "Données du launcher"
+  },
+  "help": {
+    "title": "Aide",
+    "sourceCode": "Code source et signalements",
+    "launcherLog": "Ouvrir le journal du launcher",
+    "about": "À propos de JeLauncher"
+  },
+  "accounts": {
+    "none": "Aucun compte",
+    "remove": "Supprimer {{name}}",
+    "addMicrosoft": "Ajouter un compte Microsoft…",
+    "addOffline": "Ajouter un compte hors ligne…",
+    "manage": "Gérer les comptes…"
+  },
+  "news": {
+    "more": "Plus d'actualités"
+  },
+  "grid": {
+    "loading": "Chargement des instances…",
+    "empty": "Aucune instance pour l'instant.",
+    "noMatch": "Aucune instance ne correspond à « {{search}} ».",
+    "ungrouped": "Sans groupe"
+  },
+  "panel": {
+    "played": "Temps de jeu : {{time}}"
+  },
+  "actions": {
+    "launchDemo": "Jouer à la démo",
+    "launchWithProfiler": "Jouer avec un profileur",
+    "cancelLaunch": "Annuler le lancement",
+    "changeGroup": "Changer de groupe",
+    "changeIcon": "Changer d'icône",
+    "copy": "Copier…",
+    "export": "Exporter…",
+    "createShortcut": "Créer un raccourci"
+  },
+  "dialogs": {
+    "renameTitle": "Renommer l'instance",
+    "noGroup": "Aucun groupe",
+    "deleteTitle": "Supprimer {{name}} ?",
+    "deleteDescription": "Le dossier de l'instance, y compris les mondes et les mods, sera définitivement supprimé."
+  },
+  "status": {
+    "instances_one": "{{count}} instance",
+    "instances_many": "{{count}} d'instances",
+    "instances_other": "{{count}} instances",
+    "totalPlayTime": "Temps de jeu total : {{time}}",
+    "running": "En cours : {{names}}"
+  },
+  "playTime": {
+    "hoursMinutes": "{{hours}} h {{minutes}} min",
+    "minutes": "{{minutes}} min"
+  }
+}

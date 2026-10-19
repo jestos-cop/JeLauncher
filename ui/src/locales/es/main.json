@@ -56,6 +56,7 @@
   "status": {
     "instances_one": "{{count}} instancia",
     "instances_other": "{{count}} instancias",
+    "instances_many": "{{count}} instancias",
     "totalPlayTime": "Tiempo de juego total: {{time}}",
     "running": "En ejecución: {{names}}"
   },

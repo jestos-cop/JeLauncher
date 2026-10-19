@@ -1,0 +1,22 @@
+{
+  "progress": {
+    "preparing": "Préparation…",
+    "downloading": "Téléchargement des fichiers {{completed}}/{{total}}",
+    "installingLoader": "Installation du chargeur de mods…",
+    "starting": "Démarrage du jeu…"
+  },
+  "log": {
+    "searchPlaceholder": "Rechercher dans le journal",
+    "lines_one": "{{count}} ligne",
+    "lines_many": "{{count}} de lignes",
+    "lines_other": "{{count}} lignes",
+    "wrap": "Retour à la ligne",
+    "upload": "Envoyer",
+    "uploading": "Envoi…",
+    "clear": "Effacer",
+    "uploaded": "Journal envoyé : <link>{{url}}</link>",
+    "copyLink": "Copier le lien",
+    "confirmUploadTitle": "Envoyer ce journal ?",
+    "confirmUploadDescription": "Le journal entier est publié sur mclo.gs et toute personne disposant du lien peut le lire. Votre dossier personnel est masqué dans les chemins de fichiers."
+  }
+}

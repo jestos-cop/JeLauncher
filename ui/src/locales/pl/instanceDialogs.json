@@ -1,0 +1,111 @@
+{
+  "releaseType": {
+    "release": "wydanie",
+    "beta": "beta",
+    "alpha": "alfa"
+  },
+  "resourceDownload": {
+    "title": "Pobieranie dla {{instance}} · Minecraft {{version}}",
+    "titleWithLoader": "Pobieranie dla {{instance}} · Minecraft {{version}} · {{loader}}",
+    "search": "Szukaj w {{provider}}",
+    "sort": {
+      "relevance": "Trafność",
+      "downloads": "Pobrania",
+      "updated": "Ostatnio zaktualizowane",
+      "newest": "Najnowsze"
+    },
+    "loadMore": "Wczytaj więcej",
+    "searching": "Wyszukiwanie…",
+    "selectProject": "Wybierz projekt, aby zobaczyć zgodne wersje.",
+    "alsoInstalled": "Zostaną też zainstalowane: {{names}}",
+    "loadingVersions": "Wczytywanie wersji…",
+    "noVersions": "Brak wersji dla tej instancji.",
+    "installed": "Zainstalowano"
+  },
+  "resourceUpdate": {
+    "title": "Przejrzyj aktualizacje",
+    "description": "Wybierz aktualizacje do zainstalowania. Wyłączone pliki pozostaną wyłączone.",
+    "select": "Aktualizuj {{name}}",
+    "changelog": "Lista zmian",
+    "noChangelog": "Brak listy zmian dla tej wersji.",
+    "apply": "Aktualizuj {{selected}} z {{total}}"
+  },
+  "export": {
+    "title": "Eksportuj {{name}}",
+    "format": {
+      "zip": {
+        "label": "Archiwum instancji",
+        "description": "Pełna kopia instancji, którą można ponownie zaimportować."
+      },
+      "mrpack": {
+        "label": "Paczka Modrinth",
+        "description": "Pliki opublikowane na Modrinth są linkowane, a cała reszta jest dołączana jako nadpisania."
+      },
+      "curseforge": {
+        "label": "Paczka CurseForge",
+        "description": "Pliki opublikowane na CurseForge są linkowane, a cała reszta jest dołączana jako nadpisania."
+      }
+    },
+    "instanceZip": "Instancja (.zip)",
+    "version": "Wersja",
+    "summary": "Podsumowanie",
+    "author": "Autor",
+    "optional": "Opcjonalne",
+    "includedFiles": "Dołączone pliki",
+    "noFiles": "Instancja nie ma jeszcze plików gry.",
+    "exporting": "Eksportowanie…",
+    "submit": "Eksportuj…"
+  },
+  "copy": {
+    "title": "Kopiuj {{name}}",
+    "defaultName": "Kopia {{name}}",
+    "name": "Nazwa",
+    "group": "Grupa",
+    "noGroup": "Bez grupy",
+    "flag": {
+      "copySaves": "Światy",
+      "copyMods": "Mody i konfiguracje",
+      "copyResourcePacks": "Paczki zasobów",
+      "copyShaderPacks": "Paczki shaderów",
+      "copyServers": "Serwery",
+      "copyScreenshots": "Zrzuty ekranu",
+      "copyGameOptions": "Opcje gry",
+      "keepPlayTime": "Zachowaj czas gry",
+      "useHardLinks": "Twórz twarde dowiązania zamiast kopiować pliki (światy są zawsze kopiowane)"
+    },
+    "copying": "Kopiowanie…"
+  },
+  "shortcut": {
+    "title": "Skrót na pulpicie",
+    "creating": "Tworzenie skrótu do {{name}}…",
+    "created": "Kliknij dwukrotnie skrót, aby bezpośrednio uruchomić tę instancję."
+  },
+  "iconPicker": {
+    "title": "Wybierz ikonę",
+    "images": "Obrazy",
+    "remove": "Usuń ikonę",
+    "add": "Dodaj ikonę…"
+  },
+  "changeVersion": {
+    "title": "Zmień wersję",
+    "description": "Pliki gry dla nowej wersji zostaną pobrane przy następnym uruchomieniu. Mody mogą wymagać aktualizacji."
+  },
+  "server": {
+    "addTitle": "Dodaj serwer",
+    "editTitle": "Edytuj serwer",
+    "defaultName": "Serwer Minecraft",
+    "name": "Nazwa",
+    "address": "Adres",
+    "resourcePacks": "Paczki zasobów",
+    "policy": {
+      "prompt": "Pytaj",
+      "enabled": "Włączone",
+      "disabled": "Wyłączone"
+    }
+  },
+  "modListExport": {
+    "button": "Eksportuj listę",
+    "fileType": "Lista modów",
+    "plainText": "Zwykły tekst"
+  }
+}

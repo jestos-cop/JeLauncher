@@ -1,0 +1,85 @@
+{
+  "title": "Nouvelle instance",
+  "source": {
+    "custom": "Personnalisée",
+    "import": "Importer"
+  },
+  "field": {
+    "name": "Nom",
+    "group": "Groupe"
+  },
+  "placeholder": {
+    "instanceName": "Nom de l'instance",
+    "nameFromPack": "Nom issu du pack",
+    "noGroup": "Aucun groupe"
+  },
+  "progress": {
+    "downloading": "Téléchargement des fichiers {{completed}}/{{total}}",
+    "preparing": "Préparation…"
+  },
+  "untrustedHosts": {
+    "title": "Télécharger depuis des hôtes non fiables ?",
+    "description": "Ce modpack télécharge des fichiers depuis {{hosts}}. Ces hôtes ne sont pas vérifiés par la plateforme et peuvent distribuer des fichiers malveillants. Continuez uniquement si vous faites confiance à l'auteur du pack.",
+    "confirm": "Télécharger quand même"
+  },
+  "optionalMods": {
+    "title": "Mods facultatifs",
+    "description": "Choisissez les extras à installer. Les mods dont ils dépendent sont ajoutés automatiquement.",
+    "recommended": "recommandé",
+    "shareCode": "Code de partage",
+    "useShareCode": "Utiliser un code de partage"
+  },
+  "blockedFiles": {
+    "title": "Certains fichiers doivent être téléchargés manuellement",
+    "description": "L'instance a été créée, mais ces auteurs n'autorisent le téléchargement que depuis le site de CurseForge. Téléchargez chaque fichier et placez-le dans le dossier indiqué à côté.",
+    "downloadPage": "Page de téléchargement",
+    "openModsFolder": "Ouvrir le dossier mods"
+  },
+  "modpackBrowser": {
+    "search": "Rechercher des modpacks {{provider}}",
+    "loadMore": "Charger plus",
+    "selectModpack": "Sélectionnez un modpack pour choisir une version.",
+    "loadingVersions": "Chargement des versions…"
+  },
+  "releaseType": {
+    "release": "release",
+    "beta": "bêta",
+    "alpha": "alpha"
+  },
+  "projectRow": {
+    "author": "par {{author}}",
+    "downloads_one": "{{downloads}} téléchargement",
+    "downloads_many": "{{downloads}} de téléchargements",
+    "downloads_other": "{{downloads}} téléchargements"
+  },
+  "versionList": {
+    "search": "Rechercher des versions",
+    "filter": {
+      "release": "Releases",
+      "snapshot": "Snapshots",
+      "beta": "Bêtas",
+      "alpha": "Alphas"
+    },
+    "loadingVersions": "Chargement des versions…",
+    "latest": "Dernière",
+    "type": {
+      "release": "release",
+      "snapshot": "snapshot",
+      "beta": "bêta",
+      "alpha": "alpha",
+      "other": "autre"
+    }
+  },
+  "loaderPicker": {
+    "label": "Chargeur",
+    "none": "Aucun",
+    "noVersions": "Aucune version",
+    "beta": "bêta"
+  },
+  "importSource": {
+    "description": "Importez un pack Modrinth (.mrpack) ou une instance exportée (.zip) depuis un fichier ou une URL.",
+    "placeholder": "Chemin du fichier ou URL https://",
+    "browse": "Parcourir…",
+    "filter": "Archives d'instance"
+  }
+}

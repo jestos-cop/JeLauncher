@@ -1,0 +1,85 @@
+{
+  "title": "Нова инстанца",
+  "source": {
+    "custom": "Прилагођено",
+    "import": "Увоз"
+  },
+  "field": {
+    "name": "Назив",
+    "group": "Група"
+  },
+  "placeholder": {
+    "instanceName": "Назив инстанце",
+    "nameFromPack": "Назив из пакета",
+    "noGroup": "Без групе"
+  },
+  "progress": {
+    "downloading": "Преузимање датотека {{completed}}/{{total}}",
+    "preparing": "Припрема…"
+  },
+  "untrustedHosts": {
+    "title": "Преузети са непоузданих хостова?",
+    "description": "Овај модпак преузима датотеке са {{hosts}}. Платформа не проверава ове хостове и они могу да пруже штетне датотеке. Наставите само ако верујете аутору пакета.",
+    "confirm": "Ипак преузми"
+  },
+  "optionalMods": {
+    "title": "Опциони модови",
+    "description": "Изаберите додатке за инсталацију. Модови од којих зависе додају се аутоматски.",
+    "recommended": "препоручено",
+    "shareCode": "Код за дељење",
+    "useShareCode": "Користи код за дељење"
+  },
+  "blockedFiles": {
+    "title": "Неке датотеке морају да се преузму ручно",
+    "description": "Инстанца је направљена, али ови аутори дозвољавају преузимање само са CurseForge сајта. Преузмите сваку датотеку и ставите је у фасциклу приказану поред ње.",
+    "downloadPage": "Страница за преузимање",
+    "openModsFolder": "Отвори фасциклу mods"
+  },
+  "modpackBrowser": {
+    "search": "Претражи {{provider}} модпакове",
+    "loadMore": "Учитај још",
+    "selectModpack": "Изаберите модпак да бисте одабрали верзију.",
+    "loadingVersions": "Учитавање верзија…"
+  },
+  "releaseType": {
+    "release": "издање",
+    "beta": "бета",
+    "alpha": "алфа"
+  },
+  "projectRow": {
+    "author": "аутор: {{author}}",
+    "downloads_one": "{{downloads}} преузимање",
+    "downloads_few": "{{downloads}} преузимања",
+    "downloads_other": "{{downloads}} преузимања"
+  },
+  "versionList": {
+    "search": "Претражи верзије",
+    "filter": {
+      "release": "Издања",
+      "snapshot": "Снапшотови",
+      "beta": "Бета",
+      "alpha": "Алфа"
+    },
+    "loadingVersions": "Учитавање верзија…",
+    "latest": "Најновија",
+    "type": {
+      "release": "издање",
+      "snapshot": "снапшот",
+      "beta": "бета",
+      "alpha": "алфа",
+      "other": "друго"
+    }
+  },
+  "loaderPicker": {
+    "label": "Учитавач",
+    "none": "Без учитавача",
+    "noVersions": "Нема верзија",
+    "beta": "бета"
+  },
+  "importSource": {
+    "description": "Увезите Modrinth пакет (.mrpack) или извезену инстанцу (.zip) из датотеке или са URL адресе.",
+    "placeholder": "Путања датотеке или https:// URL",
+    "browse": "Прегледај…",
+    "filter": "Архиве инстанци"
+  }
+}

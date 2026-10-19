@@ -1,0 +1,32 @@
+{
+  "defaultHint": "Domyślne konto jest używane do uruchamiania każdej instancji.",
+  "addMicrosoft": "Dodaj konto Microsoft",
+  "addOffline": "Dodaj konto offline",
+  "kind": {
+    "microsoft": "Microsoft",
+    "offline": "Offline"
+  },
+  "default": "Domyślne",
+  "useByDefault": "Używaj domyślnie",
+  "signInAgain": "Zaloguj się ponownie",
+  "refresh": "Odśwież {{username}}",
+  "remove": "Usuń {{username}}",
+  "loading": "Wczytywanie kont…",
+  "empty": "Dodaj konto, aby uruchomić grę.",
+  "removeDialog": {
+    "title": "Usunąć {{username}}?",
+    "description": "Konto zostanie usunięte z launchera. Twoje światy i instancje pozostaną nienaruszone."
+  },
+  "microsoft": {
+    "title": "Zaloguj się przez Microsoft",
+    "description": "Otwórz stronę Microsoft, wpisz kod i zatwierdź logowanie. To okno zaktualizuje się samo.",
+    "copyCode": "Kopiuj kod",
+    "open": "Otwórz {{url}}",
+    "waiting": "Oczekiwanie na zatwierdzenie…",
+    "requesting": "Pobieranie kodu logowania…"
+  },
+  "offline": {
+    "description": "Konta offline pozwalają grać tylko w trybie jednoosobowym i na serwerach w trybie offline.",
+    "username": "Nazwa użytkownika"
+  }
+}

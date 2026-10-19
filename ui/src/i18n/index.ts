@@ -6,6 +6,9 @@ export const LANGUAGES = {
   uk: 'Українська',
   ru: 'Русский',
   es: 'Español',
+  fr: 'Français',
+  pl: 'Polski',
+  sr: 'Српски',
 } as const
 
 export type Language = keyof typeof LANGUAGES

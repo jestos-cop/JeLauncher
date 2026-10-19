@@ -83,7 +83,7 @@ ui/                 React + TypeScript + Vite + Tailwind + shadcn/ui
 - The frontend only renders state and calls Tauri commands — no business logic.
 - Types shared between Rust and the frontend are generated from Rust, never written by hand.
 - UI text goes through i18next: `useTranslation('<namespace>')` and keys in
-  `ui/src/locales/<lang>/<namespace>.json` for every language (`en`, `uk`, `ru`, `es`).
+  `ui/src/locales/<lang>/<namespace>.json` for every language (`en`, `uk`, `ru`, `es`, `fr`, `pl`, `sr`).
   `pnpm --dir ui lint` fails when a language misses keys; `tsc` fails on unknown keys.
   The native macOS menu reads its labels from `crates/tauri-app/locales/menu.<lang>.json`.
 

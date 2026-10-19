@@ -1,0 +1,82 @@
+{
+  "title": "Paramètres",
+  "tabs": {
+    "launcher": "Launcher",
+    "accounts": "Comptes",
+    "java": "Java",
+    "minecraft": "Minecraft",
+    "commands": "Commandes",
+    "tools": "Outils"
+  },
+  "units": {
+    "mib": "Mio",
+    "seconds": "s"
+  },
+  "launcher": {
+    "appearance": "Apparence",
+    "theme": "Thème",
+    "language": "Langue",
+    "console": "Console",
+    "showConsole": "Ouvrir le journal au lancement",
+    "showConsoleOnError": "Ouvrir le journal en cas de plantage",
+    "autoCloseConsole": "Fermer le journal après une fermeture normale",
+    "gameTime": "Temps de jeu",
+    "recordGameTime": "Enregistrer le temps de jeu",
+    "network": "Réseau",
+    "concurrentDownloads": "Téléchargements parallèles",
+    "requestTimeout": "Délai d'expiration des requêtes",
+    "requestTimeoutHint": "Le délai d'expiration, les tentatives et le proxy s'appliquent après le redémarrage du launcher.",
+    "proxy": "Proxy",
+    "proxyHint": "Par exemple http://proxy.local:8080. Laissez vide pour utiliser le proxy système.",
+    "proxyPlaceholder": "Proxy système",
+    "retries": "Tentatives",
+    "apis": "API",
+    "curseforgeApiKey": "Clé API CurseForge",
+    "curseforgeApiKeyHint": "Facultatif. Remplace la clé fournie avec cette version. Les modifications réseau et API s'appliquent après un redémarrage.",
+    "curseforgeApiKeyPlaceholder": "Clé intégrée"
+  },
+  "java": {
+    "installation": "Installation Java",
+    "automatic": "Automatique (meilleure correspondance pour la version du jeu)",
+    "detect": "Détecter",
+    "autoDownload": "Télécharger Java automatiquement",
+    "autoDownloadHint": "Récupère l'environnement Java de Mojang lorsqu'aucun Java installé ne convient au jeu.",
+    "minMemory": "Mémoire minimale",
+    "maxMemory": "Mémoire maximale",
+    "jvmArgs": "Arguments JVM",
+    "memoryRange": "La mémoire minimale ne doit pas dépasser la mémoire maximale.",
+    "memoryOverTotal": "Plus que ce dont dispose cet ordinateur ({{gib}} Gio) ; le jeu ne démarrera pas.",
+    "memoryTotal": "Cet ordinateur dispose de {{gib}} Gio."
+  },
+  "minecraft": {
+    "windowSize": "Taille de la fenêtre",
+    "maximized": "Démarrer en fenêtre agrandie"
+  },
+  "commands": {
+    "preLaunch": "Commande avant lancement",
+    "preLaunchHint": "S'exécute avant le jeu ; un échec annule le lancement. Variables disponibles : $INST_NAME, $INST_ID, $INST_DIR, $INST_MC_DIR, $INST_JAVA.",
+    "wrapper": "Commande d'enveloppe",
+    "wrapperHint": "Préfixe l'appel à Java, par ex. mangohud ou prime-run.",
+    "postExit": "Commande après fermeture",
+    "postExitHint": "S'exécute après la fermeture du jeu.",
+    "environment": "Variables d'environnement",
+    "namePlaceholder": "NOM",
+    "valuePlaceholder": "valeur",
+    "removeVariable": "Supprimer {{name}}",
+    "addVariable": "Ajouter une variable"
+  },
+  "tools": {
+    "profilers": "Profileurs",
+    "jprofilerPath": "Dossier de JProfiler",
+    "jprofilerPathHint": "Le dossier d'installation qui contient bin/jpenable.",
+    "notSet": "Non défini",
+    "jprofilerPort": "Port de JProfiler",
+    "visualvm": "VisualVM",
+    "visualvmHint": "Laissez vide pour rechercher jvisualvm ou visualvm dans le PATH.",
+    "visualvmPlaceholder": "Trouvé dans le PATH",
+    "editor": "Éditeur",
+    "textEditor": "Éditeur de texte",
+    "textEditorHint": "Commande qui ouvre les fichiers de l'instance, par exemple code ou subl. Laissez vide pour utiliser l'application par défaut.",
+    "defaultApp": "Application par défaut"
+  }
+}

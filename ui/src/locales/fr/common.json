@@ -1,0 +1,37 @@
+{
+  "action": {
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "reset": "Réinitialiser",
+    "close": "Fermer",
+    "delete": "Supprimer",
+    "remove": "Retirer",
+    "rename": "Renommer",
+    "back": "Retour",
+    "next": "Suivant",
+    "finish": "Terminer",
+    "done": "OK",
+    "browse": "Parcourir",
+    "refresh": "Actualiser",
+    "install": "Installer",
+    "create": "Créer",
+    "launch": "Jouer",
+    "kill": "Arrêter",
+    "edit": "Modifier",
+    "copy": "Copier",
+    "export": "Exporter",
+    "add": "Ajouter",
+    "openFolder": "Ouvrir le dossier"
+  },
+  "state": {
+    "loading": "Chargement…"
+  },
+  "theme": {
+    "system": "Système",
+    "light": "Clair",
+    "dark": "Sombre"
+  },
+  "language": {
+    "system": "Langue du système"
+  }
+}

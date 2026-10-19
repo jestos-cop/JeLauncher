@@ -1,0 +1,82 @@
+{
+  "title": "Подешавања",
+  "tabs": {
+    "launcher": "Лаунчер",
+    "accounts": "Налози",
+    "java": "Java",
+    "minecraft": "Minecraft",
+    "commands": "Команде",
+    "tools": "Алати"
+  },
+  "units": {
+    "mib": "MiB",
+    "seconds": "с"
+  },
+  "launcher": {
+    "appearance": "Изглед",
+    "theme": "Тема",
+    "language": "Језик",
+    "console": "Конзола",
+    "showConsole": "Отвори дневник при покретању",
+    "showConsoleOnError": "Отвори дневник при паду",
+    "autoCloseConsole": "Затвори дневник при уредном изласку",
+    "gameTime": "Време игре",
+    "recordGameTime": "Бележи време играња",
+    "network": "Мрежа",
+    "concurrentDownloads": "Паралелна преузимања",
+    "requestTimeout": "Време чекања захтева",
+    "requestTimeoutHint": "Време чекања, поновни покушаји и прокси примењују се након поновног покретања лаунчера.",
+    "proxy": "Прокси",
+    "proxyHint": "На пример http://proxy.local:8080. Оставите празно да бисте користили системски прокси.",
+    "proxyPlaceholder": "Системски прокси",
+    "retries": "Поновни покушаји",
+    "apis": "API-ји",
+    "curseforgeApiKey": "CurseForge API кључ",
+    "curseforgeApiKeyHint": "Опционо. Замењује кључ који долази уз ову верзију. Измене мреже и API-ја примењују се након поновног покретања.",
+    "curseforgeApiKeyPlaceholder": "Уграђени кључ"
+  },
+  "java": {
+    "installation": "Java инсталација",
+    "automatic": "Аутоматски (најбоље за верзију игре)",
+    "detect": "Пронађи",
+    "autoDownload": "Аутоматски преузми Java",
+    "autoDownloadHint": "Преузми Mojang-ово Java окружење када ниједна инсталирана Java не одговара игри.",
+    "minMemory": "Минимална меморија",
+    "maxMemory": "Максимална меморија",
+    "jvmArgs": "JVM аргументи",
+    "memoryRange": "Минимална меморија не сме бити већа од максималне.",
+    "memoryOverTotal": "Више него што овај рачунар има ({{gib}} GiB); игра се неће покренути.",
+    "memoryTotal": "Овај рачунар има {{gib}} GiB."
+  },
+  "minecraft": {
+    "windowSize": "Величина прозора",
+    "maximized": "Покрени увећано"
+  },
+  "commands": {
+    "preLaunch": "Команда пре покретања",
+    "preLaunchHint": "Извршава се пре игре; ако не успе, покретање се отказује. Доступне променљиве: $INST_NAME, $INST_ID, $INST_DIR, $INST_MC_DIR, $INST_JAVA.",
+    "wrapper": "Команда омотача",
+    "wrapperHint": "Додаје се испред позива Java-е, нпр. mangohud или prime-run.",
+    "postExit": "Команда након изласка",
+    "postExitHint": "Извршава се након што се игра затвори.",
+    "environment": "Променљиве окружења",
+    "namePlaceholder": "NAME",
+    "valuePlaceholder": "вредност",
+    "removeVariable": "Уклони {{name}}",
+    "addVariable": "Додај променљиву"
+  },
+  "tools": {
+    "profilers": "Профајлери",
+    "jprofilerPath": "JProfiler фасцикла",
+    "jprofilerPathHint": "Инсталациона фасцикла која садржи bin/jpenable.",
+    "notSet": "Није подешено",
+    "jprofilerPort": "JProfiler порт",
+    "visualvm": "VisualVM",
+    "visualvmHint": "Оставите празно да би се jvisualvm или visualvm тражили на PATH-у.",
+    "visualvmPlaceholder": "Пронађено на PATH-у",
+    "editor": "Уређивач",
+    "textEditor": "Уређивач текста",
+    "textEditorHint": "Команда која отвара датотеке инстанце, на пример code или subl. Оставите празно да бисте користили подразумевану апликацију.",
+    "defaultApp": "Подразумевана апликација"
+  }
+}
