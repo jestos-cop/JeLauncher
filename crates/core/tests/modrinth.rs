@@ -93,3 +93,49 @@ async fn installs_required_dependencies() -> jelauncher_core::Result<()> {
     );
     Ok(())
 }
+
+#[tokio::test]
+#[ignore = "downloads a full modpack"]
+async fn installs_a_modpack_as_new_instance() -> jelauncher_core::Result<()> {
+    use jelauncher_core::modplatform::modrinth::ModpackTarget;
+
+    let modrinth = Modrinth::new(HttpClient::new(&NetworkSettings::default())?);
+    let versions = modrinth
+        .versions(
+            "fabulously-optimized",
+            ResourceKind::Modpack,
+            Some("1.21.4"),
+            Some(LoaderKind::Fabric),
+        )
+        .await?;
+    let Some(pack) = versions.first() else {
+        panic!("no Fabulously Optimized for 1.21.4");
+    };
+    let dir = tempfile::tempdir().map_err(|err| jelauncher_core::Error::Io {
+        path: "tempdir".into(),
+        source: err,
+    })?;
+    let target = ModpackTarget {
+        instances_dir: &dir.path().join("instances"),
+        download_dir: &dir.path().join("downloads"),
+        name: None,
+        concurrency: 8,
+    };
+    let instance = modrinth.install_modpack(&pack.id, &target, |_| {}).await?;
+
+    let mods = list_resources(&instance.resource_dir(ResourceKind::Mod), ResourceKind::Mod)?;
+    println!(
+        "{} on {} with {:?}: {} mods",
+        instance.config.name,
+        instance.config.minecraft_version,
+        instance.config.loader,
+        mods.len()
+    );
+    assert!(mods.len() > 10);
+    assert!(
+        instance.game_dir().join("config").is_dir(),
+        "overrides were not applied"
+    );
+    assert!(instance.config.managed_pack.is_some());
+    Ok(())
+}

@@ -1,9 +1,11 @@
 use jelauncher_core::instance::Instance;
-use jelauncher_core::modplatform::modrinth::InstallTarget;
+use jelauncher_core::modplatform::modrinth::{InstallTarget, ModpackTarget};
 use jelauncher_core::modplatform::{ProjectVersion, ResourceKind, SearchPage, SearchQuery};
-use tauri::State;
+use tauri::{AppHandle, State};
+use tauri_specta::Event;
 
-use crate::error::CommandResult;
+use crate::error::{CommandError, CommandResult};
+use crate::events::ModpackProgressEvent;
 use crate::state::AppState;
 
 #[tauri::command]
@@ -59,4 +61,47 @@ pub async fn install_project_version(
         .modrinth
         .install_with_dependencies(version, &target)
         .await?)
+}
+
+/// All published versions of a modpack, newest first.
+#[tauri::command]
+#[specta::specta]
+pub async fn list_modpack_versions(
+    state: State<'_, AppState>,
+    project_id: String,
+) -> CommandResult<Vec<ProjectVersion>> {
+    Ok(state
+        .modrinth
+        .versions(&project_id, ResourceKind::Modpack, None, None)
+        .await?)
+}
+
+/// Installs a modpack version as a new instance and returns its id.
+#[tauri::command]
+#[specta::specta]
+pub async fn install_modpack(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    version_id: String,
+    name: Option<String>,
+) -> CommandResult<String> {
+    let concurrency = state
+        .settings
+        .read()
+        .map_err(|_| CommandError::poisoned())?
+        .network
+        .concurrent_downloads as usize;
+    let target = ModpackTarget {
+        instances_dir: &state.paths.instances(),
+        download_dir: &state.paths.downloads_cache(),
+        name: name.filter(|name| !name.trim().is_empty()),
+        concurrency,
+    };
+    let instance = state
+        .modrinth
+        .install_modpack(&version_id, &target, |progress| {
+            let _ = ModpackProgressEvent { progress }.emit(&app);
+        })
+        .await?;
+    Ok(instance.id)
 }

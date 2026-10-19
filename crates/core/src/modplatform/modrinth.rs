@@ -7,8 +7,10 @@ use super::{
     Dependency, ProjectHit, ProjectVersion, Provider, ReleaseType, ResourceKind, SearchPage,
     SearchQuery, SortOrder, VersionFile,
 };
+use crate::instance::Instance;
 use crate::minecraft::LoaderKind;
-use crate::net::HttpClient;
+use crate::modpack::{PackSource, install_mrpack};
+use crate::net::{DownloadProgress, HttpClient};
 use crate::{Error, Result};
 
 const API: &str = "https://api.modrinth.com/v2";
@@ -123,6 +125,35 @@ impl Modrinth {
         })
     }
 
+    /// Downloads a modpack version and installs it as a new instance.
+    pub async fn install_modpack(
+        &self,
+        version_id: &str,
+        target: &ModpackTarget<'_>,
+        on_progress: impl Fn(DownloadProgress),
+    ) -> Result<Instance> {
+        let version = self.version(version_id).await?;
+        let archive_name = self.install(&version, target.download_dir).await?;
+        let archive = target.download_dir.join(archive_name);
+        let source = PackSource {
+            provider: Provider::Modrinth,
+            project_id: version.project_id,
+            version_id: version.id,
+        };
+        let instance = install_mrpack(
+            &self.http,
+            &archive,
+            target.instances_dir,
+            target.name.clone(),
+            Some(source),
+            target.concurrency,
+            on_progress,
+        )
+        .await;
+        let _ = std::fs::remove_file(&archive);
+        instance
+    }
+
     /// Downloads the version's primary file into `dir` and returns the file name.
     pub async fn install(&self, version: &ProjectVersion, dir: &Path) -> Result<String> {
         let file = version
@@ -131,6 +162,14 @@ impl Modrinth {
         self.http.download(&file.download_into(dir)).await?;
         Ok(file.file_name.clone())
     }
+}
+
+/// Where a downloaded modpack becomes a new instance.
+pub struct ModpackTarget<'a> {
+    pub instances_dir: &'a Path,
+    pub download_dir: &'a Path,
+    pub name: Option<String>,
+    pub concurrency: usize,
 }
 
 /// Where and for which game setup resources are installed.

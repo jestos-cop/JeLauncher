@@ -23,7 +23,9 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::launch::list_running_instances,
             commands::meta::list_loader_versions,
             commands::meta::list_minecraft_versions,
+            commands::modplatform::install_modpack,
             commands::modplatform::install_project_version,
+            commands::modplatform::list_modpack_versions,
             commands::modplatform::list_project_versions,
             commands::modplatform::search_resources,
             commands::resources::list_resources,
@@ -36,6 +38,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             events::LaunchProgressEvent,
             events::InstanceLogEvent,
             events::InstanceExitedEvent,
+            events::ModpackProgressEvent,
         ])
 }
 

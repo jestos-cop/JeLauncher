@@ -1,3 +1,4 @@
+pub mod archive;
 pub mod auth;
 pub mod error;
 pub mod fs;
@@ -7,6 +8,7 @@ pub mod launch;
 pub mod logs;
 pub mod meta;
 pub mod minecraft;
+pub mod modpack;
 pub mod modplatform;
 pub mod net;
 pub mod paths;

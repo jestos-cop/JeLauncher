@@ -1,13 +1,13 @@
-import { Check, Download, Package } from 'lucide-react'
+import { Check, Download } from 'lucide-react'
 import { useDeferredValue, useState } from 'react'
 import type { InstanceSummary, ProjectHit, ResourceKind, SortOrder } from '@/bindings'
+import { ProjectRow } from '@/components/ProjectRow'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useInstallVersion, useProjectVersions, useResourceSearch } from '@/hooks/use-modplatform'
-import { cn } from '@/lib/utils'
 
 const SORT_LABELS: Record<SortOrder, string> = {
   relevance: 'Relevance',
@@ -101,42 +101,6 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
-
-function ProjectRow({
-  hit,
-  isSelected,
-  onSelect,
-}: {
-  hit: ProjectHit
-  isSelected: boolean
-  onSelect: () => void
-}) {
-  return (
-    <li>
-      <button
-        type="button"
-        onClick={onSelect}
-        className={cn('flex w-full gap-3 p-3 text-left hover:bg-accent', isSelected && 'bg-accent')}
-      >
-        {hit.iconUrl ? (
-          <img src={hit.iconUrl} alt="" className="size-10 shrink-0 rounded-md" />
-        ) : (
-          <Package className="size-10 shrink-0 text-muted-foreground" />
-        )}
-        <div className="min-w-0 flex-1">
-          <div className="flex items-baseline gap-2">
-            <span className="font-medium">{hit.title}</span>
-            <span className="text-xs text-muted-foreground">by {hit.author}</span>
-            <span className="ml-auto text-xs text-muted-foreground">
-              {Intl.NumberFormat(undefined, { notation: 'compact' }).format(hit.downloads)} downloads
-            </span>
-          </div>
-          <p className="line-clamp-2 text-sm text-muted-foreground">{hit.description}</p>
-        </div>
-      </button>
-    </li>
   )
 }
 

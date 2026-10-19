@@ -1,5 +1,6 @@
 use jelauncher_core::launch::LaunchProgress;
 use jelauncher_core::logs::LogLevel;
+use jelauncher_core::net::DownloadProgress;
 use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize, specta::Type, tauri_specta::Event)]
@@ -22,4 +23,9 @@ pub struct InstanceLogEvent {
 pub struct InstanceExitedEvent {
     pub instance_id: String,
     pub exit_code: Option<i32>,
+}
+
+#[derive(Debug, Clone, Serialize, specta::Type, tauri_specta::Event)]
+pub struct ModpackProgressEvent {
+    pub progress: DownloadProgress,
 }

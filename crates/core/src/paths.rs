@@ -35,6 +35,11 @@ impl DataPaths {
         self.root.join("instances")
     }
 
+    /// Scratch space for downloads that are unpacked elsewhere afterwards.
+    pub fn downloads_cache(&self) -> PathBuf {
+        self.root.join("cache").join("downloads")
+    }
+
     pub fn java(&self) -> PathBuf {
         self.root.join("java")
     }

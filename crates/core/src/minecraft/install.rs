@@ -1,4 +1,3 @@
-use std::fs::File;
 use std::path::{Path, PathBuf};
 
 use super::assets::AssetIndex;
@@ -6,7 +5,7 @@ use super::rule::Environment;
 use super::version::{Artifact, VersionJson};
 use crate::net::{Download, DownloadProgress, HttpClient};
 use crate::paths::DataPaths;
-use crate::{Error, Result, fs};
+use crate::{Error, Result, archive, fs};
 
 /// Everything a version needs on disk, resolved for one platform.
 #[derive(Debug, Clone)]
@@ -145,30 +144,10 @@ fn dedup_downloads(downloads: &mut Vec<Download>) {
 
 /// Unpacks legacy native jars, skipping their signature metadata.
 fn extract_natives(native_jars: &[PathBuf], natives_dir: &Path) -> Result<()> {
-    if native_jars.is_empty() {
-        return Ok(());
-    }
-    std::fs::create_dir_all(natives_dir).map_err(|err| Error::io(natives_dir, err))?;
     for jar in native_jars {
-        let file = File::open(jar).map_err(|err| Error::io(jar, err))?;
-        let mut archive = zip::ZipArchive::new(file).map_err(|err| Error::archive(jar, err))?;
-        for index in 0..archive.len() {
-            let mut entry = archive
-                .by_index(index)
-                .map_err(|err| Error::archive(jar, err))?;
-            let Some(name) = entry.enclosed_name() else {
-                continue;
-            };
-            if entry.is_dir() || name.starts_with("META-INF") {
-                continue;
-            }
-            let target = natives_dir.join(name);
-            if let Some(parent) = target.parent() {
-                std::fs::create_dir_all(parent).map_err(|err| Error::io(parent, err))?;
-            }
-            let mut out = File::create(&target).map_err(|err| Error::io(&target, err))?;
-            std::io::copy(&mut entry, &mut out).map_err(|err| Error::io(&target, err))?;
-        }
+        archive::extract(jar, natives_dir, |name| {
+            (!name.starts_with("META-INF")).then(|| name.to_path_buf())
+        })?;
     }
     Ok(())
 }

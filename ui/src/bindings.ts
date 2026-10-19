@@ -150,11 +150,33 @@ async listMinecraftVersions() : Promise<Result<MinecraftVersions, CommandError>>
 }
 },
 /**
+ * Installs a modpack version as a new instance and returns its id.
+ */
+async installModpack(versionId: string, name: string | null) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("install_modpack", { versionId, name }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Installs a version plus its required dependencies; returns the installed file names.
  */
 async installProjectVersion(instanceId: string, kind: ResourceKind, versionId: string) : Promise<Result<string[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("install_project_version", { instanceId, kind, versionId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * All published versions of a modpack, newest first.
+ */
+async listModpackVersions(projectId: string) : Promise<Result<ProjectVersion[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_modpack_versions", { projectId }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -227,11 +249,13 @@ async updateSettings(settings: GlobalSettings) : Promise<Result<null, CommandErr
 export const events = __makeEvents__<{
 instanceExitedEvent: InstanceExitedEvent,
 instanceLogEvent: InstanceLogEvent,
-launchProgressEvent: LaunchProgressEvent
+launchProgressEvent: LaunchProgressEvent,
+modpackProgressEvent: ModpackProgressEvent
 }>({
 instanceExitedEvent: "instance-exited-event",
 instanceLogEvent: "instance-log-event",
-launchProgressEvent: "launch-progress-event"
+launchProgressEvent: "launch-progress-event",
+modpackProgressEvent: "modpack-progress-event"
 })
 
 /** user-defined constants **/
@@ -268,6 +292,7 @@ export type LoaderSpec = { kind: LoaderKind; version: string }
 export type LoaderVersion = { version: string; stable: boolean }
 export type LogLevel = "launcher" | "debug" | "info" | "warning" | "error" | "fatal" | "unknown"
 export type MinecraftVersions = { latest: LatestVersions; versions: VersionEntry[] }
+export type ModpackProgressEvent = { progress: DownloadProgress }
 export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs: number; retries: number }
 export type NewInstance = { name: string; minecraftVersion: string; loader: LoaderSpec | null; group: string | null; iconKey: string | null }
 export type ProjectHit = { provider: Provider; id: string; slug: string; title: string; description: string; author: string; iconUrl: string | null; downloads: number }

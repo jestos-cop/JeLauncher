@@ -3,6 +3,7 @@ use std::path::Path;
 use serde::{Deserialize, Serialize};
 
 use crate::minecraft::LoaderSpec;
+use crate::modpack::ManagedPack;
 use crate::settings::InstanceSettings;
 use crate::{Result, fs};
 
@@ -15,6 +16,7 @@ pub struct InstanceConfig {
     pub group: Option<String>,
     pub minecraft_version: String,
     pub loader: Option<LoaderSpec>,
+    pub managed_pack: Option<ManagedPack>,
     /// Unix time in milliseconds; 0 when never launched.
     pub last_launch_time: i64,
     /// Seconds.
@@ -31,6 +33,7 @@ impl Default for InstanceConfig {
             group: None,
             minecraft_version: String::new(),
             loader: None,
+            managed_pack: None,
             last_launch_time: 0,
             total_time_played: 0,
             settings: InstanceSettings::default(),
