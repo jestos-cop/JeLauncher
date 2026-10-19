@@ -1,5 +1,3 @@
-use tokio::process::Command;
-
 /// Physical memory of this computer in MiB, if the platform reports it.
 pub async fn total_memory_mb() -> Option<u64> {
     total_memory_bytes()
@@ -9,7 +7,7 @@ pub async fn total_memory_mb() -> Option<u64> {
 
 #[cfg(target_os = "macos")]
 async fn total_memory_bytes() -> Option<u64> {
-    let output = Command::new("sysctl")
+    let output = tokio::process::Command::new("sysctl")
         .args(["-n", "hw.memsize"])
         .output()
         .await
@@ -25,7 +23,7 @@ async fn total_memory_bytes() -> Option<u64> {
 
 #[cfg(windows)]
 async fn total_memory_bytes() -> Option<u64> {
-    let output = Command::new("powershell")
+    let output = tokio::process::Command::new("powershell")
         .args([
             "-NoProfile",
             "-Command",
