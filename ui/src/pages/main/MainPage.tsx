@@ -4,6 +4,7 @@ import { useNavigation } from '@/app/navigation'
 import { AccountsMenu } from '@/components/AccountsMenu'
 import { FoldersMenu } from '@/components/FoldersMenu'
 import { HelpMenu } from '@/components/HelpMenu'
+import { Logo } from '@/components/Logo'
 import { NewsBar } from '@/components/NewsBar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -27,6 +28,7 @@ export function MainPage() {
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
       <header className="flex items-center gap-2 border-b px-3 py-2">
+        <Logo className="mr-1" />
         <Button size="sm" onClick={() => setIsCreating(true)}>
           <Plus /> Add Instance
         </Button>

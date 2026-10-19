@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import { Box, Code } from 'lucide-react'
+import { Code } from 'lucide-react'
 import { commands } from '@/bindings'
+import { Logo } from '@/components/Logo'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { unwrap } from '@/lib/command'
@@ -12,7 +13,7 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader className="items-center text-center">
-          <Box className="size-14 text-muted-foreground" />
+          <Logo className="size-16" />
           <DialogTitle>JeLauncher</DialogTitle>
           <DialogDescription>A Minecraft launcher built with Rust, Tauri and React.</DialogDescription>
         </DialogHeader>
