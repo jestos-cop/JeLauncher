@@ -51,5 +51,5 @@ pub async fn export_mrpack(
         summary: summary.filter(|summary| !summary.trim().is_empty()),
         blocked: &blocked_paths,
     };
-    Ok(modpack::export_mrpack(&state.modrinth, &instance, &options).await?)
+    Ok(modpack::export_mrpack(&state.platforms.modrinth, &instance, &options).await?)
 }

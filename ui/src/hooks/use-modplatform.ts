@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { commands, type ResourceKind, type SearchQuery } from '@/bindings'
+import { commands, type ProjectHit, type ResourceKind, type SearchQuery } from '@/bindings'
 import { resourcesKey } from '@/hooks/use-resources'
 import { unwrap } from '@/lib/command'
 
@@ -18,18 +18,18 @@ export function useResourceSearch(query: Omit<SearchQuery, 'offset' | 'limit'>) 
   })
 }
 
-export function useProjectVersions(instanceId: string, projectId: string | null, kind: ResourceKind) {
+export function useProjectVersions(instanceId: string, project: ProjectHit, kind: ResourceKind) {
   return useQuery({
-    queryKey: ['project-versions', instanceId, projectId, kind],
-    queryFn: () => unwrap(commands.listProjectVersions(instanceId, projectId!, kind)),
-    enabled: projectId !== null,
+    queryKey: ['project-versions', instanceId, project.provider, project.id, kind],
+    queryFn: () => unwrap(commands.listProjectVersions(instanceId, project.provider, project.id, kind)),
   })
 }
 
-export function useInstallVersion(instanceId: string, kind: ResourceKind) {
+export function useInstallVersion(instanceId: string, kind: ResourceKind, project: ProjectHit) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (versionId: string) => unwrap(commands.installProjectVersion(instanceId, kind, versionId)),
+    mutationFn: (versionId: string) =>
+      unwrap(commands.installProjectVersion(instanceId, kind, project.provider, project.id, versionId)),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: resourcesKey(instanceId, kind) }),
   })
 }

@@ -37,16 +37,21 @@ impl HttpClient {
         url: &str,
         query: &[(&str, String)],
     ) -> Result<T> {
-        self.inner
-            .get(url)
-            .query(query)
-            .send()
-            .await
-            .and_then(reqwest::Response::error_for_status)
-            .map_err(|err| Error::http(url, err))?
-            .json()
-            .await
-            .map_err(|err| Error::http(url, err))
+        send_json(url, self.inner.get(url).query(query)).await
+    }
+
+    /// GET with an extra header, e.g. an API key.
+    pub async fn get_json_with_header<T: DeserializeOwned>(
+        &self,
+        url: &str,
+        query: &[(&str, String)],
+        header: (&str, &str),
+    ) -> Result<T> {
+        send_json(
+            url,
+            self.inner.get(url).query(query).header(header.0, header.1),
+        )
+        .await
     }
 
     pub async fn get_text(&self, url: &str) -> Result<String> {
@@ -66,15 +71,17 @@ impl HttpClient {
         url: &str,
         body: &B,
     ) -> Result<T> {
-        self.inner
-            .post(url)
-            .json(body)
-            .send()
-            .await
-            .and_then(reqwest::Response::error_for_status)
-            .map_err(|err| Error::http(url, err))?
-            .json()
-            .await
-            .map_err(|err| Error::http(url, err))
+        send_json(url, self.inner.post(url).json(body)).await
     }
+}
+
+async fn send_json<T: DeserializeOwned>(url: &str, request: reqwest::RequestBuilder) -> Result<T> {
+    request
+        .send()
+        .await
+        .and_then(reqwest::Response::error_for_status)
+        .map_err(|err| Error::http(url, err))?
+        .json()
+        .await
+        .map_err(|err| Error::http(url, err))
 }

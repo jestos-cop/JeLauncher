@@ -1,13 +1,16 @@
 import { Check, Download } from 'lucide-react'
 import { useDeferredValue, useState } from 'react'
-import type { InstanceSummary, ProjectHit, ResourceKind, SortOrder } from '@/bindings'
+import type { InstanceSummary, ProjectHit, Provider, ResourceKind, SortOrder } from '@/bindings'
 import { ProjectRow } from '@/components/ProjectRow'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useInstallVersion, useProjectVersions, useResourceSearch } from '@/hooks/use-modplatform'
+
+const PROVIDERS: Record<Provider, string> = { modrinth: 'Modrinth', curseForge: 'CurseForge' }
 
 const SORT_LABELS: Record<SortOrder, string> = {
   relevance: 'Relevance',
@@ -24,10 +27,12 @@ interface ResourceDownloadDialogProps {
 }
 
 export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: ResourceDownloadDialogProps) {
+  const [provider, setProvider] = useState<Provider>('modrinth')
   const [text, setText] = useState('')
   const [sort, setSort] = useState<SortOrder>('relevance')
   const [selected, setSelected] = useState<ProjectHit | null>(null)
   const search = useResourceSearch({
+    provider,
     text: useDeferredValue(text),
     kind,
     sort,
@@ -47,10 +52,27 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
         </DialogHeader>
 
         <div className="flex items-center gap-2">
+          <ToggleGroup
+            type="single"
+            variant="outline"
+            size="sm"
+            value={provider}
+            onValueChange={(next) => {
+              if (!next) return
+              setProvider(next as Provider)
+              setSelected(null)
+            }}
+          >
+            {Object.entries(PROVIDERS).map(([value, label]) => (
+              <ToggleGroupItem key={value} value={value}>
+                {label}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
           <Input
             autoFocus
             className="flex-1"
-            placeholder="Search Modrinth"
+            placeholder={`Search ${PROVIDERS[provider]}`}
             value={text}
             onChange={(event) => setText(event.target.value)}
           />
@@ -94,7 +116,12 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
             {search.isPending && <p className="p-3 text-sm text-muted-foreground">Searching…</p>}
           </div>
           {selected ? (
-            <VersionPanel instanceId={instance.id} kind={kind} project={selected} />
+            <VersionPanel
+              key={`${selected.provider}-${selected.id}`}
+              instanceId={instance.id}
+              kind={kind}
+              project={selected}
+            />
           ) : (
             <p className="p-3 text-sm text-muted-foreground">Select a project to see compatible versions.</p>
           )}
@@ -111,8 +138,8 @@ interface VersionPanelProps {
 }
 
 function VersionPanel({ instanceId, kind, project }: VersionPanelProps) {
-  const { data: versions, error, isPending } = useProjectVersions(instanceId, project.id, kind)
-  const install = useInstallVersion(instanceId, kind)
+  const { data: versions, error, isPending } = useProjectVersions(instanceId, project, kind)
+  const install = useInstallVersion(instanceId, kind, project)
 
   return (
     <div className="flex min-h-0 flex-col gap-2">

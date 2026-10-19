@@ -14,6 +14,7 @@ async fn searches_and_installs_a_mod() -> jelauncher_core::Result<()> {
     let game_version = "1.21.4";
     let page = modrinth
         .search(&SearchQuery {
+            provider: jelauncher_core::modplatform::Provider::Modrinth,
             text: "sodium".into(),
             kind: ResourceKind::Mod,
             game_version: Some(game_version.into()),
@@ -56,7 +57,7 @@ async fn searches_and_installs_a_mod() -> jelauncher_core::Result<()> {
 #[tokio::test]
 #[ignore = "requires network access"]
 async fn installs_required_dependencies() -> jelauncher_core::Result<()> {
-    use jelauncher_core::modplatform::modrinth::InstallTarget;
+    use jelauncher_core::modplatform::{InstallTarget, ModPlatforms, Provider};
 
     let modrinth = Modrinth::new(HttpClient::new(&NetworkSettings::default())?);
     let game_version = "1.21.4";
@@ -81,7 +82,10 @@ async fn installs_required_dependencies() -> jelauncher_core::Result<()> {
         game_version,
         loader: Some(LoaderKind::Fabric),
     };
-    let installed = modrinth.install_with_dependencies(iris, &target).await?;
+    let platforms = ModPlatforms::new(HttpClient::new(&NetworkSettings::default())?, None);
+    let installed = platforms
+        .install_with_dependencies(Provider::Modrinth, iris, &target)
+        .await?;
     println!("installed {installed:?}");
     let ids: Vec<_> = list_resources(dir.path(), ResourceKind::Mod)?
         .into_iter()
@@ -306,7 +310,7 @@ async fn updates_a_modpack_to_another_version() -> jelauncher_core::Result<()> {
 #[tokio::test]
 #[ignore = "requires network access"]
 async fn finds_and_applies_mod_updates() -> jelauncher_core::Result<()> {
-    use jelauncher_core::modplatform::modrinth::InstallTarget;
+    use jelauncher_core::modplatform::InstallTarget;
 
     let modrinth = Modrinth::new(HttpClient::new(&NetworkSettings::default())?);
     let versions = modrinth

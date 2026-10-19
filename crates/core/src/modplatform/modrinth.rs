@@ -1,11 +1,11 @@
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::HashMap;
 use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
 use super::{
-    Dependency, ProjectHit, ProjectVersion, Provider, ReleaseType, ResourceKind, ResourceUpdate,
-    SearchPage, SearchQuery, SortOrder, VersionFile,
+    Dependency, InstallTarget, ProjectHit, ProjectVersion, Provider, ReleaseType, ResourceKind,
+    ResourceUpdate, SearchPage, SearchQuery, SortOrder, VersionFile, download_version,
 };
 use crate::instance::Instance;
 use crate::minecraft::LoaderKind;
@@ -155,60 +155,6 @@ impl Modrinth {
         Ok(new_name)
     }
 
-    /// Installs the version and, recursively, the required dependencies that fit the target.
-    /// Returns the installed file names, the requested version first.
-    pub async fn install_with_dependencies(
-        &self,
-        version: ProjectVersion,
-        target: &InstallTarget<'_>,
-    ) -> Result<Vec<String>> {
-        let mut seen = HashSet::from([version.project_id.clone()]);
-        let mut queue = VecDeque::from([version]);
-        let mut installed = Vec::new();
-        while let Some(version) = queue.pop_front() {
-            installed.push(self.install(&version, target.dir).await?);
-            for dependency in version.dependencies.iter().filter(|dep| dep.required) {
-                let Some(project_id) = &dependency.project_id else {
-                    continue;
-                };
-                if !seen.insert(project_id.clone()) {
-                    continue;
-                }
-                queue.push_back(
-                    self.resolve_dependency(project_id, dependency.version_id.as_deref(), target)
-                        .await?,
-                );
-            }
-        }
-        Ok(installed)
-    }
-
-    async fn resolve_dependency(
-        &self,
-        project_id: &str,
-        version_id: Option<&str>,
-        target: &InstallTarget<'_>,
-    ) -> Result<ProjectVersion> {
-        if let Some(version_id) = version_id {
-            return self.version(version_id).await;
-        }
-        self.versions(
-            project_id,
-            target.kind,
-            Some(target.game_version),
-            target.loader,
-        )
-        .await?
-        .into_iter()
-        .next()
-        .ok_or_else(|| {
-            Error::InvalidInput(format!(
-                "no version of required dependency {project_id} supports Minecraft {}",
-                target.game_version
-            ))
-        })
-    }
-
     /// Downloads a modpack version and installs it as a new instance.
     pub async fn install_modpack(
         &self,
@@ -273,20 +219,8 @@ impl Modrinth {
 
     /// Downloads the version's primary file into `dir` and returns the file name.
     pub async fn install(&self, version: &ProjectVersion, dir: &Path) -> Result<String> {
-        let file = version
-            .primary_file()
-            .ok_or_else(|| Error::InvalidInput(format!("version {} has no files", version.name)))?;
-        self.http.download(&file.download_into(dir)).await?;
-        Ok(file.file_name.clone())
+        download_version(&self.http, version, dir).await
     }
-}
-
-/// Where and for which game setup resources are installed.
-pub struct InstallTarget<'a> {
-    pub dir: &'a Path,
-    pub kind: ResourceKind,
-    pub game_version: &'a str,
-    pub loader: Option<LoaderKind>,
 }
 
 fn facets(query: &SearchQuery) -> String {
@@ -471,6 +405,7 @@ mod tests {
     #[test]
     fn builds_facets_for_mods_with_loader() {
         let query = SearchQuery {
+            provider: Provider::Modrinth,
             text: "sodium".into(),
             kind: ResourceKind::Mod,
             game_version: Some("1.21.4".into()),

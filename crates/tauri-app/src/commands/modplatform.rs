@@ -1,10 +1,10 @@
-use jelauncher_core::instance::Instance;
 use std::path::Path;
 
+use jelauncher_core::instance::Instance;
+
 use jelauncher_core::modpack::{self, ModpackTarget};
-use jelauncher_core::modplatform::modrinth::InstallTarget;
 use jelauncher_core::modplatform::{
-    ProjectVersion, ResourceKind, ResourceUpdate, SearchPage, SearchQuery,
+    InstallTarget, ProjectVersion, Provider, ResourceKind, ResourceUpdate, SearchPage, SearchQuery,
 };
 use tauri::{AppHandle, State};
 use tauri_specta::Event;
@@ -19,7 +19,7 @@ pub async fn search_resources(
     state: State<'_, AppState>,
     query: SearchQuery,
 ) -> CommandResult<SearchPage> {
-    Ok(state.modrinth.search(&query).await?)
+    Ok(state.platforms.search(&query).await?)
 }
 
 /// Versions of a project that fit the instance's game version and loader.
@@ -28,14 +28,16 @@ pub async fn search_resources(
 pub async fn list_project_versions(
     state: State<'_, AppState>,
     instance_id: String,
+    provider: Provider,
     project_id: String,
     kind: ResourceKind,
 ) -> CommandResult<Vec<ProjectVersion>> {
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
     let loader = instance.config.loader.as_ref().map(|loader| loader.kind);
     Ok(state
-        .modrinth
+        .platforms
         .versions(
+            provider,
             &project_id,
             kind,
             Some(&instance.config.minecraft_version),
@@ -51,14 +53,19 @@ pub async fn install_project_version(
     state: State<'_, AppState>,
     instance_id: String,
     kind: ResourceKind,
+    provider: Provider,
+    project_id: String,
     version_id: String,
 ) -> CommandResult<Vec<String>> {
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
-    let version = state.modrinth.version(&version_id).await?;
+    let version = state
+        .platforms
+        .version(provider, &project_id, &version_id)
+        .await?;
     let dir = instance.resource_dir(kind);
     Ok(state
-        .modrinth
-        .install_with_dependencies(version, &install_target(&instance, &dir, kind))
+        .platforms
+        .install_with_dependencies(provider, version, &install_target(&instance, &dir, kind))
         .await?)
 }
 
@@ -73,6 +80,7 @@ pub async fn check_resource_updates(
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
     let dir = instance.resource_dir(kind);
     Ok(state
+        .platforms
         .modrinth
         .check_updates(&install_target(&instance, &dir, kind))
         .await?)
@@ -89,8 +97,9 @@ pub async fn update_resource(
     version_id: String,
 ) -> CommandResult<String> {
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
-    let version = state.modrinth.version(&version_id).await?;
+    let version = state.platforms.modrinth.version(&version_id).await?;
     Ok(state
+        .platforms
         .modrinth
         .apply_update(&instance.resource_dir(kind), &file_name, &version)
         .await?)
@@ -117,6 +126,7 @@ pub async fn list_modpack_versions(
     project_id: String,
 ) -> CommandResult<Vec<ProjectVersion>> {
     Ok(state
+        .platforms
         .modrinth
         .versions(&project_id, ResourceKind::Modpack, None, None)
         .await?)
@@ -134,6 +144,7 @@ pub async fn install_modpack(
     let (instances_dir, download_dir) = (state.paths.instances(), state.paths.downloads_cache());
     let target = modpack_target(&state, &instances_dir, &download_dir, name)?;
     let instance = state
+        .platforms
         .modrinth
         .install_modpack(&version_id, &target, |progress| {
             let _ = ModpackProgressEvent { progress }.emit(&app);
@@ -180,6 +191,7 @@ pub async fn update_modpack(
     let mut instance = Instance::open(&state.paths.instances(), &instance_id)?;
     let concurrency = concurrent_downloads(&state)?;
     state
+        .platforms
         .modrinth
         .update_modpack(
             &mut instance,

@@ -326,9 +326,9 @@ async updateResource(instanceId: string, kind: ResourceKind, fileName: string, v
 /**
  * Installs a version plus its required dependencies; returns the installed file names.
  */
-async installProjectVersion(instanceId: string, kind: ResourceKind, versionId: string) : Promise<Result<string[], CommandError>> {
+async installProjectVersion(instanceId: string, kind: ResourceKind, provider: Provider, projectId: string, versionId: string) : Promise<Result<string[], CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("install_project_version", { instanceId, kind, versionId }) };
+    return { status: "ok", data: await TAURI_INVOKE("install_project_version", { instanceId, kind, provider, projectId, versionId }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -348,9 +348,9 @@ async listModpackVersions(projectId: string) : Promise<Result<ProjectVersion[], 
 /**
  * Versions of a project that fit the instance's game version and loader.
  */
-async listProjectVersions(instanceId: string, projectId: string, kind: ResourceKind) : Promise<Result<ProjectVersion[], CommandError>> {
+async listProjectVersions(instanceId: string, provider: Provider, projectId: string, kind: ResourceKind) : Promise<Result<ProjectVersion[], CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("list_project_versions", { instanceId, projectId, kind }) };
+    return { status: "ok", data: await TAURI_INVOKE("list_project_versions", { instanceId, provider, projectId, kind }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -629,7 +629,7 @@ export type ProjectVersion = { id: string; projectId: string; name: string; vers
  * Markdown release notes.
  */
 changelog: string | null; files: VersionFile[]; dependencies: Dependency[] }
-export type Provider = "modrinth"
+export type Provider = "modrinth" | "curseForge"
 /**
  * Where the game should go right after starting.
  */
@@ -661,7 +661,7 @@ export type Screenshot = { fileName: string; path: string; size: number;
  */
 modified: number }
 export type SearchPage = { hits: ProjectHit[]; total: number }
-export type SearchQuery = { text: string; kind: ResourceKind; gameVersion: string | null; loader: LoaderKind | null; sort: SortOrder; offset: number; limit: number }
+export type SearchQuery = { provider?: Provider; text: string; kind: ResourceKind; gameVersion: string | null; loader: LoaderKind | null; sort: SortOrder; offset: number; limit: number }
 export type Server = { name: string; address: string; 
 /**
  * Base64-encoded PNG, as stored by the game.

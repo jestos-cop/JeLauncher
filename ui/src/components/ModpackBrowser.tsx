@@ -17,6 +17,7 @@ export function ModpackBrowser({ selectedVersionId, onSelectVersion }: ModpackBr
   const [text, setText] = useState('')
   const [project, setProject] = useState<ProjectHit | null>(null)
   const search = useResourceSearch({
+    provider: 'modrinth',
     text: useDeferredValue(text),
     kind: 'modpack',
     sort: 'relevance',

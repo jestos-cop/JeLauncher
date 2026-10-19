@@ -1,15 +1,24 @@
+pub mod curseforge;
 pub mod modrinth;
+mod platforms;
 
 use serde::{Deserialize, Serialize};
 
 use crate::minecraft::LoaderKind;
-use crate::net::Download;
-pub use crate::resources::ResourceKind;
+use std::path::Path;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
+pub use platforms::ModPlatforms;
+
+use crate::net::{Download, HttpClient};
+pub use crate::resources::ResourceKind;
+use crate::{Error, Result};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub enum Provider {
+    #[default]
     Modrinth,
+    CurseForge,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
@@ -25,6 +34,8 @@ pub enum SortOrder {
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct SearchQuery {
+    #[serde(default)]
+    pub provider: Provider,
     pub text: String,
     pub kind: ResourceKind,
     pub game_version: Option<String>,
@@ -123,4 +134,31 @@ impl VersionFile {
             size: Some(self.size).filter(|&size| size > 0),
         }
     }
+}
+
+/// Where and for which game setup resources are installed.
+pub struct InstallTarget<'a> {
+    pub dir: &'a Path,
+    pub kind: ResourceKind,
+    pub game_version: &'a str,
+    pub loader: Option<LoaderKind>,
+}
+
+/// Downloads the version's primary file into `dir` and returns the file name.
+pub async fn download_version(
+    http: &HttpClient,
+    version: &ProjectVersion,
+    dir: &Path,
+) -> Result<String> {
+    let file = version
+        .primary_file()
+        .ok_or_else(|| Error::InvalidInput(format!("version {} has no files", version.name)))?;
+    if file.url.is_empty() {
+        return Err(Error::InvalidInput(format!(
+            "the author of {} does not allow downloads through other launchers; download it from the project page",
+            file.file_name
+        )));
+    }
+    http.download(&file.download_into(dir)).await?;
+    Ok(file.file_name.clone())
 }
