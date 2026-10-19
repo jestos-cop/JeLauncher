@@ -5,3 +5,4 @@ node_modules
 .idea
 *.log
 /crates/tauri-app/gen
+/.cargo/config.toml
