@@ -33,6 +33,10 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::resources::set_resource_enabled,
             commands::settings::get_settings,
             commands::settings::update_settings,
+            commands::worlds::backup_world,
+            commands::worlds::delete_world,
+            commands::worlds::list_worlds,
+            commands::worlds::open_saves_folder,
         ])
         .events(collect_events![
             events::LaunchProgressEvent,

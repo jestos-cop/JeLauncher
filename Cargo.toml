@@ -11,6 +11,8 @@ rust-version = "1.92"
 [workspace.dependencies]
 jelauncher-core = { path = "crates/core" }
 directories = "6"
+fastnbt = "2"
+flate2 = "1"
 futures-util = "0.3"
 hex = "0.4"
 md-5 = "0.11"

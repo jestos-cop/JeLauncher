@@ -33,6 +33,36 @@ pub fn extract(
     Ok(())
 }
 
+/// Zips every file under `source` into `target`, storing entries under `prefix`.
+pub fn zip_dir(source: &Path, target: &Path, prefix: &Path) -> Result<()> {
+    let file = File::create(target).map_err(|err| Error::io(target, err))?;
+    let mut zip = zip::ZipWriter::new(file);
+    let options = zip::write::SimpleFileOptions::default();
+    let mut pending = vec![source.to_path_buf()];
+    while let Some(dir) = pending.pop() {
+        for entry in std::fs::read_dir(&dir)
+            .map_err(|err| Error::io(&dir, err))?
+            .flatten()
+        {
+            let path = entry.path();
+            if path.is_dir() {
+                pending.push(path);
+                continue;
+            }
+            let Ok(relative) = path.strip_prefix(source) else {
+                continue;
+            };
+            let name = prefix.join(relative).to_string_lossy().replace('\\', "/");
+            zip.start_file(name, options)
+                .map_err(|err| Error::archive(target, err))?;
+            let mut input = File::open(&path).map_err(|err| Error::io(&path, err))?;
+            std::io::copy(&mut input, &mut zip).map_err(|err| Error::io(&path, err))?;
+        }
+    }
+    zip.finish().map_err(|err| Error::archive(target, err))?;
+    Ok(())
+}
+
 /// Accepts a relative path only if it cannot escape the directory it is joined to.
 pub fn safe_relative_path(path: &str) -> Option<PathBuf> {
     let path = Path::new(path);

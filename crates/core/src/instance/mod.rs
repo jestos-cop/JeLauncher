@@ -41,6 +41,14 @@ impl Instance {
         self.game_dir().join(kind.install_dir())
     }
 
+    pub fn saves_dir(&self) -> PathBuf {
+        self.game_dir().join("saves")
+    }
+
+    pub fn backups_dir(&self) -> PathBuf {
+        self.root.join("backups")
+    }
+
     pub fn natives_dir(&self) -> PathBuf {
         self.root.join("natives")
     }

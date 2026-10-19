@@ -14,5 +14,6 @@ pub mod net;
 pub mod paths;
 pub mod resources;
 pub mod settings;
+pub mod worlds;
 
 pub use error::{Error, Result};

@@ -240,6 +240,41 @@ async updateSettings(settings: GlobalSettings) : Promise<Result<null, CommandErr
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+/**
+ * Zips the world into the instance's backups folder and returns the archive path.
+ */
+async backupWorld(instanceId: string, folder: string) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("backup_world", { instanceId, folder }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async deleteWorld(instanceId: string, folder: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("delete_world", { instanceId, folder }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async listWorlds(instanceId: string) : Promise<Result<World[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_worlds", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async openSavesFolder(instanceId: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("open_saves_folder", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
@@ -277,6 +312,7 @@ export type CommandSettings = { preLaunch: string;
 wrapper: string; postExit: string; environment: Partial<{ [key in string]: string }> }
 export type Dependency = { projectId: string | null; versionId: string | null; required: boolean }
 export type DownloadProgress = { completed: number; total: number; downloadedBytes: number }
+export type GameMode = "survival" | "creative" | "adventure" | "spectator" | "unknown"
 export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings; commands: CommandSettings }
 export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
 export type InstanceLogEvent = { instanceId: string; line: string; level: LogLevel }
@@ -325,6 +361,15 @@ export type VersionEntry = { id: string; type: VersionType; url: string; sha1: s
 export type VersionFile = { url: string; fileName: string; sha1: string | null; size: number; primary: boolean }
 export type VersionType = "release" | "snapshot" | "old_beta" | "old_alpha" | "other"
 export type WindowSettings = { width: number; height: number; maximized: boolean }
+export type World = { 
+/**
+ * Folder name inside `saves`.
+ */
+folder: string; name: string; gameMode: GameMode; hardcore: boolean; 
+/**
+ * Unix time in milliseconds.
+ */
+lastPlayed: number; seed: string | null; gameVersion: string | null }
 
 /** tauri-specta globals **/
 

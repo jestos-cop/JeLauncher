@@ -6,3 +6,4 @@ pub mod meta;
 pub mod modplatform;
 pub mod resources;
 pub mod settings;
+pub mod worlds;
