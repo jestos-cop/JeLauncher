@@ -1,14 +1,17 @@
-import { Box, Plus, RefreshCw } from 'lucide-react'
+import { Plus, RefreshCw } from 'lucide-react'
 import { useState } from 'react'
-import type { InstanceSummary } from '@/bindings'
 import { AccountsMenu } from '@/components/AccountsMenu'
 import { Button } from '@/components/ui/button'
 import { NewInstanceDialog } from '@/dialogs/NewInstanceDialog'
 import { useInstances } from '@/hooks/use-instances'
+import { InstanceGrid } from '@/pages/main/InstanceGrid'
+import { InstancePanel } from '@/pages/main/InstancePanel'
 
 export function MainPage() {
   const { data: instances, error, isPending, refetch } = useInstances()
   const [isCreating, setIsCreating] = useState(false)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const selected = instances?.find((instance) => instance.id === selectedId)
 
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
@@ -24,32 +27,19 @@ export function MainPage() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto p-4">
-        {isPending && <p className="text-muted-foreground">Loading instances…</p>}
-        {error && <p className="text-destructive">{error.message}</p>}
-        {instances?.length === 0 && (
-          <p className="text-muted-foreground">No instances yet.</p>
-        )}
-        {instances && instances.length > 0 && <InstanceGrid instances={instances} />}
-      </main>
+      <div className="flex min-h-0 flex-1">
+        <main className="flex-1 overflow-auto p-4">
+          {isPending && <p className="text-muted-foreground">Loading instances…</p>}
+          {error && <p className="text-destructive">{error.message}</p>}
+          {instances?.length === 0 && <p className="text-muted-foreground">No instances yet.</p>}
+          {instances && instances.length > 0 && (
+            <InstanceGrid instances={instances} selectedId={selectedId} onSelect={setSelectedId} />
+          )}
+        </main>
+        {selected && <InstancePanel instance={selected} />}
+      </div>
 
       <NewInstanceDialog open={isCreating} onOpenChange={setIsCreating} />
     </div>
-  )
-}
-
-function InstanceGrid({ instances }: { instances: InstanceSummary[] }) {
-  return (
-    <ul className="grid grid-cols-[repeat(auto-fill,minmax(7rem,1fr))] gap-3">
-      {instances.map((instance) => (
-        <li
-          key={instance.id}
-          className="flex flex-col items-center gap-2 rounded-md p-3 text-center hover:bg-accent"
-        >
-          <Box className="size-12 text-muted-foreground" />
-          <span className="line-clamp-2 text-sm">{instance.name}</span>
-        </li>
-      ))}
-    </ul>
   )
 }
