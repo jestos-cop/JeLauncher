@@ -18,6 +18,7 @@ pub mod resources;
 pub mod screenshots;
 pub mod servers;
 pub mod settings;
+pub mod system;
 pub mod worlds;
 
 pub use error::{Error, Result};

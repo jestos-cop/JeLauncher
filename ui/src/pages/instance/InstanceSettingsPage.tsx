@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useInstanceSettings, useSetInstanceSettings } from '@/hooks/use-instance-settings'
-import { useSettings } from '@/hooks/use-settings'
+import { useMemoryHint, useSettings } from '@/hooks/use-settings'
 
 export function InstanceSettingsPage({ instanceId }: { instanceId: string }) {
   const { data: saved } = useInstanceSettings(instanceId)
@@ -60,6 +60,7 @@ function SettingsForm({ instanceId, saved, global }: SettingsFormProps) {
 
   const minMemory = draft.minMemoryMb ?? global.java.minMemoryMb
   const maxMemory = draft.maxMemoryMb ?? global.java.maxMemoryMb
+  const memoryHint = useMemoryHint(maxMemory)
 
   return (
     <div className="flex max-w-4xl flex-col gap-6">
@@ -76,7 +77,7 @@ function SettingsForm({ instanceId, saved, global }: SettingsFormProps) {
             onChange={(v) => set({ minMemoryMb: v })}
           />
         </Field>
-        <Field label="Maximum memory">
+        <Field label="Maximum memory" hint={memoryHint}>
           <NumberInput
             value={maxMemory}
             min={512}

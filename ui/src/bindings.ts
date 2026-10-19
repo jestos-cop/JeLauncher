@@ -546,6 +546,12 @@ async updateSettings(settings: GlobalSettings) : Promise<Result<null, CommandErr
 }
 },
 /**
+ * Physical memory in MiB, or `None` if the platform does not report it.
+ */
+async systemMemoryMb() : Promise<number | null> {
+    return await TAURI_INVOKE("system_memory_mb");
+},
+/**
  * Zips the world into the instance's backups folder and returns the archive path.
  */
 async backupWorld(instanceId: string, folder: string) : Promise<Result<string, CommandError>> {

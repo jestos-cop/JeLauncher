@@ -8,7 +8,7 @@ import { SidebarLayout, type SidebarTab } from '@/components/SidebarLayout'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
-import { useSettings, useUpdateSettings } from '@/hooks/use-settings'
+import { useMemoryHint, useSettings, useUpdateSettings } from '@/hooks/use-settings'
 import { AccountsSettings } from '@/pages/settings/AccountsSettings'
 
 const TABS: SidebarTab<SettingsTab>[] = [
@@ -43,6 +43,7 @@ export function SettingsPage({ tab }: { tab: SettingsTab }) {
 function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab }) {
   const [draft, setDraft] = useState(saved)
   const update = useUpdateSettings()
+  const memoryHint = useMemoryHint(draft.java.maxMemoryMb)
   const isDirty = JSON.stringify(draft) !== JSON.stringify(saved)
 
   const setJava = (patch: Partial<GlobalSettings['java']>) =>
@@ -141,7 +142,7 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
               onChange={(minMemoryMb) => setJava({ minMemoryMb })}
             />
           </Field>
-          <Field label="Maximum memory" hint="Memory the game may use. More is not always faster.">
+          <Field label="Maximum memory" hint={memoryHint}>
             <NumberInput
               value={draft.java.maxMemoryMb}
               min={512}

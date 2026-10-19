@@ -67,6 +67,7 @@ impl Launcher<'_> {
         let game_version = &instance.config.minecraft_version;
         let mut version = self.meta.version_json(game_version).await?;
         let settings = instance.config.settings.resolve(self.settings);
+        ensure_enough_memory(settings.max_memory_mb).await?;
         let java = self
             .find_java(
                 settings.java_path.as_deref(),
@@ -287,6 +288,16 @@ impl LaunchCommand {
                 "`{command}` exited with {status}"
             )))
         }
+    }
+}
+
+/// Refuses to start a game that may use more memory than the computer has.
+async fn ensure_enough_memory(max_memory_mb: u32) -> Result<()> {
+    match crate::system::total_memory_mb().await {
+        Some(total) if u64::from(max_memory_mb) > total => Err(Error::InvalidInput(format!(
+            "maximum memory is {max_memory_mb} MiB but this computer has only {total} MiB; lower it in the settings"
+        ))),
+        _ => Ok(()),
     }
 }
 

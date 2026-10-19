@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { useAccounts, useAddOfflineAccount } from '@/hooks/use-accounts'
-import { useUpdateSettings } from '@/hooks/use-settings'
+import { useMemoryHint, useUpdateSettings } from '@/hooks/use-settings'
 
 const STEPS = ['Welcome', 'Appearance', 'Java', 'Account'] as const
 
@@ -25,6 +25,7 @@ export function SetupWizard({ saved }: { saved: GlobalSettings }) {
   const { data: accounts = [] } = useAccounts()
   const addAccount = useAddOfflineAccount()
   const update = useUpdateSettings()
+  const memoryHint = useMemoryHint(draft.java.maxMemoryMb)
   const isLast = step === STEPS.length - 1
 
   const setJava = (patch: Partial<GlobalSettings['java']>) =>
@@ -79,7 +80,7 @@ export function SetupWizard({ saved }: { saved: GlobalSettings }) {
                   onCheckedChange={(checked) => setJava({ autoDownload: checked === true })}
                 />
               </Field>
-              <Field label="Maximum memory">
+              <Field label="Maximum memory" hint={memoryHint}>
                 <NumberInput
                   value={draft.java.maxMemoryMb}
                   min={512}
