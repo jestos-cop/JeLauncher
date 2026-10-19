@@ -37,6 +37,10 @@ impl Instance {
         self.root.join(GAME_DIR)
     }
 
+    pub fn mods_dir(&self) -> PathBuf {
+        self.game_dir().join("mods")
+    }
+
     pub fn natives_dir(&self) -> PathBuf {
         self.root.join("natives")
     }

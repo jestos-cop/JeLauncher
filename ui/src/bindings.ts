@@ -133,6 +133,30 @@ async listMinecraftVersions() : Promise<Result<MinecraftVersions, CommandError>>
     else return { status: "error", error: e  as any };
 }
 },
+async listMods(instanceId: string) : Promise<Result<ModFile[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_mods", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async removeMod(instanceId: string, fileName: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("remove_mod", { instanceId, fileName }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async setModEnabled(instanceId: string, fileName: string, enabled: boolean) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_mod_enabled", { instanceId, fileName, enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async getSettings() : Promise<Result<GlobalSettings, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("get_settings") };
@@ -193,6 +217,12 @@ export type LoaderSpec = { kind: LoaderKind; version: string }
 export type LoaderVersion = { version: string; stable: boolean }
 export type LogLevel = "launcher" | "debug" | "info" | "warning" | "error" | "fatal" | "unknown"
 export type MinecraftVersions = { latest: LatestVersions; versions: VersionEntry[] }
+export type ModFile = { fileName: string; enabled: boolean; size: number; 
+/**
+ * Unix time in milliseconds.
+ */
+modified: number; metadata: ModMetadata | null }
+export type ModMetadata = { id: string; name: string; version: string; description: string; authors: string[]; homepage: string | null }
 export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs: number; retries: number }
 export type NewInstance = { name: string; minecraftVersion: string; loader: LoaderSpec | null; group: string | null; iconKey: string | null }
 export type VersionEntry = { id: string; type: VersionType; url: string; sha1: string; releaseTime: string }
