@@ -4,6 +4,7 @@ mod create;
 mod export;
 mod list;
 mod manage;
+mod watch;
 
 use std::path::{Path, PathBuf};
 
@@ -16,6 +17,7 @@ pub use manage::{
     delete_instance, rename_instance, set_instance_group, set_instance_icon, set_instance_notes,
     set_instance_settings, set_instance_version,
 };
+pub use watch::{InstanceWatcher, watch_instances};
 
 pub const INSTANCE_CONFIG_FILE: &str = "instance.json";
 pub const GAME_DIR: &str = "minecraft";

@@ -81,6 +81,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             events::InstanceLogEvent,
             events::InstanceExitedEvent,
             events::ModpackProgressEvent,
+            events::InstancesChangedEvent,
             crate::cli::CliRequest,
         ])
 }

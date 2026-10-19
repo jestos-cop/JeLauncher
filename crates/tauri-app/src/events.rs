@@ -29,3 +29,7 @@ pub struct InstanceExitedEvent {
 pub struct ModpackProgressEvent {
     pub progress: DownloadProgress,
 }
+
+/// Instance folders changed on disk, e.g. one was copied in by hand.
+#[derive(Debug, Clone, Serialize, specta::Type, tauri_specta::Event)]
+pub struct InstancesChangedEvent;

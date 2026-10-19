@@ -628,12 +628,14 @@ export const events = __makeEvents__<{
 cliRequest: CliRequest,
 instanceExitedEvent: InstanceExitedEvent,
 instanceLogEvent: InstanceLogEvent,
+instancesChangedEvent: InstancesChangedEvent,
 launchProgressEvent: LaunchProgressEvent,
 modpackProgressEvent: ModpackProgressEvent
 }>({
 cliRequest: "cli-request",
 instanceExitedEvent: "instance-exited-event",
 instanceLogEvent: "instance-log-event",
+instancesChangedEvent: "instances-changed-event",
 launchProgressEvent: "launch-progress-event",
 modpackProgressEvent: "modpack-progress-event"
 })
@@ -710,6 +712,10 @@ export type InstanceLogEvent = { instanceId: string; line: string; level: LogLev
  */
 export type InstanceSettings = { javaPath: string | null; minMemoryMb: number | null; maxMemoryMb: number | null; jvmArgs: string | null; windowWidth: number | null; windowHeight: number | null; windowMaximized: boolean | null; commands: CommandSettings | null }
 export type InstanceSummary = { id: string; name: string; iconKey: string; group: string | null; minecraftVersion: string; loader: LoaderSpec | null; managedPack: ManagedPack | null; lastLaunchTime: number; totalTimePlayed: number }
+/**
+ * Instance folders changed on disk, e.g. one was copied in by hand.
+ */
+export type InstancesChangedEvent = null
 export type JavaInstall = { path: string; version: string; major: number; arch: string; vendor: string }
 export type JavaSettings = { 
 /**

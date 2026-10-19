@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { CliRequests } from '@/app/CliRequests'
 import { ConsoleBehavior } from '@/app/ConsoleBehavior'
+import { InstanceListSync } from '@/app/InstanceListSync'
 import { ThemeSync } from '@/app/ThemeSync'
 import { useNavigation } from '@/app/navigation'
 import { NavigationProvider } from '@/app/NavigationProvider'
@@ -20,6 +21,7 @@ export function App() {
         <NavigationProvider>
           <ConsoleBehavior />
           <CliRequests />
+          <InstanceListSync />
           <ThemeSync />
           <CurrentPage />
           <FirstRunSetup />

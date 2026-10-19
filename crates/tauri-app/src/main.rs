@@ -12,6 +12,7 @@ use tauri_specta::Event;
 
 use crate::cli::CliRequest;
 use crate::commands::folders::LogFile;
+use crate::events::InstancesChangedEvent;
 use crate::state::AppState;
 
 fn main() {
@@ -67,6 +68,12 @@ fn main() {
                 .pending_cli
                 .lock()
                 .map_err(|_| "state lock poisoned")? = request.clone();
+            let handle = app.handle().clone();
+            let watcher =
+                jelauncher_core::instance::watch_instances(&state.paths.instances(), move || {
+                    let _ = InstancesChangedEvent.emit(&handle);
+                })?;
+            app.manage(watcher);
             app.manage(state);
             Ok(())
         })
