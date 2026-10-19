@@ -838,7 +838,7 @@ export type ProjectVersion = { id: string; projectId: string; name: string; vers
  * Markdown release notes.
  */
 changelog: string | null; files: VersionFile[]; dependencies: Dependency[] }
-export type Provider = "modrinth" | "curseForge" | "ftb"
+export type Provider = "modrinth" | "curseForge" | "ftb" | "technic"
 /**
  * Where the game should go right after starting.
  */

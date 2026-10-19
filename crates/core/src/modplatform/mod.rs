@@ -2,6 +2,7 @@ pub mod curseforge;
 pub mod ftb;
 pub mod modrinth;
 mod platforms;
+pub mod technic;
 
 use serde::{Deserialize, Serialize};
 
@@ -21,6 +22,7 @@ pub enum Provider {
     Modrinth,
     CurseForge,
     Ftb,
+    Technic,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]

@@ -4,6 +4,7 @@ export const PROVIDER_NAMES: Record<Provider, string> = {
   modrinth: 'Modrinth',
   curseForge: 'CurseForge',
   ftb: 'FTB',
+  technic: 'Technic',
 }
 
 /** Platforms that publish single mods and packs, not just modpacks. */

@@ -3,6 +3,7 @@ mod ftb_pack;
 mod import;
 mod mrpack;
 mod mrpack_export;
+mod technic_pack;
 
 use std::path::Path;
 
@@ -18,6 +19,7 @@ pub use mrpack::{
     MRPACK_INDEX, MrpackFile, MrpackIndex, install_mrpack, read_mrpack_index, update_mrpack,
 };
 pub use mrpack_export::{MrpackExport, export_mrpack};
+pub use technic_pack::install_technic_pack;
 
 use crate::modplatform::Provider;
 

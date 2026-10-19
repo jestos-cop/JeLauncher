@@ -66,6 +66,7 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
     modrinth: modpack?.provider === 'modrinth',
     curseForge: modpack?.provider === 'curseForge',
     ftb: modpack?.provider === 'ftb',
+    technic: modpack?.provider === 'technic',
     import: importSource.trim() !== '',
   }[source]
 
@@ -109,6 +110,7 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
             <ToggleGroupItem value="modrinth">Modrinth</ToggleGroupItem>
             <ToggleGroupItem value="curseForge">CurseForge</ToggleGroupItem>
             <ToggleGroupItem value="ftb">FTB</ToggleGroupItem>
+            <ToggleGroupItem value="technic">Technic</ToggleGroupItem>
             <ToggleGroupItem value="import">Import</ToggleGroupItem>
           </ToggleGroup>
         </DialogHeader>
