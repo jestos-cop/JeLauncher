@@ -163,9 +163,16 @@ pub async fn install_modpack(
     project_id: String,
     version_id: String,
     name: Option<String>,
+    allow_untrusted_hosts: bool,
 ) -> CommandResult<InstalledPack> {
     let (instances_dir, download_dir) = (state.paths.instances(), state.paths.downloads_cache());
-    let target = modpack_target(&state, &instances_dir, &download_dir, name)?;
+    let target = modpack_target(
+        &state,
+        &instances_dir,
+        &download_dir,
+        name,
+        allow_untrusted_hosts,
+    )?;
     let install =
         state
             .platforms
@@ -183,9 +190,16 @@ pub async fn import_instance(
     state: State<'_, AppState>,
     source: String,
     name: Option<String>,
+    allow_untrusted_hosts: bool,
 ) -> CommandResult<InstalledPack> {
     let (instances_dir, download_dir) = (state.paths.instances(), state.paths.downloads_cache());
-    let target = modpack_target(&state, &instances_dir, &download_dir, name)?;
+    let target = modpack_target(
+        &state,
+        &instances_dir,
+        &download_dir,
+        name,
+        allow_untrusted_hosts,
+    )?;
     let import = modpack::import_instance(&state.platforms, source.trim(), &target, |progress| {
         let _ = ModpackProgressEvent { progress }.emit(&app);
     });
@@ -259,12 +273,14 @@ fn modpack_target<'a>(
     instances_dir: &'a Path,
     download_dir: &'a Path,
     name: Option<String>,
+    allow_untrusted_hosts: bool,
 ) -> CommandResult<ModpackTarget<'a>> {
     Ok(ModpackTarget {
         instances_dir,
         download_dir,
         name: name.filter(|name| !name.trim().is_empty()),
         concurrency: concurrent_downloads(state)?,
+        allow_untrusted_hosts,
     })
 }
 

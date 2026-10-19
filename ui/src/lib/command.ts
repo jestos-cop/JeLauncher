@@ -1,19 +1,28 @@
-import type { CommandError, Result } from '@/bindings'
+import type { CommandError, ErrorKind, Result } from '@/bindings'
 
-/** Thrown when the user stopped the task; callers do not report it as a failure. */
-export class CancelledError extends Error {}
+/** A failed command, keeping its kind so callers can react to cancellations and trust prompts. */
+export class CommandFailure extends Error {
+  readonly kind: ErrorKind
+
+  constructor(error: CommandError) {
+    super(error.message)
+    this.kind = error.kind
+  }
+}
 
 export async function unwrap<T>(result: Promise<Result<T, CommandError>>): Promise<T> {
   const settled = await result
-  if (settled.status === 'error') {
-    throw settled.error.cancelled
-      ? new CancelledError(settled.error.message)
-      : new Error(settled.error.message)
-  }
+  if (settled.status === 'error') throw new CommandFailure(settled.error)
   return settled.data
 }
 
-/** The error worth showing to the user, ignoring cancellations. */
+/** The error worth showing to the user, ignoring cancellations and pending trust prompts. */
 export function failure(error: Error | null): Error | null {
-  return error instanceof CancelledError ? null : error
+  if (error instanceof CommandFailure && error.kind.type !== 'failed') return null
+  return error
+}
+
+/** Hosts the user has to allow before a modpack install can continue. */
+export function untrustedHosts(error: Error | null): string[] | null {
+  return error instanceof CommandFailure && error.kind.type === 'untrustedHosts' ? error.kind.hosts : null
 }

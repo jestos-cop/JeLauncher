@@ -1,9 +1,9 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{BTreeSet, HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 
-use super::{ManagedPack, PackSource};
+use super::{ManagedPack, ModpackTarget, PackSource};
 use crate::archive::{self, safe_relative_path};
 use crate::instance::{DraftGuard, Instance, NewInstance, create_instance};
 use crate::minecraft::{LoaderKind, LoaderSpec};
@@ -13,6 +13,14 @@ use crate::{Error, Result, fs};
 pub const MRPACK_INDEX: &str = "modrinth.index.json";
 /// Copy of the installed pack's index in the instance root, used to update the pack later.
 const INSTALLED_INDEX: &str = "mrpack.index.json";
+
+/// Hosts the `.mrpack` format allows file downloads from.
+const TRUSTED_HOSTS: [&str; 4] = [
+    "cdn.modrinth.com",
+    "github.com",
+    "raw.githubusercontent.com",
+    "gitlab.com",
+];
 
 const LOADER_KEYS: [(&str, LoaderKind); 4] = [
     ("fabric-loader", LoaderKind::Fabric),
@@ -89,6 +97,22 @@ impl MrpackIndex {
         })
     }
 
+    /// Download hosts outside the allow list of the `.mrpack` format, sorted and deduplicated.
+    pub fn untrusted_hosts(&self) -> Vec<String> {
+        let hosts: BTreeSet<String> = self
+            .files
+            .iter()
+            .filter(|file| file.is_client_file())
+            .flat_map(|file| &file.downloads)
+            .map(|url| match reqwest::Url::parse(url) {
+                Ok(parsed) => parsed.host_str().unwrap_or(url).to_owned(),
+                Err(_) => url.clone(),
+            })
+            .filter(|host| !TRUSTED_HOSTS.contains(&host.as_str()))
+            .collect();
+        hosts.into_iter().collect()
+    }
+
     fn downloads(&self, game_dir: &Path) -> Result<Vec<Download>> {
         self.files
             .iter()
@@ -122,17 +146,19 @@ pub fn read_mrpack_index(archive_path: &Path) -> Result<MrpackIndex> {
 pub async fn install_mrpack(
     http: &HttpClient,
     archive_path: &Path,
-    instances_dir: &Path,
-    name: Option<String>,
+    target: &ModpackTarget<'_>,
     source: Option<PackSource>,
-    concurrency: usize,
     on_progress: impl Fn(DownloadProgress),
 ) -> Result<Instance> {
     let index = read_mrpack_index(archive_path)?;
+    let untrusted = index.untrusted_hosts();
+    if !untrusted.is_empty() && !target.allow_untrusted_hosts {
+        return Err(Error::UntrustedHosts(untrusted));
+    }
     let mut instance = create_instance(
-        instances_dir,
+        target.instances_dir,
         NewInstance {
-            name: name.unwrap_or_else(|| index.name.clone()),
+            name: target.name.clone().unwrap_or_else(|| index.name.clone()),
             minecraft_version: index.minecraft_version()?.to_owned(),
             loader: index.loader(),
             group: None,
@@ -145,7 +171,7 @@ pub async fn install_mrpack(
         archive_path,
         &index,
         &instance,
-        concurrency,
+        target.concurrency,
         on_progress,
     )
     .await?;
@@ -290,5 +316,16 @@ mod tests {
         );
         assert!(evil.downloads(Path::new("/game")).is_err());
         Ok(())
+    }
+
+    #[test]
+    fn lists_hosts_outside_the_allow_list() {
+        let pack = index(
+            r#"{"versionId":"1","name":"P","dependencies":{},"files":[
+                {"path":"mods/a.jar","hashes":{},"downloads":["https://cdn.modrinth.com/a"],"fileSize":1},
+                {"path":"mods/b.jar","hashes":{},"downloads":["https://evil.example/b"],"fileSize":1},
+                {"path":"mods/c.jar","hashes":{},"downloads":["https://evil.example/c","not a url"],"fileSize":1}]}"#,
+        );
+        assert_eq!(pack.untrusted_hosts(), ["evil.example", "not a url"]);
     }
 }

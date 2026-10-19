@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { ResourceDownloadDialog } from '@/dialogs/ResourceDownloadDialog'
+import { ResourceUpdateDialog } from '@/dialogs/ResourceUpdateDialog'
 import { openInstanceFolder } from '@/hooks/use-instance-actions'
 import {
   useRemoveResource,
@@ -37,6 +38,7 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
   const [pendingRemoval, setPendingRemoval] = useState<ResourceFile | null>(null)
   const [isDownloading, setIsDownloading] = useState(false)
   const [checkUpdates, setCheckUpdates] = useState(false)
+  const [isReviewing, setIsReviewing] = useState(false)
   const updates = useResourceUpdates(instance.id, kind, checkUpdates)
   const applyUpdates = useUpdateResources(instance.id, kind)
   const updateFor = (file: ResourceFile) => updates.data?.find((update) => update.fileName === file.fileName)
@@ -99,9 +101,9 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
               size="sm"
               className="ml-auto"
               disabled={applyUpdates.isPending}
-              onClick={() => applyUpdates.mutate(updates.data)}
+              onClick={() => setIsReviewing(true)}
             >
-              {applyUpdates.isPending ? 'Updating…' : 'Update All'}
+              {applyUpdates.isPending ? 'Updating…' : 'Review Updates'}
             </Button>
           )}
         </div>
@@ -189,6 +191,17 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
             remove.mutate(pendingRemoval.fileName, { onSuccess: () => setPendingRemoval(null) })
           }
           onClose={() => setPendingRemoval(null)}
+        />
+      )}
+      {isReviewing && updates.data && (
+        <ResourceUpdateDialog
+          updates={updates.data}
+          files={files}
+          onApply={(selected) => {
+            setIsReviewing(false)
+            applyUpdates.mutate(selected)
+          }}
+          onClose={() => setIsReviewing(false)}
         />
       )}
       <ResourceDownloadDialog

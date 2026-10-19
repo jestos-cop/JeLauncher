@@ -46,6 +46,8 @@ pub struct ModpackTarget<'a> {
     pub download_dir: &'a Path,
     pub name: Option<String>,
     pub concurrency: usize,
+    /// Lets `.mrpack` files download from hosts outside the platform allow list.
+    pub allow_untrusted_hosts: bool,
 }
 
 /// A newly created pack instance plus the files the user still has to download by hand.

@@ -3,13 +3,31 @@ use serde::Serialize;
 #[derive(Debug, Serialize, specta::Type)]
 pub struct CommandError {
     message: String,
-    /// Set when the user stopped the task, so the UI does not report it as a failure.
-    cancelled: bool,
+    kind: ErrorKind,
+}
+
+/// Errors the UI handles differently from a plain failure message.
+#[derive(Debug, PartialEq, Eq, Serialize, specta::Type)]
+#[serde(tag = "type", rename_all = "camelCase")]
+pub enum ErrorKind {
+    Failed,
+    /// The user stopped the task, so it is not reported as a failure.
+    Cancelled,
+    /// The modpack needs files from these hosts; retry with them allowed to continue.
+    UntrustedHosts {
+        hosts: Vec<String>,
+    },
 }
 
 impl From<jelauncher_core::Error> for CommandError {
     fn from(err: jelauncher_core::Error) -> Self {
-        Self::new(err.to_string())
+        match err {
+            jelauncher_core::Error::UntrustedHosts(hosts) => Self {
+                message: jelauncher_core::Error::UntrustedHosts(hosts.clone()).to_string(),
+                kind: ErrorKind::UntrustedHosts { hosts },
+            },
+            err => Self::new(err.to_string()),
+        }
     }
 }
 
@@ -20,20 +38,20 @@ impl CommandError {
         log::warn!("{message}");
         Self {
             message,
-            cancelled: false,
+            kind: ErrorKind::Failed,
         }
     }
 
     pub fn cancelled() -> Self {
         Self {
             message: "cancelled".into(),
-            cancelled: true,
+            kind: ErrorKind::Cancelled,
         }
     }
 
     #[cfg(test)]
     pub fn is_cancelled(&self) -> bool {
-        self.cancelled
+        self.kind == ErrorKind::Cancelled
     }
 
     pub fn poisoned() -> Self {

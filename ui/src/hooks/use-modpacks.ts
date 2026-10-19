@@ -8,6 +8,11 @@ export interface ModpackSelection {
   versionId: string
 }
 
+interface ModpackInstall {
+  name: string | null
+  allowUntrustedHosts: boolean
+}
+
 export function useModpackVersions(provider: Provider, projectId: string | null) {
   return useQuery({
     queryKey: ['modpack-versions', provider, projectId],
@@ -19,8 +24,20 @@ export function useModpackVersions(provider: Provider, projectId: string | null)
 export function useInstallModpack() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ selection, name }: { selection: ModpackSelection; name: string | null }) =>
-      unwrap(commands.installModpack(selection.provider, selection.projectId, selection.versionId, name)),
+    mutationFn: ({
+      selection,
+      name,
+      allowUntrustedHosts,
+    }: ModpackInstall & { selection: ModpackSelection }) =>
+      unwrap(
+        commands.installModpack(
+          selection.provider,
+          selection.projectId,
+          selection.versionId,
+          name,
+          allowUntrustedHosts,
+        ),
+      ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['instances'] }),
   })
 }
@@ -28,8 +45,8 @@ export function useInstallModpack() {
 export function useImportInstance() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ source, name }: { source: string; name: string | null }) =>
-      unwrap(commands.importInstance(source, name)),
+    mutationFn: ({ source, name, allowUntrustedHosts }: ModpackInstall & { source: string }) =>
+      unwrap(commands.importInstance(source, name, allowUntrustedHosts)),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['instances'] }),
   })
 }

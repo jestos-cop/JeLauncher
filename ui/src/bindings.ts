@@ -373,9 +373,9 @@ async cancelModpackInstall() : Promise<Result<null, CommandError>> {
 /**
  * Installs a modpack version as a new instance.
  */
-async installModpack(provider: Provider, projectId: string, versionId: string, name: string | null) : Promise<Result<InstalledPack, CommandError>> {
+async installModpack(provider: Provider, projectId: string, versionId: string, name: string | null, allowUntrustedHosts: boolean) : Promise<Result<InstalledPack, CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("install_modpack", { provider, projectId, versionId, name }) };
+    return { status: "ok", data: await TAURI_INVOKE("install_modpack", { provider, projectId, versionId, name, allowUntrustedHosts }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -384,9 +384,9 @@ async installModpack(provider: Provider, projectId: string, versionId: string, n
 /**
  * Imports an instance from a `.mrpack`, CurseForge pack or exported instance (path or URL).
  */
-async importInstance(source: string, name: string | null) : Promise<Result<InstalledPack, CommandError>> {
+async importInstance(source: string, name: string | null, allowUntrustedHosts: boolean) : Promise<Result<InstalledPack, CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("import_instance", { source, name }) };
+    return { status: "ok", data: await TAURI_INVOKE("import_instance", { source, name, allowUntrustedHosts }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -712,11 +712,7 @@ launch: string | null; quickPlay: QuickPlay | null;
  * Archive path or URL to import.
  */
 import: string | null }
-export type CommandError = { message: string; 
-/**
- * Set when the user stopped the task, so the UI does not report it as a failure.
- */
-cancelled: boolean }
+export type CommandError = { message: string; kind: ErrorKind }
 /**
  * Commands run around the game and extra environment variables for it.
  */
@@ -737,6 +733,18 @@ export type Dependency = { projectId: string | null; versionId: string | null; r
  */
 export type DeviceCodePrompt = { userCode: string; verificationUri: string; expiresIn: number }
 export type DownloadProgress = { completed: number; total: number; downloadedBytes: number }
+/**
+ * Errors the UI handles differently from a plain failure message.
+ */
+export type ErrorKind = { type: "failed" } | 
+/**
+ * The user stopped the task, so it is not reported as a failure.
+ */
+{ type: "cancelled" } | 
+/**
+ * The modpack needs files from these hosts; retry with them allowed to continue.
+ */
+{ type: "untrustedHosts"; hosts: string[] }
 /**
  * A top-level entry of the game directory as offered for export.
  */

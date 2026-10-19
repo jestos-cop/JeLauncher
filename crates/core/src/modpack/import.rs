@@ -78,17 +78,11 @@ async fn import_archive(
     on_progress: impl Fn(DownloadProgress),
 ) -> Result<PackInstall> {
     match detect_archive(archive_path)? {
-        ArchiveKind::Mrpack => install_mrpack(
-            platforms.http(),
-            archive_path,
-            target.instances_dir,
-            target.name.clone(),
-            None,
-            target.concurrency,
-            on_progress,
-        )
-        .await
-        .map(PackInstall::complete),
+        ArchiveKind::Mrpack => {
+            install_mrpack(platforms.http(), archive_path, target, None, on_progress)
+                .await
+                .map(PackInstall::complete)
+        }
         ArchiveKind::CurseForge => {
             install_curseforge_pack(
                 &platforms.curseforge,
@@ -213,6 +207,7 @@ mod tests {
             download_dir: dir.path(),
             name: Some("Copy".into()),
             concurrency: 1,
+            allow_untrusted_hosts: false,
         };
         let platforms = ModPlatforms::new(
             crate::net::HttpClient::new(&crate::settings::NetworkSettings::default())?,

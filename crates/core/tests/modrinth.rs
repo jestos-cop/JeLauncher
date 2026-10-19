@@ -124,6 +124,7 @@ async fn installs_a_modpack_as_new_instance() -> jelauncher_core::Result<()> {
         download_dir: &dir.path().join("downloads"),
         name: None,
         concurrency: 8,
+        allow_untrusted_hosts: false,
     };
     let instance = modrinth.install_modpack(&pack.id, &target, |_| {}).await?;
 
@@ -175,6 +176,7 @@ async fn imports_a_modpack_from_its_url() -> jelauncher_core::Result<()> {
         download_dir: &dir.path().join("downloads"),
         name: Some("Imported".into()),
         concurrency: 8,
+        allow_untrusted_hosts: false,
     };
     let platforms = jelauncher_core::modplatform::ModPlatforms::new(http.clone(), None);
     let instance = import_instance(&platforms, &url, &target, |_| {})
@@ -218,6 +220,7 @@ async fn exported_modpack_references_modrinth_files_and_reimports() -> jelaunche
         download_dir: &dir.path().join("downloads"),
         name: None,
         concurrency: 8,
+        allow_untrusted_hosts: false,
     };
     let original = modrinth.install_modpack(&pack.id, &target, |_| {}).await?;
     let original_mods =
@@ -285,6 +288,7 @@ async fn updates_a_modpack_to_another_version() -> jelauncher_core::Result<()> {
         download_dir: &download_dir,
         name: None,
         concurrency: 8,
+        allow_untrusted_hosts: false,
     };
     let mut instance = modrinth.install_modpack(&older.id, &target, |_| {}).await?;
     let saves = instance.saves_dir().join("My World");

@@ -182,6 +182,7 @@ async fn launches_a_fabric_modpack() -> jelauncher_core::Result<()> {
                 download_dir: &harness.paths.downloads_cache(),
                 name: None,
                 concurrency: 8,
+                allow_untrusted_hosts: false,
             },
             |_| {},
         )

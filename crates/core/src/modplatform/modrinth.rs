@@ -165,16 +165,8 @@ impl Modrinth {
         let (archive, source) = self
             .download_modpack(version_id, target.download_dir)
             .await?;
-        let instance = install_mrpack(
-            &self.http,
-            &archive,
-            target.instances_dir,
-            target.name.clone(),
-            Some(source),
-            target.concurrency,
-            on_progress,
-        )
-        .await;
+        let instance =
+            install_mrpack(&self.http, &archive, target, Some(source), on_progress).await;
         let _ = std::fs::remove_file(&archive);
         instance
     }

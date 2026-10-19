@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { commands, type InstalledPack, type LoaderSpec, type Provider } from '@/bindings'
+import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { ImportSource } from '@/components/ImportSource'
 import { LoaderPicker } from '@/components/LoaderPicker'
 import { ModpackBrowser } from '@/components/ModpackBrowser'
@@ -14,7 +15,7 @@ import { useCreateInstance } from '@/hooks/use-create-instance'
 import { BlockedFilesDialog } from '@/dialogs/BlockedFilesDialog'
 import { useModpackProgress } from '@/hooks/use-modpack-progress'
 import { type ModpackSelection, useImportInstance, useInstallModpack } from '@/hooks/use-modpacks'
-import { failure } from '@/lib/command'
+import { failure, untrustedHosts } from '@/lib/command'
 
 type Source = 'vanilla' | Provider | 'import'
 
@@ -40,7 +41,10 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
   const downloading = installModpack.isPending || importInstance.isPending
   const progress = useModpackProgress(downloading)
   const busy = createInstance.isPending || downloading
-  const error = failure(createInstance.error ?? installModpack.error ?? importInstance.error)
+  const packError = installModpack.error ?? importInstance.error
+  const hostsToTrust = untrustedHosts(packError)
+  const [trustDeclined, setTrustDeclined] = useState(false)
+  const error = failure(createInstance.error ?? packError) ?? (trustDeclined ? packError : null)
 
   const close = () => {
     if (busy) return
@@ -68,11 +72,13 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
   const finish = (installed: InstalledPack) =>
     installed.blocked.length > 0 ? setPendingDownloads(installed) : close()
 
-  const create = () => {
+  const create = (allowUntrustedHosts = false) => {
+    const pack = { name: name.trim() || null, allowUntrustedHosts }
+    setTrustDeclined(false)
     if (source === 'import') {
-      importInstance.mutate({ source: importSource, name: name.trim() || null }, { onSuccess: finish })
+      importInstance.mutate({ ...pack, source: importSource }, { onSuccess: finish })
     } else if (source !== 'vanilla' && modpack) {
-      installModpack.mutate({ selection: modpack, name: name.trim() || null }, { onSuccess: finish })
+      installModpack.mutate({ ...pack, selection: modpack }, { onSuccess: finish })
     } else if (version) {
       createInstance.mutate(
         {
@@ -158,11 +164,20 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
           >
             Cancel
           </Button>
-          <Button onClick={create} disabled={!canCreate || busy}>
+          <Button onClick={() => create()} disabled={!canCreate || busy}>
             Create
           </Button>
         </DialogFooter>
       </DialogContent>
+      {hostsToTrust && !trustDeclined && (
+        <ConfirmDialog
+          title="Download from untrusted hosts?"
+          description={`This modpack downloads files from ${hostsToTrust.join(', ')}. These hosts are not reviewed by the platform and may serve harmful files. Continue only if you trust the pack author.`}
+          confirmLabel="Download Anyway"
+          onConfirm={() => create(true)}
+          onClose={() => setTrustDeclined(true)}
+        />
+      )}
       {pendingDownloads && <BlockedFilesDialog installed={pendingDownloads} onClose={close} />}
     </Dialog>
   )

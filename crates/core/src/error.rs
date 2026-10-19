@@ -38,6 +38,9 @@ pub enum Error {
     #[error("{0}")]
     InvalidInput(String),
 
+    #[error("the modpack downloads files from untrusted hosts: {}", .0.join(", "))]
+    UntrustedHosts(Vec<String>),
+
     #[error("unknown Minecraft version {0}")]
     UnknownVersion(String),
 
