@@ -1,3 +1,4 @@
+mod forge;
 mod loader;
 mod manifest;
 

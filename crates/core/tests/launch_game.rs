@@ -1,4 +1,4 @@
-//! Starts the latest release with an offline account and watches its output.
+//! Starts real game instances with an offline account and watches their output.
 //! Set `JELAUNCHER_DATA_DIR` to reuse downloaded files;
 //! run with `cargo test --test launch_game -- --ignored --nocapture`.
 
@@ -6,90 +6,140 @@ use std::path::PathBuf;
 use std::time::Duration;
 
 use jelauncher_core::auth::offline_account;
-use jelauncher_core::instance::{NewInstance, create_instance};
+use jelauncher_core::instance::{Instance, NewInstance, create_instance};
 use jelauncher_core::launch::{LaunchProgress, Launcher};
 use jelauncher_core::meta::MetaService;
+use jelauncher_core::minecraft::{LoaderKind, LoaderSpec};
 use jelauncher_core::net::HttpClient;
 use jelauncher_core::paths::DataPaths;
 use jelauncher_core::settings::GlobalSettings;
 use tokio::io::{AsyncBufReadExt, BufReader};
 
+struct Harness {
+    paths: DataPaths,
+    settings: GlobalSettings,
+    http: HttpClient,
+    meta: MetaService,
+    scratch: tempfile::TempDir,
+}
+
+impl Harness {
+    fn new() -> jelauncher_core::Result<Self> {
+        let root = std::env::var_os("JELAUNCHER_DATA_DIR")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| std::env::temp_dir().join("jelauncher-launch-test"));
+        let paths = DataPaths::new(root);
+        let settings = GlobalSettings::default();
+        let http = HttpClient::new(&settings.network)?;
+        let meta = MetaService::new(http.clone(), paths.meta());
+        let scratch = tempfile::tempdir().map_err(|err| jelauncher_core::Error::Io {
+            path: "tempdir".into(),
+            source: err,
+        })?;
+        Ok(Self {
+            paths,
+            settings,
+            http,
+            meta,
+            scratch,
+        })
+    }
+
+    fn create(
+        &self,
+        minecraft_version: &str,
+        loader: Option<LoaderSpec>,
+    ) -> jelauncher_core::Result<Instance> {
+        create_instance(
+            self.scratch.path(),
+            NewInstance {
+                name: "Launch Test".into(),
+                minecraft_version: minecraft_version.into(),
+                loader,
+                group: None,
+                icon_key: None,
+            },
+        )
+    }
+
+    /// Launches the instance, echoes its output for `seconds` and reports whether a line
+    /// containing `marker` appeared while the game kept running.
+    async fn launch(
+        &self,
+        instance: &Instance,
+        seconds: u64,
+        marker: &str,
+    ) -> jelauncher_core::Result<bool> {
+        let launcher = Launcher {
+            paths: &self.paths,
+            meta: &self.meta,
+            http: &self.http,
+            settings: &self.settings,
+        };
+        let command = launcher
+            .prepare(instance, &offline_account("JeTester")?, |progress| {
+                if !matches!(progress, LaunchProgress::Downloading(_)) {
+                    println!("{progress:?}");
+                }
+            })
+            .await?;
+        println!("java: {}", command.java.display());
+
+        let mut child = command.spawn()?;
+        let Some(stdout) = child.stdout.take() else {
+            panic!("stdout is not piped");
+        };
+        let mut lines = BufReader::new(stdout).lines();
+        let mut saw_marker = false;
+        let watch = async {
+            while let Ok(Some(line)) = lines.next_line().await {
+                saw_marker |= line.contains(marker);
+                println!("| {line}");
+            }
+        };
+        let _ = tokio::time::timeout(Duration::from_secs(seconds), watch).await;
+
+        let still_running = child.try_wait().ok().flatten().is_none();
+        let _ = child.kill().await;
+        assert!(still_running, "game exited early");
+        Ok(saw_marker)
+    }
+
+    async fn latest_loader(
+        &self,
+        kind: LoaderKind,
+        minecraft_version: &str,
+    ) -> jelauncher_core::Result<LoaderSpec> {
+        let versions = self.meta.loader_versions(kind, minecraft_version).await?;
+        let Some(version) = versions.iter().find(|v| v.stable).or(versions.first()) else {
+            panic!("no {kind:?} for {minecraft_version}");
+        };
+        Ok(LoaderSpec {
+            kind,
+            version: version.version.clone(),
+        })
+    }
+}
+
 #[tokio::test]
 #[ignore = "downloads the game and opens a window"]
 async fn launches_latest_release() -> jelauncher_core::Result<()> {
-    let root = std::env::var_os("JELAUNCHER_DATA_DIR")
-        .map(PathBuf::from)
-        .unwrap_or_else(|| std::env::temp_dir().join("jelauncher-launch-test"));
-    let paths = DataPaths::new(root);
-    let settings = GlobalSettings::default();
-    let http = HttpClient::new(&settings.network)?;
-    let meta = MetaService::new(http.clone(), paths.meta());
-    let latest = meta.version_manifest().await?.latest.release;
-
-    let scratch = tempfile::tempdir().map_err(|err| jelauncher_core::Error::Io {
-        path: "tempdir".into(),
-        source: err,
-    })?;
-    let instance = create_instance(
-        scratch.path(),
-        NewInstance {
-            name: "Launch Test".into(),
-            minecraft_version: latest,
-            loader: None,
-            group: None,
-            icon_key: None,
-        },
-    )?;
-    let launcher = Launcher {
-        paths: &paths,
-        meta: &meta,
-        http: &http,
-        settings: &settings,
-    };
-    let command = launcher
-        .prepare(&instance, &offline_account("JeTester")?, |progress| {
-            if !matches!(progress, LaunchProgress::Downloading(_)) {
-                println!("{progress:?}");
-            }
-        })
-        .await?;
-    println!("java: {}", command.java.display());
-
-    let mut child = command.spawn()?;
-    let Some(stdout) = child.stdout.take() else {
-        panic!("stdout is not piped");
-    };
-    let mut lines = BufReader::new(stdout).lines();
-    let watch = async {
-        while let Ok(Some(line)) = lines.next_line().await {
-            println!("| {line}");
-        }
-    };
-    let _ = tokio::time::timeout(Duration::from_secs(40), watch).await;
-
-    let still_running = child.try_wait().ok().flatten().is_none();
-    let _ = child.kill().await;
-    assert!(still_running, "game exited early");
+    let harness = Harness::new()?;
+    let latest = harness.meta.version_manifest().await?.latest.release;
+    let instance = harness.create(&latest, None)?;
+    harness.launch(&instance, 40, "").await?;
     Ok(())
 }
 
 #[tokio::test]
 #[ignore = "downloads a modpack and opens a window"]
 async fn launches_a_fabric_modpack() -> jelauncher_core::Result<()> {
-    use jelauncher_core::minecraft::LoaderKind;
     use jelauncher_core::modpack::ModpackTarget;
     use jelauncher_core::modplatform::ResourceKind;
     use jelauncher_core::modplatform::modrinth::Modrinth;
 
-    let root = std::env::var_os("JELAUNCHER_DATA_DIR")
-        .map(PathBuf::from)
-        .unwrap_or_else(|| std::env::temp_dir().join("jelauncher-launch-test"));
-    let paths = DataPaths::new(root);
-    let settings = GlobalSettings::default();
-    let http = HttpClient::new(&settings.network)?;
-    let meta = MetaService::new(http.clone(), paths.meta());
-    let modrinth = Modrinth::new(http.clone());
-
+    let harness = Harness::new()?;
+    let modrinth = Modrinth::new(harness.http.clone());
     let versions = modrinth
         .versions(
             "fabulously-optimized",
@@ -101,52 +151,45 @@ async fn launches_a_fabric_modpack() -> jelauncher_core::Result<()> {
     let Some(pack) = versions.first() else {
         panic!("no Fabulously Optimized for 1.21.4");
     };
-    let scratch = tempfile::tempdir().map_err(|err| jelauncher_core::Error::Io {
-        path: "tempdir".into(),
-        source: err,
-    })?;
     let instance = modrinth
         .install_modpack(
             &pack.id,
             &ModpackTarget {
-                instances_dir: scratch.path(),
-                download_dir: &paths.downloads_cache(),
+                instances_dir: harness.scratch.path(),
+                download_dir: &harness.paths.downloads_cache(),
                 name: None,
                 concurrency: 8,
             },
             |_| {},
         )
         .await?;
+    let loaded = harness.launch(&instance, 60, "Loading").await?;
+    assert!(loaded, "Fabric did not report loading mods");
+    Ok(())
+}
 
-    let launcher = Launcher {
-        paths: &paths,
-        meta: &meta,
-        http: &http,
-        settings: &settings,
-    };
-    let command = launcher
-        .prepare(&instance, &offline_account("JeTester")?, |_| {})
+#[tokio::test]
+#[ignore = "runs the NeoForge installer and opens a window"]
+async fn launches_neoforge() -> jelauncher_core::Result<()> {
+    let harness = Harness::new()?;
+    let loader = harness
+        .latest_loader(LoaderKind::NeoForge, "1.21.4")
         .await?;
-    println!("java: {}", command.java.display());
-    let mut child = command.spawn()?;
-    let Some(stdout) = child.stdout.take() else {
-        panic!("stdout is not piped");
-    };
-    let mut lines = BufReader::new(stdout).lines();
-    let mut saw_fabric = false;
-    let watch = async {
-        while let Ok(Some(line)) = lines.next_line().await {
-            if line.contains("Loading") && line.contains("mods") {
-                saw_fabric = true;
-            }
-            println!("| {line}");
-        }
-    };
-    let _ = tokio::time::timeout(Duration::from_secs(60), watch).await;
+    println!("NeoForge {}", loader.version);
+    let instance = harness.create("1.21.4", Some(loader))?;
+    let loaded = harness.launch(&instance, 90, "ModLauncher").await?;
+    assert!(loaded, "NeoForge did not start ModLauncher");
+    Ok(())
+}
 
-    let still_running = child.try_wait().ok().flatten().is_none();
-    let _ = child.kill().await;
-    assert!(saw_fabric, "Fabric did not report loading mods");
-    assert!(still_running, "game exited early");
+#[tokio::test]
+#[ignore = "runs the Forge installer and opens a window"]
+async fn launches_forge() -> jelauncher_core::Result<()> {
+    let harness = Harness::new()?;
+    let loader = harness.latest_loader(LoaderKind::Forge, "1.21.4").await?;
+    println!("Forge {}", loader.version);
+    let instance = harness.create("1.21.4", Some(loader))?;
+    let loaded = harness.launch(&instance, 90, "Forge").await?;
+    assert!(loaded, "Forge did not report starting");
     Ok(())
 }

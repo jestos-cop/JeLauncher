@@ -12,9 +12,11 @@ use crate::{Error, Result};
 
 pub const MRPACK_INDEX: &str = "modrinth.index.json";
 
-const LOADER_KEYS: [(&str, LoaderKind); 2] = [
+const LOADER_KEYS: [(&str, LoaderKind); 4] = [
     ("fabric-loader", LoaderKind::Fabric),
     ("quilt-loader", LoaderKind::Quilt),
+    ("forge", LoaderKind::Forge),
+    ("neoforge", LoaderKind::NeoForge),
 ];
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -76,24 +78,13 @@ impl MrpackIndex {
             })
     }
 
-    pub fn loader(&self) -> Result<Option<LoaderSpec>> {
-        for (key, kind) in LOADER_KEYS {
-            if let Some(version) = self.dependencies.get(key) {
-                return Ok(Some(LoaderSpec {
-                    kind,
-                    version: version.clone(),
-                }));
-            }
-        }
-        if let Some(loader) = ["forge", "neoforge"]
-            .into_iter()
-            .find(|key| self.dependencies.contains_key(*key))
-        {
-            return Err(Error::InvalidInput(format!(
-                "{loader} modpacks are not supported yet"
-            )));
-        }
-        Ok(None)
+    pub fn loader(&self) -> Option<LoaderSpec> {
+        LOADER_KEYS.into_iter().find_map(|(key, kind)| {
+            self.dependencies.get(key).map(|version| LoaderSpec {
+                kind,
+                version: version.clone(),
+            })
+        })
     }
 
     fn downloads(&self, game_dir: &Path) -> Result<Vec<Download>> {
@@ -141,7 +132,7 @@ pub async fn install_mrpack(
         NewInstance {
             name: name.unwrap_or_else(|| index.name.clone()),
             minecraft_version: index.minecraft_version()?.to_owned(),
-            loader: index.loader()?,
+            loader: index.loader(),
             group: None,
             icon_key: None,
         },
@@ -206,7 +197,7 @@ mod tests {
         );
         assert_eq!(pack.minecraft_version()?, "1.21.4");
         assert_eq!(
-            pack.loader()?,
+            pack.loader(),
             Some(LoaderSpec {
                 kind: LoaderKind::Fabric,
                 version: "0.19.3".into()
@@ -215,7 +206,13 @@ mod tests {
         let forge = index(
             r#"{"versionId":"1","name":"F","files":[],"dependencies":{"minecraft":"1.20.1","forge":"47.2.0"}}"#,
         );
-        assert!(forge.loader().is_err());
+        assert_eq!(
+            forge.loader(),
+            Some(LoaderSpec {
+                kind: LoaderKind::Forge,
+                version: "47.2.0".into()
+            })
+        );
         Ok(())
     }
 

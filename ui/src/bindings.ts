@@ -497,10 +497,10 @@ path: string | null; minMemoryMb: number; maxMemoryMb: number; jvmArgs: string;
  */
 autoDownload: boolean }
 export type LatestVersions = { release: string; snapshot: string }
-export type LaunchProgress = { stage: "preparing" } | ({ stage: "downloading" } & DownloadProgress) | { stage: "starting" }
+export type LaunchProgress = { stage: "preparing" } | ({ stage: "downloading" } & DownloadProgress) | { stage: "installingLoader" } | { stage: "starting" }
 export type LaunchProgressEvent = { instanceId: string; progress: LaunchProgress }
 export type LauncherSettings = { showConsole: boolean; showConsoleOnError: boolean; autoCloseConsole: boolean; recordGameTime: boolean }
-export type LoaderKind = "fabric" | "quilt"
+export type LoaderKind = "fabric" | "quilt" | "forge" | "neoforge"
 export type LoaderSpec = { kind: LoaderKind; version: string }
 export type LoaderVersion = { version: string; stable: boolean }
 export type LogLevel = "launcher" | "debug" | "info" | "warning" | "error" | "fatal" | "unknown"

@@ -1,6 +1,6 @@
 mod args;
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Stdio;
 
 use serde::Serialize;
@@ -9,10 +9,14 @@ use tokio::process::{Child, Command};
 pub use args::{ArgsInput, LAUNCHER_NAME, build_arguments};
 
 use crate::auth::Account;
+use crate::forge::{ForgeInstaller, InstallProgress};
 use crate::instance::Instance;
 use crate::java::{self, check_java};
 use crate::meta::MetaService;
-use crate::minecraft::{Environment, Features, GameFiles, JavaVersion};
+use crate::minecraft::{
+    Environment, Features, GameFiles, JavaVersion, LoaderProfile, LoaderSpec, VersionJson,
+    artifact_download, client_jar_path,
+};
 use crate::net::{DownloadProgress, HttpClient};
 use crate::paths::DataPaths;
 use crate::settings::GlobalSettings;
@@ -26,6 +30,7 @@ const DEFAULT_JAVA_MAJOR: u32 = 8;
 pub enum LaunchProgress {
     Preparing,
     Downloading(DownloadProgress),
+    InstallingLoader,
     Starting,
 }
 
@@ -58,10 +63,23 @@ impl Launcher<'_> {
         on_progress(LaunchProgress::Preparing);
         let game_version = &instance.config.minecraft_version;
         let mut version = self.meta.version_json(game_version).await?;
-        if let Some(loader) = &instance.config.loader {
-            version.apply_loader(self.meta.loader_profile(loader, game_version).await?);
-        }
         let settings = instance.config.settings.resolve(self.settings);
+        let java = self
+            .find_java(
+                settings.java_path.as_deref(),
+                version.java_version.as_ref(),
+                &on_progress,
+            )
+            .await?;
+        if let Some(loader) = &instance.config.loader {
+            let profile = if loader.kind.uses_installer() {
+                self.install_forge(&version, loader, &java, &on_progress)
+                    .await?
+            } else {
+                self.meta.loader_profile(loader, game_version).await?
+            };
+            version.apply_loader(profile);
+        }
         let env = Environment::current(Features {
             custom_resolution: !settings.window_maximized,
             ..Features::default()
@@ -76,14 +94,6 @@ impl Launcher<'_> {
                 &game_dir,
                 self.settings.network.concurrent_downloads as usize,
                 |progress| on_progress(LaunchProgress::Downloading(progress)),
-            )
-            .await?;
-
-        let java = self
-            .find_java(
-                settings.java_path.as_deref(),
-                version.java_version.as_ref(),
-                &on_progress,
             )
             .await?;
 
@@ -145,6 +155,37 @@ impl Launcher<'_> {
             pre_launch: non_empty(&commands.pre_launch),
             post_exit: non_empty(&commands.post_exit),
         })
+    }
+
+    async fn install_forge(
+        &self,
+        vanilla: &VersionJson,
+        loader: &LoaderSpec,
+        java: &Path,
+        on_progress: &impl Fn(LaunchProgress),
+    ) -> Result<LoaderProfile> {
+        // The installer patches the vanilla client jar, so it has to be present first.
+        let client_jar = client_jar_path(self.paths, &vanilla.id);
+        self.http
+            .download(&artifact_download(
+                &vanilla.downloads.client,
+                client_jar.clone(),
+            ))
+            .await?;
+        let installer = ForgeInstaller {
+            http: self.http,
+            paths: self.paths,
+            java,
+            concurrency: self.settings.network.concurrent_downloads as usize,
+        };
+        installer
+            .install(loader, &vanilla.id, &client_jar, |progress| {
+                on_progress(match progress {
+                    InstallProgress::Downloading(progress) => LaunchProgress::Downloading(progress),
+                    InstallProgress::Processing => LaunchProgress::InstallingLoader,
+                });
+            })
+            .await
     }
 
     async fn find_java(

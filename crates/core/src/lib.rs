@@ -1,6 +1,7 @@
 pub mod archive;
 pub mod auth;
 pub mod error;
+pub mod forge;
 pub mod fs;
 pub mod instance;
 pub mod java;

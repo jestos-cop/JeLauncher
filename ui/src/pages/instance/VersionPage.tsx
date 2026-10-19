@@ -6,7 +6,12 @@ import { Button } from '@/components/ui/button'
 import { ChangeVersionDialog } from '@/dialogs/ChangeVersionDialog'
 import { useSetInstanceVersion } from '@/hooks/use-instance-actions'
 
-const LOADER_NAMES = { fabric: 'Fabric Loader', quilt: 'Quilt Loader' } as const
+const LOADER_NAMES = {
+  fabric: 'Fabric Loader',
+  quilt: 'Quilt Loader',
+  forge: 'Forge',
+  neoforge: 'NeoForge',
+} as const
 
 export function VersionPage({ instance }: { instance: InstanceSummary }) {
   const [dialog, setDialog] = useState<'change' | 'removeLoader' | null>(null)

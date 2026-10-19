@@ -9,6 +9,25 @@ use super::version::{Arguments, Library, VersionJson};
 pub enum LoaderKind {
     Fabric,
     Quilt,
+    Forge,
+    NeoForge,
+}
+
+impl LoaderKind {
+    /// Lowercase id used in file names and by mod platforms.
+    pub fn id(self) -> &'static str {
+        match self {
+            Self::Fabric => "fabric",
+            Self::Quilt => "quilt",
+            Self::Forge => "forge",
+            Self::NeoForge => "neoforge",
+        }
+    }
+
+    /// Forge and NeoForge are installed by running their installer instead of a meta profile.
+    pub fn uses_installer(self) -> bool {
+        matches!(self, Self::Forge | Self::NeoForge)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]

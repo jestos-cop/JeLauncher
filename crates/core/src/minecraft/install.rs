@@ -29,7 +29,10 @@ impl GameFiles {
 
         let mut library_download = |artifact: Artifact| -> Option<PathBuf> {
             let path = libraries_dir.join(artifact.path.as_ref()?);
-            downloads.push(artifact_download(&artifact, path.clone()));
+            // Jars without a URL are produced locally by a loader installer.
+            if !artifact.url.is_empty() {
+                downloads.push(artifact_download(&artifact, path.clone()));
+            }
             Some(path)
         };
         for library in version.libraries.iter().filter(|l| env.allows(&l.rules)) {
@@ -41,10 +44,7 @@ impl GameFiles {
             }
         }
 
-        let client_jar = paths
-            .versions()
-            .join(&version.id)
-            .join(format!("{}.jar", version.id));
+        let client_jar = client_jar_path(paths, &version.id);
         downloads.push(artifact_download(
             &version.downloads.client,
             client_jar.clone(),
@@ -128,7 +128,14 @@ impl GameFiles {
     }
 }
 
-fn artifact_download(artifact: &Artifact, path: PathBuf) -> Download {
+pub fn client_jar_path(paths: &DataPaths, version_id: &str) -> PathBuf {
+    paths
+        .versions()
+        .join(version_id)
+        .join(format!("{version_id}.jar"))
+}
+
+pub fn artifact_download(artifact: &Artifact, path: PathBuf) -> Download {
     Download {
         url: artifact.url.clone(),
         path,

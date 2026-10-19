@@ -49,6 +49,18 @@ impl HttpClient {
             .map_err(|err| Error::http(url, err))
     }
 
+    pub async fn get_text(&self, url: &str) -> Result<String> {
+        self.inner
+            .get(url)
+            .send()
+            .await
+            .and_then(reqwest::Response::error_for_status)
+            .map_err(|err| Error::http(url, err))?
+            .text()
+            .await
+            .map_err(|err| Error::http(url, err))
+    }
+
     pub async fn post_json<B: Serialize + ?Sized, T: DeserializeOwned>(
         &self,
         url: &str,

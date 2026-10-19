@@ -56,7 +56,7 @@ impl Modrinth {
             params.push(("game_versions", json_list(game_version)));
         }
         if let (ResourceKind::Mod | ResourceKind::Modpack, Some(loader)) = (kind, loader) {
-            params.push(("loaders", json_list(loader_name(loader))));
+            params.push(("loaders", json_list(loader.id())));
         }
         let url = format!("{API}/project/{project_id}/version");
         let versions: Vec<ApiVersion> = self.http.get_json_query(&url, &params).await?;
@@ -200,7 +200,7 @@ fn facets(query: &SearchQuery) -> String {
         groups.push(vec![format!("versions:{version}")]);
     }
     if let (ResourceKind::Mod | ResourceKind::Modpack, Some(loader)) = (query.kind, query.loader) {
-        groups.push(vec![format!("categories:{}", loader_name(loader))]);
+        groups.push(vec![format!("categories:{}", loader.id())]);
     }
     serde_json::to_string(&groups).unwrap_or_default()
 }
@@ -216,13 +216,6 @@ fn project_type(kind: ResourceKind) -> &'static str {
         ResourceKind::ShaderPack => "shader",
         ResourceKind::DataPack => "datapack",
         ResourceKind::Modpack => "modpack",
-    }
-}
-
-fn loader_name(loader: LoaderKind) -> &'static str {
-    match loader {
-        LoaderKind::Fabric => "fabric",
-        LoaderKind::Quilt => "quilt",
     }
 }
 

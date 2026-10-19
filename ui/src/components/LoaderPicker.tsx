@@ -8,6 +8,8 @@ import { useLoaderVersions } from '@/hooks/use-loader-versions'
 const LOADERS: { kind: LoaderKind; label: string }[] = [
   { kind: 'fabric', label: 'Fabric' },
   { kind: 'quilt', label: 'Quilt' },
+  { kind: 'forge', label: 'Forge' },
+  { kind: 'neoforge', label: 'NeoForge' },
 ]
 
 interface LoaderPickerProps {
@@ -37,7 +39,13 @@ export function LoaderPicker({ minecraftVersion, value, onChange }: LoaderPicker
   return (
     <div className="flex flex-wrap items-center gap-3">
       <Label>Loader</Label>
-      <ToggleGroup type="single" variant="outline" size="sm" value={kind ?? 'none'} onValueChange={selectKind}>
+      <ToggleGroup
+        type="single"
+        variant="outline"
+        size="sm"
+        value={kind ?? 'none'}
+        onValueChange={selectKind}
+      >
         <ToggleGroupItem value="none">None</ToggleGroupItem>
         {LOADERS.map((loader) => (
           <ToggleGroupItem key={loader.kind} value={loader.kind} disabled={!minecraftVersion}>

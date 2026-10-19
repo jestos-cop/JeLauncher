@@ -7,6 +7,8 @@ export function describeProgress(progress: LaunchProgress | null): string {
       return 'Preparing…'
     case 'downloading':
       return `Downloading files ${progress.completed}/${progress.total}`
+    case 'installingLoader':
+      return 'Installing mod loader…'
     case 'starting':
       return 'Starting game…'
   }

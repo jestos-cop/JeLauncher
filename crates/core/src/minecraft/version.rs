@@ -205,12 +205,12 @@ impl Library {
 
 /// Converts `group:artifact:version[:classifier]` into a repository path.
 pub fn maven_path(name: &str, classifier: Option<&str>) -> Option<String> {
+    let (name, extension) = name.split_once('@').unwrap_or((name, "jar"));
     let mut parts = name.split(':');
     let group = parts.next()?;
     let artifact = parts.next()?;
     let version = parts.next()?;
     let classifier = classifier.or(parts.next());
-    let (version, extension) = version.split_once('@').unwrap_or((version, "jar"));
     let file = match classifier {
         Some(classifier) => format!("{artifact}-{version}-{classifier}.{extension}"),
         None => format!("{artifact}-{version}.{extension}"),
@@ -239,6 +239,10 @@ mod tests {
         assert_eq!(
             maven_path("a:b:1@zip", None).as_deref(),
             Some("a/b/1/b-1.zip")
+        );
+        assert_eq!(
+            maven_path("net.minecraft:client:1.21.4:mappings@txt", None).as_deref(),
+            Some("net/minecraft/client/1.21.4/client-1.21.4-mappings.txt")
         );
     }
 
