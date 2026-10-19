@@ -1,4 +1,4 @@
-use jelauncher_core::auth::AccountSummary;
+use jelauncher_core::auth::{self, AccountSummary};
 use tauri::State;
 
 use crate::error::{CommandError, CommandResult};
@@ -34,4 +34,25 @@ pub fn set_default_account(state: State<'_, AppState>, id: String) -> CommandRes
         .map_err(|_| CommandError::poisoned())?;
     accounts.set_default(&id)?;
     Ok(accounts.save(&state.paths.accounts_file())?)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn add_offline_account(
+    state: State<'_, AppState>,
+    username: String,
+) -> CommandResult<AccountSummary> {
+    let account = auth::offline_account(&username)?;
+    let id = account.id.clone();
+    let mut accounts = state
+        .accounts
+        .write()
+        .map_err(|_| CommandError::poisoned())?;
+    accounts.upsert(account);
+    accounts.save(&state.paths.accounts_file())?;
+    accounts
+        .summaries()
+        .into_iter()
+        .find(|summary| summary.id == id)
+        .ok_or_else(|| jelauncher_core::Error::UnknownAccount(id).into())
 }

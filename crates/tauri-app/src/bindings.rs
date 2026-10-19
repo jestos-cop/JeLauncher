@@ -4,6 +4,7 @@ use crate::commands;
 
 pub fn builder() -> Builder<tauri::Wry> {
     Builder::<tauri::Wry>::new().commands(collect_commands![
+        commands::accounts::add_offline_account,
         commands::accounts::list_accounts,
         commands::accounts::remove_account,
         commands::accounts::set_default_account,

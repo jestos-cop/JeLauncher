@@ -5,6 +5,14 @@
 
 
 export const commands = {
+async addOfflineAccount(username: string) : Promise<Result<AccountSummary, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("add_offline_account", { username }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async listAccounts() : Promise<Result<AccountSummary[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_accounts") };
