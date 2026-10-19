@@ -36,6 +36,15 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "publisher": "Jestos",
+    "copyright": "Copyright © Jestos. Licensed under GPL-3.0-only.",
+    "category": "Game",
+    "shortDescription": "Minecraft launcher",
+    "longDescription": "JeLauncher manages Minecraft instances, mod loaders, mods and modpacks from Modrinth and CurseForge, and launches the game.",
+    "licenseFile": "../../LICENSE",
+    "macOS": {
+      "minimumSystemVersion": "11.0"
+    }
   }
 }

@@ -39,6 +39,10 @@ ui/                 React + TypeScript + Vite + Tailwind + shadcn/ui
 - Builds: `cargo tauri build --bundles app,dmg` (macOS);
   `cargo tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc --bundles nsis`
   (Windows, cross-compiled; needs `cargo-xwin`, `nsis` and `llvm`). Both are also in `.zed/tasks.json`.
+- Releases: pushing a `v*` tag runs `.github/workflows/release.yml` and drafts a GitHub release with
+  macOS, Windows and Linux bundles. Repository secrets `CURSEFORGE_API_KEY` and `MICROSOFT_CLIENT_ID`
+  are baked into the build; `APPLE_*` secrets enable signing and notarization.
+- Local builds read the same keys from the git-ignored `.cargo/config.toml` (`[env]` section).
 
 ## Task tracking (Plane)
 
