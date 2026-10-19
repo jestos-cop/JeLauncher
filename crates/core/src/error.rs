@@ -35,6 +35,13 @@ pub enum Error {
     #[error("unknown Minecraft version {0}")]
     UnknownVersion(String),
 
+    #[error("broken archive {path}: {source}")]
+    Archive {
+        path: PathBuf,
+        #[source]
+        source: zip::result::ZipError,
+    },
+
     #[error("invalid JSON in {path}: {source}")]
     Json {
         path: PathBuf,
@@ -56,6 +63,13 @@ impl Error {
     pub(crate) fn http(url: impl Into<String>, source: reqwest::Error) -> Self {
         Self::Http {
             url: url.into(),
+            source,
+        }
+    }
+
+    pub(crate) fn archive(path: impl Into<PathBuf>, source: zip::result::ZipError) -> Self {
+        Self::Archive {
+            path: path.into(),
             source,
         }
     }
