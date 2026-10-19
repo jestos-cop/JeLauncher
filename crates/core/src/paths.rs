@@ -4,6 +4,10 @@ use directories::ProjectDirs;
 
 use crate::{Error, Result};
 
+pub const DATA_DIR_ENV: &str = "JELAUNCHER_DATA_DIR";
+/// A file with this name next to the executable keeps all data in the executable's folder.
+pub const PORTABLE_MARKER: &str = "portable.txt";
+
 #[derive(Debug, Clone)]
 pub struct DataPaths {
     root: PathBuf,
@@ -12,6 +16,21 @@ pub struct DataPaths {
 impl DataPaths {
     pub fn new(root: impl Into<PathBuf>) -> Self {
         Self { root: root.into() }
+    }
+
+    /// Picks the data folder: `JELAUNCHER_DATA_DIR` if set, the executable's folder in
+    /// portable mode, otherwise the platform's application data folder.
+    pub fn detect() -> Result<Self> {
+        if let Some(dir) = std::env::var_os(DATA_DIR_ENV).filter(|dir| !dir.is_empty()) {
+            return Ok(Self::new(dir));
+        }
+        let exe_dir = std::env::current_exe()
+            .ok()
+            .and_then(|exe| exe.parent().map(Path::to_path_buf));
+        match exe_dir {
+            Some(dir) if is_portable(&dir) => Ok(Self::new(dir)),
+            _ => Self::platform_default(),
+        }
     }
 
     pub fn platform_default() -> Result<Self> {
@@ -66,5 +85,24 @@ impl DataPaths {
 
     pub fn versions(&self) -> PathBuf {
         self.root.join("versions")
+    }
+}
+
+fn is_portable(exe_dir: &Path) -> bool {
+    exe_dir.join(PORTABLE_MARKER).is_file()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn portable_marker_switches_the_data_folder() -> Result<()> {
+        let dir = tempfile::tempdir().map_err(|err| Error::io("tempdir", err))?;
+        assert!(!is_portable(dir.path()));
+        let marker = dir.path().join(PORTABLE_MARKER);
+        std::fs::write(&marker, "").map_err(|err| Error::io(&marker, err))?;
+        assert!(is_portable(dir.path()));
+        Ok(())
     }
 }

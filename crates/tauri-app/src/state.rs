@@ -33,7 +33,7 @@ pub struct AppState {
 
 impl AppState {
     pub fn load() -> jelauncher_core::Result<Self> {
-        let paths = DataPaths::platform_default()?;
+        let paths = DataPaths::detect()?;
         let settings = GlobalSettings::load(&paths.settings_file())?;
         let accounts = AccountStore::load(&paths.accounts_file())?;
         let http = HttpClient::new(&settings.network)?;
