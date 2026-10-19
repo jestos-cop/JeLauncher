@@ -4,6 +4,8 @@ import { ThemeSync } from '@/app/ThemeSync'
 import { useNavigation } from '@/app/navigation'
 import { NavigationProvider } from '@/app/NavigationProvider'
 import { SessionsProvider } from '@/app/SessionsProvider'
+import { SetupWizard } from '@/dialogs/SetupWizard'
+import { useSettings } from '@/hooks/use-settings'
 import { InstancePage } from '@/pages/instance/InstancePage'
 import { MainPage } from '@/pages/main/MainPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
@@ -18,10 +20,16 @@ export function App() {
           <ConsoleBehavior />
           <ThemeSync />
           <CurrentPage />
+          <FirstRunSetup />
         </NavigationProvider>
       </SessionsProvider>
     </QueryClientProvider>
   )
+}
+
+function FirstRunSetup() {
+  const { data: settings } = useSettings()
+  return settings && !settings.launcher.setupCompleted ? <SetupWizard saved={settings} /> : null
 }
 
 function CurrentPage() {

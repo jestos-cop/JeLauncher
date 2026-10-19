@@ -605,7 +605,11 @@ export type LaunchOptions = { quickPlay: QuickPlay | null; demo: boolean }
 export type LaunchProgress = { stage: "preparing" } | ({ stage: "downloading" } & DownloadProgress) | { stage: "installingLoader" } | { stage: "starting" }
 export type LaunchProgressEvent = { instanceId: string; progress: LaunchProgress }
 export type LauncherFolder = "root" | "instances" | "java"
-export type LauncherSettings = { showConsole: boolean; showConsoleOnError: boolean; autoCloseConsole: boolean; recordGameTime: boolean }
+export type LauncherSettings = { showConsole: boolean; showConsoleOnError: boolean; autoCloseConsole: boolean; recordGameTime: boolean; 
+/**
+ * Set once the first-run setup has been finished or skipped.
+ */
+setupCompleted: boolean }
 export type LoaderKind = "fabric" | "quilt" | "forge" | "neoforge"
 export type LoaderSpec = { kind: LoaderKind; version: string }
 export type LoaderVersion = { version: string; stable: boolean }

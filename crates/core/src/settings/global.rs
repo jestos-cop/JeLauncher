@@ -80,6 +80,8 @@ pub struct LauncherSettings {
     pub show_console_on_error: bool,
     pub auto_close_console: bool,
     pub record_game_time: bool,
+    /// Set once the first-run setup has been finished or skipped.
+    pub setup_completed: bool,
 }
 
 impl Default for LauncherSettings {
@@ -89,6 +91,7 @@ impl Default for LauncherSettings {
             show_console_on_error: true,
             auto_close_console: false,
             record_game_time: true,
+            setup_completed: false,
         }
     }
 }

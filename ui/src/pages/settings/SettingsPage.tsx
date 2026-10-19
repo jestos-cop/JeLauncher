@@ -1,14 +1,13 @@
 import { Coffee, Monitor, Rocket, Terminal, UsersRound } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigation, type SettingsTab } from '@/app/navigation'
-import type { GlobalSettings, Theme } from '@/bindings'
+import type { GlobalSettings } from '@/bindings'
 import { CommandFields } from '@/components/CommandFields'
-import { Field, JavaPicker, NumberInput } from '@/components/SettingsFields'
+import { Field, JavaPicker, NumberInput, ThemeSelect } from '@/components/SettingsFields'
 import { SidebarLayout, type SidebarTab } from '@/components/SidebarLayout'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useSettings, useUpdateSettings } from '@/hooks/use-settings'
 import { AccountsSettings } from '@/pages/settings/AccountsSettings'
 
@@ -61,21 +60,10 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
         <>
           <h3 className="text-sm font-semibold">Appearance</h3>
           <Field label="Theme">
-            <Select
+            <ThemeSelect
               value={draft.appearance.theme}
-              onValueChange={(theme) =>
-                setDraft((current) => ({ ...current, appearance: { theme: theme as Theme } }))
-              }
-            >
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="system">System</SelectItem>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-              </SelectContent>
-            </Select>
+              onChange={(theme) => setDraft((current) => ({ ...current, appearance: { theme } }))}
+            />
           </Field>
           <h3 className="text-sm font-semibold">Console</h3>
           <Field label="Open log on launch">

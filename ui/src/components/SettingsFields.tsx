@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import type { Theme } from '@/bindings'
 import { useJavaInstalls } from '@/hooks/use-settings'
 
 const AUTO_JAVA = 'auto'
@@ -83,5 +84,20 @@ export function JavaPicker({ value, onChange }: JavaPickerProps) {
         <RefreshCw /> Detect
       </Button>
     </div>
+  )
+}
+
+export function ThemeSelect({ value, onChange }: { value: Theme; onChange: (theme: Theme) => void }) {
+  return (
+    <Select value={value} onValueChange={(theme) => onChange(theme as Theme)}>
+      <SelectTrigger className="w-40">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="system">System</SelectItem>
+        <SelectItem value="light">Light</SelectItem>
+        <SelectItem value="dark">Dark</SelectItem>
+      </SelectContent>
+    </Select>
   )
 }
