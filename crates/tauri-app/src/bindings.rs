@@ -68,6 +68,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::settings::get_settings,
             commands::settings::update_settings,
             commands::system::system_memory_mb,
+            commands::system::upload_log,
             commands::worlds::backup_world,
             commands::worlds::delete_world,
             commands::worlds::list_worlds,

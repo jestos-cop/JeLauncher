@@ -1,9 +1,12 @@
-import { Copy, Eraser, WrapText } from 'lucide-react'
+import { Copy, Eraser, Upload, WrapText } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { LogLine } from '@/app/sessions'
-import type { LogLevel } from '@/bindings'
+import { commands, type LogLevel } from '@/bindings'
+import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { unwrap } from '@/lib/command'
 import { cn } from '@/lib/utils'
 
 const LEVEL_CLASSES: Record<LogLevel, string> = {
@@ -44,6 +47,11 @@ export function LogView({ lines, onClear }: LogViewProps) {
     }
   }
 
+  const [isConfirmingUpload, setIsConfirmingUpload] = useState(false)
+  const upload = useMutation({
+    mutationFn: () => unwrap(commands.uploadLog(lines.map((entry) => entry.line).join('\n'))),
+  })
+
   const copy = () => void navigator.clipboard.writeText(visible.map((entry) => entry.line).join('\n'))
 
   return (
@@ -63,11 +71,40 @@ export function LogView({ lines, onClear }: LogViewProps) {
           <Button size="sm" variant="ghost" onClick={copy}>
             <Copy /> Copy
           </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={lines.length === 0 || upload.isPending}
+            onClick={() => setIsConfirmingUpload(true)}
+          >
+            <Upload /> {upload.isPending ? 'Uploading…' : 'Upload'}
+          </Button>
           <Button size="sm" variant="ghost" onClick={onClear}>
             <Eraser /> Clear
           </Button>
         </div>
       </div>
+      {upload.data && (
+        <p className="text-sm">
+          Log uploaded:{' '}
+          <button
+            type="button"
+            className="text-primary underline underline-offset-2"
+            onClick={() => void unwrap(commands.openUrl(upload.data))}
+          >
+            {upload.data}
+          </button>{' '}
+          <button
+            type="button"
+            title="Copy link"
+            className="text-muted-foreground hover:text-foreground"
+            onClick={() => void navigator.clipboard.writeText(upload.data)}
+          >
+            <Copy className="inline size-3.5" />
+          </button>
+        </p>
+      )}
+      {upload.error && <p className="text-sm text-destructive">{upload.error.message}</p>}
       <div
         ref={scrollRef}
         onScroll={onScroll}
@@ -76,12 +113,27 @@ export function LogView({ lines, onClear }: LogViewProps) {
         {visible.map((entry, index) => (
           <div
             key={index}
-            className={cn(LEVEL_CLASSES[entry.level], wrap ? 'break-all whitespace-pre-wrap' : 'whitespace-pre')}
+            className={cn(
+              LEVEL_CLASSES[entry.level],
+              wrap ? 'break-all whitespace-pre-wrap' : 'whitespace-pre',
+            )}
           >
             {entry.line}
           </div>
         ))}
       </div>
+      {isConfirmingUpload && (
+        <ConfirmDialog
+          title="Upload this log?"
+          description="The whole log is published on mclo.gs and anyone with the link can read it. Your home folder is hidden from file paths."
+          confirmLabel="Upload"
+          onConfirm={() => {
+            setIsConfirmingUpload(false)
+            upload.mutate()
+          }}
+          onClose={() => setIsConfirmingUpload(false)}
+        />
+      )}
     </div>
   )
 }

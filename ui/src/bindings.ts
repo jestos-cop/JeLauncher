@@ -552,6 +552,17 @@ async systemMemoryMb() : Promise<number | null> {
     return await TAURI_INVOKE("system_memory_mb");
 },
 /**
+ * Publishes a log on mclo.gs and returns its URL.
+ */
+async uploadLog(content: string) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("upload_log", { content }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Zips the world into the instance's backups folder and returns the archive path.
  */
 async backupWorld(instanceId: string, folder: string) : Promise<Result<string, CommandError>> {

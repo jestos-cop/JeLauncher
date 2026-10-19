@@ -13,6 +13,7 @@ pub mod minecraft;
 pub mod modpack;
 pub mod modplatform;
 pub mod net;
+pub mod paste;
 pub mod paths;
 pub mod resources;
 pub mod screenshots;
