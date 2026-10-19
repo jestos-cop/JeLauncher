@@ -22,6 +22,7 @@ specta = { version = "=2.0.0-rc.22", features = ["derive"] }
 specta-typescript = "=0.0.9"
 tauri = { version = "2", features = [] }
 tauri-build = { version = "2", features = [] }
+tauri-plugin-opener = "2"
 tauri-specta = { version = "=2.0.0-rc.21", features = ["derive", "typescript"] }
 tempfile = "3"
 thiserror = "2"

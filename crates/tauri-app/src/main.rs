@@ -16,6 +16,7 @@ fn main() {
     bindings::export(&builder);
 
     let result = tauri::Builder::default()
+        .plugin(tauri_plugin_opener::init())
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
             builder.mount_events(app);

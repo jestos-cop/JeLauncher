@@ -1,13 +1,9 @@
-import { Box, Play, Square } from 'lucide-react'
+import { Box } from 'lucide-react'
 import { useSession } from '@/app/sessions'
 import type { InstanceSummary } from '@/bindings'
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from '@/components/ui/context-menu'
+import { ContextMenu, ContextMenuTrigger } from '@/components/ui/context-menu'
 import { cn } from '@/lib/utils'
+import { InstanceTileMenu } from '@/pages/main/InstanceTileMenu'
 
 interface InstanceGridProps {
   instances: InstanceSummary[]
@@ -37,7 +33,7 @@ interface InstanceTileProps {
 }
 
 function InstanceTile({ instance, isSelected, onSelect }: InstanceTileProps) {
-  const { session, launch, kill } = useSession(instance.id)
+  const { session, launch } = useSession(instance.id)
   const isActive = session.status !== 'idle'
 
   return (
@@ -61,17 +57,7 @@ function InstanceTile({ instance, isSelected, onSelect }: InstanceTileProps) {
             )}
           </button>
         </ContextMenuTrigger>
-        <ContextMenuContent>
-          {isActive ? (
-            <ContextMenuItem disabled={session.status !== 'running'} onSelect={() => void kill()}>
-              <Square /> Kill
-            </ContextMenuItem>
-          ) : (
-            <ContextMenuItem onSelect={() => void launch()}>
-              <Play /> Launch
-            </ContextMenuItem>
-          )}
-        </ContextMenuContent>
+        <InstanceTileMenu instance={instance} />
       </ContextMenu>
     </li>
   )

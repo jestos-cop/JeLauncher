@@ -53,6 +53,38 @@ async createInstance(newInstance: NewInstance) : Promise<Result<string, CommandE
     else return { status: "error", error: e  as any };
 }
 },
+async deleteInstance(instanceId: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("delete_instance", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async openInstanceFolder(instanceId: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("open_instance_folder", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async renameInstance(instanceId: string, name: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("rename_instance", { instanceId, name }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async setInstanceGroup(instanceId: string, group: string | null) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_instance_group", { instanceId, group }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async detectJava() : Promise<Result<JavaInstall[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("detect_java") };
