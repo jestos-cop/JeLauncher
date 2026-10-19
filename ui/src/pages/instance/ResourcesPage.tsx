@@ -1,4 +1,4 @@
-import { Download, FolderOpen, RefreshCw, Trash2 } from 'lucide-react'
+import { ArrowUpCircle, Download, FolderOpen, RefreshCw, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import type { InstanceSummary, ResourceFile, ResourceKind } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
@@ -7,7 +7,13 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { ResourceDownloadDialog } from '@/dialogs/ResourceDownloadDialog'
 import { openInstanceFolder } from '@/hooks/use-instance-actions'
-import { useRemoveResource, useResources, useSetResourceEnabled } from '@/hooks/use-resources'
+import {
+  useRemoveResource,
+  useResources,
+  useResourceUpdates,
+  useSetResourceEnabled,
+  useUpdateResources,
+} from '@/hooks/use-resources'
 import { cn } from '@/lib/utils'
 
 const LABELS: Record<Exclude<ResourceKind, 'modpack'>, { plural: string; empty: string }> = {
@@ -29,6 +35,10 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
   const [search, setSearch] = useState('')
   const [pendingRemoval, setPendingRemoval] = useState<ResourceFile | null>(null)
   const [isDownloading, setIsDownloading] = useState(false)
+  const [checkUpdates, setCheckUpdates] = useState(false)
+  const updates = useResourceUpdates(instance.id, kind, checkUpdates)
+  const applyUpdates = useUpdateResources(instance.id, kind)
+  const updateFor = (file: ResourceFile) => updates.data?.find((update) => update.fileName === file.fileName)
   const label = LABELS[kind]
 
   const visible = useMemo(() => {
@@ -55,6 +65,14 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
           <Button size="sm" onClick={() => setIsDownloading(true)}>
             <Download /> Download {label.plural}
           </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={updates.isFetching}
+            onClick={() => (checkUpdates ? void updates.refetch() : setCheckUpdates(true))}
+          >
+            <ArrowUpCircle /> {updates.isFetching ? 'Checking…' : 'Check for Updates'}
+          </Button>
           <Button size="sm" variant="ghost" onClick={() => refetch()}>
             <RefreshCw /> Refresh
           </Button>
@@ -66,6 +84,26 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
 
       {error && <p className="text-sm text-destructive">{error.message}</p>}
       {setEnabled.error && <p className="text-sm text-destructive">{setEnabled.error.message}</p>}
+      {(updates.error ?? applyUpdates.error) && (
+        <p className="text-sm text-destructive">{(updates.error ?? applyUpdates.error)?.message}</p>
+      )}
+      {updates.data && !updates.isFetching && (
+        <div className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm">
+          {updates.data.length === 0
+            ? `All ${label.plural.toLowerCase()} from Modrinth are up to date.`
+            : `${updates.data.length} update${updates.data.length === 1 ? '' : 's'} available.`}
+          {updates.data.length > 0 && (
+            <Button
+              size="sm"
+              className="ml-auto"
+              disabled={applyUpdates.isPending}
+              onClick={() => applyUpdates.mutate(updates.data)}
+            >
+              {applyUpdates.isPending ? 'Updating…' : 'Update All'}
+            </Button>
+          )}
+        </div>
+      )}
 
       <div className="min-h-0 flex-1 overflow-auto rounded-md border">
         <table className="w-full text-sm">
@@ -100,7 +138,22 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
                 <td className="p-2 font-medium" title={file.metadata?.description}>
                   {displayName(file)}
                 </td>
-                <td className="p-2">{file.metadata?.version}</td>
+                <td className="p-2">
+                  {file.metadata?.version}
+                  {updateFor(file) && (
+                    <button
+                      type="button"
+                      className="ml-2 inline-flex items-center gap-1 text-xs text-primary hover:underline disabled:opacity-50"
+                      disabled={applyUpdates.isPending}
+                      onClick={() => {
+                        const update = updateFor(file)
+                        if (update) applyUpdates.mutate([update])
+                      }}
+                    >
+                      <ArrowUpCircle className="size-3" /> {updateFor(file)?.version.versionNumber}
+                    </button>
+                  )}
+                </td>
                 <td className="p-2">
                   {kind === 'mod' ? file.metadata?.authors.join(', ') : file.metadata?.description}
                 </td>

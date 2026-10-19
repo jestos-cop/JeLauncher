@@ -302,3 +302,50 @@ async fn updates_a_modpack_to_another_version() -> jelauncher_core::Result<()> {
     assert!(saves.is_dir(), "user worlds must survive an update");
     Ok(())
 }
+
+#[tokio::test]
+#[ignore = "requires network access"]
+async fn finds_and_applies_mod_updates() -> jelauncher_core::Result<()> {
+    use jelauncher_core::modplatform::modrinth::InstallTarget;
+
+    let modrinth = Modrinth::new(HttpClient::new(&NetworkSettings::default())?);
+    let versions = modrinth
+        .versions(
+            "sodium",
+            ResourceKind::Mod,
+            Some("1.21.4"),
+            Some(LoaderKind::Fabric),
+        )
+        .await?;
+    let (Some(latest), Some(oldest)) = (versions.first(), versions.last()) else {
+        panic!("no Sodium for 1.21.4");
+    };
+    let dir = tempfile::tempdir().map_err(|err| jelauncher_core::Error::Io {
+        path: "tempdir".into(),
+        source: err,
+    })?;
+    let old_name = modrinth.install(oldest, dir.path()).await?;
+    let target = InstallTarget {
+        dir: dir.path(),
+        kind: ResourceKind::Mod,
+        game_version: "1.21.4",
+        loader: Some(LoaderKind::Fabric),
+    };
+
+    let updates = modrinth.check_updates(&target).await?;
+    let Some(update) = updates.first() else {
+        panic!("{old_name} has no update");
+    };
+    println!("{old_name} -> {}", update.version.version_number);
+    assert_eq!(update.file_name, old_name);
+    assert_eq!(update.version.id, latest.id);
+
+    let new_name = modrinth
+        .apply_update(dir.path(), &update.file_name, &update.version)
+        .await?;
+    let files = list_resources(dir.path(), ResourceKind::Mod)?;
+    assert_eq!(files.len(), 1);
+    assert_eq!(files[0].file_name, new_name);
+    assert!(modrinth.check_updates(&target).await?.is_empty());
+    Ok(())
+}

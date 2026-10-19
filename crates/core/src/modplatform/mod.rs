@@ -88,6 +88,14 @@ pub struct VersionFile {
     pub primary: bool,
 }
 
+/// A newer published version of an installed resource file.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct ResourceUpdate {
+    pub file_name: String,
+    pub version: ProjectVersion,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct Dependency {

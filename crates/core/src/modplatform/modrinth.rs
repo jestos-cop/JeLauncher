@@ -4,13 +4,14 @@ use std::path::Path;
 use serde::{Deserialize, Serialize};
 
 use super::{
-    Dependency, ProjectHit, ProjectVersion, Provider, ReleaseType, ResourceKind, SearchPage,
-    SearchQuery, SortOrder, VersionFile,
+    Dependency, ProjectHit, ProjectVersion, Provider, ReleaseType, ResourceKind, ResourceUpdate,
+    SearchPage, SearchQuery, SortOrder, VersionFile,
 };
 use crate::instance::Instance;
 use crate::minecraft::LoaderKind;
 use crate::modpack::{ModpackTarget, PackSource, install_mrpack, update_mrpack};
-use crate::net::{DownloadProgress, HttpClient};
+use crate::net::{DownloadProgress, HttpClient, sha1_of};
+use crate::resources::{DISABLED_SUFFIX, list_resources, set_resource_enabled};
 use crate::{Error, Result};
 
 const API: &str = "https://api.modrinth.com/v2";
@@ -91,6 +92,67 @@ impl Modrinth {
             .into_iter()
             .map(|(hash, version)| Ok((hash, version.try_into()?)))
             .collect()
+    }
+
+    /// Finds newer versions of the resource files in `target.dir` that fit the target.
+    pub async fn check_updates(&self, target: &InstallTarget<'_>) -> Result<Vec<ResourceUpdate>> {
+        let mut by_hash = HashMap::new();
+        for file in list_resources(target.dir, target.kind)? {
+            let path = target.dir.join(&file.file_name);
+            if path.is_file() {
+                by_hash.insert(sha1_of(&path).await?, file.file_name);
+            }
+        }
+        if by_hash.is_empty() {
+            return Ok(Vec::new());
+        }
+        let hashes: Vec<String> = by_hash.keys().cloned().collect();
+        let body = UpdateLookup {
+            hashes: &hashes,
+            algorithm: "sha1",
+            loaders: match (target.kind, target.loader) {
+                (ResourceKind::Mod, Some(loader)) => vec![loader.id()],
+                _ => Vec::new(),
+            },
+            game_versions: vec![target.game_version],
+        };
+        let latest: HashMap<String, ApiVersion> = self
+            .http
+            .post_json(&format!("{API}/version_files/update"), &body)
+            .await?;
+        let mut updates = Vec::new();
+        for (hash, version) in latest {
+            let version = ProjectVersion::try_from(version)?;
+            let is_current = version
+                .files
+                .iter()
+                .any(|file| file.sha1.as_deref() == Some(hash.as_str()));
+            if let (false, Some(file_name)) = (is_current, by_hash.remove(&hash)) {
+                updates.push(ResourceUpdate { file_name, version });
+            }
+        }
+        updates.sort_by(|a, b| a.file_name.to_lowercase().cmp(&b.file_name.to_lowercase()));
+        Ok(updates)
+    }
+
+    /// Replaces an installed file with the primary file of `version`, keeping it disabled if it was.
+    /// Returns the new file name.
+    pub async fn apply_update(
+        &self,
+        dir: &Path,
+        file_name: &str,
+        version: &ProjectVersion,
+    ) -> Result<String> {
+        let old = crate::fs::child_path(dir, file_name)?;
+        let new_name = self.install(version, dir).await?;
+        let was_disabled = file_name.ends_with(DISABLED_SUFFIX);
+        if new_name != file_name {
+            std::fs::remove_file(&old).map_err(|err| Error::io(&old, err))?;
+        }
+        if was_disabled {
+            return set_resource_enabled(dir, &new_name, false);
+        }
+        Ok(new_name)
     }
 
     /// Installs the version and, recursively, the required dependencies that fit the target.
@@ -259,6 +321,14 @@ fn sort_index(sort: SortOrder) -> &'static str {
         SortOrder::Updated => "updated",
         SortOrder::Newest => "newest",
     }
+}
+
+#[derive(Serialize)]
+struct UpdateLookup<'a> {
+    hashes: &'a [String],
+    algorithm: &'a str,
+    loaders: Vec<&'a str>,
+    game_versions: Vec<&'a str>,
 }
 
 #[derive(Serialize)]

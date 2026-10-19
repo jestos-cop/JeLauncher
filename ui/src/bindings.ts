@@ -288,6 +288,28 @@ async updateModpack(instanceId: string, versionId: string) : Promise<Result<null
 }
 },
 /**
+ * Newer Modrinth versions of the installed resources of `kind`.
+ */
+async checkResourceUpdates(instanceId: string, kind: ResourceKind) : Promise<Result<ResourceUpdate[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("check_resource_updates", { instanceId, kind }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Replaces an installed resource file with another version; returns the new file name.
+ */
+async updateResource(instanceId: string, kind: ResourceKind, fileName: string, versionId: string) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("update_resource", { instanceId, kind, fileName, versionId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Installs a version plus its required dependencies; returns the installed file names.
  */
 async installProjectVersion(instanceId: string, kind: ResourceKind, versionId: string) : Promise<Result<string[], CommandError>> {
@@ -597,6 +619,10 @@ modified: number; metadata: ResourceMetadata | null }
 export type ResourceKind = "mod" | "resourcePack" | "shaderPack" | "dataPack" | "modpack"
 export type ResourceMetadata = { id: string; name: string; version: string; description: string; authors: string[]; homepage: string | null }
 export type ResourcePackPolicy = "prompt" | "enabled" | "disabled"
+/**
+ * A newer published version of an installed resource file.
+ */
+export type ResourceUpdate = { fileName: string; version: ProjectVersion }
 export type Screenshot = { fileName: string; path: string; size: number; 
 /**
  * Unix time in milliseconds.

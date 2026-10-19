@@ -3,7 +3,9 @@ use std::path::Path;
 
 use jelauncher_core::modpack::{self, ModpackTarget};
 use jelauncher_core::modplatform::modrinth::InstallTarget;
-use jelauncher_core::modplatform::{ProjectVersion, ResourceKind, SearchPage, SearchQuery};
+use jelauncher_core::modplatform::{
+    ProjectVersion, ResourceKind, ResourceUpdate, SearchPage, SearchQuery,
+};
 use tauri::{AppHandle, State};
 use tauri_specta::Event;
 
@@ -54,16 +56,57 @@ pub async fn install_project_version(
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
     let version = state.modrinth.version(&version_id).await?;
     let dir = instance.resource_dir(kind);
-    let target = InstallTarget {
-        dir: &dir,
+    Ok(state
+        .modrinth
+        .install_with_dependencies(version, &install_target(&instance, &dir, kind))
+        .await?)
+}
+
+/// Newer Modrinth versions of the installed resources of `kind`.
+#[tauri::command]
+#[specta::specta]
+pub async fn check_resource_updates(
+    state: State<'_, AppState>,
+    instance_id: String,
+    kind: ResourceKind,
+) -> CommandResult<Vec<ResourceUpdate>> {
+    let instance = Instance::open(&state.paths.instances(), &instance_id)?;
+    let dir = instance.resource_dir(kind);
+    Ok(state
+        .modrinth
+        .check_updates(&install_target(&instance, &dir, kind))
+        .await?)
+}
+
+/// Replaces an installed resource file with another version; returns the new file name.
+#[tauri::command]
+#[specta::specta]
+pub async fn update_resource(
+    state: State<'_, AppState>,
+    instance_id: String,
+    kind: ResourceKind,
+    file_name: String,
+    version_id: String,
+) -> CommandResult<String> {
+    let instance = Instance::open(&state.paths.instances(), &instance_id)?;
+    let version = state.modrinth.version(&version_id).await?;
+    Ok(state
+        .modrinth
+        .apply_update(&instance.resource_dir(kind), &file_name, &version)
+        .await?)
+}
+
+fn install_target<'a>(
+    instance: &'a Instance,
+    dir: &'a Path,
+    kind: ResourceKind,
+) -> InstallTarget<'a> {
+    InstallTarget {
+        dir,
         kind,
         game_version: &instance.config.minecraft_version,
         loader: instance.config.loader.as_ref().map(|loader| loader.kind),
-    };
-    Ok(state
-        .modrinth
-        .install_with_dependencies(version, &target)
-        .await?)
+    }
 }
 
 /// All published versions of a modpack, newest first.

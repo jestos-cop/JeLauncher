@@ -1,7 +1,7 @@
 mod mod_metadata;
 mod pack_metadata;
 
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::time::UNIX_EPOCH;
 
 use serde::{Deserialize, Serialize};
@@ -9,9 +9,10 @@ use serde::{Deserialize, Serialize};
 pub use mod_metadata::read_mod_metadata;
 pub use pack_metadata::read_pack_metadata;
 
+use crate::fs::child_path;
 use crate::{Error, Result};
 
-const DISABLED_SUFFIX: &str = ".disabled";
+pub const DISABLED_SUFFIX: &str = ".disabled";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
@@ -113,7 +114,7 @@ fn display_name(file: &ResourceFile) -> &str {
 }
 
 pub fn set_resource_enabled(dir: &Path, file_name: &str, enabled: bool) -> Result<String> {
-    let current = resource_path(dir, file_name)?;
+    let current = child_path(dir, file_name)?;
     let base = file_name.strip_suffix(DISABLED_SUFFIX).unwrap_or(file_name);
     let target_name = if enabled {
         base.to_owned()
@@ -128,25 +129,13 @@ pub fn set_resource_enabled(dir: &Path, file_name: &str, enabled: bool) -> Resul
 }
 
 pub fn remove_resource(dir: &Path, file_name: &str) -> Result<()> {
-    let path = resource_path(dir, file_name)?;
+    let path = child_path(dir, file_name)?;
     let removed = if path.is_dir() {
         std::fs::remove_dir_all(&path)
     } else {
         std::fs::remove_file(&path)
     };
     removed.map_err(|err| Error::io(&path, err))
-}
-
-/// Resolves a file name inside `dir`, rejecting anything that could escape it.
-fn resource_path(dir: &Path, file_name: &str) -> Result<PathBuf> {
-    let is_plain_name =
-        Path::new(file_name).file_name().and_then(|n| n.to_str()) == Some(file_name);
-    if !is_plain_name {
-        return Err(Error::InvalidInput(format!(
-            "invalid file name: {file_name}"
-        )));
-    }
-    Ok(dir.join(file_name))
 }
 
 #[cfg(test)]
