@@ -1,4 +1,4 @@
-import { Copy, FolderOpen, Package, Pencil, Play, Settings2, Square, Tags, Trash2 } from 'lucide-react'
+import { Copy, FolderOpen, Image, Package, Pencil, Play, Settings2, Square, Tags, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigation } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
@@ -37,6 +37,9 @@ export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => setDialog('group')}>
           <Tags /> Change Group
+        </ContextMenuItem>
+        <ContextMenuItem onSelect={() => setDialog('icon')}>
+          <Image /> Change Icon
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => setDialog('copy')}>
           <Copy /> Copy…

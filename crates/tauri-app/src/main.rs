@@ -23,8 +23,9 @@ fn main() {
             builder.mount_events(app);
             let state = AppState::load()?;
             // Lets the frontend display screenshots and other images stored with instances.
-            app.asset_protocol_scope()
-                .allow_directory(state.paths.instances(), true)?;
+            let assets = app.asset_protocol_scope();
+            assets.allow_directory(state.paths.instances(), true)?;
+            assets.allow_directory(state.paths.icons(), true)?;
             app.manage(state);
             Ok(())
         })

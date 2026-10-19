@@ -13,7 +13,7 @@ pub use create::{NewInstance, create_instance};
 pub use export::{ExportEntry, export_instance};
 pub use list::{InstanceSummary, discover_instances};
 pub use manage::{
-    delete_instance, rename_instance, set_instance_group, set_instance_notes,
+    delete_instance, rename_instance, set_instance_group, set_instance_icon, set_instance_notes,
     set_instance_settings, set_instance_version,
 };
 

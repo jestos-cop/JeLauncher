@@ -1,8 +1,9 @@
-import { Box, Copy, FolderOpen, Package, Pencil, Settings2, Tags, Trash2 } from 'lucide-react'
+import { Copy, FolderOpen, Package, Pencil, Settings2, Tags, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigation } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
 import type { InstanceSummary } from '@/bindings'
+import { InstanceIcon } from '@/components/InstanceIcon'
 import { LaunchControls } from '@/components/LaunchControls'
 import { Button } from '@/components/ui/button'
 import { openInstanceFolder } from '@/hooks/use-instance-actions'
@@ -22,7 +23,14 @@ export function InstancePanel({ instance }: { instance: InstanceSummary }) {
   return (
     <aside className="flex w-60 shrink-0 flex-col gap-4 overflow-auto border-l p-4">
       <div className="flex flex-col items-center gap-2 text-center">
-        <Box className="size-16 text-muted-foreground" />
+        <button
+          type="button"
+          title="Change icon"
+          className="rounded-md p-1 hover:bg-accent"
+          onClick={() => setDialog('icon')}
+        >
+          <InstanceIcon iconKey={instance.iconKey} className="size-16" />
+        </button>
         <h2 className="font-semibold">{instance.name}</h2>
         <p className="text-sm text-muted-foreground">
           Minecraft {instance.minecraftVersion}

@@ -1,6 +1,7 @@
 pub mod accounts;
 pub mod export;
 pub mod folders;
+pub mod icons;
 pub mod instance;
 pub mod java;
 pub mod launch;

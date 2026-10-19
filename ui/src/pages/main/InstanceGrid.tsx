@@ -1,7 +1,8 @@
-import { Box, ChevronDown, ChevronRight } from 'lucide-react'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useMemo, useState, type DragEvent, type ReactNode } from 'react'
 import { useSession } from '@/app/sessions'
 import type { InstanceSummary } from '@/bindings'
+import { InstanceIcon } from '@/components/InstanceIcon'
 import { ContextMenu, ContextMenuTrigger } from '@/components/ui/context-menu'
 import { useSetInstanceGroup } from '@/hooks/use-instance-actions'
 import { useStoredState } from '@/hooks/use-stored-state'
@@ -146,7 +147,7 @@ function InstanceTile({ instance, isSelected, onSelect }: InstanceTileProps) {
               isSelected && 'bg-accent ring-1 ring-ring',
             )}
           >
-            <Box className="size-12 text-muted-foreground" />
+            <InstanceIcon iconKey={instance.iconKey} className="size-12" />
             <span className="line-clamp-2 text-sm">{instance.name}</span>
             {isActive && <span className="absolute top-2 right-2 size-2.5 rounded-full bg-green-500" />}
           </button>

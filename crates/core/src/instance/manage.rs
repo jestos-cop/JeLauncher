@@ -48,6 +48,15 @@ pub fn set_instance_version(
     instance.save()
 }
 
+pub fn set_instance_icon(instances_dir: &Path, id: &str, icon_key: &str) -> Result<()> {
+    if icon_key.trim().is_empty() {
+        return Err(Error::InvalidInput("icon key must not be empty".into()));
+    }
+    let mut instance = Instance::open(instances_dir, id)?;
+    instance.config.icon_key = icon_key.to_owned();
+    instance.save()
+}
+
 pub fn set_instance_notes(instances_dir: &Path, id: &str, notes: String) -> Result<()> {
     let mut instance = Instance::open(instances_dir, id)?;
     instance.config.notes = notes;

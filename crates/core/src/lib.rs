@@ -3,6 +3,7 @@ pub mod auth;
 pub mod error;
 pub mod forge;
 pub mod fs;
+pub mod icons;
 pub mod instance;
 pub mod java;
 pub mod launch;

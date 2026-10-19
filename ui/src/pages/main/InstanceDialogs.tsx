@@ -3,9 +3,10 @@ import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { PromptDialog } from '@/components/PromptDialog'
 import { CopyInstanceDialog } from '@/dialogs/CopyInstanceDialog'
 import { ExportInstanceDialog } from '@/dialogs/ExportInstanceDialog'
+import { IconPickerDialog } from '@/dialogs/IconPickerDialog'
 import { useDeleteInstance, useRenameInstance, useSetInstanceGroup } from '@/hooks/use-instance-actions'
 
-export type InstanceDialog = 'rename' | 'group' | 'copy' | 'export' | 'delete'
+export type InstanceDialog = 'rename' | 'group' | 'icon' | 'copy' | 'export' | 'delete'
 
 interface InstanceDialogsProps {
   instance: InstanceSummary
@@ -46,6 +47,8 @@ export function InstanceDialogs({ instance, dialog, onClose }: InstanceDialogsPr
           onClose={onClose}
         />
       )
+    case 'icon':
+      return <IconPickerDialog instance={instance} onClose={onClose} />
     case 'copy':
       return <CopyInstanceDialog instance={instance} onClose={onClose} />
     case 'export':

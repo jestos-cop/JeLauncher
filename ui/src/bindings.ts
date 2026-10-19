@@ -72,6 +72,41 @@ async openLauncherFolder(folder: LauncherFolder) : Promise<Result<null, CommandE
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Copies an image into the icons folder and returns its icon key.
+ */
+async addCustomIcon(source: string) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("add_custom_icon", { source }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async listCustomIcons() : Promise<Result<CustomIcon[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_custom_icons") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async removeCustomIcon(key: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("remove_custom_icon", { key }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async setInstanceIcon(instanceId: string, iconKey: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_instance_icon", { instanceId, iconKey }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async listInstances() : Promise<Result<InstanceSummary[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_instances") };
@@ -479,6 +514,7 @@ export type CopyOptions = { name: string; group: string | null; copySaves: boole
  * Hard-links game files instead of copying them; worlds are always copied.
  */
 useHardLinks: boolean }
+export type CustomIcon = { key: string; path: string }
 export type Dependency = { projectId: string | null; versionId: string | null; required: boolean }
 export type DownloadProgress = { completed: number; total: number; downloadedBytes: number }
 /**
