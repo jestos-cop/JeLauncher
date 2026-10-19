@@ -29,6 +29,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::instance::list_instances,
             commands::instance::copy_instance,
             commands::instance::create_instance,
+            commands::instance::create_instance_shortcut,
             commands::instance::delete_instance,
             commands::instance::get_instance_notes,
             commands::instance::get_instance_settings,

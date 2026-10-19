@@ -1,4 +1,16 @@
-import { Copy, FolderOpen, Image, Package, Pencil, Play, Settings2, Square, Tags, Trash2 } from 'lucide-react'
+import {
+  Copy,
+  FolderOpen,
+  Image,
+  Link,
+  Package,
+  Pencil,
+  Play,
+  Settings2,
+  Square,
+  Tags,
+  Trash2,
+} from 'lucide-react'
 import { useState } from 'react'
 import { useNavigation } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
@@ -51,6 +63,9 @@ export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => setDialog('export')}>
           <Package /> Export…
+        </ContextMenuItem>
+        <ContextMenuItem onSelect={() => setDialog('shortcut')}>
+          <Link /> Create Shortcut
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem variant="destructive" disabled={isActive} onSelect={() => setDialog('delete')}>

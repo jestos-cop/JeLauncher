@@ -163,3 +163,20 @@ pub fn open_instance_folder(
     let path = kind.map_or_else(|| instance.game_dir(), |kind| instance.resource_dir(kind));
     super::open_folder(&app, &path)
 }
+
+/// Puts a shortcut that launches the instance on the desktop and returns its path.
+#[tauri::command]
+#[specta::specta]
+pub async fn create_instance_shortcut(
+    state: State<'_, AppState>,
+    instance_id: String,
+) -> CommandResult<String> {
+    let instance = Instance::open(&state.paths.instances(), &instance_id)?;
+    let launcher = std::env::current_exe().map_err(|err| CommandError::new(err.to_string()))?;
+    let desktop = directories::UserDirs::new()
+        .and_then(|dirs| dirs.desktop_dir().map(std::path::Path::to_path_buf))
+        .ok_or_else(|| CommandError::new("cannot find the desktop folder"))?;
+    let shortcut =
+        jelauncher_core::shortcuts::create_shortcut(&instance, &launcher, &desktop).await?;
+    Ok(shortcut.to_string_lossy().into_owned())
+}

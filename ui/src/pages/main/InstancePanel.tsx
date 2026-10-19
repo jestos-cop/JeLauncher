@@ -1,4 +1,4 @@
-import { Copy, FolderOpen, Package, Pencil, Settings2, Tags, Trash2 } from 'lucide-react'
+import { Copy, FolderOpen, Link, Package, Pencil, Settings2, Tags, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigation } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
@@ -49,6 +49,7 @@ export function InstancePanel({ instance }: { instance: InstanceSummary }) {
         {action('Change Group', <Tags />, () => setDialog('group'))}
         {action('Copy…', <Copy />, () => setDialog('copy'))}
         {action('Export…', <Package />, () => setDialog('export'))}
+        {action('Create Shortcut', <Link />, () => setDialog('shortcut'))}
         {action('Delete', <Trash2 />, () => setDialog('delete'), session.status !== 'idle')}
       </div>
       <InstanceDialogs instance={instance} dialog={dialog} onClose={() => setDialog(null)} />

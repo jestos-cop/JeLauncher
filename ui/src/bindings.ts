@@ -217,6 +217,17 @@ async createInstance(newInstance: NewInstance) : Promise<Result<string, CommandE
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Puts a shortcut that launches the instance on the desktop and returns its path.
+ */
+async createInstanceShortcut(instanceId: string) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("create_instance_shortcut", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async deleteInstance(instanceId: string) : Promise<Result<null, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("delete_instance", { instanceId }) };
