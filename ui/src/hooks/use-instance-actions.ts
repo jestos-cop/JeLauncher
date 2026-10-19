@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { commands, type CopyOptions, type ResourceKind } from '@/bindings'
+import { commands, type CopyOptions, type LoaderSpec, type ResourceKind } from '@/bindings'
 import { unwrap } from '@/lib/command'
 
 function useInstanceMutation<T>(mutationFn: (input: T) => Promise<unknown>) {
@@ -33,5 +33,12 @@ export function openInstanceFolder(id: string, kind: ResourceKind | null = null)
 export function useCopyInstance() {
   return useInstanceMutation(({ id, options }: { id: string; options: CopyOptions }) =>
     unwrap(commands.copyInstance(id, options)),
+  )
+}
+
+export function useSetInstanceVersion() {
+  return useInstanceMutation(
+    ({ id, minecraftVersion, loader }: { id: string; minecraftVersion: string; loader: LoaderSpec | null }) =>
+      unwrap(commands.setInstanceVersion(id, minecraftVersion, loader)),
   )
 }

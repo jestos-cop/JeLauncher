@@ -3,6 +3,7 @@ import {
   Database,
   Globe,
   Image,
+  Layers,
   NotebookPen,
   Puzzle,
   ScrollText,
@@ -21,10 +22,12 @@ import { NotesPage } from '@/pages/instance/NotesPage'
 import { ResourcesPage } from '@/pages/instance/ResourcesPage'
 import { ScreenshotsPage } from '@/pages/instance/ScreenshotsPage'
 import { ServersPage } from '@/pages/instance/ServersPage'
+import { VersionPage } from '@/pages/instance/VersionPage'
 import { WorldsPage } from '@/pages/instance/WorldsPage'
 
 const TABS: SidebarTab<InstanceTab>[] = [
   { tab: 'log', label: 'Minecraft Log', icon: ScrollText },
+  { tab: 'version', label: 'Version', icon: Layers },
   { tab: 'mod', label: 'Mods', icon: Puzzle },
   { tab: 'resourcePack', label: 'Resource Packs', icon: Image },
   { tab: 'shaderPack', label: 'Shader Packs', icon: Sparkles },
@@ -64,6 +67,7 @@ export function InstancePage({ instanceId, tab }: InstancePageProps) {
       onBack={() => navigate({ page: 'main' })}
     >
       {tab === 'log' && <InstanceLog instanceId={instanceId} />}
+      {tab === 'version' && instance && <VersionPage instance={instance} />}
       {(tab === 'mod' || tab === 'resourcePack' || tab === 'shaderPack' || tab === 'dataPack') &&
         instance && <ResourcesPage key={tab} instance={instance} kind={tab} />}
       {tab === 'worlds' && <WorldsPage instanceId={instanceId} />}

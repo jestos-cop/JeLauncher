@@ -155,6 +155,14 @@ async setInstanceSettings(instanceId: string, settings: InstanceSettings) : Prom
     else return { status: "error", error: e  as any };
 }
 },
+async setInstanceVersion(instanceId: string, minecraftVersion: string, loader: LoaderSpec | null) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_instance_version", { instanceId, minecraftVersion, loader }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async detectJava() : Promise<Result<JavaInstall[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("detect_java") };

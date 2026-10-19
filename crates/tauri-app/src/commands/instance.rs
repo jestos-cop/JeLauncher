@@ -1,4 +1,5 @@
 use jelauncher_core::instance::{self, CopyOptions, Instance, InstanceSummary, NewInstance};
+use jelauncher_core::minecraft::LoaderSpec;
 use jelauncher_core::resources::ResourceKind;
 use jelauncher_core::settings::InstanceSettings;
 use tauri::State;
@@ -89,6 +90,22 @@ pub fn set_instance_settings(
         &state.paths.instances(),
         &instance_id,
         settings,
+    )?)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn set_instance_version(
+    state: State<'_, AppState>,
+    instance_id: String,
+    minecraft_version: String,
+    loader: Option<LoaderSpec>,
+) -> CommandResult<()> {
+    Ok(instance::set_instance_version(
+        &state.paths.instances(),
+        &instance_id,
+        &minecraft_version,
+        loader,
     )?)
 }
 

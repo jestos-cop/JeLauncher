@@ -23,6 +23,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::instance::set_instance_group,
             commands::instance::set_instance_notes,
             commands::instance::set_instance_settings,
+            commands::instance::set_instance_version,
             commands::java::detect_java,
             commands::launch::kill_instance,
             commands::launch::launch_instance,
