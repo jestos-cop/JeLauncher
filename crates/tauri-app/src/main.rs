@@ -6,6 +6,7 @@ mod cli;
 mod commands;
 mod error;
 mod events;
+mod menu;
 mod state;
 
 use tauri::Manager;
@@ -50,6 +51,11 @@ fn main() {
         .setup(move |app| {
             let request = request.clone();
             builder.mount_events(app);
+            // Windows and Linux use the in-window toolbar instead of a native menu bar.
+            if cfg!(target_os = "macos") {
+                app.set_menu(menu::build(app.handle())?)?;
+                app.on_menu_event(|app, event| menu::handle(app, event.id().as_ref()));
+            }
             let state = AppState::load()?;
             let log_file =
                 jelauncher_core::launcher_log::init(&state.paths.logs(), log::LevelFilter::Info)?;

@@ -22,12 +22,12 @@ type Source = 'vanilla' | Provider | 'import'
 interface NewInstanceDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  /** Opens the Import tab with this file or URL filled in. */
+  /** Opens the Import tab with this file or URL filled in; an empty string opens it blank. */
   initialImport?: string
 }
 
 export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInstanceDialogProps) {
-  const [source, setSource] = useState<Source>(initialImport ? 'import' : 'vanilla')
+  const [source, setSource] = useState<Source>(initialImport === undefined ? 'vanilla' : 'import')
   const [name, setName] = useState('')
   const [group, setGroup] = useState('')
   const [version, setVersion] = useState<string | null>(null)

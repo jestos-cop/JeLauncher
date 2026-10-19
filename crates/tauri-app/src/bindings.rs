@@ -81,6 +81,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::worlds::open_saves_folder,
         ])
         .events(collect_events![
+            crate::menu::MenuActionEvent,
             events::LaunchProgressEvent,
             events::InstanceLogEvent,
             events::InstanceExitedEvent,

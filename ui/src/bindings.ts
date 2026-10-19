@@ -674,6 +674,7 @@ instanceExitedEvent: InstanceExitedEvent,
 instanceLogEvent: InstanceLogEvent,
 instancesChangedEvent: InstancesChangedEvent,
 launchProgressEvent: LaunchProgressEvent,
+menuActionEvent: MenuActionEvent,
 modpackProgressEvent: ModpackProgressEvent
 }>({
 cliRequest: "cli-request",
@@ -681,6 +682,7 @@ instanceExitedEvent: "instance-exited-event",
 instanceLogEvent: "instance-log-event",
 instancesChangedEvent: "instances-changed-event",
 launchProgressEvent: "launch-progress-event",
+menuActionEvent: "menu-action-event",
 modpackProgressEvent: "modpack-progress-event"
 })
 
@@ -810,6 +812,11 @@ export type LogLevel = "launcher" | "debug" | "info" | "warning" | "error" | "fa
  * Where an instance created from a modpack came from, for updates and display.
  */
 export type ManagedPack = { provider: Provider; projectId: string; versionId: string; name: string; version: string }
+/**
+ * A menu bar command the frontend carries out.
+ */
+export type MenuAction = "about" | "settings" | "newInstance" | "importInstance" | "refresh" | "openInstancesFolder" | "openLauncherFolder" | "manageAccounts" | "news" | "sourceCode" | "launcherLog"
+export type MenuActionEvent = { action: MenuAction }
 export type MinecraftVersions = { latest: LatestVersions; versions: VersionEntry[] }
 export type ModListFormat = "plainText" | "markdown" | "html" | "json" | "csv"
 export type ModpackProgressEvent = { progress: DownloadProgress }

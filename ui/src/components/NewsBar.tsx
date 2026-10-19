@@ -1,17 +1,11 @@
-import { useQuery } from '@tanstack/react-query'
 import { Newspaper } from 'lucide-react'
 import { useState } from 'react'
-import { commands } from '@/bindings'
 import { NewsDialog } from '@/dialogs/NewsDialog'
-import { unwrap } from '@/lib/command'
+import { useNews } from '@/hooks/use-news'
 
 /** The latest Minecraft news headline; opens the full list. */
 export function NewsBar() {
-  const { data: news } = useQuery({
-    queryKey: ['news'],
-    queryFn: () => unwrap(commands.listNews()),
-    staleTime: 60 * 60 * 1000,
-  })
+  const { data: news } = useNews()
   const [isOpen, setIsOpen] = useState(false)
   const latest = news?.[0]
   if (!news || !latest) return null
