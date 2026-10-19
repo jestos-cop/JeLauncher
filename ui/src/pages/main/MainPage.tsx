@@ -1,15 +1,18 @@
 import { Box, Plus, RefreshCw } from 'lucide-react'
+import { useState } from 'react'
 import type { InstanceSummary } from '@/bindings'
 import { Button } from '@/components/ui/button'
+import { NewInstanceDialog } from '@/dialogs/NewInstanceDialog'
 import { useInstances } from '@/hooks/use-instances'
 
 export function MainPage() {
   const { data: instances, error, isPending, refetch } = useInstances()
+  const [isCreating, setIsCreating] = useState(false)
 
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
       <header className="flex items-center gap-2 border-b px-3 py-2">
-        <Button size="sm" disabled>
+        <Button size="sm" onClick={() => setIsCreating(true)}>
           <Plus /> Add Instance
         </Button>
         <Button size="sm" variant="ghost" onClick={() => refetch()}>
@@ -25,6 +28,8 @@ export function MainPage() {
         )}
         {instances && instances.length > 0 && <InstanceGrid instances={instances} />}
       </main>
+
+      <NewInstanceDialog open={isCreating} onOpenChange={setIsCreating} />
     </div>
   )
 }
