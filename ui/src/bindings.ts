@@ -287,6 +287,57 @@ async renameScreenshot(instanceId: string, fileName: string, newName: string) : 
     else return { status: "error", error: e  as any };
 }
 },
+async addServer(instanceId: string, server: Server) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("add_server", { instanceId, server }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async listServers(instanceId: string) : Promise<Result<Server[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_servers", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Swaps the server at `index` with the one above it.
+ */
+async moveServerUp(instanceId: string, index: number) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("move_server_up", { instanceId, index }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async pingServer(address: string) : Promise<Result<ServerStatus, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("ping_server", { address }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async removeServer(instanceId: string, index: number) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("remove_server", { instanceId, index }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async updateServer(instanceId: string, index: number, server: Server) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("update_server", { instanceId, index, server }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async setResourceEnabled(instanceId: string, kind: ResourceKind, fileName: string, enabled: boolean) : Promise<Result<string, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_resource_enabled", { instanceId, kind, fileName, enabled }) };
@@ -428,6 +479,7 @@ export type ResourceFile = { fileName: string; enabled: boolean; size: number;
 modified: number; metadata: ResourceMetadata | null }
 export type ResourceKind = "mod" | "resourcePack" | "shaderPack" | "dataPack" | "modpack"
 export type ResourceMetadata = { id: string; name: string; version: string; description: string; authors: string[]; homepage: string | null }
+export type ResourcePackPolicy = "prompt" | "enabled" | "disabled"
 export type Screenshot = { fileName: string; path: string; size: number; 
 /**
  * Unix time in milliseconds.
@@ -435,6 +487,16 @@ export type Screenshot = { fileName: string; path: string; size: number;
 modified: number }
 export type SearchPage = { hits: ProjectHit[]; total: number }
 export type SearchQuery = { text: string; kind: ResourceKind; gameVersion: string | null; loader: LoaderKind | null; sort: SortOrder; offset: number; limit: number }
+export type Server = { name: string; address: string; 
+/**
+ * Base64-encoded PNG, as stored by the game.
+ */
+icon: string | null; resourcePacks: ResourcePackPolicy }
+export type ServerStatus = { version: string; playersOnline: number; playersMax: number; motd: string; 
+/**
+ * `data:image/png;base64,...` URL.
+ */
+favicon: string | null; latencyMs: number }
 export type SortOrder = "relevance" | "downloads" | "updated" | "newest"
 export type VersionEntry = { id: string; type: VersionType; url: string; sha1: string; releaseTime: string }
 export type VersionFile = { url: string; fileName: string; sha1: string | null; sha512: string | null; size: number; primary: boolean }
