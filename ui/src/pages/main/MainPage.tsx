@@ -1,6 +1,7 @@
 import { Box, Plus, RefreshCw } from 'lucide-react'
 import { useState } from 'react'
 import type { InstanceSummary } from '@/bindings'
+import { AccountsMenu } from '@/components/AccountsMenu'
 import { Button } from '@/components/ui/button'
 import { NewInstanceDialog } from '@/dialogs/NewInstanceDialog'
 import { useInstances } from '@/hooks/use-instances'
@@ -18,6 +19,9 @@ export function MainPage() {
         <Button size="sm" variant="ghost" onClick={() => refetch()}>
           <RefreshCw /> Refresh
         </Button>
+        <div className="ml-auto">
+          <AccountsMenu />
+        </div>
       </header>
 
       <main className="flex-1 overflow-auto p-4">
