@@ -4,6 +4,7 @@ import { NavigationProvider } from '@/app/NavigationProvider'
 import { SessionsProvider } from '@/app/SessionsProvider'
 import { InstancePage } from '@/pages/instance/InstancePage'
 import { MainPage } from '@/pages/main/MainPage'
+import { SettingsPage } from '@/pages/settings/SettingsPage'
 
 const queryClient = new QueryClient()
 
@@ -26,5 +27,7 @@ function CurrentPage() {
       return <MainPage />
     case 'instance':
       return <InstancePage instanceId={view.instanceId} tab={view.tab} />
+    case 'settings':
+      return <SettingsPage tab={view.tab} />
   }
 }

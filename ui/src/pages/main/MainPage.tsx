@@ -1,5 +1,6 @@
-import { Plus, RefreshCw } from 'lucide-react'
+import { Plus, RefreshCw, Settings } from 'lucide-react'
 import { useState } from 'react'
+import { useNavigation } from '@/app/navigation'
 import { AccountsMenu } from '@/components/AccountsMenu'
 import { Button } from '@/components/ui/button'
 import { NewInstanceDialog } from '@/dialogs/NewInstanceDialog'
@@ -10,6 +11,7 @@ import { InstancePanel } from '@/pages/main/InstancePanel'
 export function MainPage() {
   const { data: instances, error, isPending, refetch } = useInstances()
   const [isCreating, setIsCreating] = useState(false)
+  const { navigate } = useNavigation()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const selected = instances?.find((instance) => instance.id === selectedId)
 
@@ -21,6 +23,9 @@ export function MainPage() {
         </Button>
         <Button size="sm" variant="ghost" onClick={() => refetch()}>
           <RefreshCw /> Refresh
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => navigate({ page: 'settings', tab: 'java' })}>
+          <Settings /> Settings
         </Button>
         <div className="ml-auto">
           <AccountsMenu />

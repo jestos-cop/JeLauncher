@@ -2,7 +2,12 @@ import { createContext, useContext } from 'react'
 
 export type InstanceTab = 'log' | 'mods'
 
-export type View = { page: 'main' } | { page: 'instance'; instanceId: string; tab: InstanceTab }
+export type SettingsTab = 'java' | 'minecraft'
+
+export type View =
+  | { page: 'main' }
+  | { page: 'instance'; instanceId: string; tab: InstanceTab }
+  | { page: 'settings'; tab: SettingsTab }
 
 interface NavigationContextValue {
   view: View
