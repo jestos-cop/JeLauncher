@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { useModpackProgress } from '@/hooks/use-modpack-progress'
 import { useModpackVersions, useUpdateModpack } from '@/hooks/use-modpacks'
+import { PROVIDER_NAMES } from '@/lib/providers'
 import { cn } from '@/lib/utils'
 
 export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pack: ManagedPack }) {
@@ -27,7 +28,7 @@ export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pac
         <div>
           <p className="font-medium">{pack.name}</p>
           <p className="text-sm text-muted-foreground">
-            Version {pack.version} from {canSwitch ? 'Modrinth' : 'CurseForge'}
+            Version {pack.version} from {PROVIDER_NAMES[pack.provider]}
             {latest && latest.id !== pack.versionId && ` · ${latest.versionNumber} is available`}
           </p>
         </div>
@@ -52,7 +53,7 @@ export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pac
 
       {!canSwitch && (
         <p className="text-sm text-muted-foreground">
-          Switching versions of CurseForge packs is not supported yet.
+          Switching versions of {PROVIDER_NAMES[pack.provider]} packs is not supported yet.
         </p>
       )}
       {update.isPending && (

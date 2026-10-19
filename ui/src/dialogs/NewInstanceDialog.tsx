@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { InstalledPack, LoaderSpec } from '@/bindings'
+import type { InstalledPack, LoaderSpec, Provider } from '@/bindings'
 import { ImportSource } from '@/components/ImportSource'
 import { LoaderPicker } from '@/components/LoaderPicker'
 import { ModpackBrowser } from '@/components/ModpackBrowser'
@@ -15,7 +15,7 @@ import { BlockedFilesDialog } from '@/dialogs/BlockedFilesDialog'
 import { useModpackProgress } from '@/hooks/use-modpack-progress'
 import { type ModpackSelection, useImportInstance, useInstallModpack } from '@/hooks/use-modpacks'
 
-type Source = 'vanilla' | 'modrinth' | 'curseForge' | 'import'
+type Source = 'vanilla' | Provider | 'import'
 
 interface NewInstanceDialogProps {
   open: boolean
@@ -60,6 +60,7 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
     vanilla: version !== null && (loader === null || loader.version !== ''),
     modrinth: modpack?.provider === 'modrinth',
     curseForge: modpack?.provider === 'curseForge',
+    ftb: modpack?.provider === 'ftb',
     import: importSource.trim() !== '',
   }[source]
 
@@ -100,6 +101,7 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
             <ToggleGroupItem value="vanilla">Custom</ToggleGroupItem>
             <ToggleGroupItem value="modrinth">Modrinth</ToggleGroupItem>
             <ToggleGroupItem value="curseForge">CurseForge</ToggleGroupItem>
+            <ToggleGroupItem value="ftb">FTB</ToggleGroupItem>
             <ToggleGroupItem value="import">Import</ToggleGroupItem>
           </ToggleGroup>
         </DialogHeader>
@@ -130,7 +132,7 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
             <VersionList selected={version} onSelect={setVersion} />
             <LoaderPicker minecraftVersion={version} value={loader} onChange={setLoader} />
           </>
-        ) : source === 'modrinth' || source === 'curseForge' ? (
+        ) : source !== 'import' ? (
           <ModpackBrowser key={source} provider={source} selected={modpack} onSelect={setModpack} />
         ) : (
           <ImportSource value={importSource} onChange={setImportSource} />

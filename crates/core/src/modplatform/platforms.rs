@@ -1,13 +1,16 @@
 use std::collections::{HashSet, VecDeque};
 
 use super::curseforge::CurseForge;
+use super::ftb::Ftb;
 use super::modrinth::Modrinth;
 use super::{
     InstallTarget, ProjectVersion, Provider, ResourceKind, SearchPage, SearchQuery,
     download_version,
 };
 use crate::minecraft::LoaderKind;
-use crate::modpack::{ModpackTarget, PackInstall, PackSource, install_curseforge_pack};
+use crate::modpack::{
+    ModpackTarget, PackInstall, PackSource, install_curseforge_pack, install_ftb_pack,
+};
 use crate::net::{DownloadProgress, HttpClient};
 use crate::{Error, Result};
 
@@ -16,6 +19,7 @@ use crate::{Error, Result};
 pub struct ModPlatforms {
     pub modrinth: Modrinth,
     pub curseforge: CurseForge,
+    pub ftb: Ftb,
     http: HttpClient,
 }
 
@@ -24,6 +28,7 @@ impl ModPlatforms {
         Self {
             modrinth: Modrinth::new(http.clone()),
             curseforge: CurseForge::new(http.clone(), curseforge_api_key),
+            ftb: Ftb::new(http.clone()),
             http,
         }
     }
@@ -69,6 +74,17 @@ impl ModPlatforms {
                 let _ = std::fs::remove_file(&archive);
                 installed
             }
+            Provider::Ftb => {
+                install_ftb_pack(
+                    &self.ftb,
+                    &self.http,
+                    project_id,
+                    version_id,
+                    target,
+                    on_progress,
+                )
+                .await
+            }
         }
     }
 
@@ -76,6 +92,8 @@ impl ModPlatforms {
         match query.provider {
             Provider::Modrinth => self.modrinth.search(query).await,
             Provider::CurseForge => self.curseforge.search(query).await,
+            Provider::Ftb if query.kind == ResourceKind::Modpack => self.ftb.search(query).await,
+            Provider::Ftb => Err(ftb_packs_only()),
         }
     }
 
@@ -98,6 +116,8 @@ impl ModPlatforms {
                     .versions(project_id, kind, game_version, loader)
                     .await
             }
+            Provider::Ftb if kind == ResourceKind::Modpack => self.ftb.versions(project_id).await,
+            Provider::Ftb => Err(ftb_packs_only()),
         }
     }
 
@@ -110,6 +130,7 @@ impl ModPlatforms {
         match provider {
             Provider::Modrinth => self.modrinth.version(version_id).await,
             Provider::CurseForge => self.curseforge.version(project_id, version_id).await,
+            Provider::Ftb => self.ftb.version(project_id, version_id).await,
         }
     }
 
@@ -166,4 +187,8 @@ impl ModPlatforms {
             ))
         })
     }
+}
+
+fn ftb_packs_only() -> Error {
+    Error::InvalidInput("FTB publishes modpacks only".into())
 }

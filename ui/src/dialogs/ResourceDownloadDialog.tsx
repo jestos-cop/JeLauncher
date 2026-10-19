@@ -9,8 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useInstallVersion, useProjectVersions, useResourceSearch } from '@/hooks/use-modplatform'
-
-const PROVIDERS: Record<Provider, string> = { modrinth: 'Modrinth', curseForge: 'CurseForge' }
+import { PROVIDER_NAMES, RESOURCE_PROVIDERS } from '@/lib/providers'
 
 const SORT_LABELS: Record<SortOrder, string> = {
   relevance: 'Relevance',
@@ -63,16 +62,16 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
               setSelected(null)
             }}
           >
-            {Object.entries(PROVIDERS).map(([value, label]) => (
+            {RESOURCE_PROVIDERS.map((value) => (
               <ToggleGroupItem key={value} value={value}>
-                {label}
+                {PROVIDER_NAMES[value]}
               </ToggleGroupItem>
             ))}
           </ToggleGroup>
           <Input
             autoFocus
             className="flex-1"
-            placeholder={`Search ${PROVIDERS[provider]}`}
+            placeholder={`Search ${PROVIDER_NAMES[provider]}`}
             value={text}
             onChange={(event) => setText(event.target.value)}
           />

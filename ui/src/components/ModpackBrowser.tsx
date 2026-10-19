@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { type ModpackSelection, useModpackVersions } from '@/hooks/use-modpacks'
 import { useResourceSearch } from '@/hooks/use-modplatform'
+import { PROVIDER_NAMES } from '@/lib/providers'
 import { cn } from '@/lib/utils'
 
 interface ModpackBrowserProps {
@@ -35,7 +36,7 @@ export function ModpackBrowser({ provider, selected, onSelect }: ModpackBrowserP
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-2">
       <Input
-        placeholder={`Search ${provider === 'modrinth' ? 'Modrinth' : 'CurseForge'} modpacks`}
+        placeholder={`Search ${PROVIDER_NAMES[provider]} modpacks`}
         value={text}
         onChange={(event) => setText(event.target.value)}
       />

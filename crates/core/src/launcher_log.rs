@@ -68,7 +68,7 @@ pub fn init(dir: &Path, level: LevelFilter) -> Result<PathBuf> {
 }
 
 /// ISO 8601 UTC time, e.g. `2025-10-19T15:00:00Z`.
-fn utc_timestamp(time: SystemTime) -> String {
+pub(crate) fn utc_timestamp(time: SystemTime) -> String {
     let secs = time
         .duration_since(UNIX_EPOCH)
         .map_or(0, |elapsed| elapsed.as_secs());

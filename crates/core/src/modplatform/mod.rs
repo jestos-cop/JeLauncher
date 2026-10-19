@@ -1,4 +1,5 @@
 pub mod curseforge;
+pub mod ftb;
 pub mod modrinth;
 mod platforms;
 
@@ -19,6 +20,7 @@ pub enum Provider {
     #[default]
     Modrinth,
     CurseForge,
+    Ftb,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]

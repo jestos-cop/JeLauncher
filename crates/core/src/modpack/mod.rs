@@ -1,4 +1,5 @@
 mod curseforge_pack;
+mod ftb_pack;
 mod import;
 mod mrpack;
 mod mrpack_export;
@@ -11,6 +12,7 @@ pub use curseforge_pack::{
     BlockedFile, CURSEFORGE_MANIFEST, CurseManifest, install_curseforge_pack,
     read_curseforge_manifest,
 };
+pub use ftb_pack::install_ftb_pack;
 pub use import::{ArchiveKind, detect_archive, import_instance};
 pub use mrpack::{
     MRPACK_INDEX, MrpackFile, MrpackIndex, install_mrpack, read_mrpack_index, update_mrpack,
