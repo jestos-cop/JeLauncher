@@ -1,6 +1,7 @@
 use std::path::Path;
 
 use super::Instance;
+use crate::settings::InstanceSettings;
 use crate::{Error, Result};
 
 pub fn rename_instance(instances_dir: &Path, id: &str, name: &str) -> Result<()> {
@@ -18,6 +19,16 @@ pub fn rename_instance(instances_dir: &Path, id: &str, name: &str) -> Result<()>
 pub fn set_instance_group(instances_dir: &Path, id: &str, group: Option<String>) -> Result<()> {
     let mut instance = Instance::open(instances_dir, id)?;
     instance.config.group = group.map(|g| g.trim().to_owned()).filter(|g| !g.is_empty());
+    instance.save()
+}
+
+pub fn set_instance_settings(
+    instances_dir: &Path,
+    id: &str,
+    settings: InstanceSettings,
+) -> Result<()> {
+    let mut instance = Instance::open(instances_dir, id)?;
+    instance.config.settings = settings;
     instance.save()
 }
 

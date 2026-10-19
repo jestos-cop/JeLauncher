@@ -1,4 +1,5 @@
 use jelauncher_core::instance::{self, Instance, InstanceSummary, NewInstance};
+use jelauncher_core::settings::InstanceSettings;
 use serde::Deserialize;
 use tauri::State;
 use tauri_plugin_opener::OpenerExt;
@@ -46,6 +47,31 @@ pub fn set_instance_group(
         &state.paths.instances(),
         &instance_id,
         group,
+    )?)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn get_instance_settings(
+    state: State<'_, AppState>,
+    instance_id: String,
+) -> CommandResult<InstanceSettings> {
+    Ok(Instance::open(&state.paths.instances(), &instance_id)?
+        .config
+        .settings)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn set_instance_settings(
+    state: State<'_, AppState>,
+    instance_id: String,
+    settings: InstanceSettings,
+) -> CommandResult<()> {
+    Ok(instance::set_instance_settings(
+        &state.paths.instances(),
+        &instance_id,
+        settings,
     )?)
 }
 

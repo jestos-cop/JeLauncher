@@ -61,6 +61,14 @@ async deleteInstance(instanceId: string) : Promise<Result<null, CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
+async getInstanceSettings(instanceId: string) : Promise<Result<InstanceSettings, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_instance_settings", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async openInstanceFolder(instanceId: string, folder: InstanceFolder) : Promise<Result<null, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("open_instance_folder", { instanceId, folder }) };
@@ -80,6 +88,14 @@ async renameInstance(instanceId: string, name: string) : Promise<Result<null, Co
 async setInstanceGroup(instanceId: string, group: string | null) : Promise<Result<null, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_instance_group", { instanceId, group }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async setInstanceSettings(instanceId: string, settings: InstanceSettings) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_instance_settings", { instanceId, settings }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -230,6 +246,10 @@ export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launc
 export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
 export type InstanceFolder = "game" | "mods"
 export type InstanceLogEvent = { instanceId: string; line: string; level: LogLevel }
+/**
+ * Per-instance overrides; `None` falls back to the global value.
+ */
+export type InstanceSettings = { javaPath: string | null; minMemoryMb: number | null; maxMemoryMb: number | null; jvmArgs: string | null; windowWidth: number | null; windowHeight: number | null; windowMaximized: boolean | null }
 export type InstanceSummary = { id: string; name: string; iconKey: string; group: string | null; minecraftVersion: string; loader: LoaderSpec | null; lastLaunchTime: number; totalTimePlayed: number }
 export type JavaInstall = { path: string; version: string; major: number; arch: string; vendor: string }
 export type JavaSettings = { 

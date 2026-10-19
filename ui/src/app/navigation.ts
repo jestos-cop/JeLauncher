@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-export type InstanceTab = 'log' | 'mods'
+export type InstanceTab = 'log' | 'mods' | 'settings'
 
 export type SettingsTab = 'java' | 'minecraft'
 
