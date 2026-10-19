@@ -1,5 +1,6 @@
-import { FolderOpen, Pencil, Play, Square, Tags, Trash2 } from 'lucide-react'
+import { FolderOpen, Pencil, Play, Settings2, Square, Tags, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useNavigation } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
 import type { InstanceSummary } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
@@ -16,6 +17,7 @@ type OpenDialog = 'rename' | 'group' | 'delete' | null
 
 export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
   const { session, launch, kill } = useSession(instance.id)
+  const { navigate } = useNavigation()
   const [dialog, setDialog] = useState<OpenDialog>(null)
   const rename = useRenameInstance()
   const setGroup = useSetInstanceGroup()
@@ -35,6 +37,9 @@ export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
             <Play /> Launch
           </ContextMenuItem>
         )}
+        <ContextMenuItem onSelect={() => navigate({ page: 'instance', instanceId: instance.id, tab: 'log' })}>
+          <Settings2 /> Edit
+        </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem onSelect={() => void openInstanceFolder(instance.id)}>
           <FolderOpen /> Open Folder

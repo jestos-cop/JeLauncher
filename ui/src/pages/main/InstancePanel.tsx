@@ -1,16 +1,13 @@
-import { Box, Play, ScrollText, Square } from 'lucide-react'
-import { useState } from 'react'
-import { useSession } from '@/app/sessions'
+import { Box, Pencil } from 'lucide-react'
+import { useNavigation } from '@/app/navigation'
 import type { InstanceSummary } from '@/bindings'
+import { LaunchControls } from '@/components/LaunchControls'
 import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
-import { LogDialog } from '@/dialogs/LogDialog'
-import { describeProgress, formatPlayTime, progressPercent } from '@/lib/format'
+import { formatPlayTime } from '@/lib/format'
 
 export function InstancePanel({ instance }: { instance: InstanceSummary }) {
-  const { session, launch, kill } = useSession(instance.id)
-  const percent = progressPercent(session.progress)
-  const [isLogOpen, setIsLogOpen] = useState(false)
+  const { navigate } = useNavigation()
+  const open = () => navigate({ page: 'instance', instanceId: instance.id, tab: 'log' })
 
   return (
     <aside className="flex w-60 shrink-0 flex-col gap-4 border-l p-4">
@@ -26,33 +23,10 @@ export function InstancePanel({ instance }: { instance: InstanceSummary }) {
         </p>
       </div>
 
-      {session.status === 'idle' && (
-        <Button onClick={() => void launch()}>
-          <Play /> Launch
-        </Button>
-      )}
-      {session.status === 'preparing' && (
-        <div className="flex flex-col gap-2">
-          <p className="text-sm text-muted-foreground">{describeProgress(session.progress)}</p>
-          {percent !== null && <Progress value={percent} />}
-        </div>
-      )}
-      {session.status === 'running' && (
-        <Button variant="destructive" onClick={() => void kill()}>
-          <Square /> Kill
-        </Button>
-      )}
-      {session.error && <p className="text-sm text-destructive">{session.error}</p>}
-      <Button variant="ghost" onClick={() => setIsLogOpen(true)}>
-        <ScrollText /> Log
+      <LaunchControls instanceId={instance.id} />
+      <Button variant="ghost" onClick={open}>
+        <Pencil /> Edit
       </Button>
-
-      <LogDialog
-        instanceId={instance.id}
-        instanceName={instance.name}
-        open={isLogOpen}
-        onOpenChange={setIsLogOpen}
-      />
     </aside>
   )
 }
