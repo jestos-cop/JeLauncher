@@ -1,0 +1,84 @@
+{
+  "title": "New Ship",
+  "source": {
+    "custom": "Custom Build",
+    "import": "Import"
+  },
+  "field": {
+    "name": "Name",
+    "group": "Squadron"
+  },
+  "placeholder": {
+    "instanceName": "Ship's name",
+    "nameFromPack": "Name from the pack",
+    "noGroup": "No squadron"
+  },
+  "progress": {
+    "downloading": "Haulin' cargo {{completed}}/{{total}}",
+    "preparing": "Readyin' the ship…"
+  },
+  "untrustedHosts": {
+    "title": "Plunder from untrusted ports?",
+    "description": "This modpack downloads files from {{hosts}}. These hosts ain't reviewed by the platform and may carry cursed files. Sail on only if ye trust the pack's author.",
+    "confirm": "Plunder Anyway"
+  },
+  "optionalMods": {
+    "title": "Optional Mods",
+    "description": "Pick the extra trinkets to install. Mods they depend on be added automatically.",
+    "recommended": "recommended",
+    "shareCode": "Share code",
+    "useShareCode": "Use Share Code"
+  },
+  "blockedFiles": {
+    "title": "Some files must be fetched by hand",
+    "description": "The ship was built, but these authors only allow downloads from the CurseForge website. Download each file and stow it in the folder shown next to it.",
+    "downloadPage": "Download page",
+    "openModsFolder": "Open mods hold"
+  },
+  "modpackBrowser": {
+    "search": "Search {{provider}} modpacks",
+    "loadMore": "Haul more",
+    "selectModpack": "Pick a modpack to choose a version.",
+    "loadingVersions": "Fetchin' versions…"
+  },
+  "releaseType": {
+    "release": "release",
+    "beta": "beta",
+    "alpha": "alpha"
+  },
+  "projectRow": {
+    "author": "by {{author}}",
+    "downloads_one": "{{downloads}} download",
+    "downloads_other": "{{downloads}} downloads"
+  },
+  "versionList": {
+    "search": "Search versions",
+    "filter": {
+      "release": "Releases",
+      "snapshot": "Snapshots",
+      "beta": "Betas",
+      "alpha": "Alphas"
+    },
+    "loadingVersions": "Fetchin' versions…",
+    "latest": "Freshest",
+    "type": {
+      "release": "release",
+      "snapshot": "snapshot",
+      "beta": "beta",
+      "alpha": "alpha",
+      "other": "other"
+    }
+  },
+  "loaderPicker": {
+    "label": "Loader",
+    "none": "Nary a one",
+    "noVersions": "No versions",
+    "beta": "beta"
+  },
+  "importSource": {
+    "description": "Import a Modrinth pack (.mrpack) or a shipped-out ship (.zip) from a file or a URL.",
+    "placeholder": "File path or https:// URL",
+    "browse": "Scour…",
+    "filter": "Ships in bottles"
+  }
+}

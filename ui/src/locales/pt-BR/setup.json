@@ -1,0 +1,17 @@
+{
+  "steps": {
+    "welcome": "Boas-vindas",
+    "appearance": "Aparência",
+    "java": "Java",
+    "account": "Conta"
+  },
+  "welcomeTitle": "Boas-vindas ao JeLauncher",
+  "progress": "Etapa {{step}} de {{total}}",
+  "intro": "Algumas perguntas rápidas para você começar a jogar. Tudo aqui pode ser alterado depois em Configurações.",
+  "autoDownloadHint": "Recomendado: o Java certo é baixado para cada versão do jogo.",
+  "existingAccounts_one": "Você já tem uma conta.",
+  "existingAccounts_many": "Você já tem {{count}} de contas.",
+  "existingAccounts_other": "Você já tem {{count}} contas.",
+  "offlineIntro": "Adicione uma conta offline para jogar no modo um jogador e em servidores no modo offline. O login da Microsoft pode ser feito depois.",
+  "skip": "Pular configuração"
+}

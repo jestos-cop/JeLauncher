@@ -1,0 +1,16 @@
+{
+  "steps": {
+    "welcome": "Ahoy",
+    "appearance": "Colours",
+    "java": "Java",
+    "account": "Sailor"
+  },
+  "welcomeTitle": "Ahoy, welcome aboard JeLauncher",
+  "progress": "Step {{step}} o' {{total}}",
+  "intro": "A few quick questions to get ye playin'. All o' this can be changed later in the Ship's Articles.",
+  "autoDownloadHint": "Recommended: the right Java be fetched fer each game version.",
+  "existingAccounts_one": "Ye already have a sailor aboard.",
+  "existingAccounts_other": "Ye already have {{count}} sailors aboard.",
+  "offlineIntro": "Recruit an offline sailor to play singleplayer and offline-mode ports. Microsoft sign-in comes later.",
+  "skip": "Skip the briefin'"
+}

@@ -1,0 +1,111 @@
+{
+  "releaseType": {
+    "release": "release",
+    "beta": "beta",
+    "alpha": "alpha"
+  },
+  "resourceDownload": {
+    "title": "Plunder fer {{instance}} · Minecraft {{version}}",
+    "titleWithLoader": "Plunder fer {{instance}} · Minecraft {{version}} · {{loader}}",
+    "search": "Search {{provider}}",
+    "sort": {
+      "relevance": "Relevance",
+      "downloads": "Downloads",
+      "updated": "Freshly updated",
+      "newest": "Newest"
+    },
+    "loadMore": "Haul more",
+    "searching": "Searchin'…",
+    "selectProject": "Pick a project to see versions fit fer this ship.",
+    "alsoInstalled": "Also hauled aboard: {{names}}",
+    "loadingVersions": "Fetchin' versions…",
+    "noVersions": "No versions fit fer this ship.",
+    "installed": "Aboard"
+  },
+  "resourceUpdate": {
+    "title": "Review Updates",
+    "description": "Pick the updates to haul aboard. Disabled files stay disabled.",
+    "select": "Update {{name}}",
+    "changelog": "Changelog",
+    "noChangelog": "No changelog fer this version.",
+    "apply": "Update {{selected}} o' {{total}}"
+  },
+  "export": {
+    "title": "Ship Out {{name}}",
+    "format": {
+      "zip": {
+        "label": "Ship in a bottle",
+        "description": "A full copy o' the ship that can be imported again."
+      },
+      "mrpack": {
+        "label": "Modrinth pack",
+        "description": "Files published on Modrinth be linked, everything else be bundled as overrides."
+      },
+      "curseforge": {
+        "label": "CurseForge pack",
+        "description": "Files published on CurseForge be linked, everything else be bundled as overrides."
+      }
+    },
+    "instanceZip": "Ship (.zip)",
+    "version": "Version",
+    "summary": "Summary",
+    "author": "Shipwright",
+    "optional": "Optional",
+    "includedFiles": "Cargo manifest",
+    "noFiles": "The ship has no game files aboard yet.",
+    "exporting": "Shippin' out…",
+    "submit": "Ship Out…"
+  },
+  "copy": {
+    "title": "Copy {{name}}",
+    "defaultName": "Copy o' {{name}}",
+    "name": "Name",
+    "group": "Squadron",
+    "noGroup": "No squadron",
+    "flag": {
+      "copySaves": "Worlds",
+      "copyMods": "Mods and configs",
+      "copyResourcePacks": "Resource packs",
+      "copyShaderPacks": "Shader packs",
+      "copyServers": "Ports",
+      "copyScreenshots": "Sketches",
+      "copyGameOptions": "Game options",
+      "keepPlayTime": "Keep time at sea",
+      "useHardLinks": "Hard-link files instead o' copyin' (worlds be always copied)"
+    },
+    "copying": "Copyin'…"
+  },
+  "shortcut": {
+    "title": "Desktop Shortcut",
+    "creating": "Carvin' a shortcut fer {{name}}…",
+    "created": "Double-click the shortcut to set sail on this ship straight away."
+  },
+  "iconPicker": {
+    "title": "Choose a Flag",
+    "images": "Images",
+    "remove": "Strike flag",
+    "add": "Add Flag…"
+  },
+  "changeVersion": {
+    "title": "Change Version",
+    "description": "Game files fer the new version be hauled aboard on the next launch. Mods may need updatin'."
+  },
+  "server": {
+    "addTitle": "Add Port",
+    "editTitle": "Tinker with Port",
+    "defaultName": "Minecraft Port",
+    "name": "Name",
+    "address": "Address",
+    "resourcePacks": "Resource packs",
+    "policy": {
+      "prompt": "Ask me",
+      "enabled": "Aye",
+      "disabled": "Nay"
+    }
+  },
+  "modListExport": {
+    "button": "Ship Out List",
+    "fileType": "Mod list",
+    "plainText": "Plain text"
+  }
+}

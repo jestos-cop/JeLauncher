@@ -1,0 +1,15 @@
+{
+  "steps": {
+    "welcome": "欢迎",
+    "appearance": "外观",
+    "java": "Java",
+    "account": "账户"
+  },
+  "welcomeTitle": "欢迎使用 JeLauncher",
+  "progress": "第 {{step}} 步，共 {{total}} 步",
+  "intro": "回答几个简单的问题即可开始游戏。这里的所有选项之后都可以在设置中更改。",
+  "autoDownloadHint": "推荐：根据游戏版本自动获取合适的 Java。",
+  "existingAccounts_other": "你已拥有 {{count}} 个账户。",
+  "offlineIntro": "添加离线账户以游玩单人游戏和离线模式服务器。Microsoft 登录可稍后进行。",
+  "skip": "跳过设置"
+}

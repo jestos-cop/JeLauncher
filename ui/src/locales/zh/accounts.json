@@ -1,0 +1,32 @@
+{
+  "defaultHint": "默认账户将用于启动所有实例。",
+  "addMicrosoft": "添加 Microsoft 账户",
+  "addOffline": "添加离线账户",
+  "kind": {
+    "microsoft": "Microsoft",
+    "offline": "离线"
+  },
+  "default": "默认",
+  "useByDefault": "设为默认",
+  "signInAgain": "重新登录",
+  "refresh": "刷新 {{username}}",
+  "remove": "移除 {{username}}",
+  "loading": "正在加载账户…",
+  "empty": "添加账户以启动游戏。",
+  "removeDialog": {
+    "title": "移除 {{username}}？",
+    "description": "该账户将从启动器中移除。你的世界和实例不受影响。"
+  },
+  "microsoft": {
+    "title": "使用 Microsoft 登录",
+    "description": "打开 Microsoft 页面，输入代码并批准登录。此窗口会自动更新。",
+    "copyCode": "复制代码",
+    "open": "打开 {{url}}",
+    "waiting": "正在等待批准…",
+    "requesting": "正在请求登录代码…"
+  },
+  "offline": {
+    "description": "离线账户只能游玩单人游戏和离线模式服务器。",
+    "username": "用户名"
+  }
+}

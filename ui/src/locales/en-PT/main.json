@@ -1,0 +1,66 @@
+{
+  "toolbar": {
+    "addInstance": "Add Ship",
+    "settings": "Ship's Articles",
+    "searchPlaceholder": "Search the fleet",
+    "sortByName": "By name",
+    "sortLastPlayed": "Last voyage"
+  },
+  "folders": {
+    "title": "Holds",
+    "instances": "Fleet",
+    "java": "Java runtimes",
+    "root": "Launcher cargo"
+  },
+  "help": {
+    "title": "Help",
+    "sourceCode": "Source code and troubles",
+    "launcherLog": "Open launcher's log",
+    "about": "About JeLauncher"
+  },
+  "accounts": {
+    "none": "No sailor",
+    "remove": "Maroon {{name}}",
+    "addMicrosoft": "Recruit Microsoft sailor…",
+    "addOffline": "Recruit offline sailor…",
+    "manage": "Manage the crew…"
+  },
+  "news": {
+    "more": "More tidings"
+  },
+  "grid": {
+    "loading": "Musterin' the fleet…",
+    "empty": "No ships in the fleet yet.",
+    "noMatch": "No ships match “{{search}}”.",
+    "ungrouped": "Driftin' alone"
+  },
+  "panel": {
+    "played": "At sea {{time}}"
+  },
+  "actions": {
+    "launchDemo": "Sail the Demo",
+    "launchWithProfiler": "Sail with Profiler",
+    "cancelLaunch": "Abandon Voyage",
+    "changeGroup": "Change Squadron",
+    "changeIcon": "Change Flag",
+    "copy": "Copy…",
+    "export": "Ship Out…",
+    "createShortcut": "Make Shortcut"
+  },
+  "dialogs": {
+    "renameTitle": "Rechristen Ship",
+    "noGroup": "No squadron",
+    "deleteTitle": "Scuttle {{name}}?",
+    "deleteDescription": "The ship's folder, worlds and mods included, will be sent to Davy Jones' locker fer good."
+  },
+  "status": {
+    "instances_one": "{{count}} ship",
+    "instances_other": "{{count}} ships",
+    "totalPlayTime": "Total time at sea: {{time}}",
+    "running": "Under sail: {{names}}"
+  },
+  "playTime": {
+    "hoursMinutes": "{{hours}}h {{minutes}}m",
+    "minutes": "{{minutes}}m"
+  }
+}

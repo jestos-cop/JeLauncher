@@ -1,0 +1,160 @@
+{
+  "tabs": {
+    "log": "Minecraft ログ",
+    "modpack": "Modpack",
+    "version": "バージョン",
+    "mod": "Mod",
+    "resourcePack": "リソースパック",
+    "shaderPack": "シェーダーパック",
+    "dataPack": "データパック",
+    "worlds": "ワールド",
+    "servers": "サーバー",
+    "screenshots": "スクリーンショット",
+    "notes": "メモ",
+    "settings": "設定"
+  },
+  "columns": {
+    "name": "名前",
+    "version": "バージョン",
+    "authors": "作者",
+    "description": "説明",
+    "file": "ファイル",
+    "mode": "モード",
+    "lastPlayed": "最終プレイ",
+    "seed": "シード値"
+  },
+  "item": {
+    "enable": "{{name}} を有効化",
+    "remove": "{{name}} を削除",
+    "delete": "{{name}} を削除",
+    "rename": "{{name}} の名前を変更",
+    "edit": "{{name}} を編集",
+    "play": "{{name}} をプレイ",
+    "backUp": "{{name}} をバックアップ",
+    "moveUp": "{{name}} を上へ移動"
+  },
+  "confirm": {
+    "remove": "{{name}} を削除しますか？",
+    "delete": "{{name}} を削除しますか？"
+  },
+  "version": {
+    "components": "コンポーネント",
+    "editFile": "{{file}} を編集",
+    "change": "バージョンを変更",
+    "changeOrInstallLoader": "バージョン変更またはローダーのインストール",
+    "removeLoader": "ローダーを削除",
+    "removeLoaderDescription": "インスタンスはバニラの Minecraft として起動します。インストール済みの Mod は mods フォルダーに残ります。"
+  },
+  "modpack": {
+    "source": "{{provider}} のバージョン {{version}}",
+    "sourceWithUpdate": "{{provider}} のバージョン {{version}} · {{latest}} が利用可能です",
+    "switchTo": "{{version}} に切り替え",
+    "switchVersion": "バージョンを切り替え",
+    "switchUnsupported": "{{provider}} のパックのバージョン切り替えにはまだ対応していません。",
+    "downloadingFiles": "ファイルをダウンロード中 {{completed}}/{{total}}",
+    "downloading": "Modpack をダウンロード中…",
+    "loadingVersions": "バージョンを読み込み中…",
+    "installed": "インストール済み",
+    "releaseType": {
+      "release": "リリース",
+      "beta": "ベータ",
+      "alpha": "アルファ"
+    },
+    "noChangelog": "このバージョンの更新履歴はありません。",
+    "selectVersion": "バージョンを選択すると更新履歴が表示されます。",
+    "confirmTitle": "{{version}} に切り替えますか？",
+    "confirmDescription": "現在のパックバージョンのファイルは置き換えられます。ワールド、スクリーンショット、自分で追加したファイルは保持されます。",
+    "confirmSwitch": "切り替え"
+  },
+  "resources": {
+    "mod": {
+      "search": "Mod を検索",
+      "download": "Mod をダウンロード",
+      "empty": "Mod はインストールされていません。.jar ファイルを mods フォルダーに入れてください。",
+      "upToDate": "Modrinth の Mod はすべて最新です。"
+    },
+    "resourcePack": {
+      "search": "リソースパックを検索",
+      "download": "リソースパックをダウンロード",
+      "empty": "リソースパックはインストールされていません。",
+      "upToDate": "Modrinth のリソースパックはすべて最新です。"
+    },
+    "shaderPack": {
+      "search": "シェーダーパックを検索",
+      "download": "シェーダーパックをダウンロード",
+      "empty": "シェーダーパックはインストールされていません。",
+      "upToDate": "Modrinth のシェーダーパックはすべて最新です。"
+    },
+    "dataPack": {
+      "search": "データパックを検索",
+      "download": "データパックをダウンロード",
+      "empty": "データパックはインストールされていません。",
+      "upToDate": "Modrinth のデータパックはすべて最新です。"
+    },
+    "enabledCount": "{{total}} 個中 {{enabled}} 個が有効",
+    "checking": "確認中…",
+    "checkUpdates": "アップデートを確認",
+    "updatesAvailable_other": "{{count}} 件のアップデートがあります。",
+    "updating": "アップデート中…",
+    "reviewUpdates": "アップデートを確認",
+    "reading": "ファイルを読み込み中…",
+    "removeDescription": "{{file}} はインスタンスから削除されます。"
+  },
+  "worlds": {
+    "count_other": "{{count}} 個のワールド",
+    "backupSaved": "バックアップを {{path}} に保存しました",
+    "gameMode": {
+      "survival": "サバイバル",
+      "creative": "クリエイティブ",
+      "adventure": "アドベンチャー",
+      "spectator": "スペクテイター",
+      "hardcore": "ハードコア",
+      "unknown": "不明"
+    },
+    "copySeed": "シード値をコピー",
+    "play": "プレイ",
+    "backUp": "バックアップ",
+    "reading": "ワールドを読み込み中…",
+    "empty": "ワールドはまだありません。",
+    "deleteDescription": "ワールドは完全に削除されます。先にバックアップを作成することをおすすめします。"
+  },
+  "servers": {
+    "count_other": "{{count}} 個のサーバー",
+    "add": "サーバーを追加",
+    "reading": "サーバーを読み込み中…",
+    "empty": "サーバーはまだありません。",
+    "unnamed": "サーバー",
+    "removeDescription": "サーバーはこのインスタンスのマルチプレイリストから削除されます。",
+    "pinging": "接続を確認中…",
+    "players_other": "{{online}}/{{count}} 人のプレイヤー",
+    "versionLatency": "{{version}} · {{latency}} ms",
+    "join": "参加",
+    "moveUp": "上へ移動"
+  },
+  "screenshots": {
+    "count_other": "{{count}} 枚のスクリーンショット",
+    "reading": "スクリーンショットを読み込み中…",
+    "empty": "スクリーンショットはまだありません。ゲーム内で F2 キーを押すと撮影できます。",
+    "renameTitle": "スクリーンショットの名前を変更",
+    "deleteDescription": "スクリーンショットは完全に削除されます。"
+  },
+  "notes": {
+    "loading": "メモを読み込み中…",
+    "unsaved": "未保存の変更",
+    "hint": "メモはインスタンスと一緒に保存されます。",
+    "placeholder": "シード値、座標、サーバーのパスワード、Mod の設定メモなど…"
+  },
+  "settings": {
+    "javaInstallation": "Java のインストール",
+    "minMemory": "最小メモリ",
+    "maxMemory": "最大メモリ",
+    "mib": "MiB",
+    "jvmArgs": "JVM 引数",
+    "gameWindow": "ゲームウィンドウ",
+    "windowSize": "ウィンドウサイズ",
+    "startMaximized": "最大化して起動",
+    "customCommands": "カスタムコマンド",
+    "memoryError": "最小メモリは最大メモリを超えないようにしてください。",
+    "override": "グローバル設定を上書き"
+  }
+}

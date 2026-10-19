@@ -1,0 +1,111 @@
+{
+  "releaseType": {
+    "release": "正式版",
+    "beta": "测试版",
+    "alpha": "早期测试版"
+  },
+  "resourceDownload": {
+    "title": "为 {{instance}} 下载 · Minecraft {{version}}",
+    "titleWithLoader": "为 {{instance}} 下载 · Minecraft {{version}} · {{loader}}",
+    "search": "搜索 {{provider}}",
+    "sort": {
+      "relevance": "相关性",
+      "downloads": "下载量",
+      "updated": "最近更新",
+      "newest": "最新发布"
+    },
+    "loadMore": "加载更多",
+    "searching": "正在搜索…",
+    "selectProject": "选择一个项目以查看兼容的版本。",
+    "alsoInstalled": "同时安装：{{names}}",
+    "loadingVersions": "正在加载版本…",
+    "noVersions": "没有适用于此实例的版本。",
+    "installed": "已安装"
+  },
+  "resourceUpdate": {
+    "title": "查看更新",
+    "description": "选择要安装的更新。已禁用的文件将保持禁用。",
+    "select": "更新 {{name}}",
+    "changelog": "更新日志",
+    "noChangelog": "此版本没有更新日志。",
+    "apply": "更新 {{selected}}/{{total}} 项"
+  },
+  "export": {
+    "title": "导出 {{name}}",
+    "format": {
+      "zip": {
+        "label": "实例存档",
+        "description": "实例的完整副本，可再次导入。"
+      },
+      "mrpack": {
+        "label": "Modrinth 整合包",
+        "description": "已在 Modrinth 上发布的文件以链接形式引用，其余文件作为覆盖文件打包。"
+      },
+      "curseforge": {
+        "label": "CurseForge 整合包",
+        "description": "已在 CurseForge 上发布的文件以链接形式引用，其余文件作为覆盖文件打包。"
+      }
+    },
+    "instanceZip": "实例（.zip）",
+    "version": "版本",
+    "summary": "简介",
+    "author": "作者",
+    "optional": "可选",
+    "includedFiles": "包含的文件",
+    "noFiles": "该实例还没有游戏文件。",
+    "exporting": "正在导出…",
+    "submit": "导出…"
+  },
+  "copy": {
+    "title": "复制 {{name}}",
+    "defaultName": "{{name}} 的副本",
+    "name": "名称",
+    "group": "分组",
+    "noGroup": "无分组",
+    "flag": {
+      "copySaves": "世界",
+      "copyMods": "模组和配置",
+      "copyResourcePacks": "资源包",
+      "copyShaderPacks": "光影包",
+      "copyServers": "服务器",
+      "copyScreenshots": "截图",
+      "copyGameOptions": "游戏选项",
+      "keepPlayTime": "保留游戏时长",
+      "useHardLinks": "使用硬链接代替复制（世界始终会被复制）"
+    },
+    "copying": "正在复制…"
+  },
+  "shortcut": {
+    "title": "桌面快捷方式",
+    "creating": "正在为 {{name}} 创建快捷方式…",
+    "created": "双击快捷方式即可直接启动此实例。"
+  },
+  "iconPicker": {
+    "title": "选择图标",
+    "images": "图片",
+    "remove": "移除图标",
+    "add": "添加图标…"
+  },
+  "changeVersion": {
+    "title": "更改版本",
+    "description": "新版本的游戏文件将在下次启动时下载。模组可能需要更新。"
+  },
+  "server": {
+    "addTitle": "添加服务器",
+    "editTitle": "编辑服务器",
+    "defaultName": "Minecraft 服务器",
+    "name": "名称",
+    "address": "地址",
+    "resourcePacks": "资源包",
+    "policy": {
+      "prompt": "询问",
+      "enabled": "启用",
+      "disabled": "禁用"
+    }
+  },
+  "modListExport": {
+    "button": "导出列表",
+    "fileType": "模组列表",
+    "plainText": "纯文本"
+  }
+}

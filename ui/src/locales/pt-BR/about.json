@@ -1,0 +1,13 @@
+{
+  "about": {
+    "description": "Um launcher de Minecraft feito com Rust, Tauri e React.",
+    "version": "Versão",
+    "license": "Licença",
+    "trademark": "Minecraft é uma marca registrada da Mojang Studios. O JeLauncher não é afiliado à Mojang nem à Microsoft.",
+    "sourceCode": "Código-fonte"
+  },
+  "news": {
+    "title": "Notícias do Minecraft",
+    "readMore": "Leia mais"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "about": {
+    "description": "Rust、Tauri、React で作られた Minecraft ランチャーです。",
+    "version": "バージョン",
+    "license": "ライセンス",
+    "trademark": "Minecraft は Mojang Studios の商標です。JeLauncher は Mojang および Microsoft とは関係ありません。",
+    "sourceCode": "ソースコード"
+  },
+  "news": {
+    "title": "Minecraft ニュース",
+    "readMore": "続きを読む"
+  }
+}

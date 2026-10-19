@@ -1,0 +1,111 @@
+{
+  "releaseType": {
+    "release": "リリース",
+    "beta": "ベータ",
+    "alpha": "アルファ"
+  },
+  "resourceDownload": {
+    "title": "{{instance}} 用にダウンロード · Minecraft {{version}}",
+    "titleWithLoader": "{{instance}} 用にダウンロード · Minecraft {{version}} · {{loader}}",
+    "search": "{{provider}} を検索",
+    "sort": {
+      "relevance": "関連度",
+      "downloads": "ダウンロード数",
+      "updated": "最近の更新",
+      "newest": "新しい順"
+    },
+    "loadMore": "さらに読み込む",
+    "searching": "検索中…",
+    "selectProject": "プロジェクトを選択すると対応バージョンが表示されます。",
+    "alsoInstalled": "同時にインストール: {{names}}",
+    "loadingVersions": "バージョンを読み込み中…",
+    "noVersions": "このインスタンスに対応するバージョンはありません。",
+    "installed": "インストール済み"
+  },
+  "resourceUpdate": {
+    "title": "アップデートを確認",
+    "description": "インストールするアップデートを選択してください。無効化されたファイルは無効のままです。",
+    "select": "{{name}} をアップデート",
+    "changelog": "更新履歴",
+    "noChangelog": "このバージョンの更新履歴はありません。",
+    "apply": "{{total}} 件中 {{selected}} 件をアップデート"
+  },
+  "export": {
+    "title": "{{name}} をエクスポート",
+    "format": {
+      "zip": {
+        "label": "インスタンスアーカイブ",
+        "description": "再インポートできるインスタンスの完全なコピーです。"
+      },
+      "mrpack": {
+        "label": "Modrinth パック",
+        "description": "Modrinth で公開されているファイルはリンクされ、それ以外はオーバーライドとして同梱されます。"
+      },
+      "curseforge": {
+        "label": "CurseForge パック",
+        "description": "CurseForge で公開されているファイルはリンクされ、それ以外はオーバーライドとして同梱されます。"
+      }
+    },
+    "instanceZip": "インスタンス (.zip)",
+    "version": "バージョン",
+    "summary": "概要",
+    "author": "作者",
+    "optional": "任意",
+    "includedFiles": "含めるファイル",
+    "noFiles": "このインスタンスにはまだゲームファイルがありません。",
+    "exporting": "エクスポート中…",
+    "submit": "エクスポート…"
+  },
+  "copy": {
+    "title": "{{name}} をコピー",
+    "defaultName": "{{name}} のコピー",
+    "name": "名前",
+    "group": "グループ",
+    "noGroup": "グループなし",
+    "flag": {
+      "copySaves": "ワールド",
+      "copyMods": "Mod と設定ファイル",
+      "copyResourcePacks": "リソースパック",
+      "copyShaderPacks": "シェーダーパック",
+      "copyServers": "サーバー",
+      "copyScreenshots": "スクリーンショット",
+      "copyGameOptions": "ゲーム設定",
+      "keepPlayTime": "プレイ時間を引き継ぐ",
+      "useHardLinks": "コピーの代わりにハードリンクを使用（ワールドは常にコピーされます）"
+    },
+    "copying": "コピー中…"
+  },
+  "shortcut": {
+    "title": "デスクトップショートカット",
+    "creating": "{{name}} のショートカットを作成中…",
+    "created": "ショートカットをダブルクリックすると、このインスタンスを直接起動できます。"
+  },
+  "iconPicker": {
+    "title": "アイコンを選択",
+    "images": "画像",
+    "remove": "アイコンを削除",
+    "add": "アイコンを追加…"
+  },
+  "changeVersion": {
+    "title": "バージョンを変更",
+    "description": "新しいバージョンのゲームファイルは次回起動時にダウンロードされます。Mod の更新が必要になる場合があります。"
+  },
+  "server": {
+    "addTitle": "サーバーを追加",
+    "editTitle": "サーバーを編集",
+    "defaultName": "Minecraft サーバー",
+    "name": "名前",
+    "address": "アドレス",
+    "resourcePacks": "リソースパック",
+    "policy": {
+      "prompt": "確認する",
+      "enabled": "有効",
+      "disabled": "無効"
+    }
+  },
+  "modListExport": {
+    "button": "リストをエクスポート",
+    "fileType": "Mod リスト",
+    "plainText": "プレーンテキスト"
+  }
+}

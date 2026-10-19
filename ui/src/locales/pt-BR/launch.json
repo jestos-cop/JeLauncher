@@ -1,0 +1,22 @@
+{
+  "progress": {
+    "preparing": "Preparando…",
+    "downloading": "Baixando arquivos {{completed}}/{{total}}",
+    "installingLoader": "Instalando carregador de mods…",
+    "starting": "Iniciando o jogo…"
+  },
+  "log": {
+    "searchPlaceholder": "Pesquisar no registro",
+    "lines_one": "{{count}} linha",
+    "lines_many": "{{count}} de linhas",
+    "lines_other": "{{count}} linhas",
+    "wrap": "Quebrar linhas",
+    "upload": "Enviar",
+    "uploading": "Enviando…",
+    "clear": "Limpar",
+    "uploaded": "Registro enviado: <link>{{url}}</link>",
+    "copyLink": "Copiar link",
+    "confirmUploadTitle": "Enviar este registro?",
+    "confirmUploadDescription": "O registro inteiro é publicado no mclo.gs e qualquer pessoa com o link pode lê-lo. Sua pasta pessoal é ocultada nos caminhos de arquivos."
+  }
+}

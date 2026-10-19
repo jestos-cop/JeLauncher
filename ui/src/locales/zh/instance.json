@@ -1,0 +1,160 @@
+{
+  "tabs": {
+    "log": "Minecraft 日志",
+    "modpack": "整合包",
+    "version": "版本",
+    "mod": "模组",
+    "resourcePack": "资源包",
+    "shaderPack": "光影包",
+    "dataPack": "数据包",
+    "worlds": "世界",
+    "servers": "服务器",
+    "screenshots": "截图",
+    "notes": "备注",
+    "settings": "设置"
+  },
+  "columns": {
+    "name": "名称",
+    "version": "版本",
+    "authors": "作者",
+    "description": "描述",
+    "file": "文件",
+    "mode": "模式",
+    "lastPlayed": "上次游玩",
+    "seed": "种子"
+  },
+  "item": {
+    "enable": "启用 {{name}}",
+    "remove": "移除 {{name}}",
+    "delete": "删除 {{name}}",
+    "rename": "重命名 {{name}}",
+    "edit": "编辑 {{name}}",
+    "play": "游玩 {{name}}",
+    "backUp": "备份 {{name}}",
+    "moveUp": "上移 {{name}}"
+  },
+  "confirm": {
+    "remove": "移除 {{name}}？",
+    "delete": "删除 {{name}}？"
+  },
+  "version": {
+    "components": "组件",
+    "editFile": "编辑 {{file}}",
+    "change": "更改版本",
+    "changeOrInstallLoader": "更改版本或安装加载器",
+    "removeLoader": "移除加载器",
+    "removeLoaderDescription": "该实例将以原版 Minecraft 启动；已安装的模组会保留在 mods 文件夹中。"
+  },
+  "modpack": {
+    "source": "来自 {{provider}} 的版本 {{version}}",
+    "sourceWithUpdate": "来自 {{provider}} 的版本 {{version}} · {{latest}} 可用",
+    "switchTo": "切换到 {{version}}",
+    "switchVersion": "切换版本",
+    "switchUnsupported": "暂不支持切换 {{provider}} 整合包的版本。",
+    "downloadingFiles": "正在下载文件 {{completed}}/{{total}}",
+    "downloading": "正在下载整合包…",
+    "loadingVersions": "正在加载版本…",
+    "installed": "已安装",
+    "releaseType": {
+      "release": "正式版",
+      "beta": "测试版",
+      "alpha": "早期测试版"
+    },
+    "noChangelog": "此版本没有更新日志。",
+    "selectVersion": "选择一个版本以查看其更新日志。",
+    "confirmTitle": "切换到 {{version}}？",
+    "confirmDescription": "当前整合包版本的文件将被替换。世界、截图和你自己的文件会保留。",
+    "confirmSwitch": "切换"
+  },
+  "resources": {
+    "mod": {
+      "search": "搜索模组",
+      "download": "下载模组",
+      "empty": "未安装模组。将 .jar 文件放入 mods 文件夹。",
+      "upToDate": "所有来自 Modrinth 的模组均为最新版本。"
+    },
+    "resourcePack": {
+      "search": "搜索资源包",
+      "download": "下载资源包",
+      "empty": "未安装资源包。",
+      "upToDate": "所有来自 Modrinth 的资源包均为最新版本。"
+    },
+    "shaderPack": {
+      "search": "搜索光影包",
+      "download": "下载光影包",
+      "empty": "未安装光影包。",
+      "upToDate": "所有来自 Modrinth 的光影包均为最新版本。"
+    },
+    "dataPack": {
+      "search": "搜索数据包",
+      "download": "下载数据包",
+      "empty": "未安装数据包。",
+      "upToDate": "所有来自 Modrinth 的数据包均为最新版本。"
+    },
+    "enabledCount": "已启用 {{enabled}}/{{total}}",
+    "checking": "正在检查…",
+    "checkUpdates": "检查更新",
+    "updatesAvailable_other": "有 {{count}} 个可用更新。",
+    "updating": "正在更新…",
+    "reviewUpdates": "查看更新",
+    "reading": "正在读取文件…",
+    "removeDescription": "{{file}} 将从实例中删除。"
+  },
+  "worlds": {
+    "count_other": "{{count}} 个世界",
+    "backupSaved": "备份已保存到 {{path}}",
+    "gameMode": {
+      "survival": "生存",
+      "creative": "创造",
+      "adventure": "冒险",
+      "spectator": "旁观",
+      "hardcore": "极限",
+      "unknown": "未知"
+    },
+    "copySeed": "复制种子",
+    "play": "游玩",
+    "backUp": "备份",
+    "reading": "正在读取世界…",
+    "empty": "暂无世界。",
+    "deleteDescription": "该世界将被永久删除。建议先进行备份。"
+  },
+  "servers": {
+    "count_other": "{{count}} 个服务器",
+    "add": "添加服务器",
+    "reading": "正在读取服务器…",
+    "empty": "暂无服务器。",
+    "unnamed": "服务器",
+    "removeDescription": "该服务器将从此实例的多人游戏列表中移除。",
+    "pinging": "正在检测…",
+    "players_other": "{{online}}/{{count}} 名玩家",
+    "versionLatency": "{{version}} · {{latency}} ms",
+    "join": "加入",
+    "moveUp": "上移"
+  },
+  "screenshots": {
+    "count_other": "{{count}} 张截图",
+    "reading": "正在读取截图…",
+    "empty": "暂无截图。在游戏中按 F2 截图。",
+    "renameTitle": "重命名截图",
+    "deleteDescription": "该截图将被永久删除。"
+  },
+  "notes": {
+    "loading": "正在加载备注…",
+    "unsaved": "未保存的更改",
+    "hint": "备注与实例一同保存。",
+    "placeholder": "种子、坐标、服务器密码、模组配置笔记…"
+  },
+  "settings": {
+    "javaInstallation": "Java 安装",
+    "minMemory": "最小内存",
+    "maxMemory": "最大内存",
+    "mib": "MiB",
+    "jvmArgs": "JVM 参数",
+    "gameWindow": "游戏窗口",
+    "windowSize": "窗口大小",
+    "startMaximized": "启动时最大化",
+    "customCommands": "自定义命令",
+    "memoryError": "最小内存不能超过最大内存。",
+    "override": "覆盖全局设置"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "defaultHint": "The default crew member be used to set sail on every ship.",
+  "addMicrosoft": "Recruit Microsoft Sailor",
+  "addOffline": "Recruit Offline Sailor",
+  "kind": {
+    "microsoft": "Microsoft",
+    "offline": "Offline"
+  },
+  "default": "Cap'n's Pick",
+  "useByDefault": "Make Default",
+  "signInAgain": "Sign in again",
+  "refresh": "Refresh {{username}}",
+  "remove": "Maroon {{username}}",
+  "loading": "Musterin' the crew…",
+  "empty": "Recruit a sailor to set sail on the game.",
+  "removeDialog": {
+    "title": "Maroon {{username}}?",
+    "description": "The sailor be struck from the launcher's roster. Yer worlds and ships be left untouched."
+  },
+  "microsoft": {
+    "title": "Sign in with Microsoft",
+    "description": "Open the Microsoft page, enter the code and approve the sign-in. This window updates by itself, savvy?",
+    "copyCode": "Copy code",
+    "open": "Open {{url}}",
+    "waiting": "Waitin' fer approval…",
+    "requesting": "Fetchin' a sign-in code…"
+  },
+  "offline": {
+    "description": "Offline sailors can only play singleplayer and offline-mode ports.",
+    "username": "Sailor's name"
+  }
+}

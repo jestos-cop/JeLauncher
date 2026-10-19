@@ -1,0 +1,82 @@
+{
+  "title": "设置",
+  "tabs": {
+    "launcher": "启动器",
+    "accounts": "账户",
+    "java": "Java",
+    "minecraft": "Minecraft",
+    "commands": "命令",
+    "tools": "工具"
+  },
+  "units": {
+    "mib": "MiB",
+    "seconds": "秒"
+  },
+  "launcher": {
+    "appearance": "外观",
+    "theme": "主题",
+    "language": "语言",
+    "console": "控制台",
+    "showConsole": "启动时打开日志",
+    "showConsoleOnError": "崩溃时打开日志",
+    "autoCloseConsole": "正常退出时关闭日志",
+    "gameTime": "游戏时间",
+    "recordGameTime": "记录游戏时长",
+    "network": "网络",
+    "concurrentDownloads": "并行下载数",
+    "requestTimeout": "请求超时",
+    "requestTimeoutHint": "超时、重试和代理设置将在重启启动器后生效。",
+    "proxy": "代理",
+    "proxyHint": "例如 http://proxy.local:8080。留空则使用系统代理。",
+    "proxyPlaceholder": "系统代理",
+    "retries": "重试次数",
+    "apis": "API",
+    "curseforgeApiKey": "CurseForge API 密钥",
+    "curseforgeApiKeyHint": "可选。替换此版本内置的密钥。网络和 API 更改将在重启后生效。",
+    "curseforgeApiKeyPlaceholder": "内置密钥"
+  },
+  "java": {
+    "installation": "Java 安装",
+    "automatic": "自动（最匹配游戏版本）",
+    "detect": "检测",
+    "autoDownload": "自动下载 Java",
+    "autoDownloadHint": "当没有已安装的 Java 适合游戏时，获取 Mojang 的 Java 运行时。",
+    "minMemory": "最小内存",
+    "maxMemory": "最大内存",
+    "jvmArgs": "JVM 参数",
+    "memoryRange": "最小内存不能超过最大内存。",
+    "memoryOverTotal": "超出本机内存（{{gib}} GiB），游戏将无法启动。",
+    "memoryTotal": "本机内存为 {{gib}} GiB。"
+  },
+  "minecraft": {
+    "windowSize": "窗口大小",
+    "maximized": "启动时最大化"
+  },
+  "commands": {
+    "preLaunch": "启动前命令",
+    "preLaunchHint": "在游戏启动前运行；运行失败将取消启动。可用变量：$INST_NAME、$INST_ID、$INST_DIR、$INST_MC_DIR、$INST_JAVA。",
+    "wrapper": "包装命令",
+    "wrapperHint": "添加在 Java 调用之前，例如 mangohud 或 prime-run。",
+    "postExit": "退出后命令",
+    "postExitHint": "在游戏关闭后运行。",
+    "environment": "环境变量",
+    "namePlaceholder": "NAME",
+    "valuePlaceholder": "值",
+    "removeVariable": "移除 {{name}}",
+    "addVariable": "添加变量"
+  },
+  "tools": {
+    "profilers": "性能分析器",
+    "jprofilerPath": "JProfiler 文件夹",
+    "jprofilerPathHint": "包含 bin/jpenable 的安装文件夹。",
+    "notSet": "未设置",
+    "jprofilerPort": "JProfiler 端口",
+    "visualvm": "VisualVM",
+    "visualvmHint": "留空则在 PATH 中查找 jvisualvm 或 visualvm。",
+    "visualvmPlaceholder": "从 PATH 中查找",
+    "editor": "编辑器",
+    "textEditor": "文本编辑器",
+    "textEditorHint": "用于打开实例文件的命令，例如 code 或 subl。留空则使用默认应用。",
+    "defaultApp": "默认应用"
+  }
+}

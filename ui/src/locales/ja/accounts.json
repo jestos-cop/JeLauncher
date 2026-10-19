@@ -1,0 +1,32 @@
+{
+  "defaultHint": "デフォルトのアカウントはすべてのインスタンスの起動に使用されます。",
+  "addMicrosoft": "Microsoft アカウントを追加",
+  "addOffline": "オフラインアカウントを追加",
+  "kind": {
+    "microsoft": "Microsoft",
+    "offline": "オフライン"
+  },
+  "default": "デフォルト",
+  "useByDefault": "デフォルトに設定",
+  "signInAgain": "再度サインイン",
+  "refresh": "{{username}} を更新",
+  "remove": "{{username}} を削除",
+  "loading": "アカウントを読み込み中…",
+  "empty": "ゲームを起動するにはアカウントを追加してください。",
+  "removeDialog": {
+    "title": "{{username}} を削除しますか？",
+    "description": "アカウントはランチャーから削除されます。ワールドやインスタンスには影響しません。"
+  },
+  "microsoft": {
+    "title": "Microsoft でサインイン",
+    "description": "Microsoft のページを開き、コードを入力してサインインを承認してください。このウィンドウは自動的に更新されます。",
+    "copyCode": "コードをコピー",
+    "open": "{{url}} を開く",
+    "waiting": "承認を待っています…",
+    "requesting": "サインインコードを取得中…"
+  },
+  "offline": {
+    "description": "オフラインアカウントでは、シングルプレイとオフラインモードのサーバーのみプレイできます。",
+    "username": "ユーザー名"
+  }
+}

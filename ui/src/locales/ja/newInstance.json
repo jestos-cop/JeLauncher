@@ -1,0 +1,83 @@
+{
+  "title": "新規インスタンス",
+  "source": {
+    "custom": "カスタム",
+    "import": "インポート"
+  },
+  "field": {
+    "name": "名前",
+    "group": "グループ"
+  },
+  "placeholder": {
+    "instanceName": "インスタンス名",
+    "nameFromPack": "パックの名前",
+    "noGroup": "グループなし"
+  },
+  "progress": {
+    "downloading": "ファイルをダウンロード中 {{completed}}/{{total}}",
+    "preparing": "準備中…"
+  },
+  "untrustedHosts": {
+    "title": "信頼されていないホストからダウンロードしますか？",
+    "description": "この Modpack は {{hosts}} からファイルをダウンロードします。これらのホストはプラットフォームによる審査を受けておらず、有害なファイルを配布している可能性があります。パックの作者を信頼できる場合のみ続行してください。",
+    "confirm": "ダウンロードする"
+  },
+  "optionalMods": {
+    "title": "オプションの Mod",
+    "description": "インストールする追加要素を選択してください。依存する Mod は自動的に追加されます。",
+    "recommended": "おすすめ",
+    "shareCode": "共有コード",
+    "useShareCode": "共有コードを使用"
+  },
+  "blockedFiles": {
+    "title": "手動でのダウンロードが必要なファイルがあります",
+    "description": "インスタンスは作成されましたが、以下のファイルの作者は CurseForge のウェブサイトからのダウンロードのみを許可しています。各ファイルをダウンロードし、横に表示されているフォルダーに入れてください。",
+    "downloadPage": "ダウンロードページ",
+    "openModsFolder": "mods フォルダーを開く"
+  },
+  "modpackBrowser": {
+    "search": "{{provider}} の Modpack を検索",
+    "loadMore": "さらに読み込む",
+    "selectModpack": "Modpack を選択してバージョンを選んでください。",
+    "loadingVersions": "バージョンを読み込み中…"
+  },
+  "releaseType": {
+    "release": "リリース",
+    "beta": "ベータ",
+    "alpha": "アルファ"
+  },
+  "projectRow": {
+    "author": "作者: {{author}}",
+    "downloads_other": "{{downloads}} ダウンロード"
+  },
+  "versionList": {
+    "search": "バージョンを検索",
+    "filter": {
+      "release": "リリース",
+      "snapshot": "スナップショット",
+      "beta": "ベータ",
+      "alpha": "アルファ"
+    },
+    "loadingVersions": "バージョンを読み込み中…",
+    "latest": "最新",
+    "type": {
+      "release": "リリース",
+      "snapshot": "スナップショット",
+      "beta": "ベータ",
+      "alpha": "アルファ",
+      "other": "その他"
+    }
+  },
+  "loaderPicker": {
+    "label": "ローダー",
+    "none": "なし",
+    "noVersions": "バージョンなし",
+    "beta": "ベータ"
+  },
+  "importSource": {
+    "description": "Modrinth パック (.mrpack) またはエクスポートしたインスタンス (.zip) をファイルまたは URL からインポートします。",
+    "placeholder": "ファイルパスまたは https:// URL",
+    "browse": "参照…",
+    "filter": "インスタンスアーカイブ"
+  }
+}

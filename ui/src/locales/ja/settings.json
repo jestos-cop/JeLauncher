@@ -1,0 +1,82 @@
+{
+  "title": "設定",
+  "tabs": {
+    "launcher": "ランチャー",
+    "accounts": "アカウント",
+    "java": "Java",
+    "minecraft": "Minecraft",
+    "commands": "コマンド",
+    "tools": "ツール"
+  },
+  "units": {
+    "mib": "MiB",
+    "seconds": "秒"
+  },
+  "launcher": {
+    "appearance": "外観",
+    "theme": "テーマ",
+    "language": "言語",
+    "console": "コンソール",
+    "showConsole": "起動時にログを開く",
+    "showConsoleOnError": "クラッシュ時にログを開く",
+    "autoCloseConsole": "正常終了時にログを閉じる",
+    "gameTime": "ゲーム時間",
+    "recordGameTime": "プレイ時間を記録",
+    "network": "ネットワーク",
+    "concurrentDownloads": "同時ダウンロード数",
+    "requestTimeout": "リクエストのタイムアウト",
+    "requestTimeoutHint": "タイムアウト、再試行回数、プロキシはランチャーの再起動後に適用されます。",
+    "proxy": "プロキシ",
+    "proxyHint": "例: http://proxy.local:8080。空欄にするとシステムのプロキシを使用します。",
+    "proxyPlaceholder": "システムのプロキシ",
+    "retries": "再試行回数",
+    "apis": "API",
+    "curseforgeApiKey": "CurseForge API キー",
+    "curseforgeApiKeyHint": "任意。このビルドに組み込まれたキーを置き換えます。ネットワークと API の変更は再起動後に適用されます。",
+    "curseforgeApiKeyPlaceholder": "組み込みのキー"
+  },
+  "java": {
+    "installation": "Java のインストール",
+    "automatic": "自動（ゲームバージョンに最適なものを選択）",
+    "detect": "検出",
+    "autoDownload": "Java を自動的にダウンロード",
+    "autoDownloadHint": "ゲームに合う Java がインストールされていない場合、Mojang の Java ランタイムを取得します。",
+    "minMemory": "最小メモリ",
+    "maxMemory": "最大メモリ",
+    "jvmArgs": "JVM 引数",
+    "memoryRange": "最小メモリは最大メモリを超えないようにしてください。",
+    "memoryOverTotal": "このコンピューターのメモリ ({{gib}} GiB) を超えています。ゲームは起動しません。",
+    "memoryTotal": "このコンピューターのメモリは {{gib}} GiB です。"
+  },
+  "minecraft": {
+    "windowSize": "ウィンドウサイズ",
+    "maximized": "最大化して起動"
+  },
+  "commands": {
+    "preLaunch": "起動前コマンド",
+    "preLaunchHint": "ゲームの前に実行されます。失敗すると起動はキャンセルされます。使用できる変数: $INST_NAME, $INST_ID, $INST_DIR, $INST_MC_DIR, $INST_JAVA。",
+    "wrapper": "ラッパーコマンド",
+    "wrapperHint": "Java の呼び出しの前に付加されます。例: mangohud、prime-run。",
+    "postExit": "終了後コマンド",
+    "postExitHint": "ゲームの終了後に実行されます。",
+    "environment": "環境変数",
+    "namePlaceholder": "NAME",
+    "valuePlaceholder": "値",
+    "removeVariable": "{{name}} を削除",
+    "addVariable": "変数を追加"
+  },
+  "tools": {
+    "profilers": "プロファイラー",
+    "jprofilerPath": "JProfiler フォルダー",
+    "jprofilerPathHint": "bin/jpenable を含むインストールフォルダーです。",
+    "notSet": "未設定",
+    "jprofilerPort": "JProfiler ポート",
+    "visualvm": "VisualVM",
+    "visualvmHint": "空欄にすると PATH から jvisualvm または visualvm を探します。",
+    "visualvmPlaceholder": "PATH から検出",
+    "editor": "エディター",
+    "textEditor": "テキストエディター",
+    "textEditorHint": "インスタンスのファイルを開くコマンドです（例: code、subl）。空欄にするとデフォルトのアプリを使用します。",
+    "defaultApp": "デフォルトのアプリ"
+  }
+}

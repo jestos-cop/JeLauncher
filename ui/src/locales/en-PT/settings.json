@@ -1,0 +1,82 @@
+{
+  "title": "Ship's Articles",
+  "tabs": {
+    "launcher": "Launcher",
+    "accounts": "Crew",
+    "java": "Java",
+    "minecraft": "Minecraft",
+    "commands": "Orders",
+    "tools": "Tools"
+  },
+  "units": {
+    "mib": "MiB",
+    "seconds": "s"
+  },
+  "launcher": {
+    "appearance": "Colours",
+    "theme": "Theme",
+    "language": "Tongue",
+    "console": "Ship's log",
+    "showConsole": "Open log when settin' sail",
+    "showConsoleOnError": "Open log on shipwreck",
+    "autoCloseConsole": "Close log on safe return",
+    "gameTime": "Time at sea",
+    "recordGameTime": "Record time at sea",
+    "network": "Network",
+    "concurrentDownloads": "Parallel downloads",
+    "requestTimeout": "Request timeout",
+    "requestTimeoutHint": "Timeout, retries and proxy take effect after restartin' the launcher.",
+    "proxy": "Proxy",
+    "proxyHint": "Fer example http://proxy.local:8080. Leave empty to use the system proxy.",
+    "proxyPlaceholder": "System proxy",
+    "retries": "Retries",
+    "apis": "APIs",
+    "curseforgeApiKey": "CurseForge API key",
+    "curseforgeApiKeyHint": "Optional. Replaces the key this build came with. Network and API changes take effect after a restart.",
+    "curseforgeApiKeyPlaceholder": "Built-in key"
+  },
+  "java": {
+    "installation": "Java installation",
+    "automatic": "Automatic (best match fer the game version)",
+    "detect": "Spyglass",
+    "autoDownload": "Fetch Java automatically",
+    "autoDownloadHint": "Fetch Mojang's Java runtime when no installed Java fits the game.",
+    "minMemory": "Minimum memory",
+    "maxMemory": "Maximum memory",
+    "jvmArgs": "JVM arguments",
+    "memoryRange": "Minimum memory must not be more than maximum memory.",
+    "memoryOverTotal": "More than this computer has ({{gib}} GiB); the game won't set sail.",
+    "memoryTotal": "This computer has {{gib}} GiB."
+  },
+  "minecraft": {
+    "windowSize": "Porthole size",
+    "maximized": "Start maximized"
+  },
+  "commands": {
+    "preLaunch": "Pre-launch order",
+    "preLaunchHint": "Runs before the game; if it fails, the voyage be called off. Available as variables: $INST_NAME, $INST_ID, $INST_DIR, $INST_MC_DIR, $INST_JAVA.",
+    "wrapper": "Wrapper order",
+    "wrapperHint": "Prefixes the Java invocation, e.g. mangohud or prime-run.",
+    "postExit": "Post-exit order",
+    "postExitHint": "Runs after the game closes.",
+    "environment": "Environment variables",
+    "namePlaceholder": "NAME",
+    "valuePlaceholder": "value",
+    "removeVariable": "Maroon {{name}}",
+    "addVariable": "Add variable"
+  },
+  "tools": {
+    "profilers": "Profilers",
+    "jprofilerPath": "JProfiler folder",
+    "jprofilerPathHint": "The installation folder that holds bin/jpenable.",
+    "notSet": "Not charted",
+    "jprofilerPort": "JProfiler port",
+    "visualvm": "VisualVM",
+    "visualvmHint": "Leave empty to look fer jvisualvm or visualvm on the PATH.",
+    "visualvmPlaceholder": "Found on the PATH",
+    "editor": "Scribe",
+    "textEditor": "Text editor",
+    "textEditorHint": "Command that opens ship files, fer example code or subl. Leave empty to use the default app.",
+    "defaultApp": "Default app"
+  }
+}

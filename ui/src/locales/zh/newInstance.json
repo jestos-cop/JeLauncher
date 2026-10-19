@@ -1,0 +1,83 @@
+{
+  "title": "新建实例",
+  "source": {
+    "custom": "自定义",
+    "import": "导入"
+  },
+  "field": {
+    "name": "名称",
+    "group": "分组"
+  },
+  "placeholder": {
+    "instanceName": "实例名称",
+    "nameFromPack": "使用整合包名称",
+    "noGroup": "无分组"
+  },
+  "progress": {
+    "downloading": "正在下载文件 {{completed}}/{{total}}",
+    "preparing": "正在准备…"
+  },
+  "untrustedHosts": {
+    "title": "从不受信任的主机下载？",
+    "description": "此整合包会从 {{hosts}} 下载文件。这些主机未经平台审核，可能提供有害文件。仅在你信任整合包作者时继续。",
+    "confirm": "仍然下载"
+  },
+  "optionalMods": {
+    "title": "可选模组",
+    "description": "选择要安装的附加内容。其依赖的模组会自动添加。",
+    "recommended": "推荐",
+    "shareCode": "分享码",
+    "useShareCode": "使用分享码"
+  },
+  "blockedFiles": {
+    "title": "部分文件需要手动下载",
+    "description": "实例已创建，但这些作者仅允许从 CurseForge 网站下载。请下载每个文件并放入其旁边显示的文件夹中。",
+    "downloadPage": "下载页面",
+    "openModsFolder": "打开 mods 文件夹"
+  },
+  "modpackBrowser": {
+    "search": "搜索 {{provider}} 整合包",
+    "loadMore": "加载更多",
+    "selectModpack": "选择一个整合包以选择版本。",
+    "loadingVersions": "正在加载版本…"
+  },
+  "releaseType": {
+    "release": "正式版",
+    "beta": "测试版",
+    "alpha": "早期测试版"
+  },
+  "projectRow": {
+    "author": "作者：{{author}}",
+    "downloads_other": "{{downloads}} 次下载"
+  },
+  "versionList": {
+    "search": "搜索版本",
+    "filter": {
+      "release": "正式版",
+      "snapshot": "快照",
+      "beta": "测试版",
+      "alpha": "早期测试版"
+    },
+    "loadingVersions": "正在加载版本…",
+    "latest": "最新",
+    "type": {
+      "release": "正式版",
+      "snapshot": "快照",
+      "beta": "测试版",
+      "alpha": "早期测试版",
+      "other": "其他"
+    }
+  },
+  "loaderPicker": {
+    "label": "加载器",
+    "none": "无",
+    "noVersions": "无可用版本",
+    "beta": "测试版"
+  },
+  "importSource": {
+    "description": "从文件或 URL 导入 Modrinth 整合包（.mrpack）或导出的实例（.zip）。",
+    "placeholder": "文件路径或 https:// URL",
+    "browse": "浏览…",
+    "filter": "实例存档"
+  }
+}

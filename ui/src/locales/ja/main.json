@@ -1,0 +1,65 @@
+{
+  "toolbar": {
+    "addInstance": "インスタンスを追加",
+    "settings": "設定",
+    "searchPlaceholder": "インスタンスを検索",
+    "sortByName": "名前順",
+    "sortLastPlayed": "最終プレイ順"
+  },
+  "folders": {
+    "title": "フォルダー",
+    "instances": "インスタンス",
+    "java": "Java ランタイム",
+    "root": "ランチャーデータ"
+  },
+  "help": {
+    "title": "ヘルプ",
+    "sourceCode": "ソースコードと問題報告",
+    "launcherLog": "ランチャーのログを開く",
+    "about": "JeLauncher について"
+  },
+  "accounts": {
+    "none": "アカウントなし",
+    "remove": "{{name}} を削除",
+    "addMicrosoft": "Microsoft アカウントを追加…",
+    "addOffline": "オフラインアカウントを追加…",
+    "manage": "アカウントを管理…"
+  },
+  "news": {
+    "more": "その他のニュース"
+  },
+  "grid": {
+    "loading": "インスタンスを読み込み中…",
+    "empty": "インスタンスはまだありません。",
+    "noMatch": "「{{search}}」に一致するインスタンスはありません。",
+    "ungrouped": "グループなし"
+  },
+  "panel": {
+    "played": "プレイ時間: {{time}}"
+  },
+  "actions": {
+    "launchDemo": "デモを起動",
+    "launchWithProfiler": "プロファイラーで起動",
+    "cancelLaunch": "起動をキャンセル",
+    "changeGroup": "グループを変更",
+    "changeIcon": "アイコンを変更",
+    "copy": "コピー…",
+    "export": "エクスポート…",
+    "createShortcut": "ショートカットを作成"
+  },
+  "dialogs": {
+    "renameTitle": "インスタンスの名前を変更",
+    "noGroup": "グループなし",
+    "deleteTitle": "{{name}} を削除しますか？",
+    "deleteDescription": "ワールドや Mod を含むインスタンスフォルダーは完全に削除されます。"
+  },
+  "status": {
+    "instances_other": "{{count}} 個のインスタンス",
+    "totalPlayTime": "合計プレイ時間: {{time}}",
+    "running": "実行中: {{names}}"
+  },
+  "playTime": {
+    "hoursMinutes": "{{hours}}時間{{minutes}}分",
+    "minutes": "{{minutes}}分"
+  }
+}

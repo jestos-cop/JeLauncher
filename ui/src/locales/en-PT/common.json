@@ -1,0 +1,37 @@
+{
+  "action": {
+    "cancel": "Belay That",
+    "save": "Stow",
+    "reset": "Reset",
+    "close": "Close",
+    "delete": "Scuttle",
+    "remove": "Maroon",
+    "rename": "Rechristen",
+    "back": "Aft",
+    "next": "Onward",
+    "finish": "Drop Anchor",
+    "done": "Aye, Done",
+    "browse": "Scour",
+    "refresh": "Refresh",
+    "install": "Haul Aboard",
+    "create": "Build",
+    "launch": "Set Sail",
+    "kill": "Sink It",
+    "edit": "Tinker",
+    "copy": "Copy",
+    "export": "Ship Out",
+    "add": "Add",
+    "openFolder": "Open Hold"
+  },
+  "state": {
+    "loading": "Hoistin'…"
+  },
+  "theme": {
+    "system": "System",
+    "light": "Daylight",
+    "dark": "Moonlight"
+  },
+  "language": {
+    "system": "System tongue"
+  }
+}

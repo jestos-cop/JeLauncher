@@ -1,0 +1,165 @@
+{
+  "tabs": {
+    "log": "Minecraft Ship's Log",
+    "modpack": "Modpack",
+    "version": "Version",
+    "mod": "Mods",
+    "resourcePack": "Resource Packs",
+    "shaderPack": "Shader Packs",
+    "dataPack": "Data Packs",
+    "worlds": "Seas",
+    "servers": "Ports",
+    "screenshots": "Sketches",
+    "notes": "Captain's Notes",
+    "settings": "Ship's Articles"
+  },
+  "columns": {
+    "name": "Name",
+    "version": "Version",
+    "authors": "Shipwrights",
+    "description": "Description",
+    "file": "File",
+    "mode": "Mode",
+    "lastPlayed": "Last voyage",
+    "seed": "Seed"
+  },
+  "item": {
+    "enable": "Enable {{name}}",
+    "remove": "Maroon {{name}}",
+    "delete": "Scuttle {{name}}",
+    "rename": "Rechristen {{name}}",
+    "edit": "Tinker with {{name}}",
+    "play": "Sail {{name}}",
+    "backUp": "Stash {{name}}",
+    "moveUp": "Hoist {{name}} up"
+  },
+  "confirm": {
+    "remove": "Maroon {{name}}?",
+    "delete": "Scuttle {{name}}?"
+  },
+  "version": {
+    "components": "Riggin'",
+    "editFile": "Tinker with {{file}}",
+    "change": "Change Version",
+    "changeOrInstallLoader": "Change Version or Rig Loader",
+    "removeLoader": "Strip loader",
+    "removeLoaderDescription": "The ship will sail as vanilla Minecraft; installed mods stay in the mods folder."
+  },
+  "modpack": {
+    "source": "Version {{version}} from {{provider}}",
+    "sourceWithUpdate": "Version {{version}} from {{provider}} · {{latest}} be on the horizon",
+    "switchTo": "Switch to {{version}}",
+    "switchVersion": "Switch version",
+    "switchUnsupported": "Switchin' versions o' {{provider}} packs ain't supported yet.",
+    "downloadingFiles": "Haulin' cargo {{completed}}/{{total}}",
+    "downloading": "Haulin' modpack aboard…",
+    "loadingVersions": "Fetchin' versions…",
+    "installed": "Aboard",
+    "releaseType": {
+      "release": "Release",
+      "beta": "Beta",
+      "alpha": "Alpha"
+    },
+    "noChangelog": "No changelog fer this version.",
+    "selectVersion": "Pick a version to read its changelog.",
+    "confirmTitle": "Switch to {{version}}?",
+    "confirmDescription": "Files from the current pack version be replaced. Worlds, sketches and yer own files be kept.",
+    "confirmSwitch": "Switch"
+  },
+  "resources": {
+    "mod": {
+      "search": "Search mods",
+      "download": "Plunder Mods",
+      "empty": "No mods aboard. Stow .jar files in the mods folder.",
+      "upToDate": "All mods from Modrinth be shipshape."
+    },
+    "resourcePack": {
+      "search": "Search resource packs",
+      "download": "Plunder Resource Packs",
+      "empty": "No resource packs aboard.",
+      "upToDate": "All resource packs from Modrinth be shipshape."
+    },
+    "shaderPack": {
+      "search": "Search shader packs",
+      "download": "Plunder Shader Packs",
+      "empty": "No shader packs aboard.",
+      "upToDate": "All shader packs from Modrinth be shipshape."
+    },
+    "dataPack": {
+      "search": "Search data packs",
+      "download": "Plunder Data Packs",
+      "empty": "No data packs aboard.",
+      "upToDate": "All data packs from Modrinth be shipshape."
+    },
+    "enabledCount": "{{enabled}} o' {{total}} enabled",
+    "checking": "Scannin' the horizon…",
+    "checkUpdates": "Check fer Updates",
+    "updatesAvailable_one": "{{count}} update on the horizon.",
+    "updatesAvailable_other": "{{count}} updates on the horizon.",
+    "updating": "Updatin'…",
+    "reviewUpdates": "Review Updates",
+    "reading": "Readin' files…",
+    "removeDescription": "{{file}} will be tossed overboard from the ship."
+  },
+  "worlds": {
+    "count_one": "{{count}} world",
+    "count_other": "{{count}} worlds",
+    "backupSaved": "Backup buried at {{path}}",
+    "gameMode": {
+      "survival": "Survival",
+      "creative": "Creative",
+      "adventure": "Adventure",
+      "spectator": "Spectator",
+      "hardcore": "Hardcore",
+      "unknown": "Uncharted"
+    },
+    "copySeed": "Copy seed",
+    "play": "Sail",
+    "backUp": "Bury Backup",
+    "reading": "Chartin' the seas…",
+    "empty": "No worlds charted yet.",
+    "deleteDescription": "The world will be sunk fer good. Best bury a backup first."
+  },
+  "servers": {
+    "count_one": "{{count}} port",
+    "count_other": "{{count}} ports",
+    "add": "Add Port",
+    "reading": "Chartin' ports…",
+    "empty": "No ports charted yet.",
+    "unnamed": "port",
+    "removeDescription": "The port will be struck from this ship's multiplayer list.",
+    "pinging": "Hailin'…",
+    "players_one": "{{online}}/{{count}} sailor",
+    "players_other": "{{online}}/{{count}} sailors",
+    "versionLatency": "{{version}} · {{latency}} ms",
+    "join": "Dock",
+    "moveUp": "Hoist up"
+  },
+  "screenshots": {
+    "count_one": "{{count}} sketch",
+    "count_other": "{{count}} sketches",
+    "reading": "Gatherin' sketches…",
+    "empty": "No sketches yet. Press F2 in game to draw one.",
+    "renameTitle": "Rechristen Sketch",
+    "deleteDescription": "The sketch will be tossed overboard fer good."
+  },
+  "notes": {
+    "loading": "Unrollin' notes…",
+    "unsaved": "Unstowed changes",
+    "hint": "Notes be kept aboard with the ship.",
+    "placeholder": "Seeds, treasure coordinates, port passwords, mod setup notes…"
+  },
+  "settings": {
+    "javaInstallation": "Java installation",
+    "minMemory": "Minimum memory",
+    "maxMemory": "Maximum memory",
+    "mib": "MiB",
+    "jvmArgs": "JVM arguments",
+    "gameWindow": "Game porthole",
+    "windowSize": "Porthole size",
+    "startMaximized": "Start maximized",
+    "customCommands": "Custom orders",
+    "memoryError": "Minimum memory must not be more than maximum memory.",
+    "override": "Override the fleet's articles"
+  }
+}

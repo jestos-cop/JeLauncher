@@ -1,0 +1,13 @@
+{
+  "about": {
+    "description": "使用 Rust、Tauri 和 React 构建的 Minecraft 启动器。",
+    "version": "版本",
+    "license": "许可证",
+    "trademark": "Minecraft 是 Mojang Studios 的商标。JeLauncher 与 Mojang 或 Microsoft 无关。",
+    "sourceCode": "源代码"
+  },
+  "news": {
+    "title": "Minecraft 新闻",
+    "readMore": "阅读更多"
+  }
+}

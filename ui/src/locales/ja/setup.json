@@ -1,0 +1,15 @@
+{
+  "steps": {
+    "welcome": "ようこそ",
+    "appearance": "外観",
+    "java": "Java",
+    "account": "アカウント"
+  },
+  "welcomeTitle": "JeLauncher へようこそ",
+  "progress": "ステップ {{step}}/{{total}}",
+  "intro": "すぐにプレイを始められるよう、いくつか簡単な質問をします。ここでの設定は後から「設定」でいつでも変更できます。",
+  "autoDownloadHint": "推奨: ゲームバージョンごとに適切な Java が取得されます。",
+  "existingAccounts_other": "すでに {{count}} 個のアカウントがあります。",
+  "offlineIntro": "オフラインアカウントを追加すると、シングルプレイとオフラインモードのサーバーでプレイできます。Microsoft でのサインインは後からでも可能です。",
+  "skip": "セットアップをスキップ"
+}

@@ -1,0 +1,65 @@
+{
+  "toolbar": {
+    "addInstance": "添加实例",
+    "settings": "设置",
+    "searchPlaceholder": "搜索实例",
+    "sortByName": "按名称",
+    "sortLastPlayed": "上次游玩"
+  },
+  "folders": {
+    "title": "文件夹",
+    "instances": "实例",
+    "java": "Java 运行时",
+    "root": "启动器数据"
+  },
+  "help": {
+    "title": "帮助",
+    "sourceCode": "源代码与问题反馈",
+    "launcherLog": "打开启动器日志",
+    "about": "关于 JeLauncher"
+  },
+  "accounts": {
+    "none": "无账户",
+    "remove": "移除 {{name}}",
+    "addMicrosoft": "添加 Microsoft 账户…",
+    "addOffline": "添加离线账户…",
+    "manage": "管理账户…"
+  },
+  "news": {
+    "more": "更多新闻"
+  },
+  "grid": {
+    "loading": "正在加载实例…",
+    "empty": "暂无实例。",
+    "noMatch": "没有与“{{search}}”匹配的实例。",
+    "ungrouped": "未分组"
+  },
+  "panel": {
+    "played": "已游玩 {{time}}"
+  },
+  "actions": {
+    "launchDemo": "启动演示版",
+    "launchWithProfiler": "使用分析器启动",
+    "cancelLaunch": "取消启动",
+    "changeGroup": "更改分组",
+    "changeIcon": "更改图标",
+    "copy": "复制…",
+    "export": "导出…",
+    "createShortcut": "创建快捷方式"
+  },
+  "dialogs": {
+    "renameTitle": "重命名实例",
+    "noGroup": "无分组",
+    "deleteTitle": "删除 {{name}}？",
+    "deleteDescription": "实例文件夹（包括世界和模组）将被永久删除。"
+  },
+  "status": {
+    "instances_other": "{{count}} 个实例",
+    "totalPlayTime": "总游戏时长：{{time}}",
+    "running": "正在运行：{{names}}"
+  },
+  "playTime": {
+    "hoursMinutes": "{{hours}} 小时 {{minutes}} 分钟",
+    "minutes": "{{minutes}} 分钟"
+  }
+}

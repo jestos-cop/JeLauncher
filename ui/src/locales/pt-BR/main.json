@@ -1,0 +1,67 @@
+{
+  "toolbar": {
+    "addInstance": "Adicionar instância",
+    "settings": "Configurações",
+    "searchPlaceholder": "Pesquisar instâncias",
+    "sortByName": "Por nome",
+    "sortLastPlayed": "Jogadas recentemente"
+  },
+  "folders": {
+    "title": "Pastas",
+    "instances": "Instâncias",
+    "java": "Ambientes Java",
+    "root": "Dados do launcher"
+  },
+  "help": {
+    "title": "Ajuda",
+    "sourceCode": "Código-fonte e problemas",
+    "launcherLog": "Abrir registro do launcher",
+    "about": "Sobre o JeLauncher"
+  },
+  "accounts": {
+    "none": "Nenhuma conta",
+    "remove": "Remover {{name}}",
+    "addMicrosoft": "Adicionar conta Microsoft…",
+    "addOffline": "Adicionar conta offline…",
+    "manage": "Gerenciar contas…"
+  },
+  "news": {
+    "more": "Mais notícias"
+  },
+  "grid": {
+    "loading": "Carregando instâncias…",
+    "empty": "Nenhuma instância ainda.",
+    "noMatch": "Nenhuma instância corresponde a “{{search}}”.",
+    "ungrouped": "Sem grupo"
+  },
+  "panel": {
+    "played": "Tempo de jogo: {{time}}"
+  },
+  "actions": {
+    "launchDemo": "Jogar demo",
+    "launchWithProfiler": "Jogar com profiler",
+    "cancelLaunch": "Cancelar inicialização",
+    "changeGroup": "Alterar grupo",
+    "changeIcon": "Alterar ícone",
+    "copy": "Copiar…",
+    "export": "Exportar…",
+    "createShortcut": "Criar atalho"
+  },
+  "dialogs": {
+    "renameTitle": "Renomear instância",
+    "noGroup": "Sem grupo",
+    "deleteTitle": "Excluir {{name}}?",
+    "deleteDescription": "A pasta da instância, incluindo mundos e mods, será removida permanentemente."
+  },
+  "status": {
+    "instances_one": "{{count}} instância",
+    "instances_many": "{{count}} de instâncias",
+    "instances_other": "{{count}} instâncias",
+    "totalPlayTime": "Tempo de jogo total: {{time}}",
+    "running": "Em execução: {{names}}"
+  },
+  "playTime": {
+    "hoursMinutes": "{{hours}}h {{minutes}}min",
+    "minutes": "{{minutes}}min"
+  }
+}

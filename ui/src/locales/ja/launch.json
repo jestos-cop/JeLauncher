@@ -1,0 +1,20 @@
+{
+  "progress": {
+    "preparing": "準備中…",
+    "downloading": "ファイルをダウンロード中 {{completed}}/{{total}}",
+    "installingLoader": "Modローダーをインストール中…",
+    "starting": "ゲームを起動中…"
+  },
+  "log": {
+    "searchPlaceholder": "ログを検索",
+    "lines_other": "{{count}} 行",
+    "wrap": "折り返し",
+    "upload": "アップロード",
+    "uploading": "アップロード中…",
+    "clear": "クリア",
+    "uploaded": "ログをアップロードしました: <link>{{url}}</link>",
+    "copyLink": "リンクをコピー",
+    "confirmUploadTitle": "このログをアップロードしますか？",
+    "confirmUploadDescription": "ログ全体が mclo.gs で公開され、リンクを知っている人は誰でも閲覧できます。ファイルパス内のホームフォルダーは伏せられます。"
+  }
+}

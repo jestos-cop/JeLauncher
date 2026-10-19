@@ -1,0 +1,32 @@
+{
+  "defaultHint": "A conta padrão é usada para iniciar todas as instâncias.",
+  "addMicrosoft": "Adicionar conta Microsoft",
+  "addOffline": "Adicionar conta offline",
+  "kind": {
+    "microsoft": "Microsoft",
+    "offline": "Offline"
+  },
+  "default": "Padrão",
+  "useByDefault": "Usar como padrão",
+  "signInAgain": "Entrar novamente",
+  "refresh": "Atualizar {{username}}",
+  "remove": "Remover {{username}}",
+  "loading": "Carregando contas…",
+  "empty": "Adicione uma conta para jogar.",
+  "removeDialog": {
+    "title": "Remover {{username}}?",
+    "description": "A conta será removida do launcher. Seus mundos e instâncias não serão afetados."
+  },
+  "microsoft": {
+    "title": "Entrar com a Microsoft",
+    "description": "Abra a página da Microsoft, digite o código e aprove o login. Esta janela é atualizada automaticamente.",
+    "copyCode": "Copiar código",
+    "open": "Abrir {{url}}",
+    "waiting": "Aguardando aprovação…",
+    "requesting": "Solicitando um código de login…"
+  },
+  "offline": {
+    "description": "Contas offline só podem jogar no modo um jogador e em servidores no modo offline.",
+    "username": "Nome de usuário"
+  }
+}

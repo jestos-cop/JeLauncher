@@ -1,0 +1,37 @@
+{
+  "action": {
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "reset": "Redefinir",
+    "close": "Fechar",
+    "delete": "Excluir",
+    "remove": "Remover",
+    "rename": "Renomear",
+    "back": "Voltar",
+    "next": "Avançar",
+    "finish": "Concluir",
+    "done": "OK",
+    "browse": "Procurar",
+    "refresh": "Atualizar",
+    "install": "Instalar",
+    "create": "Criar",
+    "launch": "Jogar",
+    "kill": "Encerrar",
+    "edit": "Editar",
+    "copy": "Copiar",
+    "export": "Exportar",
+    "add": "Adicionar",
+    "openFolder": "Abrir pasta"
+  },
+  "state": {
+    "loading": "Carregando…"
+  },
+  "theme": {
+    "system": "Sistema",
+    "light": "Claro",
+    "dark": "Escuro"
+  },
+  "language": {
+    "system": "Idioma do sistema"
+  }
+}

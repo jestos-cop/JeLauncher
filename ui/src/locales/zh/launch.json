@@ -1,0 +1,20 @@
+{
+  "progress": {
+    "preparing": "正在准备…",
+    "downloading": "正在下载文件 {{completed}}/{{total}}",
+    "installingLoader": "正在安装模组加载器…",
+    "starting": "正在启动游戏…"
+  },
+  "log": {
+    "searchPlaceholder": "搜索日志",
+    "lines_other": "{{count}} 行",
+    "wrap": "自动换行",
+    "upload": "上传",
+    "uploading": "正在上传…",
+    "clear": "清空",
+    "uploaded": "日志已上传：<link>{{url}}</link>",
+    "copyLink": "复制链接",
+    "confirmUploadTitle": "上传此日志？",
+    "confirmUploadDescription": "完整日志将发布到 mclo.gs，任何拥有链接的人都可以查看。文件路径中的用户主文件夹会被隐藏。"
+  }
+}
