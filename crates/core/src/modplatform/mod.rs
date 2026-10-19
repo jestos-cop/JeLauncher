@@ -1,3 +1,5 @@
+pub mod modrinth;
+
 use serde::{Deserialize, Serialize};
 
 use crate::minecraft::LoaderKind;

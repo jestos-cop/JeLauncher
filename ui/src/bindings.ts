@@ -133,6 +133,33 @@ async listMinecraftVersions() : Promise<Result<MinecraftVersions, CommandError>>
     else return { status: "error", error: e  as any };
 }
 },
+async installProjectVersion(instanceId: string, kind: ResourceKind, versionId: string) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("install_project_version", { instanceId, kind, versionId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Versions of a project that fit the instance's game version and loader.
+ */
+async listProjectVersions(instanceId: string, projectId: string, kind: ResourceKind) : Promise<Result<ProjectVersion[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_project_versions", { instanceId, projectId, kind }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async searchResources(query: SearchQuery) : Promise<Result<SearchPage, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("search_resources", { query }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async listMods(instanceId: string) : Promise<Result<ModFile[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_mods", { instanceId }) };
@@ -197,6 +224,7 @@ launchProgressEvent: "launch-progress-event"
 export type AccountKind = { type: "offline" }
 export type AccountSummary = { id: string; username: string; kind: AccountKind; isDefault: boolean }
 export type CommandError = { message: string }
+export type Dependency = { projectId: string | null; versionId: string | null; required: boolean }
 export type DownloadProgress = { completed: number; total: number; downloadedBytes: number }
 export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings }
 export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
@@ -226,7 +254,16 @@ modified: number; metadata: ModMetadata | null }
 export type ModMetadata = { id: string; name: string; version: string; description: string; authors: string[]; homepage: string | null }
 export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs: number; retries: number }
 export type NewInstance = { name: string; minecraftVersion: string; loader: LoaderSpec | null; group: string | null; iconKey: string | null }
+export type ProjectHit = { provider: Provider; id: string; slug: string; title: string; description: string; author: string; iconUrl: string | null; downloads: number }
+export type ProjectVersion = { id: string; projectId: string; name: string; versionNumber: string; releaseType: ReleaseType; published: string; files: VersionFile[]; dependencies: Dependency[] }
+export type Provider = "modrinth"
+export type ReleaseType = "release" | "beta" | "alpha"
+export type ResourceKind = "mod" | "resourcePack" | "shaderPack" | "dataPack" | "modpack"
+export type SearchPage = { hits: ProjectHit[]; total: number }
+export type SearchQuery = { text: string; kind: ResourceKind; gameVersion: string | null; loader: LoaderKind | null; sort: SortOrder; offset: number; limit: number }
+export type SortOrder = "relevance" | "downloads" | "updated" | "newest"
 export type VersionEntry = { id: string; type: VersionType; url: string; sha1: string; releaseTime: string }
+export type VersionFile = { url: string; fileName: string; sha1: string | null; size: number; primary: boolean }
 export type VersionType = "release" | "snapshot" | "old_beta" | "old_alpha" | "other"
 export type WindowSettings = { width: number; height: number; maximized: boolean }
 

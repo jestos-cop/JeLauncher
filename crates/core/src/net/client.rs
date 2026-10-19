@@ -28,8 +28,17 @@ impl HttpClient {
     }
 
     pub async fn get_json<T: DeserializeOwned>(&self, url: &str) -> Result<T> {
+        self.get_json_query(url, &[]).await
+    }
+
+    pub async fn get_json_query<T: DeserializeOwned>(
+        &self,
+        url: &str,
+        query: &[(&str, String)],
+    ) -> Result<T> {
         self.inner
             .get(url)
+            .query(query)
             .send()
             .await
             .and_then(reqwest::Response::error_for_status)

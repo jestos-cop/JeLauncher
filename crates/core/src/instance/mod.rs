@@ -37,6 +37,10 @@ impl Instance {
         self.root.join(GAME_DIR)
     }
 
+    pub fn resource_dir(&self, kind: crate::modplatform::ResourceKind) -> PathBuf {
+        self.game_dir().join(kind.install_dir())
+    }
+
     pub fn mods_dir(&self) -> PathBuf {
         self.game_dir().join("mods")
     }
