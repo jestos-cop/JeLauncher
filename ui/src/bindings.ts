@@ -88,6 +88,14 @@ async deleteInstance(instanceId: string) : Promise<Result<null, CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
+async getInstanceNotes(instanceId: string) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_instance_notes", { instanceId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async getInstanceSettings(instanceId: string) : Promise<Result<InstanceSettings, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("get_instance_settings", { instanceId }) };
@@ -115,6 +123,14 @@ async renameInstance(instanceId: string, name: string) : Promise<Result<null, Co
 async setInstanceGroup(instanceId: string, group: string | null) : Promise<Result<null, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_instance_group", { instanceId, group }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async setInstanceNotes(instanceId: string, notes: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_instance_notes", { instanceId, notes }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };

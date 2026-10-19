@@ -76,6 +76,31 @@ pub fn set_instance_settings(
 
 #[tauri::command]
 #[specta::specta]
+pub fn get_instance_notes(
+    state: State<'_, AppState>,
+    instance_id: String,
+) -> CommandResult<String> {
+    Ok(Instance::open(&state.paths.instances(), &instance_id)?
+        .config
+        .notes)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn set_instance_notes(
+    state: State<'_, AppState>,
+    instance_id: String,
+    notes: String,
+) -> CommandResult<()> {
+    Ok(instance::set_instance_notes(
+        &state.paths.instances(),
+        &instance_id,
+        notes,
+    )?)
+}
+
+#[tauri::command]
+#[specta::specta]
 pub fn delete_instance(state: State<'_, AppState>, instance_id: String) -> CommandResult<()> {
     if state
         .running

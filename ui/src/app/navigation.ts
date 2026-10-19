@@ -9,6 +9,7 @@ export type InstanceTab =
   | 'worlds'
   | 'servers'
   | 'screenshots'
+  | 'notes'
   | 'settings'
 
 export type SettingsTab = 'java' | 'minecraft' | 'commands'

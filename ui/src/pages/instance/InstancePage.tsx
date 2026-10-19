@@ -3,6 +3,7 @@ import {
   Database,
   Globe,
   Image,
+  NotebookPen,
   Puzzle,
   ScrollText,
   Server,
@@ -16,6 +17,7 @@ import { LogView } from '@/components/LogView'
 import { SidebarLayout, type SidebarTab } from '@/components/SidebarLayout'
 import { useInstances } from '@/hooks/use-instances'
 import { InstanceSettingsPage } from '@/pages/instance/InstanceSettingsPage'
+import { NotesPage } from '@/pages/instance/NotesPage'
 import { ResourcesPage } from '@/pages/instance/ResourcesPage'
 import { ScreenshotsPage } from '@/pages/instance/ScreenshotsPage'
 import { ServersPage } from '@/pages/instance/ServersPage'
@@ -30,6 +32,7 @@ const TABS: SidebarTab<InstanceTab>[] = [
   { tab: 'worlds', label: 'Worlds', icon: Globe },
   { tab: 'servers', label: 'Servers', icon: Server },
   { tab: 'screenshots', label: 'Screenshots', icon: Camera },
+  { tab: 'notes', label: 'Notes', icon: NotebookPen },
   { tab: 'settings', label: 'Settings', icon: SlidersHorizontal },
 ]
 
@@ -66,6 +69,7 @@ export function InstancePage({ instanceId, tab }: InstancePageProps) {
       {tab === 'worlds' && <WorldsPage instanceId={instanceId} />}
       {tab === 'servers' && <ServersPage instanceId={instanceId} />}
       {tab === 'screenshots' && <ScreenshotsPage instanceId={instanceId} />}
+      {tab === 'notes' && <NotesPage key={instanceId} instanceId={instanceId} />}
       {tab === 'settings' && <InstanceSettingsPage instanceId={instanceId} />}
     </SidebarLayout>
   )

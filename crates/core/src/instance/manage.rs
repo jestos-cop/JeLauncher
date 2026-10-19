@@ -22,6 +22,12 @@ pub fn set_instance_group(instances_dir: &Path, id: &str, group: Option<String>)
     instance.save()
 }
 
+pub fn set_instance_notes(instances_dir: &Path, id: &str, notes: String) -> Result<()> {
+    let mut instance = Instance::open(instances_dir, id)?;
+    instance.config.notes = notes;
+    instance.save()
+}
+
 pub fn set_instance_settings(
     instances_dir: &Path,
     id: &str,
@@ -43,7 +49,7 @@ mod tests {
     use crate::instance::{NewInstance, create_instance};
 
     #[test]
-    fn rename_group_and_delete() -> Result<()> {
+    fn rename_group_notes_and_delete() -> Result<()> {
         let dir = tempfile::tempdir().map_err(|err| Error::io("tempdir", err))?;
         let instance = create_instance(
             dir.path(),
@@ -58,9 +64,11 @@ mod tests {
 
         rename_instance(dir.path(), &instance.id, "  New  ")?;
         set_instance_group(dir.path(), &instance.id, Some("Modded".into()))?;
+        set_instance_notes(dir.path(), &instance.id, "Seed: 42\n".into())?;
         let reopened = Instance::open(dir.path(), &instance.id)?;
         assert_eq!(reopened.config.name, "New");
         assert_eq!(reopened.config.group.as_deref(), Some("Modded"));
+        assert_eq!(reopened.config.notes, "Seed: 42\n");
 
         set_instance_group(dir.path(), &instance.id, Some("  ".into()))?;
         assert_eq!(Instance::open(dir.path(), &instance.id)?.config.group, None);

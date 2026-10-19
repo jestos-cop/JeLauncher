@@ -10,7 +10,9 @@ pub use config::InstanceConfig;
 pub use create::{NewInstance, create_instance};
 pub use export::{ExportEntry, export_instance};
 pub use list::{InstanceSummary, discover_instances};
-pub use manage::{delete_instance, rename_instance, set_instance_group, set_instance_settings};
+pub use manage::{
+    delete_instance, rename_instance, set_instance_group, set_instance_notes, set_instance_settings,
+};
 
 pub const INSTANCE_CONFIG_FILE: &str = "instance.json";
 pub const GAME_DIR: &str = "minecraft";
