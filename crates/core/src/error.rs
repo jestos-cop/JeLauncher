@@ -32,6 +32,9 @@ pub enum Error {
     #[error("account {0} does not exist")]
     UnknownAccount(String),
 
+    #[error("no installed Java {0} or newer was found")]
+    NoCompatibleJava(u32),
+
     #[error("{0}")]
     InvalidInput(String),
 
