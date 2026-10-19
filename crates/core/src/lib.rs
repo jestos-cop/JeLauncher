@@ -8,9 +8,9 @@ pub mod logs;
 pub mod meta;
 pub mod minecraft;
 pub mod modplatform;
-pub mod mods;
 pub mod net;
 pub mod paths;
+pub mod resources;
 pub mod settings;
 
 pub use error::{Error, Result};

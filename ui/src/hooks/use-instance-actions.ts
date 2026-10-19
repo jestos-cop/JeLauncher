@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { commands, type InstanceFolder } from '@/bindings'
+import { commands, type ResourceKind } from '@/bindings'
 import { unwrap } from '@/lib/command'
 
 function useInstanceMutation<T>(mutationFn: (input: T) => Promise<unknown>) {
@@ -26,6 +26,6 @@ export function useDeleteInstance() {
   return useInstanceMutation((id: string) => unwrap(commands.deleteInstance(id)))
 }
 
-export function openInstanceFolder(id: string, folder: InstanceFolder = 'game') {
-  return unwrap(commands.openInstanceFolder(id, folder))
+export function openInstanceFolder(id: string, kind: ResourceKind | null = null) {
+  return unwrap(commands.openInstanceFolder(id, kind))
 }

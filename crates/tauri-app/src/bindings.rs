@@ -26,9 +26,9 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::modplatform::install_project_version,
             commands::modplatform::list_project_versions,
             commands::modplatform::search_resources,
-            commands::mods::list_mods,
-            commands::mods::remove_mod,
-            commands::mods::set_mod_enabled,
+            commands::resources::list_resources,
+            commands::resources::remove_resource,
+            commands::resources::set_resource_enabled,
             commands::settings::get_settings,
             commands::settings::update_settings,
         ])

@@ -4,34 +4,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::minecraft::LoaderKind;
 use crate::net::Download;
+pub use crate::resources::ResourceKind;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub enum Provider {
     Modrinth,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
-#[serde(rename_all = "camelCase")]
-pub enum ResourceKind {
-    Mod,
-    ResourcePack,
-    ShaderPack,
-    DataPack,
-    Modpack,
-}
-
-impl ResourceKind {
-    /// Folder inside the game directory this kind of resource is installed into.
-    pub fn install_dir(self) -> &'static str {
-        match self {
-            Self::Mod => "mods",
-            Self::ResourcePack => "resourcepacks",
-            Self::ShaderPack => "shaderpacks",
-            Self::DataPack => "datapacks",
-            Self::Modpack => "",
-        }
-    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]

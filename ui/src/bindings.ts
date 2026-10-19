@@ -69,9 +69,9 @@ async getInstanceSettings(instanceId: string) : Promise<Result<InstanceSettings,
     else return { status: "error", error: e  as any };
 }
 },
-async openInstanceFolder(instanceId: string, folder: InstanceFolder) : Promise<Result<null, CommandError>> {
+async openInstanceFolder(instanceId: string, kind: ResourceKind | null) : Promise<Result<null, CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("open_instance_folder", { instanceId, folder }) };
+    return { status: "ok", data: await TAURI_INVOKE("open_instance_folder", { instanceId, kind }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -176,25 +176,25 @@ async searchResources(query: SearchQuery) : Promise<Result<SearchPage, CommandEr
     else return { status: "error", error: e  as any };
 }
 },
-async listMods(instanceId: string) : Promise<Result<ModFile[], CommandError>> {
+async listResources(instanceId: string, kind: ResourceKind) : Promise<Result<ResourceFile[], CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("list_mods", { instanceId }) };
+    return { status: "ok", data: await TAURI_INVOKE("list_resources", { instanceId, kind }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
 },
-async removeMod(instanceId: string, fileName: string) : Promise<Result<null, CommandError>> {
+async removeResource(instanceId: string, kind: ResourceKind, fileName: string) : Promise<Result<null, CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("remove_mod", { instanceId, fileName }) };
+    return { status: "ok", data: await TAURI_INVOKE("remove_resource", { instanceId, kind, fileName }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
 },
-async setModEnabled(instanceId: string, fileName: string, enabled: boolean) : Promise<Result<string, CommandError>> {
+async setResourceEnabled(instanceId: string, kind: ResourceKind, fileName: string, enabled: boolean) : Promise<Result<string, CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("set_mod_enabled", { instanceId, fileName, enabled }) };
+    return { status: "ok", data: await TAURI_INVOKE("set_resource_enabled", { instanceId, kind, fileName, enabled }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -244,7 +244,6 @@ export type Dependency = { projectId: string | null; versionId: string | null; r
 export type DownloadProgress = { completed: number; total: number; downloadedBytes: number }
 export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings }
 export type InstanceExitedEvent = { instanceId: string; exitCode: number | null }
-export type InstanceFolder = "game" | "mods"
 export type InstanceLogEvent = { instanceId: string; line: string; level: LogLevel }
 /**
  * Per-instance overrides; `None` falls back to the global value.
@@ -266,19 +265,19 @@ export type LoaderSpec = { kind: LoaderKind; version: string }
 export type LoaderVersion = { version: string; stable: boolean }
 export type LogLevel = "launcher" | "debug" | "info" | "warning" | "error" | "fatal" | "unknown"
 export type MinecraftVersions = { latest: LatestVersions; versions: VersionEntry[] }
-export type ModFile = { fileName: string; enabled: boolean; size: number; 
-/**
- * Unix time in milliseconds.
- */
-modified: number; metadata: ModMetadata | null }
-export type ModMetadata = { id: string; name: string; version: string; description: string; authors: string[]; homepage: string | null }
 export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs: number; retries: number }
 export type NewInstance = { name: string; minecraftVersion: string; loader: LoaderSpec | null; group: string | null; iconKey: string | null }
 export type ProjectHit = { provider: Provider; id: string; slug: string; title: string; description: string; author: string; iconUrl: string | null; downloads: number }
 export type ProjectVersion = { id: string; projectId: string; name: string; versionNumber: string; releaseType: ReleaseType; published: string; files: VersionFile[]; dependencies: Dependency[] }
 export type Provider = "modrinth"
 export type ReleaseType = "release" | "beta" | "alpha"
+export type ResourceFile = { fileName: string; enabled: boolean; size: number; 
+/**
+ * Unix time in milliseconds.
+ */
+modified: number; metadata: ResourceMetadata | null }
 export type ResourceKind = "mod" | "resourcePack" | "shaderPack" | "dataPack" | "modpack"
+export type ResourceMetadata = { id: string; name: string; version: string; description: string; authors: string[]; homepage: string | null }
 export type SearchPage = { hits: ProjectHit[]; total: number }
 export type SearchQuery = { text: string; kind: ResourceKind; gameVersion: string | null; loader: LoaderKind | null; sort: SortOrder; offset: number; limit: number }
 export type SortOrder = "relevance" | "downloads" | "updated" | "newest"

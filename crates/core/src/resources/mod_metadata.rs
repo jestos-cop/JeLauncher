@@ -1,26 +1,15 @@
 use std::io::Read;
 use std::path::Path;
 
-use serde::Serialize;
 use serde_json::Value;
 
+use super::ResourceMetadata;
 use crate::{Error, Result};
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, specta::Type)]
-#[serde(rename_all = "camelCase")]
-pub struct ModMetadata {
-    pub id: String,
-    pub name: String,
-    pub version: String,
-    pub description: String,
-    pub authors: Vec<String>,
-    pub homepage: Option<String>,
-}
 
 type Archive = zip::ZipArchive<std::fs::File>;
 
 /// Reads mod metadata from a jar, trying each loader's descriptor in turn.
-pub fn read_mod_metadata(path: &Path) -> Result<Option<ModMetadata>> {
+pub fn read_mod_metadata(path: &Path) -> Result<Option<ResourceMetadata>> {
     let file = std::fs::File::open(path).map_err(|err| Error::io(path, err))?;
     let mut archive = zip::ZipArchive::new(file).map_err(|err| Error::archive(path, err))?;
 
@@ -77,10 +66,10 @@ fn people(value: Option<&Value>) -> Vec<String> {
         .collect()
 }
 
-fn parse_fabric(json: &str) -> Option<ModMetadata> {
+fn parse_fabric(json: &str) -> Option<ResourceMetadata> {
     let root: Value = serde_json::from_str(json).ok()?;
     let id = text(&root, "id");
-    Some(ModMetadata {
+    Some(ResourceMetadata {
         name: Some(text(&root, "name"))
             .filter(|n| !n.is_empty())
             .unwrap_or_else(|| id.clone()),
@@ -95,7 +84,7 @@ fn parse_fabric(json: &str) -> Option<ModMetadata> {
     })
 }
 
-fn parse_quilt(json: &str) -> Option<ModMetadata> {
+fn parse_quilt(json: &str) -> Option<ResourceMetadata> {
     let root: Value = serde_json::from_str(json).ok()?;
     let loader = root.get("quilt_loader")?;
     let metadata = loader.get("metadata").cloned().unwrap_or(Value::Null);
@@ -105,7 +94,7 @@ fn parse_quilt(json: &str) -> Option<ModMetadata> {
         .and_then(Value::as_object)
         .map(|contributors| contributors.keys().cloned().collect())
         .unwrap_or_default();
-    Some(ModMetadata {
+    Some(ResourceMetadata {
         name: Some(text(&metadata, "name"))
             .filter(|n| !n.is_empty())
             .unwrap_or_else(|| id.clone()),
@@ -120,7 +109,7 @@ fn parse_quilt(json: &str) -> Option<ModMetadata> {
     })
 }
 
-fn parse_forge(toml_text: &str, jar_version: Option<&str>) -> Option<ModMetadata> {
+fn parse_forge(toml_text: &str, jar_version: Option<&str>) -> Option<ResourceMetadata> {
     let root: toml::Table = toml_text.parse().ok()?;
     let first = root.get("mods")?.as_array()?.first()?.as_table()?;
     let field = |key: &str| {
@@ -144,7 +133,7 @@ fn parse_forge(toml_text: &str, jar_version: Option<&str>) -> Option<ModMetadata
         })
         .into_iter()
         .collect();
-    Some(ModMetadata {
+    Some(ResourceMetadata {
         name: field("displayName").unwrap_or_else(|| id.clone()),
         version,
         description: field("description").unwrap_or_default().trim().to_owned(),
@@ -154,7 +143,7 @@ fn parse_forge(toml_text: &str, jar_version: Option<&str>) -> Option<ModMetadata
     })
 }
 
-fn parse_mcmod_info(json: &str) -> Option<ModMetadata> {
+fn parse_mcmod_info(json: &str) -> Option<ResourceMetadata> {
     let root: Value = serde_json::from_str(json).ok()?;
     // Version 2 wraps the list in `modList`.
     let list = root.get("modList").unwrap_or(&root);
@@ -164,7 +153,7 @@ fn parse_mcmod_info(json: &str) -> Option<ModMetadata> {
     if authors.is_empty() {
         authors = people(first.get("authors"));
     }
-    Some(ModMetadata {
+    Some(ResourceMetadata {
         name: Some(text(first, "name"))
             .filter(|n| !n.is_empty())
             .unwrap_or_else(|| id.clone()),

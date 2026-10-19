@@ -3,8 +3,8 @@
 use jelauncher_core::minecraft::LoaderKind;
 use jelauncher_core::modplatform::modrinth::Modrinth;
 use jelauncher_core::modplatform::{ResourceKind, SearchQuery, SortOrder};
-use jelauncher_core::mods::list_mods;
 use jelauncher_core::net::HttpClient;
+use jelauncher_core::resources::list_resources;
 use jelauncher_core::settings::NetworkSettings;
 
 #[tokio::test]
@@ -44,7 +44,7 @@ async fn searches_and_installs_a_mod() -> jelauncher_core::Result<()> {
         source: err,
     })?;
     let file_name = modrinth.install(latest, dir.path()).await?;
-    let mods = list_mods(dir.path())?;
+    let mods = list_resources(dir.path(), ResourceKind::Mod)?;
     println!("installed {file_name}: {:?}", mods[0].metadata);
     assert_eq!(
         mods[0].metadata.as_ref().map(|m| m.id.as_str()),
