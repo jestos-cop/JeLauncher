@@ -74,3 +74,11 @@ export function useSession(id: string) {
     clearLog: () => clearLog(id),
   }
 }
+
+/** Ids of instances that are preparing or running. */
+export function useActiveInstanceIds() {
+  const { sessions } = useSessionsContext()
+  return Object.entries(sessions)
+    .filter(([, session]) => session.status !== 'idle')
+    .map(([id]) => id)
+}

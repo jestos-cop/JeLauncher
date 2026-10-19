@@ -12,6 +12,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::export::export_instance,
             commands::export::export_mrpack,
             commands::export::list_export_entries,
+            commands::folders::open_launcher_folder,
             commands::instance::list_instances,
             commands::instance::copy_instance,
             commands::instance::create_instance,

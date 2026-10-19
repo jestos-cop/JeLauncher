@@ -2,6 +2,7 @@ import { Plus, RefreshCw, Settings } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigation } from '@/app/navigation'
 import { AccountsMenu } from '@/components/AccountsMenu'
+import { FoldersMenu } from '@/components/FoldersMenu'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -10,6 +11,7 @@ import { useInstances } from '@/hooks/use-instances'
 import { useStoredState } from '@/hooks/use-stored-state'
 import { InstanceGrid, type InstanceSort } from '@/pages/main/InstanceGrid'
 import { InstancePanel } from '@/pages/main/InstancePanel'
+import { StatusBar } from '@/pages/main/StatusBar'
 
 export function MainPage() {
   const { data: instances, error, isPending, refetch } = useInstances()
@@ -29,6 +31,7 @@ export function MainPage() {
         <Button size="sm" variant="ghost" onClick={() => refetch()}>
           <RefreshCw /> Refresh
         </Button>
+        <FoldersMenu />
         <Button size="sm" variant="ghost" onClick={() => navigate({ page: 'settings', tab: 'java' })}>
           <Settings /> Settings
         </Button>
@@ -70,6 +73,7 @@ export function MainPage() {
         {selected && <InstancePanel instance={selected} />}
       </div>
 
+      <StatusBar instances={instances ?? []} />
       <NewInstanceDialog open={isCreating} onOpenChange={setIsCreating} />
     </div>
   )

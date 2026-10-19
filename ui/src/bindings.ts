@@ -64,6 +64,14 @@ async listExportEntries(instanceId: string) : Promise<Result<ExportEntry[], Comm
     else return { status: "error", error: e  as any };
 }
 },
+async openLauncherFolder(folder: LauncherFolder) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("open_launcher_folder", { folder }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async listInstances() : Promise<Result<InstanceSummary[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_instances") };
@@ -499,6 +507,7 @@ autoDownload: boolean }
 export type LatestVersions = { release: string; snapshot: string }
 export type LaunchProgress = { stage: "preparing" } | ({ stage: "downloading" } & DownloadProgress) | { stage: "installingLoader" } | { stage: "starting" }
 export type LaunchProgressEvent = { instanceId: string; progress: LaunchProgress }
+export type LauncherFolder = "root" | "instances" | "java"
 export type LauncherSettings = { showConsole: boolean; showConsoleOnError: boolean; autoCloseConsole: boolean; recordGameTime: boolean }
 export type LoaderKind = "fabric" | "quilt" | "forge" | "neoforge"
 export type LoaderSpec = { kind: LoaderKind; version: string }
