@@ -32,7 +32,7 @@ pub enum Error {
     #[error("account {0} does not exist")]
     UnknownAccount(String),
 
-    #[error("no installed Java {0} or newer was found")]
+    #[error("no installed Java fits a game that needs Java {0}")]
     NoCompatibleJava(u32),
 
     #[error("{0}")]

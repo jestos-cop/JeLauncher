@@ -54,17 +54,18 @@ struct RawDownload {
     url: String,
 }
 
-/// Mojang's platform key for the running system.
-fn platform_key() -> Option<&'static str> {
+/// Mojang's platform keys for the running system, best first. ARM machines fall back to
+/// x64 builds, which run under emulation; old runtimes like `jre-legacy` only exist as those.
+fn platform_keys() -> &'static [&'static str] {
     match (std::env::consts::OS, std::env::consts::ARCH) {
-        ("macos", "aarch64") => Some("mac-os-arm64"),
-        ("macos", _) => Some("mac-os"),
-        ("windows", "aarch64") => Some("windows-arm64"),
-        ("windows", "x86") => Some("windows-x86"),
-        ("windows", _) => Some("windows-x64"),
-        ("linux", "x86") => Some("linux-i386"),
-        ("linux", "x86_64") => Some("linux"),
-        _ => None,
+        ("macos", "aarch64") => &["mac-os-arm64", "mac-os"],
+        ("macos", _) => &["mac-os"],
+        ("windows", "aarch64") => &["windows-arm64", "windows-x64"],
+        ("windows", "x86") => &["windows-x86"],
+        ("windows", _) => &["windows-x64"],
+        ("linux", "x86") => &["linux-i386"],
+        ("linux", "x86_64") => &["linux"],
+        _ => &[],
     }
 }
 
@@ -88,20 +89,24 @@ pub async fn install_runtime(
     concurrency: usize,
     on_progress: impl Fn(DownloadProgress),
 ) -> Result<PathBuf> {
-    let platform = platform_key()
-        .ok_or_else(|| Error::InvalidInput("no Java runtime for this platform".into()))?;
-    log::info!("downloading Java runtime {component} for {platform}");
     let mut runtimes: HashMap<String, HashMap<String, Vec<RuntimeEntry>>> =
         http.get_json(RUNTIMES_URL).await?;
-    let entry = runtimes
-        .remove(platform)
-        .and_then(|mut components| components.remove(component))
-        .and_then(|entries| entries.into_iter().next())
+    let (platform, entry) = platform_keys()
+        .iter()
+        .find_map(|platform| {
+            let entry = runtimes
+                .get_mut(*platform)?
+                .remove(component)?
+                .into_iter()
+                .next()?;
+            Some((*platform, entry))
+        })
         .ok_or_else(|| {
             Error::InvalidInput(format!(
-                "Java runtime {component} is not available for {platform}"
+                "Java runtime {component} is not available for this platform"
             ))
         })?;
+    log::info!("downloading Java runtime {component} for {platform}");
 
     let manifest_path = java_dir.join(format!("{component}.manifest.json"));
     http.download(&Download {
