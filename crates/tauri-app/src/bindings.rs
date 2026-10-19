@@ -3,7 +3,14 @@ use tauri_specta::{Builder, collect_commands};
 use crate::commands;
 
 pub fn builder() -> Builder<tauri::Wry> {
-    Builder::<tauri::Wry>::new().commands(collect_commands![commands::instance::list_instances])
+    Builder::<tauri::Wry>::new().commands(collect_commands![
+        commands::instance::list_instances,
+        commands::instance::create_instance,
+        commands::java::detect_java,
+        commands::meta::list_minecraft_versions,
+        commands::settings::get_settings,
+        commands::settings::update_settings,
+    ])
 }
 
 #[cfg(debug_assertions)]

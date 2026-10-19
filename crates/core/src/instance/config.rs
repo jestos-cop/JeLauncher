@@ -1,17 +1,23 @@
 use std::path::Path;
 
-use ini::{Ini, Properties};
+use serde::{Deserialize, Serialize};
 
-use crate::{Error, Result};
+use crate::settings::InstanceSettings;
+use crate::{Result, fs};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
+#[serde(default, rename_all = "camelCase")]
 pub struct InstanceConfig {
     pub name: String,
     pub icon_key: String,
-    pub instance_type: String,
     pub notes: String,
+    pub group: Option<String>,
+    pub minecraft_version: String,
+    /// Unix time in milliseconds; 0 when never launched.
     pub last_launch_time: i64,
+    /// Seconds.
     pub total_time_played: i64,
+    pub settings: InstanceSettings,
 }
 
 impl Default for InstanceConfig {
@@ -19,47 +25,23 @@ impl Default for InstanceConfig {
         Self {
             name: "Unnamed Instance".into(),
             icon_key: "default".into(),
-            instance_type: String::new(),
             notes: String::new(),
+            group: None,
+            minecraft_version: String::new(),
             last_launch_time: 0,
             total_time_played: 0,
+            settings: InstanceSettings::default(),
         }
     }
 }
 
 impl InstanceConfig {
-    pub fn load(path: &Path) -> Result<Self> {
-        let ini = Ini::load_from_file(path).map_err(|err| match err {
-            ini::Error::Io(source) => Error::io(path, source),
-            ini::Error::Parse(parse) => Error::Ini {
-                path: path.to_path_buf(),
-                message: parse.to_string(),
-            },
-        })?;
-        Ok(Self::from_ini(&ini))
+    pub fn load(path: &Path) -> Result<Option<Self>> {
+        fs::read_json(path)
     }
 
-    /// QSettings writes keys under `[General]`; older files have no section at all.
-    fn from_ini(ini: &Ini) -> Self {
-        let props = ini
-            .section(Some("General"))
-            .unwrap_or_else(|| ini.general_section());
-        Self::from_properties(props)
-    }
-
-    fn from_properties(props: &Properties) -> Self {
-        let defaults = Self::default();
-        let text = |key: &str, default: String| props.get(key).map_or(default, str::to_owned);
-        let number = |key: &str| props.get(key).and_then(|v| v.parse().ok()).unwrap_or(0);
-
-        Self {
-            name: text("name", defaults.name),
-            icon_key: text("iconKey", defaults.icon_key),
-            instance_type: text("InstanceType", defaults.instance_type),
-            notes: text("notes", defaults.notes),
-            last_launch_time: number("lastLaunchTime"),
-            total_time_played: number("totalTimePlayed").max(0),
-        }
+    pub fn save(&self, path: &Path) -> Result<()> {
+        fs::write_json(path, self)
     }
 }
 
@@ -67,38 +49,13 @@ impl InstanceConfig {
 mod tests {
     use super::*;
 
-    fn parse(source: &str) -> InstanceConfig {
-        let ini = Ini::load_from_str(source).unwrap_or_default();
-        InstanceConfig::from_ini(&ini)
-    }
-
     #[test]
-    fn reads_general_section() {
-        let config = parse(
-            "[General]\nname=My Pack\niconKey=flame\nInstanceType=OneSix\nlastLaunchTime=1700000000000\ntotalTimePlayed=3600\n",
-        );
+    fn partial_file_falls_back_to_defaults() -> std::result::Result<(), serde_json::Error> {
+        let config: InstanceConfig =
+            serde_json::from_str(r#"{"name":"My Pack","minecraftVersion":"1.21.4"}"#)?;
         assert_eq!(config.name, "My Pack");
-        assert_eq!(config.icon_key, "flame");
-        assert_eq!(config.instance_type, "OneSix");
-        assert_eq!(config.last_launch_time, 1_700_000_000_000);
-        assert_eq!(config.total_time_played, 3600);
-    }
-
-    #[test]
-    fn reads_legacy_sectionless_file() {
-        assert_eq!(parse("name=Old Instance\n").name, "Old Instance");
-    }
-
-    #[test]
-    fn falls_back_to_defaults() {
-        assert_eq!(parse(""), InstanceConfig::default());
-    }
-
-    #[test]
-    fn negative_play_time_is_reset() {
-        assert_eq!(
-            parse("[General]\ntotalTimePlayed=-5\n").total_time_played,
-            0
-        );
+        assert_eq!(config.icon_key, "default");
+        assert_eq!(config.settings, InstanceSettings::default());
+        Ok(())
     }
 }

@@ -23,7 +23,31 @@ impl DataPaths {
         &self.root
     }
 
+    pub fn settings_file(&self) -> PathBuf {
+        self.root.join("settings.json")
+    }
+
     pub fn instances(&self) -> PathBuf {
         self.root.join("instances")
+    }
+
+    pub fn java(&self) -> PathBuf {
+        self.root.join("java")
+    }
+
+    pub fn meta(&self) -> PathBuf {
+        self.root.join("meta")
+    }
+
+    pub fn libraries(&self) -> PathBuf {
+        self.root.join("libraries")
+    }
+
+    pub fn assets(&self) -> PathBuf {
+        self.root.join("assets")
+    }
+
+    pub fn versions(&self) -> PathBuf {
+        self.root.join("versions")
     }
 }

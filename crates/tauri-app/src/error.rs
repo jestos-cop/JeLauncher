@@ -13,4 +13,12 @@ impl From<jelauncher_core::Error> for CommandError {
     }
 }
 
+impl CommandError {
+    pub fn poisoned() -> Self {
+        Self {
+            message: "internal state lock was poisoned".into(),
+        }
+    }
+}
+
 pub type CommandResult<T> = Result<T, CommandError>;

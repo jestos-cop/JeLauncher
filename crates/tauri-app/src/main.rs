@@ -3,9 +3,11 @@
 mod bindings;
 mod commands;
 mod error;
+mod state;
 
-use jelauncher_core::paths::DataPaths;
 use tauri::Manager;
+
+use crate::state::AppState;
 
 fn main() {
     let builder = bindings::builder();
@@ -16,7 +18,7 @@ fn main() {
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
             builder.mount_events(app);
-            app.manage(DataPaths::platform_default()?);
+            app.manage(AppState::load()?);
             Ok(())
         })
         .run(tauri::generate_context!());

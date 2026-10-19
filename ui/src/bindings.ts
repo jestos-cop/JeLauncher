@@ -12,6 +12,46 @@ async listInstances() : Promise<Result<InstanceSummary[], CommandError>> {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+async createInstance(newInstance: NewInstance) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("create_instance", { newInstance }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async detectJava() : Promise<Result<JavaInstall[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("detect_java") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async listMinecraftVersions() : Promise<Result<MinecraftVersions, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_minecraft_versions") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async getSettings() : Promise<Result<GlobalSettings, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_settings") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async updateSettings(settings: GlobalSettings) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("update_settings", { settings }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
@@ -26,7 +66,22 @@ async listInstances() : Promise<Result<InstanceSummary[], CommandError>> {
 /** user-defined types **/
 
 export type CommandError = { message: string }
-export type InstanceSummary = { id: string; name: string; iconKey: string; lastLaunchTime: number; totalTimePlayed: number }
+export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings }
+export type InstanceSummary = { id: string; name: string; iconKey: string; group: string | null; minecraftVersion: string; lastLaunchTime: number; totalTimePlayed: number }
+export type JavaInstall = { path: string; version: string; major: number; arch: string; vendor: string }
+export type JavaSettings = { 
+/**
+ * `None` lets the launcher pick a compatible Java automatically.
+ */
+path: string | null; minMemoryMb: number; maxMemoryMb: number; jvmArgs: string }
+export type LatestVersions = { release: string; snapshot: string }
+export type LauncherSettings = { showConsole: boolean; showConsoleOnError: boolean; autoCloseConsole: boolean; recordGameTime: boolean }
+export type MinecraftVersions = { latest: LatestVersions; versions: VersionEntry[] }
+export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs: number; retries: number }
+export type NewInstance = { name: string; minecraftVersion: string; group: string | null; iconKey: string | null }
+export type VersionEntry = { id: string; type: VersionType; url: string; sha1: string; releaseTime: string }
+export type VersionType = "release" | "snapshot" | "old_beta" | "old_alpha" | "other"
+export type WindowSettings = { width: number; height: number; maximized: boolean }
 
 /** tauri-specta globals **/
 

@@ -13,10 +13,13 @@ pub struct InstanceSummary {
     pub id: String,
     pub name: String,
     pub icon_key: String,
+    pub group: Option<String>,
+    pub minecraft_version: String,
     pub last_launch_time: i64,
     pub total_time_played: i64,
 }
 
+/// Finds every directory under `root` that contains an instance config.
 pub fn discover_instances(root: &Path) -> Result<Vec<InstanceSummary>> {
     let entries = match fs::read_dir(root) {
         Ok(entries) => entries,
@@ -27,19 +30,19 @@ pub fn discover_instances(root: &Path) -> Result<Vec<InstanceSummary>> {
     let mut instances = Vec::new();
     for entry in entries {
         let dir = entry.map_err(|err| Error::io(root, err))?.path();
-        let config_path = dir.join(INSTANCE_CONFIG_FILE);
-        if !config_path.is_file() {
-            continue;
-        }
         let Some(id) = dir.file_name().and_then(|name| name.to_str()) else {
             continue;
         };
-        // Instances with an unreadable config are still listed, using default values.
-        let config = InstanceConfig::load(&config_path).unwrap_or_default();
+        // A broken config should not hide every other instance.
+        let Ok(Some(config)) = InstanceConfig::load(&dir.join(INSTANCE_CONFIG_FILE)) else {
+            continue;
+        };
         instances.push(InstanceSummary {
             id: id.to_owned(),
             name: config.name,
             icon_key: config.icon_key,
+            group: config.group,
+            minecraft_version: config.minecraft_version,
             last_launch_time: config.last_launch_time,
             total_time_played: config.total_time_played,
         });
@@ -63,17 +66,20 @@ mod tests {
     #[test]
     fn lists_only_directories_with_config() -> Result<()> {
         let dir = tempfile::tempdir().map_err(|err| Error::io("tempdir", err))?;
-        let write = |id: &str, config: Option<&str>| -> Result<()> {
+        let write = |id: &str, name: Option<&str>| -> Result<()> {
             let path = dir.path().join(id);
             fs::create_dir(&path).map_err(|err| Error::io(&path, err))?;
-            if let Some(config) = config {
-                let file = path.join(INSTANCE_CONFIG_FILE);
-                fs::write(&file, config).map_err(|err| Error::io(&file, err))?;
+            if let Some(name) = name {
+                let config = InstanceConfig {
+                    name: name.into(),
+                    ..Default::default()
+                };
+                config.save(&path.join(INSTANCE_CONFIG_FILE))?;
             }
             Ok(())
         };
-        write("b", Some("[General]\nname=Beta\n"))?;
-        write("a", Some("[General]\nname=alpha\n"))?;
+        write("b", Some("Beta"))?;
+        write("a", Some("alpha"))?;
         write("not-an-instance", None)?;
 
         let names: Vec<_> = discover_instances(dir.path())?
