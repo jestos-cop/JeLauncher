@@ -48,6 +48,15 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
           <Field label="Java installation">
             <JavaPicker value={draft.java.path} onChange={(path) => setJava({ path })} />
           </Field>
+          <Field
+            label="Download Java automatically"
+            hint="Fetch Mojang's Java runtime when no installed Java fits the game."
+          >
+            <Checkbox
+              checked={draft.java.autoDownload}
+              onCheckedChange={(checked) => setJava({ autoDownload: checked === true })}
+            />
+          </Field>
           <Field label="Minimum memory">
             <NumberInput
               value={draft.java.minMemoryMb}

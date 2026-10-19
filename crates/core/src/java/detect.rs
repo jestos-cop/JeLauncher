@@ -74,12 +74,12 @@ fn java_homes_in(dir: &Path) -> Vec<PathBuf> {
         .flatten()
         .map(|entry| entry.path())
         .map(|path| {
-            let bundle_home = path.join("Contents/Home");
-            if bundle_home.is_dir() {
-                bundle_home
-            } else {
-                path
-            }
+            // macOS bundles keep the actual home in Contents/Home; Mojang runtimes add jre.bundle.
+            ["Contents/Home", "jre.bundle/Contents/Home"]
+                .into_iter()
+                .map(|home| path.join(home))
+                .find(|home| home.is_dir())
+                .unwrap_or(path)
         })
         .collect()
 }

@@ -12,7 +12,7 @@ use crate::auth::Account;
 use crate::instance::Instance;
 use crate::java::{self, check_java};
 use crate::meta::MetaService;
-use crate::minecraft::{Environment, Features, GameFiles};
+use crate::minecraft::{Environment, Features, GameFiles, JavaVersion};
 use crate::net::{DownloadProgress, HttpClient};
 use crate::paths::DataPaths;
 use crate::settings::GlobalSettings;
@@ -75,11 +75,12 @@ impl Launcher<'_> {
             )
             .await?;
 
-        let required_java = version
-            .java_version
-            .map_or(DEFAULT_JAVA_MAJOR, |j| j.major_version);
         let java = self
-            .find_java(settings.java_path.as_deref(), required_java)
+            .find_java(
+                settings.java_path.as_deref(),
+                version.java_version.as_ref(),
+                &on_progress,
+            )
             .await?;
 
         let mut classpath = files.classpath.clone();
@@ -109,7 +110,12 @@ impl Launcher<'_> {
         })
     }
 
-    async fn find_java(&self, configured: Option<&str>, required_major: u32) -> Result<PathBuf> {
+    async fn find_java(
+        &self,
+        configured: Option<&str>,
+        required: Option<&JavaVersion>,
+        on_progress: &impl Fn(LaunchProgress),
+    ) -> Result<PathBuf> {
         if let Some(path) = configured {
             let path = PathBuf::from(path);
             return match check_java(&path).await {
@@ -120,10 +126,25 @@ impl Launcher<'_> {
                 ))),
             };
         }
+        let required_major = required.map_or(DEFAULT_JAVA_MAJOR, |java| java.major_version);
         let installs = java::detect_java_installs(&self.paths.java()).await;
-        java::pick_java(&installs, required_major)
-            .map(|install| PathBuf::from(&install.path))
-            .ok_or(Error::NoCompatibleJava(required_major))
+        if let Some(install) = java::pick_java(&installs, required_major) {
+            return Ok(PathBuf::from(&install.path));
+        }
+        if !self.settings.java.auto_download {
+            return Err(Error::NoCompatibleJava(required_major));
+        }
+        let component = required
+            .and_then(|java| java.component.as_deref())
+            .unwrap_or(java::LEGACY_COMPONENT);
+        java::install_runtime(
+            self.http,
+            component,
+            &self.paths.java(),
+            self.settings.network.concurrent_downloads as usize,
+            |progress| on_progress(LaunchProgress::Downloading(progress)),
+        )
+        .await
     }
 }
 

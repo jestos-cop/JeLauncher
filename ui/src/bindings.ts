@@ -282,7 +282,11 @@ export type JavaSettings = {
 /**
  * `None` lets the launcher pick a compatible Java automatically.
  */
-path: string | null; minMemoryMb: number; maxMemoryMb: number; jvmArgs: string }
+path: string | null; minMemoryMb: number; maxMemoryMb: number; jvmArgs: string; 
+/**
+ * Download Mojang's Java runtime when no installed Java fits the game.
+ */
+autoDownload: boolean }
 export type LatestVersions = { release: string; snapshot: string }
 export type LaunchProgress = { stage: "preparing" } | ({ stage: "downloading" } & DownloadProgress) | { stage: "starting" }
 export type LaunchProgressEvent = { instanceId: string; progress: LaunchProgress }

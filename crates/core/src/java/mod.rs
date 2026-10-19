@@ -1,8 +1,10 @@
 mod check;
 mod detect;
+mod runtime;
 
 pub use check::{JavaInstall, check_java, parse_major_version};
 pub use detect::{candidate_paths, detect_java_installs};
+pub use runtime::{LEGACY_COMPONENT, install_runtime, runtime_java};
 
 /// Picks the install that best fits `required_major`: an exact major match first,
 /// then the closest newer one, preferring the host architecture.

@@ -21,6 +21,8 @@ pub struct JavaSettings {
     pub min_memory_mb: u32,
     pub max_memory_mb: u32,
     pub jvm_args: String,
+    /// Download Mojang's Java runtime when no installed Java fits the game.
+    pub auto_download: bool,
 }
 
 impl Default for JavaSettings {
@@ -30,6 +32,7 @@ impl Default for JavaSettings {
             min_memory_mb: 512,
             max_memory_mb: 4096,
             jvm_args: String::new(),
+            auto_download: true,
         }
     }
 }

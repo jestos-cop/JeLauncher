@@ -90,10 +90,13 @@ pub struct AssetIndexRef {
     pub url: String,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct JavaVersion {
     pub major_version: u32,
+    /// Mojang runtime that provides this Java, e.g. `java-runtime-delta`.
+    #[serde(default)]
+    pub component: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
