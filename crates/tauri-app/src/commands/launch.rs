@@ -8,6 +8,7 @@ use tauri_specta::Event;
 use tokio::io::{AsyncBufReadExt, AsyncRead, BufReader};
 use tokio::sync::oneshot;
 
+use crate::cancel::until_cancelled;
 use crate::error::{CommandError, CommandResult};
 use crate::events::{InstanceExitedEvent, InstanceLogEvent, LaunchProgressEvent};
 use crate::state::AppState;
@@ -28,12 +29,13 @@ pub async fn launch_instance(
     let account = super::accounts::launch_account(&state).await?;
     let mut instance = Instance::open(&state.paths.instances(), &instance_id)?;
 
+    let (kill_tx, mut kill_rx) = oneshot::channel();
     {
         let mut running = state.running.lock().map_err(|_| CommandError::poisoned())?;
         if running.contains_key(&instance_id) {
             return Err(CommandError::new("this instance is already running"));
         }
-        running.insert(instance_id.clone(), None);
+        running.insert(instance_id.clone(), Some(kill_tx));
     }
     let launcher = Launcher {
         paths: &state.paths,
@@ -41,34 +43,28 @@ pub async fn launch_instance(
         http: &state.http,
         settings: &settings,
     };
-    let prepared = launcher
-        .prepare(&instance, &account, &options, |progress| {
-            let _ = LaunchProgressEvent {
-                instance_id: instance_id.clone(),
-                progress,
-            }
-            .emit(&app);
-        })
-        .await;
-    let started = match prepared {
-        Ok(command) => match command.run_pre_launch().await {
-            Ok(()) => command.spawn().map(|child| (command, child)),
-            Err(err) => Err(err),
-        },
-        Err(err) => Err(err),
+    let start = async {
+        let command = launcher
+            .prepare(&instance, &account, &options, |progress| {
+                let _ = LaunchProgressEvent {
+                    instance_id: instance_id.clone(),
+                    progress,
+                }
+                .emit(&app);
+            })
+            .await?;
+        command.run_pre_launch().await?;
+        let child = command.spawn()?;
+        Ok((command, child))
     };
-    let (command, mut child) = match started {
+    let (command, mut child) = match until_cancelled(start, &mut kill_rx).await {
         Ok(started) => started,
         Err(err) => {
             mark_stopped(&app, &instance_id);
-            return Err(err.into());
+            return Err(err);
         }
     };
 
-    let (kill_tx, kill_rx) = oneshot::channel();
-    if let Ok(mut running) = state.running.lock() {
-        running.insert(instance_id.clone(), Some(kill_tx));
-    }
     instance.config.last_launch_time = unix_millis();
     instance.save()?;
 
@@ -83,7 +79,7 @@ pub async fn launch_instance(
         let started = Instant::now();
         let status = tokio::select! {
             status = child.wait() => status,
-            _ = kill_rx => {
+            Ok(()) = kill_rx => {
                 let _ = child.kill().await;
                 child.wait().await
             }

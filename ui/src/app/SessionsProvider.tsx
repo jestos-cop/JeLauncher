@@ -32,7 +32,7 @@ export function SessionsProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'preparing', id })
     const result = await commands.launchInstance(id, options)
     if (result.status === 'ok') dispatch({ type: 'running', id })
-    else dispatch({ type: 'failed', id, error: result.error.message })
+    else dispatch({ type: 'failed', id, error: result.error.cancelled ? null : result.error.message })
   }, [])
 
   const kill = useCallback(async (id: string) => {

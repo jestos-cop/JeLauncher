@@ -8,7 +8,7 @@ use super::{
 };
 use crate::archive;
 use crate::instance::{
-    INSTANCE_CONFIG_FILE, Instance, InstanceConfig, NewInstance, create_instance,
+    DraftGuard, INSTANCE_CONFIG_FILE, Instance, InstanceConfig, NewInstance, create_instance,
 };
 use crate::modplatform::ModPlatforms;
 use crate::net::{Download, DownloadProgress};
@@ -128,16 +128,13 @@ fn import_native(
         .parent()
         .unwrap_or(Path::new(""))
         .to_path_buf();
-    let extracted = archive::extract(archive_path, &instance.root, |name| {
+    let draft = DraftGuard::new(&instance);
+    archive::extract(archive_path, &instance.root, |name| {
         name.strip_prefix(&prefix)
             .ok()
             .filter(|relative| *relative != Path::new(INSTANCE_CONFIG_FILE))
             .map(PathBuf::from)
-    });
-    if let Err(err) = extracted {
-        let _ = std::fs::remove_dir_all(&instance.root);
-        return Err(err);
-    }
+    })?;
     instance.config = InstanceConfig {
         name: instance.config.name,
         group: instance.config.group,
@@ -145,6 +142,7 @@ fn import_native(
         ..config
     };
     instance.save()?;
+    draft.keep();
     Ok(instance)
 }
 

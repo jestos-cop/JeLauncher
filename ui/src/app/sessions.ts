@@ -24,7 +24,7 @@ type Action =
   | { type: 'preparing'; id: string }
   | { type: 'progress'; id: string; progress: LaunchProgress }
   | { type: 'running'; id: string }
-  | { type: 'failed'; id: string; error: string }
+  | { type: 'failed'; id: string; error: string | null }
   | { type: 'log'; id: string; line: LogLine }
   | { type: 'exited'; id: string; exitCode: number | null }
   | { type: 'clearLog'; id: string }

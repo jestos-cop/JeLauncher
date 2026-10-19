@@ -1,3 +1,4 @@
+use std::future::Future;
 use std::path::Path;
 
 use jelauncher_core::instance::Instance;
@@ -9,7 +10,9 @@ use jelauncher_core::modplatform::{
 use serde::Serialize;
 use tauri::{AppHandle, State};
 use tauri_specta::Event;
+use tokio::sync::oneshot;
 
+use crate::cancel::until_cancelled;
 use crate::error::{CommandError, CommandResult};
 use crate::events::ModpackProgressEvent;
 use crate::state::AppState;
@@ -163,13 +166,13 @@ pub async fn install_modpack(
 ) -> CommandResult<InstalledPack> {
     let (instances_dir, download_dir) = (state.paths.instances(), state.paths.downloads_cache());
     let target = modpack_target(&state, &instances_dir, &download_dir, name)?;
-    let installed = state
-        .platforms
-        .install_modpack(provider, &project_id, &version_id, &target, |progress| {
-            let _ = ModpackProgressEvent { progress }.emit(&app);
-        })
-        .await?;
-    Ok(installed.into())
+    let install =
+        state
+            .platforms
+            .install_modpack(provider, &project_id, &version_id, &target, |progress| {
+                let _ = ModpackProgressEvent { progress }.emit(&app);
+            });
+    Ok(cancellable_modpack_task(&state, install).await?.into())
 }
 
 /// Imports an instance from a `.mrpack`, CurseForge pack or exported instance (path or URL).
@@ -183,11 +186,37 @@ pub async fn import_instance(
 ) -> CommandResult<InstalledPack> {
     let (instances_dir, download_dir) = (state.paths.instances(), state.paths.downloads_cache());
     let target = modpack_target(&state, &instances_dir, &download_dir, name)?;
-    let imported = modpack::import_instance(&state.platforms, source.trim(), &target, |progress| {
+    let import = modpack::import_instance(&state.platforms, source.trim(), &target, |progress| {
         let _ = ModpackProgressEvent { progress }.emit(&app);
-    })
-    .await?;
-    Ok(imported.into())
+    });
+    Ok(cancellable_modpack_task(&state, import).await?.into())
+}
+
+/// Stops the modpack install or import in progress and removes the half-created instance.
+#[tauri::command]
+#[specta::specta]
+pub fn cancel_modpack_install(state: State<'_, AppState>) -> CommandResult<()> {
+    let cancel = state
+        .modpack_cancel
+        .lock()
+        .map_err(|_| CommandError::poisoned())?
+        .take();
+    if let Some(cancel) = cancel {
+        let _ = cancel.send(());
+    }
+    Ok(())
+}
+
+async fn cancellable_modpack_task<T>(
+    state: &AppState,
+    task: impl Future<Output = jelauncher_core::Result<T>>,
+) -> CommandResult<T> {
+    let (cancel_tx, mut cancel_rx) = oneshot::channel();
+    *state
+        .modpack_cancel
+        .lock()
+        .map_err(|_| CommandError::poisoned())? = Some(cancel_tx);
+    until_cancelled(task, &mut cancel_rx).await
 }
 
 /// Switches a modpack instance to another version of its pack.

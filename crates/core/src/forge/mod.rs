@@ -267,6 +267,7 @@ impl ForgeInstaller<'_> {
             .arg(classpath)
             .arg(&main_class)
             .args(&args)
+            .kill_on_drop(true)
             .output()
             .await
             .map_err(|err| Error::io(self.java, err))?;

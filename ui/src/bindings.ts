@@ -360,6 +360,17 @@ async listMinecraftVersions() : Promise<Result<MinecraftVersions, CommandError>>
 }
 },
 /**
+ * Stops the modpack install or import in progress and removes the half-created instance.
+ */
+async cancelModpackInstall() : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("cancel_modpack_install") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Installs a modpack version as a new instance.
  */
 async installModpack(provider: Provider, projectId: string, versionId: string, name: string | null) : Promise<Result<InstalledPack, CommandError>> {
@@ -701,7 +712,11 @@ launch: string | null; quickPlay: QuickPlay | null;
  * Archive path or URL to import.
  */
 import: string | null }
-export type CommandError = { message: string }
+export type CommandError = { message: string; 
+/**
+ * Set when the user stopped the task, so the UI does not report it as a failure.
+ */
+cancelled: boolean }
 /**
  * Commands run around the game and extra environment variables for it.
  */

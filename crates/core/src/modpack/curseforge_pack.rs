@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use super::{ManagedPack, ModpackTarget, PackInstall, PackSource};
 use crate::archive;
-use crate::instance::{Instance, NewInstance, create_instance};
+use crate::instance::{DraftGuard, Instance, NewInstance, create_instance};
 use crate::minecraft::{LoaderKind, LoaderSpec};
 use crate::modplatform::curseforge::CurseForge;
 use crate::net::{Download, DownloadProgress, HttpClient};
@@ -131,7 +131,8 @@ pub async fn install_curseforge_pack(
             icon_key: None,
         },
     )?;
-    let populated = populate(
+    let draft = DraftGuard::new(&instance);
+    let blocked = populate(
         curseforge,
         http,
         archive_path,
@@ -140,14 +141,7 @@ pub async fn install_curseforge_pack(
         target.concurrency,
         on_progress,
     )
-    .await;
-    let blocked = match populated {
-        Ok(blocked) => blocked,
-        Err(err) => {
-            let _ = std::fs::remove_dir_all(&instance.root);
-            return Err(err);
-        }
-    };
+    .await?;
     instance.config.managed_pack = source.map(|source| ManagedPack {
         provider: source.provider,
         project_id: source.project_id,
@@ -156,6 +150,7 @@ pub async fn install_curseforge_pack(
         version: manifest.version.clone(),
     });
     instance.save()?;
+    draft.keep();
     Ok(PackInstall { instance, blocked })
 }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { InstalledPack, LoaderSpec, Provider } from '@/bindings'
+import { commands, type InstalledPack, type LoaderSpec, type Provider } from '@/bindings'
 import { ImportSource } from '@/components/ImportSource'
 import { LoaderPicker } from '@/components/LoaderPicker'
 import { ModpackBrowser } from '@/components/ModpackBrowser'
@@ -14,6 +14,7 @@ import { useCreateInstance } from '@/hooks/use-create-instance'
 import { BlockedFilesDialog } from '@/dialogs/BlockedFilesDialog'
 import { useModpackProgress } from '@/hooks/use-modpack-progress'
 import { type ModpackSelection, useImportInstance, useInstallModpack } from '@/hooks/use-modpacks'
+import { failure } from '@/lib/command'
 
 type Source = 'vanilla' | Provider | 'import'
 
@@ -39,7 +40,7 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
   const downloading = installModpack.isPending || importInstance.isPending
   const progress = useModpackProgress(downloading)
   const busy = createInstance.isPending || downloading
-  const error = createInstance.error ?? installModpack.error ?? importInstance.error
+  const error = failure(createInstance.error ?? installModpack.error ?? importInstance.error)
 
   const close = () => {
     if (busy) return
@@ -150,7 +151,11 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
         )}
         {error && <p className="text-sm text-destructive">{error.message}</p>}
         <DialogFooter>
-          <Button variant="ghost" disabled={busy} onClick={close}>
+          <Button
+            variant="ghost"
+            disabled={createInstance.isPending}
+            onClick={downloading ? () => void commands.cancelModpackInstall() : close}
+          >
             Cancel
           </Button>
           <Button onClick={create} disabled={!canCreate || busy}>

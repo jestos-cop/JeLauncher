@@ -27,8 +27,10 @@ pub struct AppState {
     pub login_attempt: AtomicU64,
     /// Command line request waiting for the UI to pick it up after startup.
     pub pending_cli: Mutex<Option<CliRequest>>,
-    /// Instances being prepared (`None`) or running, with a channel that kills the game.
+    /// Instances being prepared or running, with a channel that cancels the launch or kills the game.
     pub running: Mutex<HashMap<String, Option<oneshot::Sender<()>>>>,
+    /// Cancels the modpack install or import in progress.
+    pub modpack_cancel: Mutex<Option<oneshot::Sender<()>>>,
 }
 
 impl AppState {
@@ -59,6 +61,7 @@ impl AppState {
             pending_cli: Mutex::default(),
             login_attempt: AtomicU64::default(),
             running: Mutex::default(),
+            modpack_cancel: Mutex::default(),
         })
     }
 }

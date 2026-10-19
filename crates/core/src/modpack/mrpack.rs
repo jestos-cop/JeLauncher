@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use super::{ManagedPack, PackSource};
 use crate::archive::{self, safe_relative_path};
-use crate::instance::{Instance, NewInstance, create_instance};
+use crate::instance::{DraftGuard, Instance, NewInstance, create_instance};
 use crate::minecraft::{LoaderKind, LoaderSpec};
 use crate::net::{Download, DownloadProgress, HttpClient};
 use crate::{Error, Result, fs};
@@ -118,7 +118,7 @@ pub fn read_mrpack_index(archive_path: &Path) -> Result<MrpackIndex> {
 }
 
 /// Creates a new instance from a `.mrpack` archive: downloads its files and applies overrides.
-/// The half-created instance is removed again if anything fails.
+/// The half-created instance is removed again if anything fails or the install is cancelled.
 pub async fn install_mrpack(
     http: &HttpClient,
     archive_path: &Path,
@@ -139,7 +139,8 @@ pub async fn install_mrpack(
             icon_key: None,
         },
     )?;
-    let result = populate(
+    let draft = DraftGuard::new(&instance);
+    populate(
         http,
         archive_path,
         &index,
@@ -147,14 +148,11 @@ pub async fn install_mrpack(
         concurrency,
         on_progress,
     )
-    .await;
-    if let Err(err) = result {
-        let _ = std::fs::remove_dir_all(&instance.root);
-        return Err(err);
-    }
+    .await?;
     instance.config.managed_pack = source.map(|source| managed_pack(source, &index));
     instance.save()?;
     fs::write_json(&instance.root.join(INSTALLED_INDEX), &index)?;
+    draft.keep();
     Ok(instance)
 }
 

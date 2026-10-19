@@ -1,6 +1,6 @@
 use super::{ManagedPack, ModpackTarget, PackInstall};
 use crate::archive::safe_relative_path;
-use crate::instance::{NewInstance, create_instance};
+use crate::instance::{DraftGuard, NewInstance, create_instance};
 use crate::modplatform::Provider;
 use crate::modplatform::ftb::{Ftb, FtbPackVersion};
 use crate::net::{Download, DownloadProgress, HttpClient};
@@ -29,17 +29,10 @@ pub async fn install_ftb_pack(
             icon_key: None,
         },
     )?;
-    let downloaded = match downloads(&pack, &instance.game_dir()) {
-        Ok(downloads) => {
-            http.download_all(downloads, target.concurrency, on_progress)
-                .await
-        }
-        Err(err) => Err(err),
-    };
-    if let Err(err) = downloaded {
-        let _ = std::fs::remove_dir_all(&instance.root);
-        return Err(err);
-    }
+    let draft = DraftGuard::new(&instance);
+    let downloads = downloads(&pack, &instance.game_dir())?;
+    http.download_all(downloads, target.concurrency, on_progress)
+        .await?;
     instance.config.managed_pack = Some(ManagedPack {
         provider: Provider::Ftb,
         project_id: pack_id.to_owned(),
@@ -48,6 +41,7 @@ pub async fn install_ftb_pack(
         version: pack.version_name,
     });
     instance.save()?;
+    draft.keep();
     Ok(PackInstall::complete(instance))
 }
 

@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use serde::Deserialize;
 
@@ -42,6 +42,28 @@ pub fn create_instance(instances_dir: &Path, new: NewInstance) -> Result<Instanc
     fs::create_dir_all(instance.game_dir()).map_err(|err| Error::io(instance.game_dir(), err))?;
     instance.config.save(&root.join(INSTANCE_CONFIG_FILE))?;
     Ok(instance)
+}
+
+/// Removes a freshly created instance when dropped before [`keep`](Self::keep), so failed or
+/// cancelled installs leave nothing behind.
+pub(crate) struct DraftGuard(Option<PathBuf>);
+
+impl DraftGuard {
+    pub(crate) fn new(instance: &Instance) -> Self {
+        Self(Some(instance.root.clone()))
+    }
+
+    pub(crate) fn keep(mut self) {
+        self.0 = None;
+    }
+}
+
+impl Drop for DraftGuard {
+    fn drop(&mut self) {
+        if let Some(root) = self.0.take() {
+            let _ = fs::remove_dir_all(root);
+        }
+    }
 }
 
 /// Directory-safe id derived from the name, with a numeric suffix on collision.
@@ -101,6 +123,18 @@ mod tests {
     fn rejects_blank_names() -> Result<()> {
         let dir = tempfile::tempdir().map_err(|err| Error::io("tempdir", err))?;
         assert!(create_instance(dir.path(), new_instance("   ")).is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn draft_guard_removes_instances_that_are_not_kept() -> Result<()> {
+        let dir = tempfile::tempdir().map_err(|err| Error::io("tempdir", err))?;
+        let dropped = create_instance(dir.path(), new_instance("Dropped"))?;
+        drop(DraftGuard::new(&dropped));
+        let kept = create_instance(dir.path(), new_instance("Kept"))?;
+        DraftGuard::new(&kept).keep();
+        assert!(!dropped.root.exists());
+        assert!(kept.root.exists());
         Ok(())
     }
 }

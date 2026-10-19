@@ -1,4 +1,4 @@
-import { Play, Square } from 'lucide-react'
+import { Play, Square, X } from 'lucide-react'
 import { useSession } from '@/app/sessions'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -19,6 +19,9 @@ export function LaunchControls({ instanceId }: { instanceId: string }) {
         <>
           <p className="text-sm text-muted-foreground">{describeProgress(session.progress)}</p>
           {percent !== null && <Progress value={percent} />}
+          <Button variant="outline" onClick={() => void kill()}>
+            <X /> Cancel
+          </Button>
         </>
       )}
       {session.status === 'running' && (
