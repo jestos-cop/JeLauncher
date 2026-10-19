@@ -147,6 +147,13 @@ impl Launcher<'_> {
         let non_empty =
             |command: &String| Some(command.trim().to_owned()).filter(|c| !c.is_empty());
 
+        log::info!(
+            "launching {} ({} {:?}) with {}",
+            instance.id,
+            game_version,
+            instance.config.loader,
+            java.display()
+        );
         on_progress(LaunchProgress::Starting);
         Ok(LaunchCommand {
             java,

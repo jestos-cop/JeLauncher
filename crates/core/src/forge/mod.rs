@@ -62,6 +62,11 @@ impl ForgeInstaller<'_> {
             return parse_profile(installed.version_json, &marker);
         }
 
+        log::info!(
+            "installing {} {} for {game_version}",
+            loader.kind.id(),
+            loader.version
+        );
         let installer = self.download_installer(loader, game_version).await?;
         let profile = read_install_profile(&installer)?;
         let version_json: serde_json::Value = serde_json::from_str(&archive::read_entry_to_string(

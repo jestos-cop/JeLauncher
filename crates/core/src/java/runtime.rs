@@ -90,6 +90,7 @@ pub async fn install_runtime(
 ) -> Result<PathBuf> {
     let platform = platform_key()
         .ok_or_else(|| Error::InvalidInput("no Java runtime for this platform".into()))?;
+    log::info!("downloading Java runtime {component} for {platform}");
     let mut runtimes: HashMap<String, HashMap<String, Vec<RuntimeEntry>>> =
         http.get_json(RUNTIMES_URL).await?;
     let entry = runtimes

@@ -40,6 +40,10 @@ impl DataPaths {
         self.root.join("cache").join("downloads")
     }
 
+    pub fn logs(&self) -> PathBuf {
+        self.root.join("logs")
+    }
+
     pub fn icons(&self) -> PathBuf {
         self.root.join("icons")
     }

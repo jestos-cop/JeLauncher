@@ -89,6 +89,7 @@ pub async fn launch_instance(
             }
         };
         let exit_code = status.ok().and_then(|status| status.code());
+        log::info!("{} exited with {exit_code:?}", instance.id);
         if record_time {
             instance.config.total_time_played +=
                 i64::try_from(started.elapsed().as_secs()).unwrap_or(0);

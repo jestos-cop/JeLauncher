@@ -7,6 +7,7 @@ pub mod icons;
 pub mod instance;
 pub mod java;
 pub mod launch;
+pub mod launcher_log;
 pub mod logs;
 pub mod meta;
 pub mod minecraft;

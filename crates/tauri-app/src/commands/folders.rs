@@ -1,7 +1,8 @@
 use serde::Deserialize;
 use tauri::{AppHandle, State};
+use tauri_plugin_opener::OpenerExt;
 
-use crate::error::CommandResult;
+use crate::error::{CommandError, CommandResult};
 use crate::state::AppState;
 
 #[derive(Debug, Clone, Copy, Deserialize, specta::Type)]
@@ -25,4 +26,16 @@ pub fn open_launcher_folder(
         LauncherFolder::Java => state.paths.java(),
     };
     super::open_folder(&app, &path)
+}
+
+/// Path of the launcher's own log file, registered at startup.
+pub struct LogFile(pub std::path::PathBuf);
+
+/// Opens the launcher's log file in the default text viewer.
+#[tauri::command]
+#[specta::specta]
+pub fn open_launcher_log(app: AppHandle, log_file: State<'_, LogFile>) -> CommandResult<()> {
+    app.opener()
+        .open_path(log_file.0.to_string_lossy(), None::<&str>)
+        .map_err(|err| CommandError::new(err.to_string()))
 }

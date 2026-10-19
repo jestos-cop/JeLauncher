@@ -1,4 +1,4 @@
-import { ChevronDown, CircleHelp, Code, Info } from 'lucide-react'
+import { ChevronDown, CircleHelp, Code, FileText, Info } from 'lucide-react'
 import { useState } from 'react'
 import { commands } from '@/bindings'
 import { Button } from '@/components/ui/button'
@@ -24,6 +24,9 @@ export function HelpMenu() {
         <DropdownMenuContent align="start">
           <DropdownMenuItem onSelect={() => void unwrap(commands.openRepository())}>
             <Code /> Source code and issues
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => void unwrap(commands.openLauncherLog())}>
+            <FileText /> Open launcher log
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setIsAboutOpen(true)}>
             <Info /> About JeLauncher

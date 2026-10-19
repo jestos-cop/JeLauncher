@@ -8,6 +8,7 @@ mod state;
 
 use tauri::Manager;
 
+use crate::commands::folders::LogFile;
 use crate::state::AppState;
 
 fn main() {
@@ -22,6 +23,16 @@ fn main() {
         .setup(move |app| {
             builder.mount_events(app);
             let state = AppState::load()?;
+            let log_file =
+                jelauncher_core::launcher_log::init(&state.paths.logs(), log::LevelFilter::Info)?;
+            log::info!(
+                "JeLauncher {} on {} {}, data in {}",
+                env!("CARGO_PKG_VERSION"),
+                std::env::consts::OS,
+                std::env::consts::ARCH,
+                state.paths.root().display()
+            );
+            app.manage(LogFile(log_file));
             // Lets the frontend display screenshots and other images stored with instances.
             let assets = app.asset_protocol_scope();
             assets.allow_directory(state.paths.instances(), true)?;

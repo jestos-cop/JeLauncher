@@ -16,6 +16,7 @@ fastnbt = "2"
 flate2 = "1"
 futures-util = "0.3"
 hex = "0.4"
+log = { version = "0.4", features = ["std"] }
 md-5 = "0.11"
 reqwest = { version = "0.13", features = ["form", "json", "query", "stream"] }
 serde = { version = "1", features = ["derive"] }
