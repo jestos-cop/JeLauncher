@@ -101,12 +101,25 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
               onChange={(concurrentDownloads) => setNetwork({ concurrentDownloads })}
             />
           </Field>
-          <Field label="Request timeout" hint="Timeout and retries apply after restarting the launcher.">
+          <Field
+            label="Request timeout"
+            hint="Timeout, retries and proxy apply after restarting the launcher."
+          >
             <NumberInput
               value={draft.network.requestTimeoutSecs}
               min={5}
               suffix="s"
               onChange={(requestTimeoutSecs) => setNetwork({ requestTimeoutSecs })}
+            />
+          </Field>
+          <Field
+            label="Proxy"
+            hint="For example http://proxy.local:8080. Leave empty to use the system proxy."
+          >
+            <Input
+              placeholder="System proxy"
+              value={draft.network.proxy ?? ''}
+              onChange={(event) => setNetwork({ proxy: event.target.value || null })}
             />
           </Field>
           <Field label="Retries">
@@ -115,6 +128,23 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
               min={0}
               max={10}
               onChange={(retries) => setNetwork({ retries })}
+            />
+          </Field>
+          <h3 className="text-sm font-semibold">APIs</h3>
+          <Field
+            label="CurseForge API key"
+            hint="Optional. Replaces the key this build comes with. Network and API changes apply after a restart."
+          >
+            <Input
+              type="password"
+              placeholder="Built-in key"
+              value={draft.apis.curseforgeApiKey ?? ''}
+              onChange={(event) =>
+                setDraft((current) => ({
+                  ...current,
+                  apis: { curseforgeApiKey: event.target.value || null },
+                }))
+              }
             />
           </Field>
         </>

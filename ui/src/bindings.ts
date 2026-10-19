@@ -659,6 +659,11 @@ modpackProgressEvent: "modpack-progress-event"
 
 export type AccountKind = { type: "offline" } | { type: "microsoft" }
 export type AccountSummary = { id: string; username: string; kind: AccountKind; isDefault: boolean }
+export type ApiSettings = { 
+/**
+ * Replaces the CurseForge API key the launcher was built with.
+ */
+curseforgeApiKey: string | null }
 export type AppInfo = { version: string; license: string; repository: string }
 export type AppearanceSettings = { theme: Theme }
 /**
@@ -711,7 +716,7 @@ export type DownloadProgress = { completed: number; total: number; downloadedByt
  */
 export type ExportEntry = { path: string; isDir: boolean; blocked: boolean }
 export type GameMode = "survival" | "creative" | "adventure" | "spectator" | "unknown"
-export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings; commands: CommandSettings; appearance: AppearanceSettings }
+export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings; commands: CommandSettings; appearance: AppearanceSettings; apis: ApiSettings }
 /**
  * A created instance and the pack files the user still has to download by hand.
  */
@@ -758,7 +763,11 @@ export type ManagedPack = { provider: Provider; projectId: string; versionId: st
 export type MinecraftVersions = { latest: LatestVersions; versions: VersionEntry[] }
 export type ModListFormat = "plainText" | "markdown" | "html" | "json" | "csv"
 export type ModpackProgressEvent = { progress: DownloadProgress }
-export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs: number; retries: number }
+export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs: number; retries: number; 
+/**
+ * `None` uses the system proxy settings.
+ */
+proxy: string | null }
 export type NewInstance = { name: string; minecraftVersion: string; loader: LoaderSpec | null; group: string | null; iconKey: string | null }
 export type ProjectHit = { provider: Provider; id: string; slug: string; title: string; description: string; author: string; iconUrl: string | null; downloads: number }
 export type ProjectVersion = { id: string; projectId: string; name: string; versionNumber: string; releaseType: ReleaseType; published: string; 

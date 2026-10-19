@@ -14,6 +14,14 @@ pub struct GlobalSettings {
     pub network: NetworkSettings,
     pub commands: CommandSettings,
     pub appearance: AppearanceSettings,
+    pub apis: ApiSettings,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
+#[serde(default, rename_all = "camelCase")]
+pub struct ApiSettings {
+    /// Replaces the CurseForge API key the launcher was built with.
+    pub curseforge_api_key: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
@@ -102,6 +110,8 @@ pub struct NetworkSettings {
     pub concurrent_downloads: u32,
     pub request_timeout_secs: u32,
     pub retries: u32,
+    /// `None` uses the system proxy settings.
+    pub proxy: Option<String>,
 }
 
 impl Default for NetworkSettings {
@@ -110,6 +120,7 @@ impl Default for NetworkSettings {
             concurrent_downloads: 6,
             request_timeout_secs: 60,
             retries: 1,
+            proxy: None,
         }
     }
 }

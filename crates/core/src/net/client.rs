@@ -16,10 +16,20 @@ pub struct HttpClient {
 
 impl HttpClient {
     pub fn new(settings: &NetworkSettings) -> Result<Self> {
-        let inner = reqwest::Client::builder()
+        let mut builder = reqwest::Client::builder()
             .user_agent(USER_AGENT)
             .connect_timeout(Duration::from_secs(15))
-            .read_timeout(Duration::from_secs(settings.request_timeout_secs.into()))
+            .read_timeout(Duration::from_secs(settings.request_timeout_secs.into()));
+        if let Some(proxy) = settings
+            .proxy
+            .as_deref()
+            .filter(|proxy| !proxy.trim().is_empty())
+        {
+            let proxy = reqwest::Proxy::all(proxy.trim())
+                .map_err(|err| Error::InvalidInput(format!("invalid proxy {proxy}: {err}")))?;
+            builder = builder.proxy(proxy);
+        }
+        let inner = builder
             .build()
             .map_err(|err| Error::http("client setup", err))?;
         Ok(Self {
@@ -137,4 +147,20 @@ async fn send_json<T: DeserializeOwned>(url: &str, request: reqwest::RequestBuil
         .json()
         .await
         .map_err(|err| Error::http(url, err))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn accepts_http_proxies_and_rejects_garbage() {
+        let with_proxy = |proxy: &str| NetworkSettings {
+            proxy: Some(proxy.into()),
+            ..NetworkSettings::default()
+        };
+        assert!(HttpClient::new(&with_proxy("http://127.0.0.1:8080")).is_ok());
+        assert!(HttpClient::new(&with_proxy("  ")).is_ok());
+        assert!(HttpClient::new(&with_proxy("not a proxy")).is_err());
+    }
 }

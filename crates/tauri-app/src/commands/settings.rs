@@ -17,6 +17,8 @@ pub fn get_settings(state: State<'_, AppState>) -> CommandResult<GlobalSettings>
 #[tauri::command]
 #[specta::specta]
 pub fn update_settings(state: State<'_, AppState>, settings: GlobalSettings) -> CommandResult<()> {
+    // A client that cannot be built would keep the launcher from starting next time.
+    jelauncher_core::net::HttpClient::new(&settings.network)?;
     settings.save(&state.paths.settings_file())?;
     *state
         .settings

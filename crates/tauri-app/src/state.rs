@@ -40,7 +40,12 @@ impl AppState {
         let meta = MetaService::new(http.clone(), paths.meta());
         let platforms = ModPlatforms::new(
             http.clone(),
-            option_env!("CURSEFORGE_API_KEY").map(str::to_owned),
+            settings
+                .apis
+                .curseforge_api_key
+                .clone()
+                .filter(|key| !key.trim().is_empty())
+                .or_else(|| option_env!("CURSEFORGE_API_KEY").map(str::to_owned)),
         );
         Ok(Self {
             paths,
