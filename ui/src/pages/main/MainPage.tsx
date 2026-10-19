@@ -4,6 +4,7 @@ import { useNavigation } from '@/app/navigation'
 import { AccountsMenu } from '@/components/AccountsMenu'
 import { FoldersMenu } from '@/components/FoldersMenu'
 import { HelpMenu } from '@/components/HelpMenu'
+import { NewsBar } from '@/components/NewsBar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -56,6 +57,7 @@ export function MainPage() {
           <AccountsMenu />
         </div>
       </header>
+      <NewsBar />
 
       <div className="flex min-h-0 flex-1">
         <main className="flex-1 overflow-auto p-4">

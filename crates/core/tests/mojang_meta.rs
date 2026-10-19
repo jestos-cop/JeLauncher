@@ -34,3 +34,21 @@ async fn parses_versions_from_every_era() -> jelauncher_core::Result<()> {
     }
     Ok(())
 }
+
+#[tokio::test]
+#[ignore = "requires network access"]
+async fn reads_java_news() -> jelauncher_core::Result<()> {
+    let dir = tempfile::tempdir().map_err(|err| jelauncher_core::Error::Io {
+        path: "tempdir".into(),
+        source: err,
+    })?;
+    let meta = MetaService::new(HttpClient::new(&NetworkSettings::default())?, dir.path());
+    let news = meta.news().await?;
+    println!(
+        "{} entries, latest: {:?}",
+        news.len(),
+        news.first().map(|n| &n.title)
+    );
+    assert!(!news.is_empty());
+    Ok(())
+}

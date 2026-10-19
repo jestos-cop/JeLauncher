@@ -1,4 +1,4 @@
-use jelauncher_core::meta::{LatestVersions, VersionEntry};
+use jelauncher_core::meta::{LatestVersions, NewsEntry, VersionEntry};
 use jelauncher_core::minecraft::{LoaderKind, LoaderVersion};
 use serde::Serialize;
 use tauri::State;
@@ -32,4 +32,11 @@ pub async fn list_loader_versions(
     minecraft_version: String,
 ) -> CommandResult<Vec<LoaderVersion>> {
     Ok(state.meta.loader_versions(kind, &minecraft_version).await?)
+}
+
+/// Minecraft: Java Edition news, newest first.
+#[tauri::command]
+#[specta::specta]
+pub async fn list_news(state: State<'_, AppState>) -> CommandResult<Vec<NewsEntry>> {
+    Ok(state.meta.news().await?)
 }

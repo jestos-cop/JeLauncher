@@ -1,10 +1,12 @@
 mod forge;
 mod loader;
 mod manifest;
+mod news;
 
 use std::path::PathBuf;
 
 pub use manifest::{LatestVersions, VersionEntry, VersionManifest, VersionType};
+pub use news::NewsEntry;
 
 use crate::minecraft::VersionJson;
 use crate::net::{Download, HttpClient};

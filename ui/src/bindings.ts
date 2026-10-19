@@ -340,6 +340,17 @@ async listLoaderVersions(kind: LoaderKind, minecraftVersion: string) : Promise<R
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Minecraft: Java Edition news, newest first.
+ */
+async listNews() : Promise<Result<NewsEntry[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_news") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async listMinecraftVersions() : Promise<Result<MinecraftVersions, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_minecraft_versions") };
@@ -769,6 +780,11 @@ export type NetworkSettings = { concurrentDownloads: number; requestTimeoutSecs:
  */
 proxy: string | null }
 export type NewInstance = { name: string; minecraftVersion: string; loader: LoaderSpec | null; group: string | null; iconKey: string | null }
+export type NewsEntry = { id: string; title: string; text: string; 
+/**
+ * `YYYY-MM-DD`.
+ */
+date: string; url: string; imageUrl: string | null }
 export type ProjectHit = { provider: Provider; id: string; slug: string; title: string; description: string; author: string; iconUrl: string | null; downloads: number }
 export type ProjectVersion = { id: string; projectId: string; name: string; versionNumber: string; releaseType: ReleaseType; published: string; 
 /**

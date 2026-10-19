@@ -44,6 +44,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::launch::launch_instance,
             commands::launch::list_running_instances,
             commands::meta::list_loader_versions,
+            commands::meta::list_news,
             commands::meta::list_minecraft_versions,
             commands::modplatform::install_modpack,
             commands::modplatform::import_instance,
