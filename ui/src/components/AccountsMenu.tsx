@@ -1,5 +1,6 @@
-import { Check, ChevronDown, Trash2, UserPlus, UserRound } from 'lucide-react'
+import { Check, ChevronDown, Settings, Trash2, UserPlus, UserRound } from 'lucide-react'
 import { useState } from 'react'
+import { useNavigation } from '@/app/navigation'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -16,6 +17,7 @@ export function AccountsMenu() {
   const setDefault = useSetDefaultAccount()
   const removeAccount = useRemoveAccount()
   const [isAdding, setIsAdding] = useState(false)
+  const { navigate } = useNavigation()
   const current = accounts.find((account) => account.isDefault)
 
   return (
@@ -48,6 +50,9 @@ export function AccountsMenu() {
           {accounts.length > 0 && <DropdownMenuSeparator />}
           <DropdownMenuItem onSelect={() => setIsAdding(true)}>
             <UserPlus /> Add offline account…
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => navigate({ page: 'settings', tab: 'accounts' })}>
+            <Settings /> Manage accounts…
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

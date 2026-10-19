@@ -1,4 +1,4 @@
-import { Coffee, Monitor, Rocket, Terminal } from 'lucide-react'
+import { Coffee, Monitor, Rocket, Terminal, UsersRound } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigation, type SettingsTab } from '@/app/navigation'
 import type { GlobalSettings } from '@/bindings'
@@ -9,9 +9,11 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { useSettings, useUpdateSettings } from '@/hooks/use-settings'
+import { AccountsSettings } from '@/pages/settings/AccountsSettings'
 
 const TABS: SidebarTab<SettingsTab>[] = [
   { tab: 'launcher', label: 'Launcher', icon: Rocket },
+  { tab: 'accounts', label: 'Accounts', icon: UsersRound },
   { tab: 'java', label: 'Java', icon: Coffee },
   { tab: 'minecraft', label: 'Minecraft', icon: Monitor },
   { tab: 'commands', label: 'Commands', icon: Terminal },
@@ -29,7 +31,11 @@ export function SettingsPage({ tab }: { tab: SettingsTab }) {
       onTabChange={(next) => navigate({ page: 'settings', tab: next })}
       onBack={() => navigate({ page: 'main' })}
     >
-      {saved && <SettingsForm key={JSON.stringify(saved)} saved={saved} tab={tab} />}
+      {tab === 'accounts' ? (
+        <AccountsSettings />
+      ) : (
+        saved && <SettingsForm key={JSON.stringify(saved)} saved={saved} tab={tab} />
+      )}
     </SidebarLayout>
   )
 }
