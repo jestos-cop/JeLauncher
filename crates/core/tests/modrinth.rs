@@ -52,3 +52,44 @@ async fn searches_and_installs_a_mod() -> jelauncher_core::Result<()> {
     );
     Ok(())
 }
+
+#[tokio::test]
+#[ignore = "requires network access"]
+async fn installs_required_dependencies() -> jelauncher_core::Result<()> {
+    use jelauncher_core::modplatform::modrinth::InstallTarget;
+
+    let modrinth = Modrinth::new(HttpClient::new(&NetworkSettings::default())?);
+    let game_version = "1.21.4";
+    let versions = modrinth
+        .versions(
+            "iris",
+            ResourceKind::Mod,
+            Some(game_version),
+            Some(LoaderKind::Fabric),
+        )
+        .await?;
+    let Some(iris) = versions.into_iter().next() else {
+        panic!("no compatible iris versions");
+    };
+    let dir = tempfile::tempdir().map_err(|err| jelauncher_core::Error::Io {
+        path: "tempdir".into(),
+        source: err,
+    })?;
+    let target = InstallTarget {
+        dir: dir.path(),
+        kind: ResourceKind::Mod,
+        game_version,
+        loader: Some(LoaderKind::Fabric),
+    };
+    let installed = modrinth.install_with_dependencies(iris, &target).await?;
+    println!("installed {installed:?}");
+    let ids: Vec<_> = list_resources(dir.path(), ResourceKind::Mod)?
+        .into_iter()
+        .filter_map(|file| file.metadata.map(|m| m.id))
+        .collect();
+    assert!(
+        ids.contains(&"iris".to_owned()) && ids.contains(&"sodium".to_owned()),
+        "{ids:?}"
+    );
+    Ok(())
+}

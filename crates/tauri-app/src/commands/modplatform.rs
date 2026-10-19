@@ -1,4 +1,5 @@
 use jelauncher_core::instance::Instance;
+use jelauncher_core::modplatform::modrinth::InstallTarget;
 use jelauncher_core::modplatform::{ProjectVersion, ResourceKind, SearchPage, SearchQuery};
 use tauri::State;
 
@@ -36,6 +37,7 @@ pub async fn list_project_versions(
         .await?)
 }
 
+/// Installs a version plus its required dependencies; returns the installed file names.
 #[tauri::command]
 #[specta::specta]
 pub async fn install_project_version(
@@ -43,11 +45,18 @@ pub async fn install_project_version(
     instance_id: String,
     kind: ResourceKind,
     version_id: String,
-) -> CommandResult<String> {
+) -> CommandResult<Vec<String>> {
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
     let version = state.modrinth.version(&version_id).await?;
+    let dir = instance.resource_dir(kind);
+    let target = InstallTarget {
+        dir: &dir,
+        kind,
+        game_version: &instance.config.minecraft_version,
+        loader: instance.config.loader.as_ref().map(|loader| loader.kind),
+    };
     Ok(state
         .modrinth
-        .install(&version, &instance.resource_dir(kind))
+        .install_with_dependencies(version, &target)
         .await?)
 }

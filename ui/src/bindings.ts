@@ -149,7 +149,10 @@ async listMinecraftVersions() : Promise<Result<MinecraftVersions, CommandError>>
     else return { status: "error", error: e  as any };
 }
 },
-async installProjectVersion(instanceId: string, kind: ResourceKind, versionId: string) : Promise<Result<string, CommandError>> {
+/**
+ * Installs a version plus its required dependencies; returns the installed file names.
+ */
+async installProjectVersion(instanceId: string, kind: ResourceKind, versionId: string) : Promise<Result<string[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("install_project_version", { instanceId, kind, versionId }) };
 } catch (e) {

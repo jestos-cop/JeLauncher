@@ -1,3 +1,4 @@
+use std::collections::{HashSet, VecDeque};
 use std::path::Path;
 
 use serde::Deserialize;
@@ -68,6 +69,60 @@ impl Modrinth {
         version.try_into()
     }
 
+    /// Installs the version and, recursively, the required dependencies that fit the target.
+    /// Returns the installed file names, the requested version first.
+    pub async fn install_with_dependencies(
+        &self,
+        version: ProjectVersion,
+        target: &InstallTarget<'_>,
+    ) -> Result<Vec<String>> {
+        let mut seen = HashSet::from([version.project_id.clone()]);
+        let mut queue = VecDeque::from([version]);
+        let mut installed = Vec::new();
+        while let Some(version) = queue.pop_front() {
+            installed.push(self.install(&version, target.dir).await?);
+            for dependency in version.dependencies.iter().filter(|dep| dep.required) {
+                let Some(project_id) = &dependency.project_id else {
+                    continue;
+                };
+                if !seen.insert(project_id.clone()) {
+                    continue;
+                }
+                queue.push_back(
+                    self.resolve_dependency(project_id, dependency.version_id.as_deref(), target)
+                        .await?,
+                );
+            }
+        }
+        Ok(installed)
+    }
+
+    async fn resolve_dependency(
+        &self,
+        project_id: &str,
+        version_id: Option<&str>,
+        target: &InstallTarget<'_>,
+    ) -> Result<ProjectVersion> {
+        if let Some(version_id) = version_id {
+            return self.version(version_id).await;
+        }
+        self.versions(
+            project_id,
+            target.kind,
+            Some(target.game_version),
+            target.loader,
+        )
+        .await?
+        .into_iter()
+        .next()
+        .ok_or_else(|| {
+            Error::InvalidInput(format!(
+                "no version of required dependency {project_id} supports Minecraft {}",
+                target.game_version
+            ))
+        })
+    }
+
     /// Downloads the version's primary file into `dir` and returns the file name.
     pub async fn install(&self, version: &ProjectVersion, dir: &Path) -> Result<String> {
         let file = version
@@ -76,6 +131,14 @@ impl Modrinth {
         self.http.download(&file.download_into(dir)).await?;
         Ok(file.file_name.clone())
     }
+}
+
+/// Where and for which game setup resources are installed.
+pub struct InstallTarget<'a> {
+    pub dir: &'a Path,
+    pub kind: ResourceKind,
+    pub game_version: &'a str,
+    pub loader: Option<LoaderKind>,
 }
 
 fn facets(query: &SearchQuery) -> String {

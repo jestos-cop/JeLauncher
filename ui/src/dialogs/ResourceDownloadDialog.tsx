@@ -154,6 +154,9 @@ function VersionPanel({ instanceId, kind, project }: VersionPanelProps) {
     <div className="flex min-h-0 flex-col gap-2">
       <h3 className="font-semibold">{project.title}</h3>
       {install.error && <p className="text-sm text-destructive">{install.error.message}</p>}
+      {install.data && install.data.length > 1 && (
+        <p className="text-sm text-muted-foreground">Also installed: {install.data.slice(1).join(', ')}</p>
+      )}
       {error && <p className="text-sm text-destructive">{error.message}</p>}
       <div className="min-h-0 flex-1 overflow-auto rounded-md border">
         {isPending && <p className="p-3 text-sm text-muted-foreground">Loading versions…</p>}
