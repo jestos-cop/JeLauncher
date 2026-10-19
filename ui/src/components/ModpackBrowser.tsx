@@ -1,4 +1,5 @@
 import { useDeferredValue, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ProjectHit, Provider } from '@/bindings'
 import { ProjectRow } from '@/components/ProjectRow'
 import { Badge } from '@/components/ui/badge'
@@ -16,6 +17,7 @@ interface ModpackBrowserProps {
 }
 
 export function ModpackBrowser({ provider, selected, onSelect }: ModpackBrowserProps) {
+  const { t } = useTranslation('newInstance')
   const [text, setText] = useState('')
   const [project, setProject] = useState<ProjectHit | null>(null)
   const search = useResourceSearch({
@@ -36,7 +38,7 @@ export function ModpackBrowser({ provider, selected, onSelect }: ModpackBrowserP
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-2">
       <Input
-        placeholder={`Search ${PROVIDER_NAMES[provider]} modpacks`}
+        placeholder={t('modpackBrowser.search', { provider: PROVIDER_NAMES[provider] })}
         value={text}
         onChange={(event) => setText(event.target.value)}
       />
@@ -60,7 +62,7 @@ export function ModpackBrowser({ provider, selected, onSelect }: ModpackBrowserP
               disabled={search.isFetchingNextPage}
               onClick={() => void search.fetchNextPage()}
             >
-              Load more
+              {t('modpackBrowser.loadMore')}
             </Button>
           )}
         </div>
@@ -72,7 +74,7 @@ export function ModpackBrowser({ provider, selected, onSelect }: ModpackBrowserP
             onSelect={(versionId) => onSelect({ provider, projectId: project.id, versionId })}
           />
         ) : (
-          <p className="p-3 text-sm text-muted-foreground">Select a modpack to choose a version.</p>
+          <p className="p-3 text-sm text-muted-foreground">{t('modpackBrowser.selectModpack')}</p>
         )}
       </div>
     </div>
@@ -87,10 +89,13 @@ interface ModpackVersionsProps {
 }
 
 function ModpackVersions({ provider, projectId, selected, onSelect }: ModpackVersionsProps) {
+  const { t } = useTranslation('newInstance')
   const { data: versions, error, isPending } = useModpackVersions(provider, projectId)
   return (
     <div className="min-h-0 overflow-auto rounded-md border">
-      {isPending && <p className="p-3 text-sm text-muted-foreground">Loading versions…</p>}
+      {isPending && (
+        <p className="p-3 text-sm text-muted-foreground">{t('modpackBrowser.loadingVersions')}</p>
+      )}
       {error && <p className="p-3 text-sm text-destructive">{error.message}</p>}
       <ul>
         {versions?.map((version) => (
@@ -107,7 +112,9 @@ function ModpackVersions({ provider, projectId, selected, onSelect }: ModpackVer
                 <p className="truncate text-sm font-medium">{version.versionNumber}</p>
                 <p className="truncate text-xs text-muted-foreground">{version.name}</p>
               </div>
-              {version.releaseType !== 'release' && <Badge variant="secondary">{version.releaseType}</Badge>}
+              {version.releaseType !== 'release' && (
+                <Badge variant="secondary">{t(`releaseType.${version.releaseType}`)}</Badge>
+              )}
             </button>
           </li>
         ))}

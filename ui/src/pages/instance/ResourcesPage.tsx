@@ -1,5 +1,6 @@
 import { ArrowUpCircle, Download, FolderOpen, RefreshCw, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { InstanceSummary, ResourceFile, ResourceKind } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { ModListExportMenu } from '@/components/ModListExportMenu'
@@ -18,19 +19,13 @@ import {
 } from '@/hooks/use-resources'
 import { cn } from '@/lib/utils'
 
-const LABELS: Record<Exclude<ResourceKind, 'modpack'>, { plural: string; empty: string }> = {
-  mod: { plural: 'Mods', empty: 'No mods installed. Put .jar files into the mods folder.' },
-  resourcePack: { plural: 'Resource Packs', empty: 'No resource packs installed.' },
-  shaderPack: { plural: 'Shader Packs', empty: 'No shader packs installed.' },
-  dataPack: { plural: 'Data Packs', empty: 'No data packs installed.' },
-}
-
 interface ResourcesPageProps {
   instance: InstanceSummary
   kind: Exclude<ResourceKind, 'modpack'>
 }
 
 export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
+  const { t } = useTranslation(['instance', 'common'])
   const { data: files = [], error, isPending, refetch } = useResources(instance.id, kind)
   const setEnabled = useSetResourceEnabled(instance.id, kind)
   const remove = useRemoveResource(instance.id, kind)
@@ -42,7 +37,6 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
   const updates = useResourceUpdates(instance.id, kind, checkUpdates)
   const applyUpdates = useUpdateResources(instance.id, kind)
   const updateFor = (file: ResourceFile) => updates.data?.find((update) => update.fileName === file.fileName)
-  const label = LABELS[kind]
 
   const visible = useMemo(() => {
     const query = search.trim().toLowerCase()
@@ -54,19 +48,22 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Input
           className="w-64"
-          placeholder={`Search ${label.plural.toLowerCase()}`}
+          placeholder={t(`resources.${kind}.search`)}
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
-        <span className="text-xs text-muted-foreground">
-          {files.filter((file) => file.enabled).length} of {files.length} enabled
+        <span className="text-xs whitespace-nowrap text-muted-foreground">
+          {t('resources.enabledCount', {
+            enabled: files.filter((file) => file.enabled).length,
+            total: files.length,
+          })}
         </span>
         <div className="ml-auto flex gap-1">
           <Button size="sm" onClick={() => setIsDownloading(true)}>
-            <Download /> Download {label.plural}
+            <Download /> {t(`resources.${kind}.download`)}
           </Button>
           <Button
             size="sm"
@@ -74,14 +71,14 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
             disabled={updates.isFetching}
             onClick={() => (checkUpdates ? void updates.refetch() : setCheckUpdates(true))}
           >
-            <ArrowUpCircle /> {updates.isFetching ? 'Checking…' : 'Check for Updates'}
+            <ArrowUpCircle /> {updates.isFetching ? t('resources.checking') : t('resources.checkUpdates')}
           </Button>
           <Button size="sm" variant="ghost" onClick={() => refetch()}>
-            <RefreshCw /> Refresh
+            <RefreshCw /> {t('common:action.refresh')}
           </Button>
           {kind === 'mod' && <ModListExportMenu instance={instance} />}
           <Button size="sm" variant="ghost" onClick={() => void openInstanceFolder(instance.id, kind)}>
-            <FolderOpen /> Open Folder
+            <FolderOpen /> {t('common:action.openFolder')}
           </Button>
         </div>
       </div>
@@ -94,8 +91,8 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
       {updates.data && !updates.isFetching && (
         <div className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm">
           {updates.data.length === 0
-            ? `All ${label.plural.toLowerCase()} from Modrinth are up to date.`
-            : `${updates.data.length} update${updates.data.length === 1 ? '' : 's'} available.`}
+            ? t(`resources.${kind}.upToDate`)
+            : t('resources.updatesAvailable', { count: updates.data.length })}
           {updates.data.length > 0 && (
             <Button
               size="sm"
@@ -103,7 +100,7 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
               disabled={applyUpdates.isPending}
               onClick={() => setIsReviewing(true)}
             >
-              {applyUpdates.isPending ? 'Updating…' : 'Review Updates'}
+              {applyUpdates.isPending ? t('resources.updating') : t('resources.reviewUpdates')}
             </Button>
           )}
         </div>
@@ -114,10 +111,12 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
           <thead className="sticky top-0 bg-background text-left text-muted-foreground">
             <tr className="border-b">
               <th className="w-10 p-2" />
-              <th className="p-2 font-medium">Name</th>
-              <th className="p-2 font-medium">Version</th>
-              <th className="p-2 font-medium">{kind === 'mod' ? 'Authors' : 'Description'}</th>
-              <th className="p-2 font-medium">File</th>
+              <th className="p-2 font-medium">{t('columns.name')}</th>
+              <th className="p-2 font-medium">{t('columns.version')}</th>
+              <th className="p-2 font-medium">
+                {kind === 'mod' ? t('columns.authors') : t('columns.description')}
+              </th>
+              <th className="p-2 font-medium">{t('columns.file')}</th>
               <th className="w-10 p-2" />
             </tr>
           </thead>
@@ -133,7 +132,7 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
                 <td className="p-2">
                   <Checkbox
                     checked={file.enabled}
-                    aria-label={`Enable ${displayName(file)}`}
+                    aria-label={t('item.enable', { name: displayName(file) })}
                     onCheckedChange={(checked) =>
                       setEnabled.mutate({ fileName: file.fileName, enabled: checked === true })
                     }
@@ -165,7 +164,7 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
                 <td className="p-2">
                   <button
                     type="button"
-                    aria-label={`Remove ${displayName(file)}`}
+                    aria-label={t('item.remove', { name: displayName(file) })}
                     className="text-muted-foreground hover:text-destructive"
                     onClick={() => setPendingRemoval(file)}
                   >
@@ -176,17 +175,17 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
             ))}
           </tbody>
         </table>
-        {isPending && <p className="p-3 text-sm text-muted-foreground">Reading files…</p>}
+        {isPending && <p className="p-3 text-sm text-muted-foreground">{t('resources.reading')}</p>}
         {!isPending && files.length === 0 && (
-          <p className="p-3 text-sm text-muted-foreground">{label.empty}</p>
+          <p className="p-3 text-sm text-muted-foreground">{t(`resources.${kind}.empty`)}</p>
         )}
       </div>
 
       {pendingRemoval && (
         <ConfirmDialog
-          title={`Remove ${displayName(pendingRemoval)}?`}
-          description={`${pendingRemoval.fileName} will be deleted from the instance.`}
-          confirmLabel="Remove"
+          title={t('confirm.remove', { name: displayName(pendingRemoval) })}
+          description={t('resources.removeDescription', { file: pendingRemoval.fileName })}
+          confirmLabel={t('common:action.remove')}
           onConfirm={() =>
             remove.mutate(pendingRemoval.fileName, { onSuccess: () => setPendingRemoval(null) })
           }

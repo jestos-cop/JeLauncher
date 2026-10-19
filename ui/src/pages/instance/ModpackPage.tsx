@@ -1,5 +1,6 @@
 import { RefreshCw } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSession } from '@/app/sessions'
 import type { InstanceSummary, ManagedPack } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
@@ -12,6 +13,7 @@ import { PROVIDER_NAMES } from '@/lib/providers'
 import { cn } from '@/lib/utils'
 
 export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pack: ManagedPack }) {
+  const { t } = useTranslation('instance')
   const { data: versions = [], error, isPending } = useModpackVersions(pack.provider, pack.projectId)
   const update = useUpdateModpack(instance.id)
   const progress = useModpackProgress(update.isPending)
@@ -28,8 +30,13 @@ export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pac
         <div>
           <p className="font-medium">{pack.name}</p>
           <p className="text-sm text-muted-foreground">
-            Version {pack.version} from {PROVIDER_NAMES[pack.provider]}
-            {latest && latest.id !== pack.versionId && ` · ${latest.versionNumber} is available`}
+            {latest && latest.id !== pack.versionId
+              ? t('modpack.sourceWithUpdate', {
+                  version: pack.version,
+                  provider: PROVIDER_NAMES[pack.provider],
+                  latest: latest.versionNumber,
+                })
+              : t('modpack.source', { version: pack.version, provider: PROVIDER_NAMES[pack.provider] })}
           </p>
         </div>
         <Button
@@ -46,20 +53,22 @@ export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pac
         >
           <RefreshCw />{' '}
           {selected && selected.id !== pack.versionId
-            ? `Switch to ${selected.versionNumber}`
-            : 'Switch version'}
+            ? t('modpack.switchTo', { version: selected.versionNumber })
+            : t('modpack.switchVersion')}
         </Button>
       </div>
 
       {!canSwitch && (
         <p className="text-sm text-muted-foreground">
-          Switching versions of {PROVIDER_NAMES[pack.provider]} packs is not supported yet.
+          {t('modpack.switchUnsupported', { provider: PROVIDER_NAMES[pack.provider] })}
         </p>
       )}
       {update.isPending && (
         <div className="flex flex-col gap-1">
           <p className="text-sm text-muted-foreground">
-            {progress ? `Downloading files ${progress.completed}/${progress.total}` : 'Downloading modpack…'}
+            {progress
+              ? t('modpack.downloadingFiles', { completed: progress.completed, total: progress.total })
+              : t('modpack.downloading')}
           </p>
           {progress && progress.total > 0 && <Progress value={(progress.completed / progress.total) * 100} />}
         </div>
@@ -70,7 +79,7 @@ export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pac
 
       <div className="grid min-h-0 flex-1 grid-cols-[16rem_1fr] gap-3">
         <ul className="min-h-0 overflow-auto rounded-md border">
-          {isPending && <li className="p-3 text-sm text-muted-foreground">Loading versions…</li>}
+          {isPending && <li className="p-3 text-sm text-muted-foreground">{t('modpack.loadingVersions')}</li>}
           {versions.map((version) => (
             <li key={version.id}>
               <button
@@ -87,9 +96,9 @@ export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pac
                     {new Date(version.published).toLocaleDateString()}
                   </p>
                 </div>
-                {version.id === pack.versionId && <Badge>Installed</Badge>}
+                {version.id === pack.versionId && <Badge>{t('modpack.installed')}</Badge>}
                 {version.releaseType !== 'release' && (
-                  <Badge variant="secondary">{version.releaseType}</Badge>
+                  <Badge variant="secondary">{t(`modpack.releaseType.${version.releaseType}`)}</Badge>
                 )}
               </button>
             </li>
@@ -100,20 +109,20 @@ export function ModpackPage({ instance, pack }: { instance: InstanceSummary; pac
             <>
               <h3 className="mb-2 font-medium">{selected.name}</h3>
               <p className="text-sm whitespace-pre-wrap text-muted-foreground">
-                {selected.changelog ?? 'No changelog for this version.'}
+                {selected.changelog ?? t('modpack.noChangelog')}
               </p>
             </>
           ) : (
-            <p className="text-sm text-muted-foreground">Select a version to see its changelog.</p>
+            <p className="text-sm text-muted-foreground">{t('modpack.selectVersion')}</p>
           )}
         </div>
       </div>
 
       {isConfirming && selected && (
         <ConfirmDialog
-          title={`Switch to ${selected.versionNumber}?`}
-          description="Files from the current pack version are replaced. Worlds, screenshots and your own files are kept."
-          confirmLabel="Switch"
+          title={t('modpack.confirmTitle', { version: selected.versionNumber })}
+          description={t('modpack.confirmDescription')}
+          confirmLabel={t('modpack.confirmSwitch')}
           onConfirm={() => {
             setIsConfirming(false)
             update.mutate(selected.id)

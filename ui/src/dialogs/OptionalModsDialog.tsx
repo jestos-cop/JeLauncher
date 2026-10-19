@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { commands, type OptionalMod } from '@/bindings'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -24,6 +25,7 @@ interface OptionalModsDialogProps {
 
 /** Lets the user pick a pack's optional mods by hand or from a share code. */
 export function OptionalModsDialog({ selection, mods, onConfirm, onClose }: OptionalModsDialogProps) {
+  const { t } = useTranslation(['newInstance', 'common'])
   const [chosen, setChosen] = useState(
     () => new Set(mods.filter((mod) => mod.selected).map((mod) => mod.name)),
   )
@@ -54,10 +56,8 @@ export function OptionalModsDialog({ selection, mods, onConfirm, onClose }: Opti
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Optional Mods</DialogTitle>
-          <DialogDescription>
-            Pick the extras to install. Mods they depend on are added automatically.
-          </DialogDescription>
+          <DialogTitle>{t('optionalMods.title')}</DialogTitle>
+          <DialogDescription>{t('optionalMods.description')}</DialogDescription>
         </DialogHeader>
         <ul className="max-h-[50vh] overflow-auto rounded-md border">
           {mods.map((mod) => (
@@ -73,7 +73,7 @@ export function OptionalModsDialog({ selection, mods, onConfirm, onClose }: Opti
                     {mod.name}
                     {mod.recommended && (
                       <Badge variant="secondary" className="ml-2">
-                        recommended
+                        {t('optionalMods.recommended')}
                       </Badge>
                     )}
                   </p>
@@ -85,20 +85,20 @@ export function OptionalModsDialog({ selection, mods, onConfirm, onClose }: Opti
         </ul>
         <div className="flex gap-2">
           <Input
-            placeholder="Share code"
+            placeholder={t('optionalMods.shareCode')}
             value={shareCode}
             onChange={(event) => setShareCode(event.target.value)}
           />
           <Button variant="outline" disabled={!shareCode.trim()} onClick={() => void applyShareCode()}>
-            Use Share Code
+            {t('optionalMods.useShareCode')}
           </Button>
         </div>
         {shareCodeError && <p className="text-sm text-destructive">{shareCodeError}</p>}
         <DialogFooter>
           <Button variant="ghost" onClick={onClose}>
-            Cancel
+            {t('common:action.cancel')}
           </Button>
-          <Button onClick={() => onConfirm([...chosen])}>Install</Button>
+          <Button onClick={() => onConfirm([...chosen])}>{t('common:action.install')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

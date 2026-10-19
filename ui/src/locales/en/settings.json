@@ -1,0 +1,82 @@
+{
+  "title": "Settings",
+  "tabs": {
+    "launcher": "Launcher",
+    "accounts": "Accounts",
+    "java": "Java",
+    "minecraft": "Minecraft",
+    "commands": "Commands",
+    "tools": "Tools"
+  },
+  "units": {
+    "mib": "MiB",
+    "seconds": "s"
+  },
+  "launcher": {
+    "appearance": "Appearance",
+    "theme": "Theme",
+    "language": "Language",
+    "console": "Console",
+    "showConsole": "Open log on launch",
+    "showConsoleOnError": "Open log on crash",
+    "autoCloseConsole": "Close log on clean exit",
+    "gameTime": "Game time",
+    "recordGameTime": "Record play time",
+    "network": "Network",
+    "concurrentDownloads": "Parallel downloads",
+    "requestTimeout": "Request timeout",
+    "requestTimeoutHint": "Timeout, retries and proxy apply after restarting the launcher.",
+    "proxy": "Proxy",
+    "proxyHint": "For example http://proxy.local:8080. Leave empty to use the system proxy.",
+    "proxyPlaceholder": "System proxy",
+    "retries": "Retries",
+    "apis": "APIs",
+    "curseforgeApiKey": "CurseForge API key",
+    "curseforgeApiKeyHint": "Optional. Replaces the key this build comes with. Network and API changes apply after a restart.",
+    "curseforgeApiKeyPlaceholder": "Built-in key"
+  },
+  "java": {
+    "installation": "Java installation",
+    "automatic": "Automatic (best match for the game version)",
+    "detect": "Detect",
+    "autoDownload": "Download Java automatically",
+    "autoDownloadHint": "Fetch Mojang's Java runtime when no installed Java fits the game.",
+    "minMemory": "Minimum memory",
+    "maxMemory": "Maximum memory",
+    "jvmArgs": "JVM arguments",
+    "memoryRange": "Minimum memory must not exceed maximum memory.",
+    "memoryOverTotal": "More than this computer has ({{gib}} GiB); the game will not start.",
+    "memoryTotal": "This computer has {{gib}} GiB."
+  },
+  "minecraft": {
+    "windowSize": "Window size",
+    "maximized": "Start maximized"
+  },
+  "commands": {
+    "preLaunch": "Pre-launch command",
+    "preLaunchHint": "Runs before the game; a failure cancels the launch. Available as variables: $INST_NAME, $INST_ID, $INST_DIR, $INST_MC_DIR, $INST_JAVA.",
+    "wrapper": "Wrapper command",
+    "wrapperHint": "Prefixes the Java invocation, e.g. mangohud or prime-run.",
+    "postExit": "Post-exit command",
+    "postExitHint": "Runs after the game closes.",
+    "environment": "Environment variables",
+    "namePlaceholder": "NAME",
+    "valuePlaceholder": "value",
+    "removeVariable": "Remove {{name}}",
+    "addVariable": "Add variable"
+  },
+  "tools": {
+    "profilers": "Profilers",
+    "jprofilerPath": "JProfiler folder",
+    "jprofilerPathHint": "The installation folder that contains bin/jpenable.",
+    "notSet": "Not set",
+    "jprofilerPort": "JProfiler port",
+    "visualvm": "VisualVM",
+    "visualvmHint": "Leave empty to look for jvisualvm or visualvm on the PATH.",
+    "visualvmPlaceholder": "Found on the PATH",
+    "editor": "Editor",
+    "textEditor": "Text editor",
+    "textEditorHint": "Command that opens instance files, for example code or subl. Leave empty to use the default app.",
+    "defaultApp": "Default app"
+  }
+}

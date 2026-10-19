@@ -1,5 +1,6 @@
 import { open } from '@tauri-apps/plugin-dialog'
 import { ImagePlus, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { InstanceSummary } from '@/bindings'
 import { InstanceIcon } from '@/components/InstanceIcon'
 import { Button } from '@/components/ui/button'
@@ -14,6 +15,7 @@ interface IconPickerDialogProps {
 }
 
 export function IconPickerDialog({ instance, onClose }: IconPickerDialogProps) {
+  const { t } = useTranslation(['instanceDialogs', 'common'])
   const { data: customIcons = [] } = useCustomIcons()
   const addIcon = useAddCustomIcon()
   const removeIcon = useRemoveCustomIcon()
@@ -25,7 +27,7 @@ export function IconPickerDialog({ instance, onClose }: IconPickerDialogProps) {
     const path = await open({
       multiple: false,
       directory: false,
-      filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp'] }],
+      filters: [{ name: t('iconPicker.images'), extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp'] }],
     })
     if (path) addIcon.mutate(path)
   }
@@ -48,7 +50,7 @@ export function IconPickerDialog({ instance, onClose }: IconPickerDialogProps) {
     <Dialog open onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Choose an Icon</DialogTitle>
+          <DialogTitle>{t('iconPicker.title')}</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-7 gap-1">
           {Object.keys(BUILTIN_ICONS).map((iconKey) => (
@@ -59,7 +61,7 @@ export function IconPickerDialog({ instance, onClose }: IconPickerDialogProps) {
               {tile(icon.key)}
               <button
                 type="button"
-                aria-label="Remove icon"
+                aria-label={t('iconPicker.remove')}
                 className="absolute -top-1 -right-1 hidden rounded-full bg-destructive p-0.5 text-white group-hover:block"
                 onClick={() => removeIcon.mutate(icon.key)}
               >
@@ -71,10 +73,10 @@ export function IconPickerDialog({ instance, onClose }: IconPickerDialogProps) {
         {error && <p className="text-sm text-destructive">{error.message}</p>}
         <DialogFooter className="sm:justify-between">
           <Button variant="outline" onClick={() => void importIcon()}>
-            <ImagePlus /> Add Icon…
+            <ImagePlus /> {t('iconPicker.add')}
           </Button>
           <Button variant="ghost" onClick={onClose}>
-            Cancel
+            {t('common:action.cancel')}
           </Button>
         </DialogFooter>
       </DialogContent>

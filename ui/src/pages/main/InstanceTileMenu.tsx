@@ -13,6 +13,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
 import type { InstanceSummary } from '@/bindings'
@@ -28,6 +29,7 @@ import { openInstanceFolder } from '@/hooks/use-instance-actions'
 import { type InstanceDialog, InstanceDialogs } from '@/pages/main/InstanceDialogs'
 
 export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
+  const { t } = useTranslation(['main', 'common'])
   const { session, launch, kill } = useSession(instance.id)
   const { navigate } = useNavigation()
   const [dialog, setDialog] = useState<InstanceDialog | null>(null)
@@ -38,19 +40,19 @@ export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
       <ContextMenuContent className="w-48">
         {isActive ? (
           <ContextMenuItem onSelect={() => void kill()}>
-            <Square /> {session.status === 'preparing' ? 'Cancel Launch' : 'Kill'}
+            <Square /> {session.status === 'preparing' ? t('actions.cancelLaunch') : t('common:action.kill')}
           </ContextMenuItem>
         ) : (
           <>
             <ContextMenuItem onSelect={() => void launch()}>
-              <Play /> Launch
+              <Play /> {t('common:action.launch')}
             </ContextMenuItem>
             <ContextMenuItem onSelect={() => void launch({ demo: true })}>
-              <Play /> Launch Demo
+              <Play /> {t('actions.launchDemo')}
             </ContextMenuItem>
             <ContextMenuSub>
               <ContextMenuSubTrigger>
-                <Gauge /> Launch with Profiler
+                <Gauge /> {t('actions.launchWithProfiler')}
               </ContextMenuSubTrigger>
               <ContextMenuSubContent>
                 <ContextMenuItem onSelect={() => void launch({ profiler: 'jprofiler' })}>
@@ -64,33 +66,33 @@ export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
           </>
         )}
         <ContextMenuItem onSelect={() => navigate({ page: 'instance', instanceId: instance.id, tab: 'log' })}>
-          <Settings2 /> Edit
+          <Settings2 /> {t('common:action.edit')}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem onSelect={() => void openInstanceFolder(instance.id)}>
-          <FolderOpen /> Open Folder
+          <FolderOpen /> {t('common:action.openFolder')}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => setDialog('rename')}>
-          <Pencil /> Rename
+          <Pencil /> {t('common:action.rename')}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => setDialog('group')}>
-          <Tags /> Change Group
+          <Tags /> {t('actions.changeGroup')}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => setDialog('icon')}>
-          <Image /> Change Icon
+          <Image /> {t('actions.changeIcon')}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => setDialog('copy')}>
-          <Copy /> Copy…
+          <Copy /> {t('actions.copy')}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => setDialog('export')}>
-          <Package /> Export…
+          <Package /> {t('actions.export')}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => setDialog('shortcut')}>
-          <Link /> Create Shortcut
+          <Link /> {t('actions.createShortcut')}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem variant="destructive" disabled={isActive} onSelect={() => setDialog('delete')}>
-          <Trash2 /> Delete
+          <Trash2 /> {t('common:action.delete')}
         </ContextMenuItem>
       </ContextMenuContent>
       <InstanceDialogs instance={instance} dialog={dialog} onClose={() => setDialog(null)} />

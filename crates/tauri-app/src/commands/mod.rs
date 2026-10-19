@@ -7,6 +7,7 @@ pub mod icons;
 pub mod instance;
 pub mod java;
 pub mod launch;
+pub mod menu;
 pub mod meta;
 pub mod modplatform;
 pub mod resources;

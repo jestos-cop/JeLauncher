@@ -1,5 +1,6 @@
 import { save } from '@tauri-apps/plugin-dialog'
 import { ChevronDown, FileText } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { commands, type InstanceSummary, type ModListFormat } from '@/bindings'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,8 +11,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { unwrap } from '@/lib/command'
 
-const FORMATS: { format: ModListFormat; label: string; extension: string }[] = [
-  { format: 'plainText', label: 'Plain text', extension: 'txt' },
+const FORMATS: { format: ModListFormat; label?: string; extension: string }[] = [
+  { format: 'plainText', extension: 'txt' },
   { format: 'markdown', label: 'Markdown', extension: 'md' },
   { format: 'html', label: 'HTML', extension: 'html' },
   { format: 'json', label: 'JSON', extension: 'json' },
@@ -19,10 +20,11 @@ const FORMATS: { format: ModListFormat; label: string; extension: string }[] = [
 ]
 
 export function ModListExportMenu({ instance }: { instance: InstanceSummary }) {
+  const { t } = useTranslation('instanceDialogs')
   const exportList = async (format: ModListFormat, extension: string) => {
     const output = await save({
       defaultPath: `${instance.name} mods.${extension}`,
-      filters: [{ name: 'Mod list', extensions: [extension] }],
+      filters: [{ name: t('modListExport.fileType'), extensions: [extension] }],
     })
     if (output) await unwrap(commands.exportModList(instance.id, format, output))
   }
@@ -31,13 +33,13 @@ export function ModListExportMenu({ instance }: { instance: InstanceSummary }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button size="sm" variant="ghost">
-          <FileText /> Export List <ChevronDown />
+          <FileText /> {t('modListExport.button')} <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {FORMATS.map(({ format, label, extension }) => (
           <DropdownMenuItem key={format} onSelect={() => void exportList(format, extension)}>
-            {label}
+            {label ?? t('modListExport.plainText')}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

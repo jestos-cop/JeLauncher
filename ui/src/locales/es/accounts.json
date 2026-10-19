@@ -1,0 +1,32 @@
+{
+  "defaultHint": "La cuenta predeterminada se usa para iniciar todas las instancias.",
+  "addMicrosoft": "Añadir cuenta de Microsoft",
+  "addOffline": "Añadir cuenta sin conexión",
+  "kind": {
+    "microsoft": "Microsoft",
+    "offline": "Sin conexión"
+  },
+  "default": "Predeterminada",
+  "useByDefault": "Usar como predeterminada",
+  "signInAgain": "Volver a iniciar sesión",
+  "refresh": "Actualizar {{username}}",
+  "remove": "Quitar {{username}}",
+  "loading": "Cargando cuentas…",
+  "empty": "Añade una cuenta para iniciar el juego.",
+  "removeDialog": {
+    "title": "¿Quitar {{username}}?",
+    "description": "La cuenta se quitará del launcher. Tus mundos e instancias no se verán afectados."
+  },
+  "microsoft": {
+    "title": "Iniciar sesión con Microsoft",
+    "description": "Abre la página de Microsoft, introduce el código y aprueba el inicio de sesión. Esta ventana se actualizará sola.",
+    "copyCode": "Copiar código",
+    "open": "Abrir {{url}}",
+    "waiting": "Esperando la aprobación…",
+    "requesting": "Solicitando un código de inicio de sesión…"
+  },
+  "offline": {
+    "description": "Las cuentas sin conexión solo pueden jugar en modo un jugador y en servidores sin conexión.",
+    "username": "Nombre de usuario"
+  }
+}

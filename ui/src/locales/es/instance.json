@@ -1,0 +1,165 @@
+{
+  "tabs": {
+    "log": "Registro de Minecraft",
+    "modpack": "Modpack",
+    "version": "Versión",
+    "mod": "Mods",
+    "resourcePack": "Paquetes de recursos",
+    "shaderPack": "Paquetes de shaders",
+    "dataPack": "Paquetes de datos",
+    "worlds": "Mundos",
+    "servers": "Servidores",
+    "screenshots": "Capturas de pantalla",
+    "notes": "Notas",
+    "settings": "Ajustes"
+  },
+  "columns": {
+    "name": "Nombre",
+    "version": "Versión",
+    "authors": "Autores",
+    "description": "Descripción",
+    "file": "Archivo",
+    "mode": "Modo",
+    "lastPlayed": "Última partida",
+    "seed": "Semilla"
+  },
+  "item": {
+    "enable": "Activar {{name}}",
+    "remove": "Quitar {{name}}",
+    "delete": "Eliminar {{name}}",
+    "rename": "Renombrar {{name}}",
+    "edit": "Editar {{name}}",
+    "play": "Jugar a {{name}}",
+    "backUp": "Hacer copia de seguridad de {{name}}",
+    "moveUp": "Subir {{name}}"
+  },
+  "confirm": {
+    "remove": "¿Quitar {{name}}?",
+    "delete": "¿Eliminar {{name}}?"
+  },
+  "version": {
+    "components": "Componentes",
+    "editFile": "Editar {{file}}",
+    "change": "Cambiar versión",
+    "changeOrInstallLoader": "Cambiar versión o instalar cargador",
+    "removeLoader": "Quitar cargador",
+    "removeLoaderDescription": "La instancia se iniciará como Minecraft vanilla; los mods instalados se quedan en la carpeta mods."
+  },
+  "modpack": {
+    "source": "Versión {{version}} de {{provider}}",
+    "sourceWithUpdate": "Versión {{version}} de {{provider}} · {{latest}} disponible",
+    "switchTo": "Cambiar a {{version}}",
+    "switchVersion": "Cambiar versión",
+    "switchUnsupported": "Aún no se puede cambiar la versión de los packs de {{provider}}.",
+    "downloadingFiles": "Descargando archivos {{completed}}/{{total}}",
+    "downloading": "Descargando modpack…",
+    "loadingVersions": "Cargando versiones…",
+    "installed": "Instalada",
+    "releaseType": {
+      "release": "Estable",
+      "beta": "Beta",
+      "alpha": "Alfa"
+    },
+    "noChangelog": "Esta versión no tiene registro de cambios.",
+    "selectVersion": "Selecciona una versión para ver su registro de cambios.",
+    "confirmTitle": "¿Cambiar a {{version}}?",
+    "confirmDescription": "Se reemplazan los archivos de la versión actual del pack. Los mundos, las capturas de pantalla y tus propios archivos se conservan.",
+    "confirmSwitch": "Cambiar"
+  },
+  "resources": {
+    "mod": {
+      "search": "Buscar mods",
+      "download": "Descargar mods",
+      "empty": "No hay mods instalados. Coloca archivos .jar en la carpeta mods.",
+      "upToDate": "Todos los mods de Modrinth están actualizados."
+    },
+    "resourcePack": {
+      "search": "Buscar paquetes de recursos",
+      "download": "Descargar paquetes de recursos",
+      "empty": "No hay paquetes de recursos instalados.",
+      "upToDate": "Todos los paquetes de recursos de Modrinth están actualizados."
+    },
+    "shaderPack": {
+      "search": "Buscar paquetes de shaders",
+      "download": "Descargar paquetes de shaders",
+      "empty": "No hay paquetes de shaders instalados.",
+      "upToDate": "Todos los paquetes de shaders de Modrinth están actualizados."
+    },
+    "dataPack": {
+      "search": "Buscar paquetes de datos",
+      "download": "Descargar paquetes de datos",
+      "empty": "No hay paquetes de datos instalados.",
+      "upToDate": "Todos los paquetes de datos de Modrinth están actualizados."
+    },
+    "enabledCount": "{{enabled}} de {{total}} activados",
+    "checking": "Comprobando…",
+    "checkUpdates": "Buscar actualizaciones",
+    "updatesAvailable_one": "{{count}} actualización disponible.",
+    "updatesAvailable_other": "{{count}} actualizaciones disponibles.",
+    "updating": "Actualizando…",
+    "reviewUpdates": "Revisar actualizaciones",
+    "reading": "Leyendo archivos…",
+    "removeDescription": "{{file}} se eliminará de la instancia."
+  },
+  "worlds": {
+    "count_one": "{{count}} mundo",
+    "count_other": "{{count}} mundos",
+    "backupSaved": "Copia de seguridad guardada en {{path}}",
+    "gameMode": {
+      "survival": "Supervivencia",
+      "creative": "Creativo",
+      "adventure": "Aventura",
+      "spectator": "Espectador",
+      "hardcore": "Extremo",
+      "unknown": "Desconocido"
+    },
+    "copySeed": "Copiar semilla",
+    "play": "Jugar",
+    "backUp": "Copia de seguridad",
+    "reading": "Leyendo mundos…",
+    "empty": "Aún no hay mundos.",
+    "deleteDescription": "El mundo se eliminará permanentemente. Considera hacer una copia de seguridad antes."
+  },
+  "servers": {
+    "count_one": "{{count}} servidor",
+    "count_other": "{{count}} servidores",
+    "add": "Añadir servidor",
+    "reading": "Leyendo servidores…",
+    "empty": "Aún no hay servidores.",
+    "unnamed": "el servidor",
+    "removeDescription": "El servidor se quitará de la lista multijugador de esta instancia.",
+    "pinging": "Comprobando conexión…",
+    "players_one": "{{online}}/{{count}} jugador",
+    "players_other": "{{online}}/{{count}} jugadores",
+    "versionLatency": "{{version}} · {{latency}} ms",
+    "join": "Unirse",
+    "moveUp": "Subir"
+  },
+  "screenshots": {
+    "count_one": "{{count}} captura de pantalla",
+    "count_other": "{{count}} capturas de pantalla",
+    "reading": "Leyendo capturas de pantalla…",
+    "empty": "Aún no hay capturas de pantalla. Pulsa F2 en el juego para hacer una.",
+    "renameTitle": "Renombrar captura de pantalla",
+    "deleteDescription": "La captura de pantalla se eliminará permanentemente."
+  },
+  "notes": {
+    "loading": "Cargando notas…",
+    "unsaved": "Cambios sin guardar",
+    "hint": "Las notas se guardan con la instancia.",
+    "placeholder": "Semillas, coordenadas, contraseñas de servidores, notas sobre la configuración de mods…"
+  },
+  "settings": {
+    "javaInstallation": "Instalación de Java",
+    "minMemory": "Memoria mínima",
+    "maxMemory": "Memoria máxima",
+    "mib": "MiB",
+    "jvmArgs": "Argumentos de la JVM",
+    "gameWindow": "Ventana del juego",
+    "windowSize": "Tamaño de la ventana",
+    "startMaximized": "Iniciar maximizada",
+    "customCommands": "Comandos personalizados",
+    "memoryError": "La memoria mínima no debe superar la memoria máxima.",
+    "override": "Sobrescribir los ajustes globales"
+  }
+}

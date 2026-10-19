@@ -1,0 +1,23 @@
+{
+  "progress": {
+    "preparing": "Подготовка…",
+    "downloading": "Загрузка файлов {{completed}}/{{total}}",
+    "installingLoader": "Установка загрузчика модов…",
+    "starting": "Запуск игры…"
+  },
+  "log": {
+    "searchPlaceholder": "Поиск в логе",
+    "lines_one": "{{count}} строка",
+    "lines_few": "{{count}} строки",
+    "lines_many": "{{count}} строк",
+    "lines_other": "{{count}} строки",
+    "wrap": "Перенос строк",
+    "upload": "Опубликовать",
+    "uploading": "Публикация…",
+    "clear": "Очистить",
+    "uploaded": "Лог опубликован: <link>{{url}}</link>",
+    "copyLink": "Копировать ссылку",
+    "confirmUploadTitle": "Опубликовать этот лог?",
+    "confirmUploadDescription": "Весь лог будет опубликован на mclo.gs, и его сможет прочитать любой, у кого есть ссылка. Ваша домашняя папка будет скрыта в путях к файлам."
+  }
+}

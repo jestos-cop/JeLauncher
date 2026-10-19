@@ -1,5 +1,6 @@
 import { Check, ChevronDown, LogIn, Settings, Trash2, UserPlus, UserRound } from 'lucide-react'
 import { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@/app/navigation'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,6 +15,7 @@ import { OfflineAccountDialog } from '@/dialogs/OfflineAccountDialog'
 import { useAccounts, useRemoveAccount, useSetDefaultAccount } from '@/hooks/use-accounts'
 
 export function AccountsMenu() {
+  const { t } = useTranslation('main')
   const { data: accounts = [] } = useAccounts()
   const setDefault = useSetDefaultAccount()
   const removeAccount = useRemoveAccount()
@@ -28,7 +30,7 @@ export function AccountsMenu() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button size="sm" variant="ghost">
-            <UserRound /> {current?.username ?? 'No account'} <ChevronDown />
+            <UserRound /> {current?.username ?? t('accounts.none')} <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
@@ -39,7 +41,7 @@ export function AccountsMenu() {
               <span className="text-xs text-muted-foreground">{account.kind.type}</span>
               <button
                 type="button"
-                aria-label={`Remove ${account.username}`}
+                aria-label={t('accounts.remove', { name: account.username })}
                 className="text-muted-foreground hover:text-destructive"
                 onClick={(event) => {
                   event.stopPropagation()
@@ -52,13 +54,13 @@ export function AccountsMenu() {
           ))}
           {accounts.length > 0 && <DropdownMenuSeparator />}
           <DropdownMenuItem onSelect={() => setIsSigningIn(true)}>
-            <LogIn /> Add Microsoft account…
+            <LogIn /> {t('accounts.addMicrosoft')}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setIsAdding(true)}>
-            <UserPlus /> Add offline account…
+            <UserPlus /> {t('accounts.addOffline')}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => navigate({ page: 'settings', tab: 'accounts' })}>
-            <Settings /> Manage accounts…
+            <Settings /> {t('accounts.manage')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

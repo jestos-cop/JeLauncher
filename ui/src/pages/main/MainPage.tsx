@@ -1,5 +1,6 @@
 import { Plus, RefreshCw, Settings } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@/app/navigation'
 import { AccountsMenu } from '@/components/AccountsMenu'
 import { FoldersMenu } from '@/components/FoldersMenu'
@@ -17,6 +18,7 @@ import { InstancePanel } from '@/pages/main/InstancePanel'
 import { StatusBar } from '@/pages/main/StatusBar'
 
 export function MainPage() {
+  const { t } = useTranslation(['main', 'common'])
   const { data: instances, error, isPending, refetch } = useInstances()
   const [isCreating, setIsCreating] = useState(false)
   const { navigate } = useNavigation()
@@ -27,23 +29,23 @@ export function MainPage() {
 
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
-      <header className="flex items-center gap-2 border-b px-3 py-2">
+      <header className="flex flex-wrap items-center gap-2 border-b px-3 py-2">
         <Logo className="mr-1" />
         <Button size="sm" onClick={() => setIsCreating(true)}>
-          <Plus /> Add Instance
+          <Plus /> {t('toolbar.addInstance')}
         </Button>
         <Button size="sm" variant="ghost" onClick={() => refetch()}>
-          <RefreshCw /> Refresh
+          <RefreshCw /> {t('common:action.refresh')}
         </Button>
         <FoldersMenu />
         <Button size="sm" variant="ghost" onClick={() => navigate({ page: 'settings', tab: 'launcher' })}>
-          <Settings /> Settings
+          <Settings /> {t('toolbar.settings')}
         </Button>
         <HelpMenu />
         <div className="ml-auto flex items-center gap-2">
           <Input
             className="h-8 w-48"
-            placeholder="Search instances"
+            placeholder={t('toolbar.searchPlaceholder')}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
@@ -52,8 +54,8 @@ export function MainPage() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="name">By name</SelectItem>
-              <SelectItem value="lastPlayed">Last played</SelectItem>
+              <SelectItem value="name">{t('toolbar.sortByName')}</SelectItem>
+              <SelectItem value="lastPlayed">{t('toolbar.sortLastPlayed')}</SelectItem>
             </SelectContent>
           </Select>
           <AccountsMenu />
@@ -63,9 +65,9 @@ export function MainPage() {
 
       <div className="flex min-h-0 flex-1">
         <main className="flex-1 overflow-auto p-4">
-          {isPending && <p className="text-muted-foreground">Loading instances…</p>}
+          {isPending && <p className="text-muted-foreground">{t('grid.loading')}</p>}
           {error && <p className="text-destructive">{error.message}</p>}
-          {instances?.length === 0 && <p className="text-muted-foreground">No instances yet.</p>}
+          {instances?.length === 0 && <p className="text-muted-foreground">{t('grid.empty')}</p>}
           {instances && instances.length > 0 && (
             <InstanceGrid
               instances={instances}

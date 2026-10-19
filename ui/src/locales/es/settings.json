@@ -1,0 +1,82 @@
+{
+  "title": "Ajustes",
+  "tabs": {
+    "launcher": "Launcher",
+    "accounts": "Cuentas",
+    "java": "Java",
+    "minecraft": "Minecraft",
+    "commands": "Comandos",
+    "tools": "Herramientas"
+  },
+  "units": {
+    "mib": "MiB",
+    "seconds": "s"
+  },
+  "launcher": {
+    "appearance": "Apariencia",
+    "theme": "Tema",
+    "language": "Idioma",
+    "console": "Registro",
+    "showConsole": "Abrir el registro al iniciar",
+    "showConsoleOnError": "Abrir el registro si el juego falla",
+    "autoCloseConsole": "Cerrar el registro al salir sin errores",
+    "gameTime": "Tiempo de juego",
+    "recordGameTime": "Registrar el tiempo de juego",
+    "network": "Red",
+    "concurrentDownloads": "Descargas simultáneas",
+    "requestTimeout": "Tiempo de espera de solicitud",
+    "requestTimeoutHint": "El tiempo de espera, los reintentos y el proxy se aplican al reiniciar el launcher.",
+    "proxy": "Proxy",
+    "proxyHint": "Por ejemplo, http://proxy.local:8080. Déjalo vacío para usar el proxy del sistema.",
+    "proxyPlaceholder": "Proxy del sistema",
+    "retries": "Reintentos",
+    "apis": "API",
+    "curseforgeApiKey": "Clave de API de CurseForge",
+    "curseforgeApiKeyHint": "Opcional. Sustituye la clave incluida en esta versión del launcher. Los cambios de red y API se aplican tras reiniciar.",
+    "curseforgeApiKeyPlaceholder": "Clave integrada"
+  },
+  "java": {
+    "installation": "Instalación de Java",
+    "automatic": "Automática (la más adecuada para la versión del juego)",
+    "detect": "Detectar",
+    "autoDownload": "Descargar Java automáticamente",
+    "autoDownloadHint": "Descarga el entorno de Java de Mojang cuando ninguna instalación de Java sirve para el juego.",
+    "minMemory": "Memoria mínima",
+    "maxMemory": "Memoria máxima",
+    "jvmArgs": "Argumentos de JVM",
+    "memoryRange": "La memoria mínima no puede superar la máxima.",
+    "memoryOverTotal": "Más de la que tiene este equipo ({{gib}} GiB); el juego no se iniciará.",
+    "memoryTotal": "Este equipo tiene {{gib}} GiB."
+  },
+  "minecraft": {
+    "windowSize": "Tamaño de ventana",
+    "maximized": "Iniciar maximizada"
+  },
+  "commands": {
+    "preLaunch": "Comando previo al inicio",
+    "preLaunchHint": "Se ejecuta antes del juego; si falla, se cancela el inicio. Variables disponibles: $INST_NAME, $INST_ID, $INST_DIR, $INST_MC_DIR, $INST_JAVA.",
+    "wrapper": "Comando envoltorio",
+    "wrapperHint": "Se antepone a la llamada de Java, p. ej. mangohud o prime-run.",
+    "postExit": "Comando al salir",
+    "postExitHint": "Se ejecuta al cerrarse el juego.",
+    "environment": "Variables de entorno",
+    "namePlaceholder": "NOMBRE",
+    "valuePlaceholder": "valor",
+    "removeVariable": "Quitar {{name}}",
+    "addVariable": "Añadir variable"
+  },
+  "tools": {
+    "profilers": "Perfiladores",
+    "jprofilerPath": "Carpeta de JProfiler",
+    "jprofilerPathHint": "La carpeta de instalación que contiene bin/jpenable.",
+    "notSet": "Sin definir",
+    "jprofilerPort": "Puerto de JProfiler",
+    "visualvm": "VisualVM",
+    "visualvmHint": "Déjalo vacío para buscar jvisualvm o visualvm en el PATH.",
+    "visualvmPlaceholder": "Buscar en el PATH",
+    "editor": "Editor",
+    "textEditor": "Editor de texto",
+    "textEditorHint": "Comando que abre los archivos de la instancia, por ejemplo code o subl. Déjalo vacío para usar la aplicación predeterminada.",
+    "defaultApp": "Aplicación predeterminada"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "progress": {
+    "preparing": "Підготовка…",
+    "downloading": "Завантаження файлів {{completed}}/{{total}}",
+    "installingLoader": "Встановлення завантажувача модів…",
+    "starting": "Запуск гри…"
+  },
+  "log": {
+    "searchPlaceholder": "Пошук у журналі",
+    "lines_one": "{{count}} рядок",
+    "lines_few": "{{count}} рядки",
+    "lines_many": "{{count}} рядків",
+    "lines_other": "{{count}} рядка",
+    "wrap": "Перенесення",
+    "upload": "Опублікувати",
+    "uploading": "Публікація…",
+    "clear": "Очистити",
+    "uploaded": "Журнал опубліковано: <link>{{url}}</link>",
+    "copyLink": "Копіювати посилання",
+    "confirmUploadTitle": "Опублікувати цей журнал?",
+    "confirmUploadDescription": "Увесь журнал буде опубліковано на mclo.gs, і його зможе прочитати будь-хто з посиланням. Вашу домашню теку буде приховано у шляхах до файлів."
+  }
+}

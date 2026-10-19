@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { LoaderKind, LoaderSpec } from '@/bindings'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -19,6 +20,7 @@ interface LoaderPickerProps {
 }
 
 export function LoaderPicker({ minecraftVersion, value, onChange }: LoaderPickerProps) {
+  const { t } = useTranslation(['newInstance', 'common'])
   const kind = value?.kind ?? null
   const { data: versions, error, isFetching } = useLoaderVersions(kind, minecraftVersion)
 
@@ -38,7 +40,7 @@ export function LoaderPicker({ minecraftVersion, value, onChange }: LoaderPicker
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Label>Loader</Label>
+      <Label>{t('loaderPicker.label')}</Label>
       <ToggleGroup
         type="single"
         variant="outline"
@@ -46,7 +48,7 @@ export function LoaderPicker({ minecraftVersion, value, onChange }: LoaderPicker
         value={kind ?? 'none'}
         onValueChange={selectKind}
       >
-        <ToggleGroupItem value="none">None</ToggleGroupItem>
+        <ToggleGroupItem value="none">{t('loaderPicker.none')}</ToggleGroupItem>
         {LOADERS.map((loader) => (
           <ToggleGroupItem key={loader.kind} value={loader.kind} disabled={!minecraftVersion}>
             {loader.label}
@@ -60,13 +62,15 @@ export function LoaderPicker({ minecraftVersion, value, onChange }: LoaderPicker
           disabled={isFetching || !versions?.length}
         >
           <SelectTrigger className="w-48" size="sm">
-            <SelectValue placeholder={isFetching ? 'Loading…' : 'No versions'} />
+            <SelectValue
+              placeholder={isFetching ? t('common:state.loading') : t('loaderPicker.noVersions')}
+            />
           </SelectTrigger>
           <SelectContent>
             {versions?.map((version) => (
               <SelectItem key={version.version} value={version.version}>
                 {version.version}
-                {!version.stable && <span className="text-muted-foreground">beta</span>}
+                {!version.stable && <span className="text-muted-foreground">{t('loaderPicker.beta')}</span>}
               </SelectItem>
             ))}
           </SelectContent>

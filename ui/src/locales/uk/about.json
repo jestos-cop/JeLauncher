@@ -1,0 +1,13 @@
+{
+  "about": {
+    "description": "Лаунчер Minecraft, створений на Rust, Tauri та React.",
+    "version": "Версія",
+    "license": "Ліцензія",
+    "trademark": "Minecraft є торговельною маркою Mojang Studios. JeLauncher не пов’язаний із Mojang чи Microsoft.",
+    "sourceCode": "Вихідний код"
+  },
+  "news": {
+    "title": "Новини Minecraft",
+    "readMore": "Докладніше"
+  }
+}

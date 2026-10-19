@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { InstanceSummary } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { PromptDialog } from '@/components/PromptDialog'
@@ -17,6 +18,7 @@ interface InstanceDialogsProps {
 
 /** The dialogs behind the instance actions, shared by the context menu and the side panel. */
 export function InstanceDialogs({ instance, dialog, onClose }: InstanceDialogsProps) {
+  const { t } = useTranslation(['main', 'common'])
   const rename = useRenameInstance()
   const setGroup = useSetInstanceGroup()
   const remove = useDeleteInstance()
@@ -25,9 +27,9 @@ export function InstanceDialogs({ instance, dialog, onClose }: InstanceDialogsPr
     case 'rename':
       return (
         <PromptDialog
-          title="Rename Instance"
+          title={t('dialogs.renameTitle')}
           initialValue={instance.name}
-          confirmLabel="Rename"
+          confirmLabel={t('common:action.rename')}
           error={rename.error?.message}
           onConfirm={(name) => rename.mutate({ id: instance.id, name }, { onSuccess: onClose })}
           onClose={onClose}
@@ -36,10 +38,10 @@ export function InstanceDialogs({ instance, dialog, onClose }: InstanceDialogsPr
     case 'group':
       return (
         <PromptDialog
-          title="Change Group"
+          title={t('actions.changeGroup')}
           initialValue={instance.group ?? ''}
-          placeholder="No group"
-          confirmLabel="Save"
+          placeholder={t('dialogs.noGroup')}
+          confirmLabel={t('common:action.save')}
           allowEmpty
           error={setGroup.error?.message}
           onConfirm={(group) =>
@@ -59,9 +61,9 @@ export function InstanceDialogs({ instance, dialog, onClose }: InstanceDialogsPr
     case 'delete':
       return (
         <ConfirmDialog
-          title={`Delete ${instance.name}?`}
-          description="The instance folder, including worlds and mods, will be permanently removed."
-          confirmLabel="Delete"
+          title={t('dialogs.deleteTitle', { name: instance.name })}
+          description={t('dialogs.deleteDescription')}
+          confirmLabel={t('common:action.delete')}
           onConfirm={() => remove.mutate(instance.id, { onSuccess: onClose })}
           onClose={onClose}
         />

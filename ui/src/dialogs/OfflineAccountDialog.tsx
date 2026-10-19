@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -17,6 +18,7 @@ interface OfflineAccountDialogProps {
 }
 
 export function OfflineAccountDialog({ open, onOpenChange }: OfflineAccountDialogProps) {
+  const { t } = useTranslation(['accounts', 'common'])
   const [username, setUsername] = useState('')
   const addAccount = useAddOfflineAccount()
 
@@ -36,24 +38,22 @@ export function OfflineAccountDialog({ open, onOpenChange }: OfflineAccountDialo
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={submit} className="flex flex-col gap-4">
           <DialogHeader>
-            <DialogTitle>Add Offline Account</DialogTitle>
-            <DialogDescription>
-              Offline accounts can only play singleplayer and offline-mode servers.
-            </DialogDescription>
+            <DialogTitle>{t('addOffline')}</DialogTitle>
+            <DialogDescription>{t('offline.description')}</DialogDescription>
           </DialogHeader>
           <Input
             autoFocus
-            placeholder="Username"
+            placeholder={t('offline.username')}
             value={username}
             onChange={(event) => setUsername(event.target.value)}
           />
           {addAccount.error && <p className="text-sm text-destructive">{addAccount.error.message}</p>}
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={close}>
-              Cancel
+              {t('common:action.cancel')}
             </Button>
             <Button type="submit" disabled={!username.trim() || addAccount.isPending}>
-              Add
+              {t('common:action.add')}
             </Button>
           </DialogFooter>
         </form>

@@ -1,0 +1,175 @@
+{
+  "tabs": {
+    "log": "Журнал Minecraft",
+    "modpack": "Модпак",
+    "version": "Версія",
+    "mod": "Моди",
+    "resourcePack": "Пакети ресурсів",
+    "shaderPack": "Пакети шейдерів",
+    "dataPack": "Датапаки",
+    "worlds": "Світи",
+    "servers": "Сервери",
+    "screenshots": "Знімки екрана",
+    "notes": "Нотатки",
+    "settings": "Налаштування"
+  },
+  "columns": {
+    "name": "Назва",
+    "version": "Версія",
+    "authors": "Автори",
+    "description": "Опис",
+    "file": "Файл",
+    "mode": "Режим",
+    "lastPlayed": "Остання гра",
+    "seed": "Сід"
+  },
+  "item": {
+    "enable": "Увімкнути {{name}}",
+    "remove": "Прибрати {{name}}",
+    "delete": "Видалити {{name}}",
+    "rename": "Перейменувати {{name}}",
+    "edit": "Редагувати {{name}}",
+    "play": "Грати в {{name}}",
+    "backUp": "Створити резервну копію {{name}}",
+    "moveUp": "Перемістити {{name}} вгору"
+  },
+  "confirm": {
+    "remove": "Прибрати {{name}}?",
+    "delete": "Видалити {{name}}?"
+  },
+  "version": {
+    "components": "Компоненти",
+    "editFile": "Редагувати {{file}}",
+    "change": "Змінити версію",
+    "changeOrInstallLoader": "Змінити версію або встановити завантажувач",
+    "removeLoader": "Прибрати завантажувач",
+    "removeLoaderDescription": "Збірка запускатиметься як звичайний Minecraft; встановлені моди залишаться в теці mods."
+  },
+  "modpack": {
+    "source": "Версія {{version}} з {{provider}}",
+    "sourceWithUpdate": "Версія {{version}} з {{provider}} · доступна {{latest}}",
+    "switchTo": "Перейти на {{version}}",
+    "switchVersion": "Змінити версію",
+    "switchUnsupported": "Зміна версій модпаків {{provider}} поки не підтримується.",
+    "downloadingFiles": "Завантаження файлів {{completed}}/{{total}}",
+    "downloading": "Завантаження модпака…",
+    "loadingVersions": "Завантаження версій…",
+    "installed": "Встановлено",
+    "releaseType": {
+      "release": "Реліз",
+      "beta": "Бета",
+      "alpha": "Альфа"
+    },
+    "noChangelog": "Для цієї версії немає списку змін.",
+    "selectVersion": "Виберіть версію, щоб переглянути список змін.",
+    "confirmTitle": "Перейти на {{version}}?",
+    "confirmDescription": "Файли поточної версії модпака буде замінено. Світи, знімки екрана та ваші власні файли збережуться.",
+    "confirmSwitch": "Перейти"
+  },
+  "resources": {
+    "mod": {
+      "search": "Пошук модів",
+      "download": "Завантажити моди",
+      "empty": "Моди не встановлено. Покладіть файли .jar у теку mods.",
+      "upToDate": "Усі моди з Modrinth актуальні."
+    },
+    "resourcePack": {
+      "search": "Пошук пакетів ресурсів",
+      "download": "Завантажити пакети ресурсів",
+      "empty": "Пакети ресурсів не встановлено.",
+      "upToDate": "Усі пакети ресурсів з Modrinth актуальні."
+    },
+    "shaderPack": {
+      "search": "Пошук пакетів шейдерів",
+      "download": "Завантажити пакети шейдерів",
+      "empty": "Пакети шейдерів не встановлено.",
+      "upToDate": "Усі пакети шейдерів з Modrinth актуальні."
+    },
+    "dataPack": {
+      "search": "Пошук датапаків",
+      "download": "Завантажити датапаки",
+      "empty": "Датапаки не встановлено.",
+      "upToDate": "Усі датапаки з Modrinth актуальні."
+    },
+    "enabledCount": "Увімкнено {{enabled}} з {{total}}",
+    "checking": "Перевірка…",
+    "checkUpdates": "Перевірити оновлення",
+    "updatesAvailable_one": "Доступне {{count}} оновлення.",
+    "updatesAvailable_few": "Доступні {{count}} оновлення.",
+    "updatesAvailable_many": "Доступно {{count}} оновлень.",
+    "updatesAvailable_other": "Доступно {{count}} оновлення.",
+    "updating": "Оновлення…",
+    "reviewUpdates": "Переглянути оновлення",
+    "reading": "Читання файлів…",
+    "removeDescription": "{{file}} буде видалено зі збірки."
+  },
+  "worlds": {
+    "count_one": "{{count}} світ",
+    "count_few": "{{count}} світи",
+    "count_many": "{{count}} світів",
+    "count_other": "{{count}} світу",
+    "backupSaved": "Резервну копію збережено в {{path}}",
+    "gameMode": {
+      "survival": "Виживання",
+      "creative": "Творчість",
+      "adventure": "Пригоди",
+      "spectator": "Спостерігач",
+      "hardcore": "Хардкор",
+      "unknown": "Невідомо"
+    },
+    "copySeed": "Копіювати сід",
+    "play": "Грати",
+    "backUp": "Резервна копія",
+    "reading": "Читання світів…",
+    "empty": "Світів поки немає.",
+    "deleteDescription": "Світ буде видалено назавжди. Спершу варто створити резервну копію."
+  },
+  "servers": {
+    "count_one": "{{count}} сервер",
+    "count_few": "{{count}} сервери",
+    "count_many": "{{count}} серверів",
+    "count_other": "{{count}} сервера",
+    "add": "Додати сервер",
+    "reading": "Читання серверів…",
+    "empty": "Серверів поки немає.",
+    "unnamed": "сервер",
+    "removeDescription": "Сервер буде прибрано зі списку мережевої гри цієї збірки.",
+    "pinging": "Перевірка зв'язку…",
+    "players_one": "{{online}}/{{count}} гравець",
+    "players_few": "{{online}}/{{count}} гравці",
+    "players_many": "{{online}}/{{count}} гравців",
+    "players_other": "{{online}}/{{count}} гравця",
+    "versionLatency": "{{version}} · {{latency}} мс",
+    "join": "Приєднатися",
+    "moveUp": "Перемістити вгору"
+  },
+  "screenshots": {
+    "count_one": "{{count}} знімок екрана",
+    "count_few": "{{count}} знімки екрана",
+    "count_many": "{{count}} знімків екрана",
+    "count_other": "{{count}} знімка екрана",
+    "reading": "Читання знімків екрана…",
+    "empty": "Знімків екрана поки немає. Натисніть F2 у грі, щоб зробити знімок.",
+    "renameTitle": "Перейменувати знімок екрана",
+    "deleteDescription": "Знімок екрана буде видалено назавжди."
+  },
+  "notes": {
+    "loading": "Завантаження нотаток…",
+    "unsaved": "Незбережені зміни",
+    "hint": "Нотатки зберігаються разом зі збіркою.",
+    "placeholder": "Сіди, координати, паролі серверів, нотатки щодо налаштування модів…"
+  },
+  "settings": {
+    "javaInstallation": "Встановлення Java",
+    "minMemory": "Мінімальна пам'ять",
+    "maxMemory": "Максимальна пам'ять",
+    "mib": "МіБ",
+    "jvmArgs": "Аргументи JVM",
+    "gameWindow": "Вікно гри",
+    "windowSize": "Розмір вікна",
+    "startMaximized": "Запускати розгорнутим",
+    "customCommands": "Власні команди",
+    "memoryError": "Мінімальна пам'ять не може перевищувати максимальну.",
+    "override": "Перевизначити глобальні налаштування"
+  }
+}

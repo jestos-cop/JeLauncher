@@ -1,12 +1,14 @@
 import { open } from '@tauri-apps/plugin-dialog'
 import { FolderOpen, RefreshCw } from 'lucide-react'
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type { Theme } from '@/bindings'
 import { useJavaInstalls } from '@/hooks/use-settings'
+import { LANGUAGES } from '@/i18n'
 
 const AUTO_JAVA = 'auto'
 
@@ -62,6 +64,7 @@ interface JavaPickerProps {
 }
 
 export function JavaPicker({ value, onChange }: JavaPickerProps) {
+  const { t } = useTranslation('settings')
   const { data: installs = [], isFetching, refetch } = useJavaInstalls()
   const isUnlisted = value !== null && !installs.some((install) => install.path === value)
 
@@ -72,7 +75,7 @@ export function JavaPicker({ value, onChange }: JavaPickerProps) {
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={AUTO_JAVA}>Automatic (best match for the game version)</SelectItem>
+          <SelectItem value={AUTO_JAVA}>{t('java.automatic')}</SelectItem>
           {isUnlisted && <SelectItem value={value}>{value}</SelectItem>}
           {installs.map((install) => (
             <SelectItem key={install.path} value={install.path}>
@@ -82,22 +85,57 @@ export function JavaPicker({ value, onChange }: JavaPickerProps) {
         </SelectContent>
       </Select>
       <Button size="sm" variant="ghost" disabled={isFetching} onClick={() => void refetch()}>
-        <RefreshCw /> Detect
+        <RefreshCw /> {t('java.detect')}
       </Button>
     </div>
   )
 }
 
+const THEMES: Theme[] = ['system', 'light', 'dark']
+const SYSTEM_LANGUAGE = 'system'
+
 export function ThemeSelect({ value, onChange }: { value: Theme; onChange: (theme: Theme) => void }) {
+  const { t } = useTranslation()
   return (
     <Select value={value} onValueChange={(theme) => onChange(theme as Theme)}>
       <SelectTrigger className="w-40">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="system">System</SelectItem>
-        <SelectItem value="light">Light</SelectItem>
-        <SelectItem value="dark">Dark</SelectItem>
+        {THEMES.map((theme) => (
+          <SelectItem key={theme} value={theme}>
+            {t(`theme.${theme}`)}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+}
+
+/** Language picker; `null` follows the system language. */
+export function LanguageSelect({
+  value,
+  onChange,
+}: {
+  value: string | null
+  onChange: (language: string | null) => void
+}) {
+  const { t } = useTranslation()
+  return (
+    <Select
+      value={value ?? SYSTEM_LANGUAGE}
+      onValueChange={(language) => onChange(language === SYSTEM_LANGUAGE ? null : language)}
+    >
+      <SelectTrigger className="w-48">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value={SYSTEM_LANGUAGE}>{t('language.system')}</SelectItem>
+        {Object.entries(LANGUAGES).map(([code, name]) => (
+          <SelectItem key={code} value={code}>
+            {name}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   )
@@ -112,6 +150,7 @@ interface PathInputProps {
 
 /** A path typed by hand or picked with the system file dialog; empty means unset. */
 export function PathInput({ value, onChange, placeholder, directory = false }: PathInputProps) {
+  const { t } = useTranslation()
   const browse = async () => {
     const picked = await open({ directory, multiple: false })
     if (typeof picked === 'string') onChange(picked)
@@ -124,7 +163,7 @@ export function PathInput({ value, onChange, placeholder, directory = false }: P
         onChange={(event) => onChange(event.target.value || null)}
       />
       <Button variant="outline" onClick={() => void browse()}>
-        <FolderOpen /> Browse
+        <FolderOpen /> {t('action.browse')}
       </Button>
     </div>
   )

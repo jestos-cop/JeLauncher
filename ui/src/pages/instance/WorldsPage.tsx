@@ -1,5 +1,6 @@
 import { Archive, Copy, FolderOpen, Play, RefreshCw, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSession } from '@/app/sessions'
 import type { World } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { openSavesFolder, useBackupWorld, useDeleteWorld, useWorlds } from '@/hooks/use-worlds'
 
 export function WorldsPage({ instanceId }: { instanceId: string }) {
+  const { t } = useTranslation(['instance', 'common'])
   const { data: worlds = [], error, isPending, refetch } = useWorlds(instanceId)
   const remove = useDeleteWorld(instanceId)
   const backup = useBackupWorld(instanceId)
@@ -15,31 +17,33 @@ export function WorldsPage({ instanceId }: { instanceId: string }) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">{worlds.length} worlds</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-sm text-muted-foreground">{t('worlds.count', { count: worlds.length })}</span>
         <div className="ml-auto flex gap-1">
           <Button size="sm" variant="ghost" onClick={() => refetch()}>
-            <RefreshCw /> Refresh
+            <RefreshCw /> {t('common:action.refresh')}
           </Button>
           <Button size="sm" variant="ghost" onClick={() => void openSavesFolder(instanceId)}>
-            <FolderOpen /> Open Folder
+            <FolderOpen /> {t('common:action.openFolder')}
           </Button>
         </div>
       </div>
 
       {error && <p className="text-sm text-destructive">{error.message}</p>}
-      {backup.data && <p className="text-sm text-muted-foreground">Backup saved to {backup.data}</p>}
+      {backup.data && (
+        <p className="text-sm text-muted-foreground">{t('worlds.backupSaved', { path: backup.data })}</p>
+      )}
       {backup.error && <p className="text-sm text-destructive">{backup.error.message}</p>}
 
       <div className="min-h-0 flex-1 overflow-auto rounded-md border">
         <table className="w-full text-sm">
           <thead className="sticky top-0 bg-background text-left text-muted-foreground">
             <tr className="border-b">
-              <th className="p-2 font-medium">Name</th>
-              <th className="p-2 font-medium">Mode</th>
-              <th className="p-2 font-medium">Version</th>
-              <th className="p-2 font-medium">Last played</th>
-              <th className="p-2 font-medium">Seed</th>
+              <th className="p-2 font-medium">{t('columns.name')}</th>
+              <th className="p-2 font-medium">{t('columns.mode')}</th>
+              <th className="p-2 font-medium">{t('columns.version')}</th>
+              <th className="p-2 font-medium">{t('columns.lastPlayed')}</th>
+              <th className="p-2 font-medium">{t('columns.seed')}</th>
               <th className="w-28 p-2" />
             </tr>
           </thead>
@@ -52,7 +56,9 @@ export function WorldsPage({ instanceId }: { instanceId: string }) {
                     <p className="text-xs text-muted-foreground">{world.folder}</p>
                   )}
                 </td>
-                <td className="p-2 capitalize">{world.hardcore ? 'Hardcore' : world.gameMode}</td>
+                <td className="p-2">
+                  {t(`worlds.gameMode.${world.hardcore ? 'hardcore' : world.gameMode}`)}
+                </td>
                 <td className="p-2">{world.gameVersion}</td>
                 <td className="p-2">
                   {world.lastPlayed ? new Date(world.lastPlayed).toLocaleString() : '—'}
@@ -61,7 +67,7 @@ export function WorldsPage({ instanceId }: { instanceId: string }) {
                   {world.seed && (
                     <button
                       type="button"
-                      title="Copy seed"
+                      title={t('worlds.copySeed')}
                       className="flex items-center gap-1 font-mono text-xs hover:text-foreground"
                       onClick={() => void navigator.clipboard.writeText(world.seed ?? '')}
                     >
@@ -73,8 +79,8 @@ export function WorldsPage({ instanceId }: { instanceId: string }) {
                   <div className="flex gap-2 text-muted-foreground">
                     <button
                       type="button"
-                      aria-label={`Play ${world.name}`}
-                      title="Play"
+                      aria-label={t('item.play', { name: world.name })}
+                      title={t('worlds.play')}
                       className="hover:text-foreground disabled:opacity-50"
                       disabled={session.status !== 'idle'}
                       onClick={() =>
@@ -85,8 +91,8 @@ export function WorldsPage({ instanceId }: { instanceId: string }) {
                     </button>
                     <button
                       type="button"
-                      aria-label={`Back up ${world.name}`}
-                      title="Back up"
+                      aria-label={t('item.backUp', { name: world.name })}
+                      title={t('worlds.backUp')}
                       className="hover:text-foreground disabled:opacity-50"
                       disabled={backup.isPending}
                       onClick={() => backup.mutate(world.folder)}
@@ -95,8 +101,8 @@ export function WorldsPage({ instanceId }: { instanceId: string }) {
                     </button>
                     <button
                       type="button"
-                      aria-label={`Delete ${world.name}`}
-                      title="Delete"
+                      aria-label={t('item.delete', { name: world.name })}
+                      title={t('common:action.delete')}
                       className="hover:text-destructive"
                       onClick={() => setPendingRemoval(world)}
                     >
@@ -108,17 +114,17 @@ export function WorldsPage({ instanceId }: { instanceId: string }) {
             ))}
           </tbody>
         </table>
-        {isPending && <p className="p-3 text-sm text-muted-foreground">Reading worlds…</p>}
+        {isPending && <p className="p-3 text-sm text-muted-foreground">{t('worlds.reading')}</p>}
         {!isPending && worlds.length === 0 && (
-          <p className="p-3 text-sm text-muted-foreground">No worlds yet.</p>
+          <p className="p-3 text-sm text-muted-foreground">{t('worlds.empty')}</p>
         )}
       </div>
 
       {pendingRemoval && (
         <ConfirmDialog
-          title={`Delete ${pendingRemoval.name}?`}
-          description="The world will be permanently removed. Consider making a backup first."
-          confirmLabel="Delete"
+          title={t('confirm.delete', { name: pendingRemoval.name })}
+          description={t('worlds.deleteDescription')}
+          confirmLabel={t('common:action.delete')}
           onConfirm={() => remove.mutate(pendingRemoval.folder, { onSuccess: () => setPendingRemoval(null) })}
           onClose={() => setPendingRemoval(null)}
         />

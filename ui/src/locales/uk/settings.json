@@ -1,0 +1,82 @@
+{
+  "title": "Налаштування",
+  "tabs": {
+    "launcher": "Лаунчер",
+    "accounts": "Облікові записи",
+    "java": "Java",
+    "minecraft": "Minecraft",
+    "commands": "Команди",
+    "tools": "Інструменти"
+  },
+  "units": {
+    "mib": "МіБ",
+    "seconds": "с"
+  },
+  "launcher": {
+    "appearance": "Вигляд",
+    "theme": "Тема",
+    "language": "Мова",
+    "console": "Журнал",
+    "showConsole": "Відкривати журнал під час запуску",
+    "showConsoleOnError": "Відкривати журнал у разі збою",
+    "autoCloseConsole": "Закривати журнал після звичайного виходу",
+    "gameTime": "Час гри",
+    "recordGameTime": "Записувати час гри",
+    "network": "Мережа",
+    "concurrentDownloads": "Паралельні завантаження",
+    "requestTimeout": "Тайм-аут запиту",
+    "requestTimeoutHint": "Тайм-аут, повторні спроби та проксі застосовуються після перезапуску лаунчера.",
+    "proxy": "Проксі",
+    "proxyHint": "Наприклад, http://proxy.local:8080. Залиште порожнім, щоб використовувати системний проксі.",
+    "proxyPlaceholder": "Системний проксі",
+    "retries": "Повторні спроби",
+    "apis": "API",
+    "curseforgeApiKey": "Ключ API CurseForge",
+    "curseforgeApiKeyHint": "Необов'язково. Замінює ключ, вбудований у цю версію лаунчера. Зміни мережі та API застосовуються після перезапуску.",
+    "curseforgeApiKeyPlaceholder": "Вбудований ключ"
+  },
+  "java": {
+    "installation": "Встановлена Java",
+    "automatic": "Автоматично (найкраща для версії гри)",
+    "detect": "Виявити",
+    "autoDownload": "Завантажувати Java автоматично",
+    "autoDownloadHint": "Завантажувати середовище Java від Mojang, якщо жодна встановлена Java не підходить для гри.",
+    "minMemory": "Мінімум пам'яті",
+    "maxMemory": "Максимум пам'яті",
+    "jvmArgs": "Аргументи JVM",
+    "memoryRange": "Мінімум пам'яті не може перевищувати максимум.",
+    "memoryOverTotal": "Більше, ніж є на цьому комп'ютері ({{gib}} ГіБ); гра не запуститься.",
+    "memoryTotal": "На цьому комп'ютері {{gib}} ГіБ."
+  },
+  "minecraft": {
+    "windowSize": "Розмір вікна",
+    "maximized": "Запускати розгорнутим"
+  },
+  "commands": {
+    "preLaunch": "Команда перед запуском",
+    "preLaunchHint": "Виконується перед грою; у разі помилки запуск скасовується. Доступні змінні: $INST_NAME, $INST_ID, $INST_DIR, $INST_MC_DIR, $INST_JAVA.",
+    "wrapper": "Команда-обгортка",
+    "wrapperHint": "Додається перед викликом Java, наприклад mangohud або prime-run.",
+    "postExit": "Команда після виходу",
+    "postExitHint": "Виконується після закриття гри.",
+    "environment": "Змінні середовища",
+    "namePlaceholder": "НАЗВА",
+    "valuePlaceholder": "значення",
+    "removeVariable": "Прибрати {{name}}",
+    "addVariable": "Додати змінну"
+  },
+  "tools": {
+    "profilers": "Профайлери",
+    "jprofilerPath": "Тека JProfiler",
+    "jprofilerPathHint": "Тека встановлення, що містить bin/jpenable.",
+    "notSet": "Не вказано",
+    "jprofilerPort": "Порт JProfiler",
+    "visualvm": "VisualVM",
+    "visualvmHint": "Залиште порожнім, щоб шукати jvisualvm або visualvm у PATH.",
+    "visualvmPlaceholder": "Пошук у PATH",
+    "editor": "Редактор",
+    "textEditor": "Текстовий редактор",
+    "textEditorHint": "Команда, що відкриває файли збірки, наприклад code або subl. Залиште порожнім, щоб використовувати типову програму.",
+    "defaultApp": "Типова програма"
+  }
+}

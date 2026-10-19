@@ -1,15 +1,17 @@
 import { ExternalLink } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { commands, type NewsEntry } from '@/bindings'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { unwrap } from '@/lib/command'
 
 export function NewsDialog({ news, onClose }: { news: NewsEntry[]; onClose: () => void }) {
+  const { t } = useTranslation('about')
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="flex max-h-[85vh] flex-col sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Minecraft News</DialogTitle>
+          <DialogTitle>{t('news.title')}</DialogTitle>
         </DialogHeader>
         <ul className="flex min-h-0 flex-col gap-4 overflow-auto pr-1">
           {news.map((entry) => (
@@ -32,7 +34,7 @@ export function NewsDialog({ news, onClose }: { news: NewsEntry[]; onClose: () =
                   className="self-start px-0"
                   onClick={() => void unwrap(commands.openUrl(entry.url))}
                 >
-                  <ExternalLink /> Read more
+                  <ExternalLink /> {t('news.readMore')}
                 </Button>
               </div>
             </li>

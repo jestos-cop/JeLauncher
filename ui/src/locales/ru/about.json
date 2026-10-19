@@ -1,0 +1,13 @@
+{
+  "about": {
+    "description": "Лаунчер Minecraft на Rust, Tauri и React.",
+    "version": "Версия",
+    "license": "Лицензия",
+    "trademark": "Minecraft — товарный знак Mojang Studios. JeLauncher не связан с Mojang или Microsoft.",
+    "sourceCode": "Исходный код"
+  },
+  "news": {
+    "title": "Новости Minecraft",
+    "readMore": "Подробнее"
+  }
+}

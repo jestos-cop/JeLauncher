@@ -61,6 +61,8 @@ pub enum Theme {
 #[serde(default, rename_all = "camelCase")]
 pub struct AppearanceSettings {
     pub theme: Theme,
+    /// Interface language code such as `uk`; `None` follows the system language.
+    pub language: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]

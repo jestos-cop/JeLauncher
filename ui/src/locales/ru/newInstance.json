@@ -1,0 +1,86 @@
+{
+  "title": "Новая сборка",
+  "source": {
+    "custom": "Своя",
+    "import": "Импорт"
+  },
+  "field": {
+    "name": "Название",
+    "group": "Группа"
+  },
+  "placeholder": {
+    "instanceName": "Название сборки",
+    "nameFromPack": "Название из модпака",
+    "noGroup": "Без группы"
+  },
+  "progress": {
+    "downloading": "Загрузка файлов {{completed}}/{{total}}",
+    "preparing": "Подготовка…"
+  },
+  "untrustedHosts": {
+    "title": "Скачать с непроверенных хостов?",
+    "description": "Этот модпак скачивает файлы с {{hosts}}. Платформа не проверяет эти хосты, и они могут раздавать вредоносные файлы. Продолжайте, только если доверяете автору модпака.",
+    "confirm": "Всё равно скачать"
+  },
+  "optionalMods": {
+    "title": "Дополнительные моды",
+    "description": "Выберите, что установить дополнительно. Моды, от которых они зависят, добавляются автоматически.",
+    "recommended": "рекомендуется",
+    "shareCode": "Код для обмена",
+    "useShareCode": "Применить код для обмена"
+  },
+  "blockedFiles": {
+    "title": "Некоторые файлы нужно скачать вручную",
+    "description": "Сборка создана, но авторы этих файлов разрешают скачивать их только с сайта CurseForge. Скачайте каждый файл и положите его в папку, указанную рядом.",
+    "downloadPage": "Страница загрузки",
+    "openModsFolder": "Открыть папку модов"
+  },
+  "modpackBrowser": {
+    "search": "Поиск модпаков на {{provider}}",
+    "loadMore": "Загрузить ещё",
+    "selectModpack": "Выберите модпак, чтобы выбрать версию.",
+    "loadingVersions": "Загрузка версий…"
+  },
+  "releaseType": {
+    "release": "релиз",
+    "beta": "бета",
+    "alpha": "альфа"
+  },
+  "projectRow": {
+    "author": "автор: {{author}}",
+    "downloads_one": "{{downloads}} загрузка",
+    "downloads_few": "{{downloads}} загрузки",
+    "downloads_many": "{{downloads}} загрузок",
+    "downloads_other": "{{downloads}} загрузки"
+  },
+  "versionList": {
+    "search": "Поиск версий",
+    "filter": {
+      "release": "Релизы",
+      "snapshot": "Снапшоты",
+      "beta": "Беты",
+      "alpha": "Альфы"
+    },
+    "loadingVersions": "Загрузка версий…",
+    "latest": "Последняя",
+    "type": {
+      "release": "релиз",
+      "snapshot": "снапшот",
+      "beta": "бета",
+      "alpha": "альфа",
+      "other": "другое"
+    }
+  },
+  "loaderPicker": {
+    "label": "Загрузчик",
+    "none": "Нет",
+    "noVersions": "Нет версий",
+    "beta": "бета"
+  },
+  "importSource": {
+    "description": "Импортируйте модпак Modrinth (.mrpack) или экспортированную сборку (.zip) из файла или по URL.",
+    "placeholder": "Путь к файлу или URL https://",
+    "browse": "Обзор…",
+    "filter": "Архивы сборок"
+  }
+}

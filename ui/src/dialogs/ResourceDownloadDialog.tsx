@@ -1,5 +1,6 @@
 import { Check, Download } from 'lucide-react'
 import { useDeferredValue, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { InstanceSummary, ProjectHit, Provider, ResourceKind, SortOrder } from '@/bindings'
 import { ProjectRow } from '@/components/ProjectRow'
 import { Badge } from '@/components/ui/badge'
@@ -11,12 +12,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useInstallVersion, useProjectVersions, useResourceSearch } from '@/hooks/use-modplatform'
 import { PROVIDER_NAMES, RESOURCE_PROVIDERS } from '@/lib/providers'
 
-const SORT_LABELS: Record<SortOrder, string> = {
-  relevance: 'Relevance',
-  downloads: 'Downloads',
-  updated: 'Recently updated',
-  newest: 'Newest',
-}
+const SORT_ORDERS: SortOrder[] = ['relevance', 'downloads', 'updated', 'newest']
 
 interface ResourceDownloadDialogProps {
   instance: InstanceSummary
@@ -26,6 +22,7 @@ interface ResourceDownloadDialogProps {
 }
 
 export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: ResourceDownloadDialogProps) {
+  const { t } = useTranslation(['instanceDialogs', 'common'])
   const [provider, setProvider] = useState<Provider>('modrinth')
   const [text, setText] = useState('')
   const [sort, setSort] = useState<SortOrder>('relevance')
@@ -45,8 +42,13 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
       <DialogContent className="flex h-[85vh] flex-col sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>
-            Download for {instance.name} · Minecraft {instance.minecraftVersion}
-            {instance.loader && ` · ${instance.loader.kind}`}
+            {instance.loader
+              ? t('resourceDownload.titleWithLoader', {
+                  instance: instance.name,
+                  version: instance.minecraftVersion,
+                  loader: instance.loader.kind,
+                })
+              : t('resourceDownload.title', { instance: instance.name, version: instance.minecraftVersion })}
           </DialogTitle>
         </DialogHeader>
 
@@ -71,7 +73,7 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
           <Input
             autoFocus
             className="flex-1"
-            placeholder={`Search ${PROVIDER_NAMES[provider]}`}
+            placeholder={t('resourceDownload.search', { provider: PROVIDER_NAMES[provider] })}
             value={text}
             onChange={(event) => setText(event.target.value)}
           />
@@ -80,9 +82,9 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(SORT_LABELS).map(([value, label]) => (
+              {SORT_ORDERS.map((value) => (
                 <SelectItem key={value} value={value}>
-                  {label}
+                  {t(`resourceDownload.sort.${value}`)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -109,10 +111,12 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
                 disabled={search.isFetchingNextPage}
                 onClick={() => void search.fetchNextPage()}
               >
-                Load more
+                {t('resourceDownload.loadMore')}
               </Button>
             )}
-            {search.isPending && <p className="p-3 text-sm text-muted-foreground">Searching…</p>}
+            {search.isPending && (
+              <p className="p-3 text-sm text-muted-foreground">{t('resourceDownload.searching')}</p>
+            )}
           </div>
           {selected ? (
             <VersionPanel
@@ -122,7 +126,7 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
               project={selected}
             />
           ) : (
-            <p className="p-3 text-sm text-muted-foreground">Select a project to see compatible versions.</p>
+            <p className="p-3 text-sm text-muted-foreground">{t('resourceDownload.selectProject')}</p>
           )}
         </div>
       </DialogContent>
@@ -137,6 +141,7 @@ interface VersionPanelProps {
 }
 
 function VersionPanel({ instanceId, kind, project }: VersionPanelProps) {
+  const { t } = useTranslation(['instanceDialogs', 'common'])
   const { data: versions, error, isPending } = useProjectVersions(instanceId, project, kind)
   const install = useInstallVersion(instanceId, kind, project)
 
@@ -145,13 +150,17 @@ function VersionPanel({ instanceId, kind, project }: VersionPanelProps) {
       <h3 className="font-semibold">{project.title}</h3>
       {install.error && <p className="text-sm text-destructive">{install.error.message}</p>}
       {install.data && install.data.length > 1 && (
-        <p className="text-sm text-muted-foreground">Also installed: {install.data.slice(1).join(', ')}</p>
+        <p className="text-sm text-muted-foreground">
+          {t('resourceDownload.alsoInstalled', { names: install.data.slice(1).join(', ') })}
+        </p>
       )}
       {error && <p className="text-sm text-destructive">{error.message}</p>}
       <div className="min-h-0 flex-1 overflow-auto rounded-md border">
-        {isPending && <p className="p-3 text-sm text-muted-foreground">Loading versions…</p>}
+        {isPending && (
+          <p className="p-3 text-sm text-muted-foreground">{t('resourceDownload.loadingVersions')}</p>
+        )}
         {versions?.length === 0 && (
-          <p className="p-3 text-sm text-muted-foreground">No versions for this instance.</p>
+          <p className="p-3 text-sm text-muted-foreground">{t('resourceDownload.noVersions')}</p>
         )}
         <ul>
           {versions?.map((version) => {
@@ -165,7 +174,7 @@ function VersionPanel({ instanceId, kind, project }: VersionPanelProps) {
                   </p>
                 </div>
                 {version.releaseType !== 'release' && (
-                  <Badge variant="secondary">{version.releaseType}</Badge>
+                  <Badge variant="secondary">{t(`releaseType.${version.releaseType}`)}</Badge>
                 )}
                 <Button
                   size="sm"
@@ -174,7 +183,7 @@ function VersionPanel({ instanceId, kind, project }: VersionPanelProps) {
                   onClick={() => install.mutate(version.id)}
                 >
                   {installed ? <Check /> : <Download />}
-                  {installed ? 'Installed' : 'Install'}
+                  {installed ? t('resourceDownload.installed') : t('common:action.install')}
                 </Button>
               </li>
             )

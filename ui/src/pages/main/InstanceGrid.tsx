@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useMemo, useState, type DragEvent, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSession } from '@/app/sessions'
 import type { InstanceSummary } from '@/bindings'
 import { InstanceIcon } from '@/components/InstanceIcon'
@@ -23,6 +24,7 @@ interface InstanceGridProps {
 }
 
 export function InstanceGrid({ instances, search, sort, selectedId, onSelect }: InstanceGridProps) {
+  const { t } = useTranslation('main')
   const [collapsed, setCollapsed] = useStoredState<string[]>('collapsed-groups', [])
   const groups = useMemo(() => groupInstances(instances, search, sort), [instances, search, sort])
 
@@ -31,7 +33,7 @@ export function InstanceGrid({ instances, search, sort, selectedId, onSelect }: 
       current.includes(group) ? current.filter((g) => g !== group) : [...current, group],
     )
 
-  if (groups.length === 0) return <p className="text-muted-foreground">No instances match “{search}”.</p>
+  if (groups.length === 0) return <p className="text-muted-foreground">{t('grid.noMatch', { search })}</p>
 
   return (
     <div className="flex flex-col gap-4">
@@ -83,6 +85,7 @@ interface InstanceGroupProps {
 }
 
 function InstanceGroup({ group, showHeader, isCollapsed, onToggle, children }: InstanceGroupProps) {
+  const { t } = useTranslation('main')
   const setGroup = useSetInstanceGroup()
   const [isDropTarget, setIsDropTarget] = useState(false)
 
@@ -111,7 +114,7 @@ function InstanceGroup({ group, showHeader, isCollapsed, onToggle, children }: I
           className="mb-2 flex w-full items-center gap-1 border-b pb-1 text-left text-sm font-medium text-muted-foreground"
         >
           {isCollapsed ? <ChevronRight className="size-4" /> : <ChevronDown className="size-4" />}
-          {group || 'Ungrouped'}
+          {group || t('grid.ungrouped')}
         </button>
       )}
       {!isCollapsed && (

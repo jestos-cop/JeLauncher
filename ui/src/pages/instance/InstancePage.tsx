@@ -12,6 +12,7 @@ import {
   SlidersHorizontal,
   Sparkles,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useNavigation, type InstanceTab } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
 import { LaunchControls } from '@/components/LaunchControls'
@@ -27,19 +28,19 @@ import { ServersPage } from '@/pages/instance/ServersPage'
 import { VersionPage } from '@/pages/instance/VersionPage'
 import { WorldsPage } from '@/pages/instance/WorldsPage'
 
-const TABS: SidebarTab<InstanceTab>[] = [
-  { tab: 'log', label: 'Minecraft Log', icon: ScrollText },
-  { tab: 'modpack', label: 'Modpack', icon: Package },
-  { tab: 'version', label: 'Version', icon: Layers },
-  { tab: 'mod', label: 'Mods', icon: Puzzle },
-  { tab: 'resourcePack', label: 'Resource Packs', icon: Image },
-  { tab: 'shaderPack', label: 'Shader Packs', icon: Sparkles },
-  { tab: 'dataPack', label: 'Data Packs', icon: Database },
-  { tab: 'worlds', label: 'Worlds', icon: Globe },
-  { tab: 'servers', label: 'Servers', icon: Server },
-  { tab: 'screenshots', label: 'Screenshots', icon: Camera },
-  { tab: 'notes', label: 'Notes', icon: NotebookPen },
-  { tab: 'settings', label: 'Settings', icon: SlidersHorizontal },
+const TABS: Omit<SidebarTab<InstanceTab>, 'label'>[] = [
+  { tab: 'log', icon: ScrollText },
+  { tab: 'modpack', icon: Package },
+  { tab: 'version', icon: Layers },
+  { tab: 'mod', icon: Puzzle },
+  { tab: 'resourcePack', icon: Image },
+  { tab: 'shaderPack', icon: Sparkles },
+  { tab: 'dataPack', icon: Database },
+  { tab: 'worlds', icon: Globe },
+  { tab: 'servers', icon: Server },
+  { tab: 'screenshots', icon: Camera },
+  { tab: 'notes', icon: NotebookPen },
+  { tab: 'settings', icon: SlidersHorizontal },
 ]
 
 interface InstancePageProps {
@@ -48,10 +49,14 @@ interface InstancePageProps {
 }
 
 export function InstancePage({ instanceId, tab }: InstancePageProps) {
+  const { t } = useTranslation('instance')
   const { navigate } = useNavigation()
   const { data: instances } = useInstances()
   const instance = instances?.find((candidate) => candidate.id === instanceId)
-  const tabs = TABS.filter((entry) => entry.tab !== 'modpack' || instance?.managedPack)
+  const tabs = TABS.filter((entry) => entry.tab !== 'modpack' || instance?.managedPack).map((entry) => ({
+    ...entry,
+    label: t(`tabs.${entry.tab}`),
+  }))
 
   return (
     <SidebarLayout

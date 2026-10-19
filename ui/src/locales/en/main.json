@@ -1,0 +1,66 @@
+{
+  "toolbar": {
+    "addInstance": "Add Instance",
+    "settings": "Settings",
+    "searchPlaceholder": "Search instances",
+    "sortByName": "By name",
+    "sortLastPlayed": "Last played"
+  },
+  "folders": {
+    "title": "Folders",
+    "instances": "Instances",
+    "java": "Java runtimes",
+    "root": "Launcher data"
+  },
+  "help": {
+    "title": "Help",
+    "sourceCode": "Source code and issues",
+    "launcherLog": "Open launcher log",
+    "about": "About JeLauncher"
+  },
+  "accounts": {
+    "none": "No account",
+    "remove": "Remove {{name}}",
+    "addMicrosoft": "Add Microsoft account…",
+    "addOffline": "Add offline account…",
+    "manage": "Manage accounts…"
+  },
+  "news": {
+    "more": "More news"
+  },
+  "grid": {
+    "loading": "Loading instances…",
+    "empty": "No instances yet.",
+    "noMatch": "No instances match “{{search}}”.",
+    "ungrouped": "Ungrouped"
+  },
+  "panel": {
+    "played": "Played {{time}}"
+  },
+  "actions": {
+    "launchDemo": "Launch Demo",
+    "launchWithProfiler": "Launch with Profiler",
+    "cancelLaunch": "Cancel Launch",
+    "changeGroup": "Change Group",
+    "changeIcon": "Change Icon",
+    "copy": "Copy…",
+    "export": "Export…",
+    "createShortcut": "Create Shortcut"
+  },
+  "dialogs": {
+    "renameTitle": "Rename Instance",
+    "noGroup": "No group",
+    "deleteTitle": "Delete {{name}}?",
+    "deleteDescription": "The instance folder, including worlds and mods, will be permanently removed."
+  },
+  "status": {
+    "instances_one": "{{count}} instance",
+    "instances_other": "{{count}} instances",
+    "totalPlayTime": "Total play time: {{time}}",
+    "running": "Running: {{names}}"
+  },
+  "playTime": {
+    "hoursMinutes": "{{hours}}h {{minutes}}m",
+    "minutes": "{{minutes}}m"
+  }
+}

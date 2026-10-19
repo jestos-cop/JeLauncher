@@ -1,0 +1,82 @@
+{
+  "title": "Настройки",
+  "tabs": {
+    "launcher": "Лаунчер",
+    "accounts": "Аккаунты",
+    "java": "Java",
+    "minecraft": "Minecraft",
+    "commands": "Команды",
+    "tools": "Инструменты"
+  },
+  "units": {
+    "mib": "МиБ",
+    "seconds": "с"
+  },
+  "launcher": {
+    "appearance": "Внешний вид",
+    "theme": "Тема",
+    "language": "Язык",
+    "console": "Журнал",
+    "showConsole": "Открывать журнал при запуске",
+    "showConsoleOnError": "Открывать журнал при сбое",
+    "autoCloseConsole": "Закрывать журнал при штатном выходе",
+    "gameTime": "Время игры",
+    "recordGameTime": "Учитывать время игры",
+    "network": "Сеть",
+    "concurrentDownloads": "Параллельные загрузки",
+    "requestTimeout": "Тайм-аут запроса",
+    "requestTimeoutHint": "Тайм-аут, повторные попытки и прокси применяются после перезапуска лаунчера.",
+    "proxy": "Прокси",
+    "proxyHint": "Например, http://proxy.local:8080. Оставьте пустым, чтобы использовать системный прокси.",
+    "proxyPlaceholder": "Системный прокси",
+    "retries": "Повторные попытки",
+    "apis": "API",
+    "curseforgeApiKey": "Ключ API CurseForge",
+    "curseforgeApiKeyHint": "Необязательно. Заменяет ключ, встроенный в эту версию лаунчера. Изменения сети и API применяются после перезапуска.",
+    "curseforgeApiKeyPlaceholder": "Встроенный ключ"
+  },
+  "java": {
+    "installation": "Установленная Java",
+    "automatic": "Автоматически (лучшая для версии игры)",
+    "detect": "Найти",
+    "autoDownload": "Скачивать Java автоматически",
+    "autoDownloadHint": "Скачивать среду Java от Mojang, если ни одна установленная Java не подходит для игры.",
+    "minMemory": "Минимум памяти",
+    "maxMemory": "Максимум памяти",
+    "jvmArgs": "Аргументы JVM",
+    "memoryRange": "Минимум памяти не может превышать максимум.",
+    "memoryOverTotal": "Больше, чем есть на этом компьютере ({{gib}} ГиБ); игра не запустится.",
+    "memoryTotal": "На этом компьютере {{gib}} ГиБ."
+  },
+  "minecraft": {
+    "windowSize": "Размер окна",
+    "maximized": "Запускать развёрнутым"
+  },
+  "commands": {
+    "preLaunch": "Команда перед запуском",
+    "preLaunchHint": "Выполняется перед игрой; при ошибке запуск отменяется. Доступные переменные: $INST_NAME, $INST_ID, $INST_DIR, $INST_MC_DIR, $INST_JAVA.",
+    "wrapper": "Команда-обёртка",
+    "wrapperHint": "Добавляется перед вызовом Java, например mangohud или prime-run.",
+    "postExit": "Команда после выхода",
+    "postExitHint": "Выполняется после закрытия игры.",
+    "environment": "Переменные окружения",
+    "namePlaceholder": "ИМЯ",
+    "valuePlaceholder": "значение",
+    "removeVariable": "Убрать {{name}}",
+    "addVariable": "Добавить переменную"
+  },
+  "tools": {
+    "profilers": "Профайлеры",
+    "jprofilerPath": "Папка JProfiler",
+    "jprofilerPathHint": "Папка установки, в которой есть bin/jpenable.",
+    "notSet": "Не указано",
+    "jprofilerPort": "Порт JProfiler",
+    "visualvm": "VisualVM",
+    "visualvmHint": "Оставьте пустым, чтобы искать jvisualvm или visualvm в PATH.",
+    "visualvmPlaceholder": "Поиск в PATH",
+    "editor": "Редактор",
+    "textEditor": "Текстовый редактор",
+    "textEditorHint": "Команда, которая открывает файлы сборки, например code или subl. Оставьте пустым, чтобы использовать приложение по умолчанию.",
+    "defaultApp": "Приложение по умолчанию"
+  }
+}

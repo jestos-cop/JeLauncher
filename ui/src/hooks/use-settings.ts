@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { commands, type GlobalSettings } from '@/bindings'
 import { unwrap } from '@/lib/command'
 
@@ -34,10 +35,9 @@ export function useSystemMemory() {
 
 /** Hint for a maximum memory field: how much the computer has and whether the value fits. */
 export function useMemoryHint(maxMemoryMb: number) {
+  const { t } = useTranslation('settings')
   const { data: total } = useSystemMemory()
   if (!total) return undefined
   const gib = (total / 1024).toFixed(1).replace(/\.0$/, '')
-  return maxMemoryMb > total
-    ? `More than this computer has (${gib} GiB); the game will not start.`
-    : `This computer has ${gib} GiB.`
+  return t(maxMemoryMb > total ? 'java.memoryOverTotal' : 'java.memoryTotal', { gib })
 }

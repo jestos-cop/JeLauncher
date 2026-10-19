@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { commands, type InstalledPack, type LoaderSpec, type Provider } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { ImportSource } from '@/components/ImportSource'
@@ -33,6 +34,7 @@ interface NewInstanceDialogProps {
 }
 
 export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInstanceDialogProps) {
+  const { t } = useTranslation(['newInstance', 'common'])
   const [source, setSource] = useState<Source>(initialImport === undefined ? 'vanilla' : 'import')
   const [name, setName] = useState('')
   const [group, setGroup] = useState('')
@@ -110,7 +112,7 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
     <Dialog open={open} onOpenChange={(next) => (next ? onOpenChange(true) : close())}>
       <DialogContent className="flex h-[85vh] flex-col sm:max-w-4xl">
         <DialogHeader className="flex-row items-center gap-4">
-          <DialogTitle>New Instance</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
           <ToggleGroup
             type="single"
             variant="outline"
@@ -118,30 +120,34 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
             value={source}
             onValueChange={(next) => next && setSource(next as Source)}
           >
-            <ToggleGroupItem value="vanilla">Custom</ToggleGroupItem>
+            <ToggleGroupItem value="vanilla">{t('source.custom')}</ToggleGroupItem>
             <ToggleGroupItem value="modrinth">Modrinth</ToggleGroupItem>
             <ToggleGroupItem value="curseForge">CurseForge</ToggleGroupItem>
             <ToggleGroupItem value="ftb">FTB</ToggleGroupItem>
             <ToggleGroupItem value="technic">Technic</ToggleGroupItem>
             <ToggleGroupItem value="atLauncher">ATLauncher</ToggleGroupItem>
-            <ToggleGroupItem value="import">Import</ToggleGroupItem>
+            <ToggleGroupItem value="import">{t('source.import')}</ToggleGroupItem>
           </ToggleGroup>
         </DialogHeader>
 
         <div className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2">
-          <Label htmlFor="instance-name">Name</Label>
+          <Label htmlFor="instance-name">{t('field.name')}</Label>
           <Input
             id="instance-name"
-            placeholder={source === 'vanilla' ? (version ?? 'Instance name') : 'Name from the pack'}
+            placeholder={
+              source === 'vanilla'
+                ? (version ?? t('placeholder.instanceName'))
+                : t('placeholder.nameFromPack')
+            }
             value={name}
             onChange={(event) => setName(event.target.value)}
           />
           {source === 'vanilla' && (
             <>
-              <Label htmlFor="instance-group">Group</Label>
+              <Label htmlFor="instance-group">{t('field.group')}</Label>
               <Input
                 id="instance-group"
-                placeholder="No group"
+                placeholder={t('placeholder.noGroup')}
                 value={group}
                 onChange={(event) => setGroup(event.target.value)}
               />
@@ -171,7 +177,9 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
         {downloading && (
           <div className="flex flex-col gap-1">
             <p className="text-sm text-muted-foreground">
-              {progress ? `Downloading files ${progress.completed}/${progress.total}` : 'Preparing…'}
+              {progress
+                ? t('progress.downloading', { completed: progress.completed, total: progress.total })
+                : t('progress.preparing')}
             </p>
             {progress && progress.total > 0 && (
               <Progress value={(progress.completed / progress.total) * 100} />
@@ -185,18 +193,18 @@ export function NewInstanceDialog({ open, onOpenChange, initialImport }: NewInst
             disabled={createInstance.isPending}
             onClick={downloading ? () => void commands.cancelModpackInstall() : close}
           >
-            Cancel
+            {t('common:action.cancel')}
           </Button>
           <Button onClick={() => create()} disabled={!canCreate || busy || optionalMods.isFetching}>
-            Create
+            {t('common:action.create')}
           </Button>
         </DialogFooter>
       </DialogContent>
       {hostsToTrust && !trustDeclined && (
         <ConfirmDialog
-          title="Download from untrusted hosts?"
-          description={`This modpack downloads files from ${hostsToTrust.join(', ')}. These hosts are not reviewed by the platform and may serve harmful files. Continue only if you trust the pack author.`}
-          confirmLabel="Download Anyway"
+          title={t('untrustedHosts.title')}
+          description={t('untrustedHosts.description', { hosts: hostsToTrust.join(', ') })}
+          confirmLabel={t('untrustedHosts.confirm')}
           onConfirm={() => create(true)}
           onClose={() => setTrustDeclined(true)}
         />

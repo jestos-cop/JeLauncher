@@ -1,0 +1,21 @@
+{
+  "progress": {
+    "preparing": "Preparing…",
+    "downloading": "Downloading files {{completed}}/{{total}}",
+    "installingLoader": "Installing mod loader…",
+    "starting": "Starting game…"
+  },
+  "log": {
+    "searchPlaceholder": "Search log",
+    "lines_one": "{{count}} line",
+    "lines_other": "{{count}} lines",
+    "wrap": "Wrap",
+    "upload": "Upload",
+    "uploading": "Uploading…",
+    "clear": "Clear",
+    "uploaded": "Log uploaded: <link>{{url}}</link>",
+    "copyLink": "Copy link",
+    "confirmUploadTitle": "Upload this log?",
+    "confirmUploadDescription": "The whole log is published on mclo.gs and anyone with the link can read it. Your home folder is hidden from file paths."
+  }
+}

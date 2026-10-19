@@ -1,12 +1,7 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 
 interface PromptDialogProps {
@@ -31,6 +26,7 @@ export function PromptDialog({
   onConfirm,
   onClose,
 }: PromptDialogProps) {
+  const { t } = useTranslation()
   const [value, setValue] = useState(initialValue)
 
   const submit = (event: React.FormEvent) => {
@@ -54,7 +50,7 @@ export function PromptDialog({
           {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={onClose}>
-              Cancel
+              {t('action.cancel')}
             </Button>
             <Button type="submit" disabled={!allowEmpty && !value.trim()}>
               {confirmLabel}

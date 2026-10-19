@@ -1,0 +1,68 @@
+{
+  "toolbar": {
+    "addInstance": "Додати збірку",
+    "settings": "Налаштування",
+    "searchPlaceholder": "Пошук збірок",
+    "sortByName": "За назвою",
+    "sortLastPlayed": "За останнім запуском"
+  },
+  "folders": {
+    "title": "Теки",
+    "instances": "Збірки",
+    "java": "Середовища Java",
+    "root": "Дані лаунчера"
+  },
+  "help": {
+    "title": "Довідка",
+    "sourceCode": "Вихідний код і звіти про помилки",
+    "launcherLog": "Відкрити журнал лаунчера",
+    "about": "Про JeLauncher"
+  },
+  "accounts": {
+    "none": "Немає облікового запису",
+    "remove": "Видалити {{name}}",
+    "addMicrosoft": "Додати обліковий запис Microsoft…",
+    "addOffline": "Додати офлайн-обліковий запис…",
+    "manage": "Керувати обліковими записами…"
+  },
+  "news": {
+    "more": "Більше новин"
+  },
+  "grid": {
+    "loading": "Завантаження збірок…",
+    "empty": "Збірок поки немає.",
+    "noMatch": "Немає збірок за запитом «{{search}}».",
+    "ungrouped": "Без групи"
+  },
+  "panel": {
+    "played": "Час гри: {{time}}"
+  },
+  "actions": {
+    "launchDemo": "Запустити демо",
+    "launchWithProfiler": "Запустити з профайлером",
+    "cancelLaunch": "Скасувати запуск",
+    "changeGroup": "Змінити групу",
+    "changeIcon": "Змінити значок",
+    "copy": "Копіювати…",
+    "export": "Експорт…",
+    "createShortcut": "Створити ярлик"
+  },
+  "dialogs": {
+    "renameTitle": "Перейменувати збірку",
+    "noGroup": "Без групи",
+    "deleteTitle": "Видалити {{name}}?",
+    "deleteDescription": "Теку збірки разом зі світами та модами буде видалено назавжди."
+  },
+  "status": {
+    "instances_one": "{{count}} збірка",
+    "instances_few": "{{count}} збірки",
+    "instances_many": "{{count}} збірок",
+    "instances_other": "{{count}} збірки",
+    "totalPlayTime": "Загальний час гри: {{time}}",
+    "running": "Запущено: {{names}}"
+  },
+  "playTime": {
+    "hoursMinutes": "{{hours}} год {{minutes}} хв",
+    "minutes": "{{minutes}} хв"
+  }
+}

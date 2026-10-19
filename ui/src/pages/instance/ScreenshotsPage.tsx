@@ -1,6 +1,7 @@
 import { convertFileSrc } from '@tauri-apps/api/core'
 import { FolderOpen, Pencil, RefreshCw, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Screenshot } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { PromptDialog } from '@/components/PromptDialog'
@@ -16,6 +17,7 @@ import {
 type PendingAction = { kind: 'view' | 'rename' | 'delete'; screenshot: Screenshot } | null
 
 export function ScreenshotsPage({ instanceId }: { instanceId: string }) {
+  const { t } = useTranslation(['instance', 'common'])
   const { data: screenshots = [], error, isPending, refetch } = useScreenshots(instanceId)
   const remove = useDeleteScreenshot(instanceId)
   const rename = useRenameScreenshot(instanceId)
@@ -24,14 +26,16 @@ export function ScreenshotsPage({ instanceId }: { instanceId: string }) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">{screenshots.length} screenshots</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-sm text-muted-foreground">
+          {t('screenshots.count', { count: screenshots.length })}
+        </span>
         <div className="ml-auto flex gap-1">
           <Button size="sm" variant="ghost" onClick={() => refetch()}>
-            <RefreshCw /> Refresh
+            <RefreshCw /> {t('common:action.refresh')}
           </Button>
           <Button size="sm" variant="ghost" onClick={() => void openScreenshotsFolder(instanceId)}>
-            <FolderOpen /> Open Folder
+            <FolderOpen /> {t('common:action.openFolder')}
           </Button>
         </div>
       </div>
@@ -61,8 +65,8 @@ export function ScreenshotsPage({ instanceId }: { instanceId: string }) {
                 <div className="ml-auto flex shrink-0 gap-2 text-muted-foreground">
                   <button
                     type="button"
-                    title="Rename"
-                    aria-label={`Rename ${screenshot.fileName}`}
+                    title={t('common:action.rename')}
+                    aria-label={t('item.rename', { name: screenshot.fileName })}
                     className="hover:text-foreground"
                     onClick={() => setAction({ kind: 'rename', screenshot })}
                   >
@@ -70,8 +74,8 @@ export function ScreenshotsPage({ instanceId }: { instanceId: string }) {
                   </button>
                   <button
                     type="button"
-                    title="Delete"
-                    aria-label={`Delete ${screenshot.fileName}`}
+                    title={t('common:action.delete')}
+                    aria-label={t('item.delete', { name: screenshot.fileName })}
                     className="hover:text-destructive"
                     onClick={() => setAction({ kind: 'delete', screenshot })}
                   >
@@ -82,11 +86,9 @@ export function ScreenshotsPage({ instanceId }: { instanceId: string }) {
             </figure>
           ))}
         </div>
-        {isPending && <p className="p-3 text-sm text-muted-foreground">Reading screenshots…</p>}
+        {isPending && <p className="p-3 text-sm text-muted-foreground">{t('screenshots.reading')}</p>}
         {!isPending && screenshots.length === 0 && (
-          <p className="p-3 text-sm text-muted-foreground">
-            No screenshots yet. Press F2 in game to take one.
-          </p>
+          <p className="p-3 text-sm text-muted-foreground">{t('screenshots.empty')}</p>
         )}
       </div>
 
@@ -106,9 +108,9 @@ export function ScreenshotsPage({ instanceId }: { instanceId: string }) {
       )}
       {action?.kind === 'rename' && (
         <PromptDialog
-          title="Rename Screenshot"
+          title={t('screenshots.renameTitle')}
           initialValue={action.screenshot.fileName}
-          confirmLabel="Rename"
+          confirmLabel={t('common:action.rename')}
           error={rename.error?.message}
           onConfirm={(newName) =>
             rename.mutate({ fileName: action.screenshot.fileName, newName }, { onSuccess: close })
@@ -118,9 +120,9 @@ export function ScreenshotsPage({ instanceId }: { instanceId: string }) {
       )}
       {action?.kind === 'delete' && (
         <ConfirmDialog
-          title={`Delete ${action.screenshot.fileName}?`}
-          description="The screenshot will be permanently removed."
-          confirmLabel="Delete"
+          title={t('confirm.delete', { name: action.screenshot.fileName })}
+          description={t('screenshots.deleteDescription')}
+          confirmLabel={t('common:action.delete')}
           onConfirm={() => remove.mutate(action.screenshot.fileName, { onSuccess: close })}
           onClose={close}
         />

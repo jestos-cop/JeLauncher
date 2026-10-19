@@ -1,5 +1,6 @@
 import { ArrowLeft, type LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -30,11 +31,12 @@ export function SidebarLayout<T extends string>({
   onBack,
   children,
 }: SidebarLayoutProps<T>) {
+  const { t } = useTranslation()
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
       <header className="flex items-center gap-3 border-b px-3 py-2">
         <Button size="sm" variant="ghost" onClick={onBack}>
-          <ArrowLeft /> Back
+          <ArrowLeft /> {t('action.back')}
         </Button>
         <h1 className="font-semibold">{title}</h1>
         {subtitle && <span className="text-sm text-muted-foreground">{subtitle}</span>}

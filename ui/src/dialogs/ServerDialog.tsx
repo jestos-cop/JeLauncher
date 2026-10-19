@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ResourcePackPolicy, Server } from '@/bindings'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -6,11 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
-const POLICIES: { value: ResourcePackPolicy; label: string }[] = [
-  { value: 'prompt', label: 'Prompt' },
-  { value: 'enabled', label: 'Enabled' },
-  { value: 'disabled', label: 'Disabled' },
-]
+const POLICIES: ResourcePackPolicy[] = ['prompt', 'enabled', 'disabled']
 
 interface ServerDialogProps {
   server: Server | null
@@ -22,7 +19,8 @@ interface ServerDialogProps {
 
 /** Mount only while open so the fields start from `server` each time. */
 export function ServerDialog({ server, error, pending, onSave, onClose }: ServerDialogProps) {
-  const [name, setName] = useState(server?.name ?? 'Minecraft Server')
+  const { t } = useTranslation(['instanceDialogs', 'common'])
+  const [name, setName] = useState(server?.name ?? t('server.defaultName'))
   const [address, setAddress] = useState(server?.address ?? '')
   const [resourcePacks, setResourcePacks] = useState<ResourcePackPolicy>(server?.resourcePacks ?? 'prompt')
 
@@ -36,12 +34,12 @@ export function ServerDialog({ server, error, pending, onSave, onClose }: Server
       <DialogContent className="sm:max-w-md">
         <form onSubmit={submit} className="flex flex-col gap-4">
           <DialogHeader>
-            <DialogTitle>{server ? 'Edit Server' : 'Add Server'}</DialogTitle>
+            <DialogTitle>{server ? t('server.editTitle') : t('server.addTitle')}</DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2">
-            <Label htmlFor="server-name">Name</Label>
+            <Label htmlFor="server-name">{t('server.name')}</Label>
             <Input id="server-name" value={name} onChange={(event) => setName(event.target.value)} />
-            <Label htmlFor="server-address">Address</Label>
+            <Label htmlFor="server-address">{t('server.address')}</Label>
             <Input
               id="server-address"
               autoFocus
@@ -49,7 +47,7 @@ export function ServerDialog({ server, error, pending, onSave, onClose }: Server
               value={address}
               onChange={(event) => setAddress(event.target.value)}
             />
-            <Label>Resource packs</Label>
+            <Label>{t('server.resourcePacks')}</Label>
             <Select
               value={resourcePacks}
               onValueChange={(next) => setResourcePacks(next as ResourcePackPolicy)}
@@ -59,8 +57,8 @@ export function ServerDialog({ server, error, pending, onSave, onClose }: Server
               </SelectTrigger>
               <SelectContent>
                 {POLICIES.map((policy) => (
-                  <SelectItem key={policy.value} value={policy.value}>
-                    {policy.label}
+                  <SelectItem key={policy} value={policy}>
+                    {t(`server.policy.${policy}`)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -69,10 +67,10 @@ export function ServerDialog({ server, error, pending, onSave, onClose }: Server
           {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={onClose}>
-              Cancel
+              {t('common:action.cancel')}
             </Button>
             <Button type="submit" disabled={!address.trim() || pending}>
-              Save
+              {t('common:action.save')}
             </Button>
           </DialogFooter>
         </form>

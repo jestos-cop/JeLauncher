@@ -1,6 +1,7 @@
 import { Copy, Eraser, Upload, WrapText } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import type { LogLine } from '@/app/sessions'
 import { commands, type LogLevel } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
@@ -25,6 +26,7 @@ interface LogViewProps {
 }
 
 export function LogView({ lines, onClear }: LogViewProps) {
+  const { t } = useTranslation(['launch', 'common'])
   const [search, setSearch] = useState('')
   const [wrap, setWrap] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -59,17 +61,17 @@ export function LogView({ lines, onClear }: LogViewProps) {
       <div className="flex items-center gap-2">
         <Input
           className="w-64"
-          placeholder="Search log"
+          placeholder={t('log.searchPlaceholder')}
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
-        <span className="text-xs text-muted-foreground">{visible.length} lines</span>
+        <span className="text-xs text-muted-foreground">{t('log.lines', { count: visible.length })}</span>
         <div className="ml-auto flex gap-1">
           <Button size="sm" variant={wrap ? 'secondary' : 'ghost'} onClick={() => setWrap(!wrap)}>
-            <WrapText /> Wrap
+            <WrapText /> {t('log.wrap')}
           </Button>
           <Button size="sm" variant="ghost" onClick={copy}>
-            <Copy /> Copy
+            <Copy /> {t('common:action.copy')}
           </Button>
           <Button
             size="sm"
@@ -77,26 +79,32 @@ export function LogView({ lines, onClear }: LogViewProps) {
             disabled={lines.length === 0 || upload.isPending}
             onClick={() => setIsConfirmingUpload(true)}
           >
-            <Upload /> {upload.isPending ? 'Uploading…' : 'Upload'}
+            <Upload /> {upload.isPending ? t('log.uploading') : t('log.upload')}
           </Button>
           <Button size="sm" variant="ghost" onClick={onClear}>
-            <Eraser /> Clear
+            <Eraser /> {t('log.clear')}
           </Button>
         </div>
       </div>
       {upload.data && (
         <p className="text-sm">
-          Log uploaded:{' '}
+          <Trans
+            t={t}
+            i18nKey="log.uploaded"
+            values={{ url: upload.data }}
+            components={{
+              link: (
+                <button
+                  type="button"
+                  className="text-primary underline underline-offset-2"
+                  onClick={() => void unwrap(commands.openUrl(upload.data))}
+                />
+              ),
+            }}
+          />{' '}
           <button
             type="button"
-            className="text-primary underline underline-offset-2"
-            onClick={() => void unwrap(commands.openUrl(upload.data))}
-          >
-            {upload.data}
-          </button>{' '}
-          <button
-            type="button"
-            title="Copy link"
+            title={t('log.copyLink')}
             className="text-muted-foreground hover:text-foreground"
             onClick={() => void navigator.clipboard.writeText(upload.data)}
           >
@@ -124,9 +132,9 @@ export function LogView({ lines, onClear }: LogViewProps) {
       </div>
       {isConfirmingUpload && (
         <ConfirmDialog
-          title="Upload this log?"
-          description="The whole log is published on mclo.gs and anyone with the link can read it. Your home folder is hidden from file paths."
-          confirmLabel="Upload"
+          title={t('log.confirmUploadTitle')}
+          description={t('log.confirmUploadDescription')}
+          confirmLabel={t('log.upload')}
           onConfirm={() => {
             setIsConfirmingUpload(false)
             upload.mutate()

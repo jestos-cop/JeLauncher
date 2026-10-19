@@ -1,0 +1,37 @@
+{
+  "action": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "reset": "Reset",
+    "close": "Close",
+    "delete": "Delete",
+    "remove": "Remove",
+    "rename": "Rename",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "done": "Done",
+    "browse": "Browse",
+    "refresh": "Refresh",
+    "install": "Install",
+    "create": "Create",
+    "launch": "Launch",
+    "kill": "Kill",
+    "edit": "Edit",
+    "copy": "Copy",
+    "export": "Export",
+    "add": "Add",
+    "openFolder": "Open Folder"
+  },
+  "state": {
+    "loading": "Loading…"
+  },
+  "theme": {
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "language": {
+    "system": "System language"
+  }
+}

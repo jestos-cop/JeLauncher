@@ -1,6 +1,7 @@
 import { save } from '@tauri-apps/plugin-dialog'
 import { File, Folder } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ExportEntry, InstanceSummary } from '@/bindings'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -23,25 +24,14 @@ interface ExportInstanceDialogProps {
   onClose: () => void
 }
 
-const FORMATS: Record<ExportFormat, { label: string; extension: string; description: string }> = {
-  zip: {
-    label: 'Instance archive',
-    extension: 'zip',
-    description: 'A full copy of the instance that can be imported again.',
-  },
-  mrpack: {
-    label: 'Modrinth pack',
-    extension: 'mrpack',
-    description: 'Files published on Modrinth are linked, everything else is bundled as overrides.',
-  },
-  curseforge: {
-    label: 'CurseForge pack',
-    extension: 'zip',
-    description: 'Files published on CurseForge are linked, everything else is bundled as overrides.',
-  },
+const EXTENSIONS: Record<ExportFormat, string> = {
+  zip: 'zip',
+  mrpack: 'mrpack',
+  curseforge: 'zip',
 }
 
 export function ExportInstanceDialog({ instance, onClose }: ExportInstanceDialogProps) {
+  const { t } = useTranslation(['instanceDialogs', 'common'])
   const [format, setFormat] = useState<ExportFormat>('zip')
   const [version, setVersion] = useState('1.0.0')
   const [summary, setSummary] = useState('')
@@ -58,10 +48,10 @@ export function ExportInstanceDialog({ instance, onClose }: ExportInstanceDialog
     })
 
   const submit = async () => {
-    const { label, extension } = FORMATS[format]
+    const extension = EXTENSIONS[format]
     const output = await save({
       defaultPath: `${instance.name}.${extension}`,
-      filters: [{ name: label, extensions: [extension] }],
+      filters: [{ name: t(`export.format.${format}.label`), extensions: [extension] }],
     })
     if (!output) return
     const blockedPaths = (entries.data ?? []).filter(isBlocked).map((entry) => entry.path)
@@ -72,8 +62,8 @@ export function ExportInstanceDialog({ instance, onClose }: ExportInstanceDialog
     <Dialog open onOpenChange={(open) => !open && !exportInstance.isPending && onClose()}>
       <DialogContent className="flex max-h-[85vh] flex-col sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Export {instance.name}</DialogTitle>
-          <DialogDescription>{FORMATS[format].description}</DialogDescription>
+          <DialogTitle>{t('export.title', { name: instance.name })}</DialogTitle>
+          <DialogDescription>{t(`export.format.${format}.description`)}</DialogDescription>
         </DialogHeader>
 
         <ToggleGroup
@@ -84,26 +74,28 @@ export function ExportInstanceDialog({ instance, onClose }: ExportInstanceDialog
           value={format}
           onValueChange={(next) => next && setFormat(next as ExportFormat)}
         >
-          <ToggleGroupItem value="zip">Instance (.zip)</ToggleGroupItem>
+          <ToggleGroupItem value="zip">{t('export.instanceZip')}</ToggleGroupItem>
           <ToggleGroupItem value="mrpack">Modrinth (.mrpack)</ToggleGroupItem>
           <ToggleGroupItem value="curseforge">CurseForge (.zip)</ToggleGroupItem>
         </ToggleGroup>
 
         {format !== 'zip' && (
           <div className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2">
-            <Label htmlFor="export-version">Version</Label>
+            <Label htmlFor="export-version">{t('export.version')}</Label>
             <Input id="export-version" value={version} onChange={(event) => setVersion(event.target.value)} />
-            <Label htmlFor="export-summary">{format === 'mrpack' ? 'Summary' : 'Author'}</Label>
+            <Label htmlFor="export-summary">
+              {format === 'mrpack' ? t('export.summary') : t('export.author')}
+            </Label>
             <Input
               id="export-summary"
-              placeholder="Optional"
+              placeholder={t('export.optional')}
               value={summary}
               onChange={(event) => setSummary(event.target.value)}
             />
           </div>
         )}
 
-        <Label>Included files</Label>
+        <Label>{t('export.includedFiles')}</Label>
         <ScrollArea className="min-h-0 flex-1 rounded-md border">
           <div className="flex flex-col p-1">
             {entries.data?.map((entry) => (
@@ -121,7 +113,7 @@ export function ExportInstanceDialog({ instance, onClose }: ExportInstanceDialog
               </label>
             ))}
             {entries.data?.length === 0 && (
-              <p className="p-2 text-sm text-muted-foreground">The instance has no game files yet.</p>
+              <p className="p-2 text-sm text-muted-foreground">{t('export.noFiles')}</p>
             )}
           </div>
         </ScrollArea>
@@ -131,13 +123,13 @@ export function ExportInstanceDialog({ instance, onClose }: ExportInstanceDialog
         )}
         <DialogFooter>
           <Button variant="ghost" disabled={exportInstance.isPending} onClick={onClose}>
-            Cancel
+            {t('common:action.cancel')}
           </Button>
           <Button
             disabled={!entries.data || exportInstance.isPending || (format !== 'zip' && !version.trim())}
             onClick={() => void submit()}
           >
-            {exportInstance.isPending ? 'Exporting…' : 'Export…'}
+            {exportInstance.isPending ? t('export.exporting') : t('export.submit')}
           </Button>
         </DialogFooter>
       </DialogContent>

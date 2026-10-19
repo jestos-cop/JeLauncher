@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { InstanceSummary, LoaderSpec } from '@/bindings'
 import { LoaderPicker } from '@/components/LoaderPicker'
 import { VersionList } from '@/components/VersionList'
@@ -19,6 +20,7 @@ interface ChangeVersionDialogProps {
 }
 
 export function ChangeVersionDialog({ instance, onClose }: ChangeVersionDialogProps) {
+  const { t } = useTranslation(['instanceDialogs', 'common'])
   const [version, setVersion] = useState<string | null>(instance.minecraftVersion)
   const [loader, setLoader] = useState<LoaderSpec | null>(instance.loader)
   const setInstanceVersion = useSetInstanceVersion()
@@ -33,10 +35,8 @@ export function ChangeVersionDialog({ instance, onClose }: ChangeVersionDialogPr
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="flex h-[80vh] flex-col sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Change Version</DialogTitle>
-          <DialogDescription>
-            Game files for the new version are downloaded on the next launch. Mods may need updating.
-          </DialogDescription>
+          <DialogTitle>{t('changeVersion.title')}</DialogTitle>
+          <DialogDescription>{t('changeVersion.description')}</DialogDescription>
         </DialogHeader>
         <VersionList selected={version} onSelect={setVersion} />
         <LoaderPicker minecraftVersion={version} value={loader} onChange={setLoader} />
@@ -45,10 +45,10 @@ export function ChangeVersionDialog({ instance, onClose }: ChangeVersionDialogPr
         )}
         <DialogFooter>
           <Button variant="ghost" onClick={onClose}>
-            Cancel
+            {t('common:action.cancel')}
           </Button>
           <Button disabled={!isValid || setInstanceVersion.isPending} onClick={save}>
-            Save
+            {t('common:action.save')}
           </Button>
         </DialogFooter>
       </DialogContent>

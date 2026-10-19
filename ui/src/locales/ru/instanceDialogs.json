@@ -1,0 +1,111 @@
+{
+  "releaseType": {
+    "release": "релиз",
+    "beta": "бета",
+    "alpha": "альфа"
+  },
+  "resourceDownload": {
+    "title": "Загрузка для {{instance}} · Minecraft {{version}}",
+    "titleWithLoader": "Загрузка для {{instance}} · Minecraft {{version}} · {{loader}}",
+    "search": "Поиск на {{provider}}",
+    "sort": {
+      "relevance": "По релевантности",
+      "downloads": "По загрузкам",
+      "updated": "Недавно обновлённые",
+      "newest": "Новые"
+    },
+    "loadMore": "Загрузить ещё",
+    "searching": "Поиск…",
+    "selectProject": "Выберите проект, чтобы увидеть совместимые версии.",
+    "alsoInstalled": "Также установлено: {{names}}",
+    "loadingVersions": "Загрузка версий…",
+    "noVersions": "Нет версий для этой сборки.",
+    "installed": "Установлено"
+  },
+  "resourceUpdate": {
+    "title": "Просмотр обновлений",
+    "description": "Выберите обновления для установки. Отключённые файлы останутся отключёнными.",
+    "select": "Обновить {{name}}",
+    "changelog": "Список изменений",
+    "noChangelog": "Для этой версии нет списка изменений.",
+    "apply": "Обновить {{selected}} из {{total}}"
+  },
+  "export": {
+    "title": "Экспорт {{name}}",
+    "format": {
+      "zip": {
+        "label": "Архив сборки",
+        "description": "Полная копия сборки, которую можно снова импортировать."
+      },
+      "mrpack": {
+        "label": "Модпак Modrinth",
+        "description": "Файлы, опубликованные на Modrinth, добавляются ссылками, а всё остальное упаковывается в архив как overrides."
+      },
+      "curseforge": {
+        "label": "Модпак CurseForge",
+        "description": "Файлы, опубликованные на CurseForge, добавляются ссылками, а всё остальное упаковывается в архив как overrides."
+      }
+    },
+    "instanceZip": "Сборка (.zip)",
+    "version": "Версия",
+    "summary": "Описание",
+    "author": "Автор",
+    "optional": "Необязательно",
+    "includedFiles": "Файлы в архиве",
+    "noFiles": "В сборке ещё нет файлов игры.",
+    "exporting": "Экспортирование…",
+    "submit": "Экспортировать…"
+  },
+  "copy": {
+    "title": "Копировать {{name}}",
+    "defaultName": "Копия {{name}}",
+    "name": "Название",
+    "group": "Группа",
+    "noGroup": "Без группы",
+    "flag": {
+      "copySaves": "Миры",
+      "copyMods": "Моды и конфиги",
+      "copyResourcePacks": "Наборы ресурсов",
+      "copyShaderPacks": "Пакеты шейдеров",
+      "copyServers": "Серверы",
+      "copyScreenshots": "Скриншоты",
+      "copyGameOptions": "Настройки игры",
+      "keepPlayTime": "Сохранить время игры",
+      "useHardLinks": "Создавать жёсткие ссылки вместо копирования (миры всегда копируются)"
+    },
+    "copying": "Копирование…"
+  },
+  "shortcut": {
+    "title": "Ярлык на рабочем столе",
+    "creating": "Создание ярлыка для {{name}}…",
+    "created": "Дважды щёлкните ярлык, чтобы сразу запустить эту сборку."
+  },
+  "iconPicker": {
+    "title": "Выберите иконку",
+    "images": "Изображения",
+    "remove": "Удалить иконку",
+    "add": "Добавить иконку…"
+  },
+  "changeVersion": {
+    "title": "Изменить версию",
+    "description": "Файлы игры для новой версии загрузятся при следующем запуске. Модам может потребоваться обновление."
+  },
+  "server": {
+    "addTitle": "Добавить сервер",
+    "editTitle": "Редактировать сервер",
+    "defaultName": "Сервер Minecraft",
+    "name": "Название",
+    "address": "Адрес",
+    "resourcePacks": "Наборы ресурсов",
+    "policy": {
+      "prompt": "Спрашивать",
+      "enabled": "Включены",
+      "disabled": "Отключены"
+    }
+  },
+  "modListExport": {
+    "button": "Экспорт списка",
+    "fileType": "Список модов",
+    "plainText": "Обычный текст"
+  }
+}

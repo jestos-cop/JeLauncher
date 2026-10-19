@@ -1,4 +1,5 @@
 import { Package } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { ProjectHit } from '@/bindings'
 import { cn } from '@/lib/utils'
 
@@ -9,6 +10,7 @@ interface ProjectRowProps {
 }
 
 export function ProjectRow({ hit, isSelected, onSelect }: ProjectRowProps) {
+  const { t } = useTranslation('newInstance')
   return (
     <li>
       <button
@@ -24,10 +26,17 @@ export function ProjectRow({ hit, isSelected, onSelect }: ProjectRowProps) {
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-2">
             <span className="font-medium">{hit.title}</span>
-            {hit.author && <span className="text-xs text-muted-foreground">by {hit.author}</span>}
+            {hit.author && (
+              <span className="text-xs text-muted-foreground">
+                {t('projectRow.author', { author: hit.author })}
+              </span>
+            )}
             {hit.downloads > 0 && (
               <span className="ml-auto text-xs text-muted-foreground">
-                {Intl.NumberFormat(undefined, { notation: 'compact' }).format(hit.downloads)} downloads
+                {t('projectRow.downloads', {
+                  count: hit.downloads,
+                  downloads: Intl.NumberFormat(undefined, { notation: 'compact' }).format(hit.downloads),
+                })}
               </span>
             )}
           </div>

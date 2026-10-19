@@ -1,0 +1,16 @@
+{
+  "steps": {
+    "welcome": "Welcome",
+    "appearance": "Appearance",
+    "java": "Java",
+    "account": "Account"
+  },
+  "welcomeTitle": "Welcome to JeLauncher",
+  "progress": "Step {{step}} of {{total}}",
+  "intro": "A few quick questions to get you playing. Everything here can be changed later in Settings.",
+  "autoDownloadHint": "Recommended: the right Java is fetched per game version.",
+  "existingAccounts_one": "You already have an account.",
+  "existingAccounts_other": "You already have {{count}} accounts.",
+  "offlineIntro": "Add an offline account to play singleplayer and offline-mode servers. Microsoft sign-in comes later.",
+  "skip": "Skip setup"
+}

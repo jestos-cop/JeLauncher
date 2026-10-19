@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { CopyOptions, InstanceSummary } from '@/bindings'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -9,16 +10,16 @@ import { useCopyInstance } from '@/hooks/use-instance-actions'
 
 type CopyFlag = Exclude<keyof CopyOptions, 'name' | 'group'>
 
-const FLAGS: { flag: CopyFlag; label: string }[] = [
-  { flag: 'copySaves', label: 'Worlds' },
-  { flag: 'copyMods', label: 'Mods and configs' },
-  { flag: 'copyResourcePacks', label: 'Resource packs' },
-  { flag: 'copyShaderPacks', label: 'Shader packs' },
-  { flag: 'copyServers', label: 'Servers' },
-  { flag: 'copyScreenshots', label: 'Screenshots' },
-  { flag: 'copyGameOptions', label: 'Game options' },
-  { flag: 'keepPlayTime', label: 'Keep play time' },
-  { flag: 'useHardLinks', label: 'Hard-link files instead of copying (worlds are always copied)' },
+const FLAGS: CopyFlag[] = [
+  'copySaves',
+  'copyMods',
+  'copyResourcePacks',
+  'copyShaderPacks',
+  'copyServers',
+  'copyScreenshots',
+  'copyGameOptions',
+  'keepPlayTime',
+  'useHardLinks',
 ]
 
 interface CopyInstanceDialogProps {
@@ -27,9 +28,10 @@ interface CopyInstanceDialogProps {
 }
 
 export function CopyInstanceDialog({ instance, onClose }: CopyInstanceDialogProps) {
+  const { t } = useTranslation(['instanceDialogs', 'common'])
   const copy = useCopyInstance()
   const [options, setOptions] = useState<CopyOptions>({
-    name: `Copy of ${instance.name}`,
+    name: t('copy.defaultName', { name: instance.name }),
     group: instance.group,
     copySaves: true,
     copyGameOptions: true,
@@ -56,42 +58,42 @@ export function CopyInstanceDialog({ instance, onClose }: CopyInstanceDialogProp
       <DialogContent className="sm:max-w-md">
         <form onSubmit={submit} className="flex flex-col gap-4">
           <DialogHeader>
-            <DialogTitle>Copy {instance.name}</DialogTitle>
+            <DialogTitle>{t('copy.title', { name: instance.name })}</DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2">
-            <Label htmlFor="copy-name">Name</Label>
+            <Label htmlFor="copy-name">{t('copy.name')}</Label>
             <Input
               id="copy-name"
               autoFocus
               value={options.name}
               onChange={(event) => update({ name: event.target.value })}
             />
-            <Label htmlFor="copy-group">Group</Label>
+            <Label htmlFor="copy-group">{t('copy.group')}</Label>
             <Input
               id="copy-group"
-              placeholder="No group"
+              placeholder={t('copy.noGroup')}
               value={options.group ?? ''}
               onChange={(event) => update({ group: event.target.value })}
             />
           </div>
           <div className="flex flex-col gap-2">
-            {FLAGS.map(({ flag, label }) => (
+            {FLAGS.map((flag) => (
               <label key={flag} className="flex cursor-pointer items-center gap-2 text-sm">
                 <Checkbox
                   checked={options[flag]}
                   onCheckedChange={(checked) => update({ [flag]: checked === true })}
                 />
-                {label}
+                {t(`copy.flag.${flag}`)}
               </label>
             ))}
           </div>
           {copy.error && <p className="text-sm text-destructive">{copy.error.message}</p>}
           <DialogFooter>
             <Button type="button" variant="ghost" disabled={copy.isPending} onClick={onClose}>
-              Cancel
+              {t('common:action.cancel')}
             </Button>
             <Button type="submit" disabled={!options.name.trim() || copy.isPending}>
-              {copy.isPending ? 'Copying…' : 'Copy'}
+              {copy.isPending ? t('copy.copying') : t('common:action.copy')}
             </Button>
           </DialogFooter>
         </form>

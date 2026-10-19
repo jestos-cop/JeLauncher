@@ -1,10 +1,9 @@
 import { Plus, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { CommandSettings } from '@/bindings'
 import { Field } from '@/components/SettingsFields'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-
-const VARIABLES_HINT = 'Available as variables: $INST_NAME, $INST_ID, $INST_DIR, $INST_MC_DIR, $INST_JAVA.'
 
 interface CommandFieldsProps {
   value: CommandSettings
@@ -12,6 +11,7 @@ interface CommandFieldsProps {
 }
 
 export function CommandFields({ value, onChange }: CommandFieldsProps) {
+  const { t } = useTranslation('settings')
   const set = (patch: Partial<CommandSettings>) => onChange({ ...value, ...patch })
   const entries = Object.entries(value.environment).map(([key, entry]) => [key, entry ?? ''] as const)
 
@@ -25,38 +25,35 @@ export function CommandFields({ value, onChange }: CommandFieldsProps) {
 
   return (
     <>
-      <Field
-        label="Pre-launch command"
-        hint={`Runs before the game; a failure cancels the launch. ${VARIABLES_HINT}`}
-      >
+      <Field label={t('commands.preLaunch')} hint={t('commands.preLaunchHint')}>
         <Input value={value.preLaunch} onChange={(event) => set({ preLaunch: event.target.value })} />
       </Field>
-      <Field label="Wrapper command" hint="Prefixes the Java invocation, e.g. mangohud or prime-run.">
+      <Field label={t('commands.wrapper')} hint={t('commands.wrapperHint')}>
         <Input value={value.wrapper} onChange={(event) => set({ wrapper: event.target.value })} />
       </Field>
-      <Field label="Post-exit command" hint="Runs after the game closes.">
+      <Field label={t('commands.postExit')} hint={t('commands.postExitHint')}>
         <Input value={value.postExit} onChange={(event) => set({ postExit: event.target.value })} />
       </Field>
-      <Field label="Environment variables">
+      <Field label={t('commands.environment')}>
         <div className="flex flex-col gap-2">
           {entries.map(([key, entryValue], index) => (
             <div key={index} className="flex gap-2">
               <Input
                 className="w-56 font-mono"
-                placeholder="NAME"
+                placeholder={t('commands.namePlaceholder')}
                 value={key}
                 onChange={(event) => setEntry(index, event.target.value, entryValue)}
               />
               <Input
                 className="font-mono"
-                placeholder="value"
+                placeholder={t('commands.valuePlaceholder')}
                 value={entryValue}
                 onChange={(event) => setEntry(index, key, event.target.value)}
               />
               <Button
                 size="icon"
                 variant="ghost"
-                aria-label={`Remove ${key}`}
+                aria-label={t('commands.removeVariable', { name: key })}
                 onClick={() => removeEntry(index)}
               >
                 <X />
@@ -64,7 +61,7 @@ export function CommandFields({ value, onChange }: CommandFieldsProps) {
             </div>
           ))}
           <Button size="sm" variant="ghost" className="self-start" onClick={addEntry}>
-            <Plus /> Add variable
+            <Plus /> {t('commands.addVariable')}
           </Button>
         </div>
       </Field>

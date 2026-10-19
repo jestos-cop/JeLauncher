@@ -1,0 +1,86 @@
+{
+  "title": "Нова збірка",
+  "source": {
+    "custom": "Власна",
+    "import": "Імпорт"
+  },
+  "field": {
+    "name": "Назва",
+    "group": "Група"
+  },
+  "placeholder": {
+    "instanceName": "Назва збірки",
+    "nameFromPack": "Назва з модпаку",
+    "noGroup": "Без групи"
+  },
+  "progress": {
+    "downloading": "Завантаження файлів {{completed}}/{{total}}",
+    "preparing": "Підготовка…"
+  },
+  "untrustedHosts": {
+    "title": "Завантажити з неперевірених хостів?",
+    "description": "Цей модпак завантажує файли з {{hosts}}. Платформа не перевіряє ці хости, тож вони можуть роздавати шкідливі файли. Продовжуйте, лише якщо довіряєте авторові модпаку.",
+    "confirm": "Усе одно завантажити"
+  },
+  "optionalMods": {
+    "title": "Додаткові моди",
+    "description": "Виберіть, що встановити додатково. Моди, від яких вони залежать, додаються автоматично.",
+    "recommended": "рекомендовано",
+    "shareCode": "Код поширення",
+    "useShareCode": "Застосувати код поширення"
+  },
+  "blockedFiles": {
+    "title": "Деякі файли треба завантажити вручну",
+    "description": "Збірку створено, але автори цих файлів дозволяють завантажувати їх лише із сайту CurseForge. Завантажте кожен файл і покладіть його в теку, вказану поруч.",
+    "downloadPage": "Сторінка завантаження",
+    "openModsFolder": "Відкрити теку модів"
+  },
+  "modpackBrowser": {
+    "search": "Пошук модпаків на {{provider}}",
+    "loadMore": "Завантажити ще",
+    "selectModpack": "Виберіть модпак, щоб обрати версію.",
+    "loadingVersions": "Завантаження версій…"
+  },
+  "releaseType": {
+    "release": "реліз",
+    "beta": "бета",
+    "alpha": "альфа"
+  },
+  "projectRow": {
+    "author": "автор: {{author}}",
+    "downloads_one": "{{downloads}} завантаження",
+    "downloads_few": "{{downloads}} завантаження",
+    "downloads_many": "{{downloads}} завантажень",
+    "downloads_other": "{{downloads}} завантаження"
+  },
+  "versionList": {
+    "search": "Пошук версій",
+    "filter": {
+      "release": "Релізи",
+      "snapshot": "Снапшоти",
+      "beta": "Бети",
+      "alpha": "Альфи"
+    },
+    "loadingVersions": "Завантаження версій…",
+    "latest": "Остання",
+    "type": {
+      "release": "реліз",
+      "snapshot": "снапшот",
+      "beta": "бета",
+      "alpha": "альфа",
+      "other": "інше"
+    }
+  },
+  "loaderPicker": {
+    "label": "Завантажувач",
+    "none": "Немає",
+    "noVersions": "Немає версій",
+    "beta": "бета"
+  },
+  "importSource": {
+    "description": "Імпортуйте модпак Modrinth (.mrpack) або експортовану збірку (.zip) з файлу чи за URL-адресою.",
+    "placeholder": "Шлях до файлу або URL https://",
+    "browse": "Огляд…",
+    "filter": "Архіви збірок"
+  }
+}

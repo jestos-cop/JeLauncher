@@ -1,5 +1,6 @@
 import { ChevronDown, CircleHelp, Code, FileText, Info } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { commands } from '@/bindings'
 import { Button } from '@/components/ui/button'
 import {
@@ -12,24 +13,25 @@ import { AboutDialog } from '@/dialogs/AboutDialog'
 import { unwrap } from '@/lib/command'
 
 export function HelpMenu() {
+  const { t } = useTranslation('main')
   const [isAboutOpen, setIsAboutOpen] = useState(false)
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button size="sm" variant="ghost">
-            <CircleHelp /> Help <ChevronDown />
+            <CircleHelp /> {t('help.title')} <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           <DropdownMenuItem onSelect={() => void unwrap(commands.openRepository())}>
-            <Code /> Source code and issues
+            <Code /> {t('help.sourceCode')}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => void unwrap(commands.openLauncherLog())}>
-            <FileText /> Open launcher log
+            <FileText /> {t('help.launcherLog')}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setIsAboutOpen(true)}>
-            <Info /> About JeLauncher
+            <Info /> {t('help.about')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

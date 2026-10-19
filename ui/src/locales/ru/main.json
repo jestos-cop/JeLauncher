@@ -1,0 +1,68 @@
+{
+  "toolbar": {
+    "addInstance": "Добавить сборку",
+    "settings": "Настройки",
+    "searchPlaceholder": "Поиск сборок",
+    "sortByName": "По имени",
+    "sortLastPlayed": "По последнему запуску"
+  },
+  "folders": {
+    "title": "Папки",
+    "instances": "Сборки",
+    "java": "Среды Java",
+    "root": "Данные лаунчера"
+  },
+  "help": {
+    "title": "Справка",
+    "sourceCode": "Исходный код и баг-трекер",
+    "launcherLog": "Открыть лог лаунчера",
+    "about": "О JeLauncher"
+  },
+  "accounts": {
+    "none": "Нет аккаунта",
+    "remove": "Удалить {{name}}",
+    "addMicrosoft": "Добавить аккаунт Microsoft…",
+    "addOffline": "Добавить офлайн-аккаунт…",
+    "manage": "Управление аккаунтами…"
+  },
+  "news": {
+    "more": "Больше новостей"
+  },
+  "grid": {
+    "loading": "Загрузка сборок…",
+    "empty": "Сборок пока нет.",
+    "noMatch": "Нет сборок по запросу «{{search}}».",
+    "ungrouped": "Без группы"
+  },
+  "panel": {
+    "played": "Время игры: {{time}}"
+  },
+  "actions": {
+    "launchDemo": "Играть в демо",
+    "launchWithProfiler": "Играть с профайлером",
+    "cancelLaunch": "Отменить запуск",
+    "changeGroup": "Сменить группу",
+    "changeIcon": "Сменить значок",
+    "copy": "Копировать…",
+    "export": "Экспорт…",
+    "createShortcut": "Создать ярлык"
+  },
+  "dialogs": {
+    "renameTitle": "Переименовать сборку",
+    "noGroup": "Без группы",
+    "deleteTitle": "Удалить {{name}}?",
+    "deleteDescription": "Папка сборки вместе с мирами и модами будет удалена навсегда."
+  },
+  "status": {
+    "instances_one": "{{count}} сборка",
+    "instances_few": "{{count}} сборки",
+    "instances_many": "{{count}} сборок",
+    "instances_other": "{{count}} сборки",
+    "totalPlayTime": "Общее время игры: {{time}}",
+    "running": "Запущено: {{names}}"
+  },
+  "playTime": {
+    "hoursMinutes": "{{hours}} ч {{minutes}} мин",
+    "minutes": "{{minutes}} мин"
+  }
+}

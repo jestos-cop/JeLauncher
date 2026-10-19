@@ -1,0 +1,175 @@
+{
+  "tabs": {
+    "log": "Журнал Minecraft",
+    "modpack": "Модпак",
+    "version": "Версия",
+    "mod": "Моды",
+    "resourcePack": "Наборы ресурсов",
+    "shaderPack": "Пакеты шейдеров",
+    "dataPack": "Датапаки",
+    "worlds": "Миры",
+    "servers": "Серверы",
+    "screenshots": "Скриншоты",
+    "notes": "Заметки",
+    "settings": "Настройки"
+  },
+  "columns": {
+    "name": "Название",
+    "version": "Версия",
+    "authors": "Авторы",
+    "description": "Описание",
+    "file": "Файл",
+    "mode": "Режим",
+    "lastPlayed": "Последняя игра",
+    "seed": "Сид"
+  },
+  "item": {
+    "enable": "Включить {{name}}",
+    "remove": "Убрать {{name}}",
+    "delete": "Удалить {{name}}",
+    "rename": "Переименовать {{name}}",
+    "edit": "Изменить {{name}}",
+    "play": "Играть в {{name}}",
+    "backUp": "Создать резервную копию {{name}}",
+    "moveUp": "Переместить {{name}} вверх"
+  },
+  "confirm": {
+    "remove": "Убрать {{name}}?",
+    "delete": "Удалить {{name}}?"
+  },
+  "version": {
+    "components": "Компоненты",
+    "editFile": "Редактировать {{file}}",
+    "change": "Изменить версию",
+    "changeOrInstallLoader": "Изменить версию или установить загрузчик",
+    "removeLoader": "Убрать загрузчик",
+    "removeLoaderDescription": "Сборка будет запускаться как обычный Minecraft; установленные моды останутся в папке mods."
+  },
+  "modpack": {
+    "source": "Версия {{version}} из {{provider}}",
+    "sourceWithUpdate": "Версия {{version}} из {{provider}} · доступна {{latest}}",
+    "switchTo": "Перейти на {{version}}",
+    "switchVersion": "Сменить версию",
+    "switchUnsupported": "Смена версий модпаков {{provider}} пока не поддерживается.",
+    "downloadingFiles": "Загрузка файлов {{completed}}/{{total}}",
+    "downloading": "Загрузка модпака…",
+    "loadingVersions": "Загрузка версий…",
+    "installed": "Установлена",
+    "releaseType": {
+      "release": "Релиз",
+      "beta": "Бета",
+      "alpha": "Альфа"
+    },
+    "noChangelog": "Для этой версии нет списка изменений.",
+    "selectVersion": "Выберите версию, чтобы увидеть список изменений.",
+    "confirmTitle": "Перейти на {{version}}?",
+    "confirmDescription": "Файлы текущей версии модпака будут заменены. Миры, скриншоты и ваши собственные файлы сохранятся.",
+    "confirmSwitch": "Перейти"
+  },
+  "resources": {
+    "mod": {
+      "search": "Поиск модов",
+      "download": "Скачать моды",
+      "empty": "Моды не установлены. Положите файлы .jar в папку mods.",
+      "upToDate": "Все моды из Modrinth актуальны."
+    },
+    "resourcePack": {
+      "search": "Поиск наборов ресурсов",
+      "download": "Скачать наборы ресурсов",
+      "empty": "Наборы ресурсов не установлены.",
+      "upToDate": "Все наборы ресурсов из Modrinth актуальны."
+    },
+    "shaderPack": {
+      "search": "Поиск пакетов шейдеров",
+      "download": "Скачать пакеты шейдеров",
+      "empty": "Пакеты шейдеров не установлены.",
+      "upToDate": "Все пакеты шейдеров из Modrinth актуальны."
+    },
+    "dataPack": {
+      "search": "Поиск датапаков",
+      "download": "Скачать датапаки",
+      "empty": "Датапаки не установлены.",
+      "upToDate": "Все датапаки из Modrinth актуальны."
+    },
+    "enabledCount": "Включено {{enabled}} из {{total}}",
+    "checking": "Проверка…",
+    "checkUpdates": "Проверить обновления",
+    "updatesAvailable_one": "Доступно {{count}} обновление.",
+    "updatesAvailable_few": "Доступно {{count}} обновления.",
+    "updatesAvailable_many": "Доступно {{count}} обновлений.",
+    "updatesAvailable_other": "Доступно {{count}} обновления.",
+    "updating": "Обновление…",
+    "reviewUpdates": "Просмотреть обновления",
+    "reading": "Чтение файлов…",
+    "removeDescription": "{{file}} будет удалён из сборки."
+  },
+  "worlds": {
+    "count_one": "{{count}} мир",
+    "count_few": "{{count}} мира",
+    "count_many": "{{count}} миров",
+    "count_other": "{{count}} мира",
+    "backupSaved": "Резервная копия сохранена в {{path}}",
+    "gameMode": {
+      "survival": "Выживание",
+      "creative": "Творческий",
+      "adventure": "Приключение",
+      "spectator": "Наблюдатель",
+      "hardcore": "Хардкор",
+      "unknown": "Неизвестно"
+    },
+    "copySeed": "Копировать сид",
+    "play": "Играть",
+    "backUp": "Резервная копия",
+    "reading": "Чтение миров…",
+    "empty": "Миров пока нет.",
+    "deleteDescription": "Мир будет удалён безвозвратно. Лучше сначала сделать резервную копию."
+  },
+  "servers": {
+    "count_one": "{{count}} сервер",
+    "count_few": "{{count}} сервера",
+    "count_many": "{{count}} серверов",
+    "count_other": "{{count}} сервера",
+    "add": "Добавить сервер",
+    "reading": "Чтение серверов…",
+    "empty": "Серверов пока нет.",
+    "unnamed": "сервер",
+    "removeDescription": "Сервер будет убран из списка сетевой игры этой сборки.",
+    "pinging": "Проверка связи…",
+    "players_one": "{{online}}/{{count}} игрок",
+    "players_few": "{{online}}/{{count}} игрока",
+    "players_many": "{{online}}/{{count}} игроков",
+    "players_other": "{{online}}/{{count}} игрока",
+    "versionLatency": "{{version}} · {{latency}} мс",
+    "join": "Подключиться",
+    "moveUp": "Переместить вверх"
+  },
+  "screenshots": {
+    "count_one": "{{count}} скриншот",
+    "count_few": "{{count}} скриншота",
+    "count_many": "{{count}} скриншотов",
+    "count_other": "{{count}} скриншота",
+    "reading": "Чтение скриншотов…",
+    "empty": "Скриншотов пока нет. Нажмите F2 в игре, чтобы сделать скриншот.",
+    "renameTitle": "Переименовать скриншот",
+    "deleteDescription": "Скриншот будет удалён безвозвратно."
+  },
+  "notes": {
+    "loading": "Загрузка заметок…",
+    "unsaved": "Несохранённые изменения",
+    "hint": "Заметки хранятся вместе со сборкой.",
+    "placeholder": "Сиды, координаты, пароли серверов, заметки по настройке модов…"
+  },
+  "settings": {
+    "javaInstallation": "Установка Java",
+    "minMemory": "Минимальная память",
+    "maxMemory": "Максимальная память",
+    "mib": "МиБ",
+    "jvmArgs": "Аргументы JVM",
+    "gameWindow": "Окно игры",
+    "windowSize": "Размер окна",
+    "startMaximized": "Запускать развёрнутым",
+    "customCommands": "Свои команды",
+    "memoryError": "Минимальная память не должна превышать максимальную.",
+    "override": "Переопределить глобальные настройки"
+  }
+}

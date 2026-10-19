@@ -351,6 +351,17 @@ async listRunningInstances() : Promise<Result<string[], CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Rebuilds the native menu bar in the interface language.
+ */
+async setMenuLanguage(language: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_menu_language", { language }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async listLoaderVersions(kind: LoaderKind, minecraftVersion: string) : Promise<Result<LoaderVersion[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_loader_versions", { kind, minecraftVersion }) };
@@ -730,7 +741,11 @@ export type ApiSettings = {
  */
 curseforgeApiKey: string | null }
 export type AppInfo = { version: string; license: string; repository: string }
-export type AppearanceSettings = { theme: Theme }
+export type AppearanceSettings = { theme: Theme; 
+/**
+ * Interface language code such as `uk`; `None` follows the system language.
+ */
+language: string | null }
 /**
  * A pack file whose author only allows downloads from the CurseForge website.
  */

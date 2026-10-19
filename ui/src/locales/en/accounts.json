@@ -1,0 +1,32 @@
+{
+  "defaultHint": "The default account is used to launch every instance.",
+  "addMicrosoft": "Add Microsoft Account",
+  "addOffline": "Add Offline Account",
+  "kind": {
+    "microsoft": "Microsoft",
+    "offline": "Offline"
+  },
+  "default": "Default",
+  "useByDefault": "Use by default",
+  "signInAgain": "Sign in again",
+  "refresh": "Refresh {{username}}",
+  "remove": "Remove {{username}}",
+  "loading": "Loading accounts…",
+  "empty": "Add an account to launch the game.",
+  "removeDialog": {
+    "title": "Remove {{username}}?",
+    "description": "The account is removed from the launcher. Your worlds and instances are not affected."
+  },
+  "microsoft": {
+    "title": "Sign in with Microsoft",
+    "description": "Open the Microsoft page, enter the code and approve the sign-in. This window updates by itself.",
+    "copyCode": "Copy code",
+    "open": "Open {{url}}",
+    "waiting": "Waiting for approval…",
+    "requesting": "Requesting a sign-in code…"
+  },
+  "offline": {
+    "description": "Offline accounts can only play singleplayer and offline-mode servers.",
+    "username": "Username"
+  }
+}

@@ -1,4 +1,5 @@
 import { ExternalLink, FolderOpen } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { commands, type InstalledPack } from '@/bindings'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,15 +20,13 @@ interface BlockedFilesDialogProps {
 
 /** Lists pack files whose authors only allow downloads from the CurseForge website. */
 export function BlockedFilesDialog({ installed, onClose }: BlockedFilesDialogProps) {
+  const { t } = useTranslation(['newInstance', 'common'])
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Some files need a manual download</DialogTitle>
-          <DialogDescription>
-            The instance was created, but these authors only allow downloads from the CurseForge website.
-            Download each file and put it into the folder shown next to it.
-          </DialogDescription>
+          <DialogTitle>{t('blockedFiles.title')}</DialogTitle>
+          <DialogDescription>{t('blockedFiles.description')}</DialogDescription>
         </DialogHeader>
         <ul className="max-h-80 overflow-auto rounded-md border">
           {installed.blocked.map((file) => (
@@ -39,16 +38,16 @@ export function BlockedFilesDialog({ installed, onClose }: BlockedFilesDialogPro
                 </p>
               </div>
               <Button size="sm" variant="outline" onClick={() => void unwrap(commands.openUrl(file.url))}>
-                <ExternalLink /> Download page
+                <ExternalLink /> {t('blockedFiles.downloadPage')}
               </Button>
             </li>
           ))}
         </ul>
         <DialogFooter>
           <Button variant="outline" onClick={() => void openInstanceFolder(installed.instanceId, 'mod')}>
-            <FolderOpen /> Open mods folder
+            <FolderOpen /> {t('blockedFiles.openModsFolder')}
           </Button>
-          <Button onClick={onClose}>Done</Button>
+          <Button onClick={onClose}>{t('common:action.done')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

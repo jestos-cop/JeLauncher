@@ -1,0 +1,111 @@
+{
+  "releaseType": {
+    "release": "estable",
+    "beta": "beta",
+    "alpha": "alfa"
+  },
+  "resourceDownload": {
+    "title": "Descargar para {{instance}} · Minecraft {{version}}",
+    "titleWithLoader": "Descargar para {{instance}} · Minecraft {{version}} · {{loader}}",
+    "search": "Buscar en {{provider}}",
+    "sort": {
+      "relevance": "Relevancia",
+      "downloads": "Descargas",
+      "updated": "Actualizados recientemente",
+      "newest": "Más recientes"
+    },
+    "loadMore": "Cargar más",
+    "searching": "Buscando…",
+    "selectProject": "Selecciona un proyecto para ver las versiones compatibles.",
+    "alsoInstalled": "También instalado: {{names}}",
+    "loadingVersions": "Cargando versiones…",
+    "noVersions": "No hay versiones para esta instancia.",
+    "installed": "Instalado"
+  },
+  "resourceUpdate": {
+    "title": "Revisar actualizaciones",
+    "description": "Elige las actualizaciones que quieres instalar. Los archivos desactivados seguirán desactivados.",
+    "select": "Actualizar {{name}}",
+    "changelog": "Registro de cambios",
+    "noChangelog": "Esta versión no tiene registro de cambios.",
+    "apply": "Actualizar {{selected}} de {{total}}"
+  },
+  "export": {
+    "title": "Exportar {{name}}",
+    "format": {
+      "zip": {
+        "label": "Archivo de instancia",
+        "description": "Una copia completa de la instancia que se puede volver a importar."
+      },
+      "mrpack": {
+        "label": "Modpack de Modrinth",
+        "description": "Los archivos publicados en Modrinth se enlazan; todo lo demás se incluye como overrides."
+      },
+      "curseforge": {
+        "label": "Modpack de CurseForge",
+        "description": "Los archivos publicados en CurseForge se enlazan; todo lo demás se incluye como overrides."
+      }
+    },
+    "instanceZip": "Instancia (.zip)",
+    "version": "Versión",
+    "summary": "Resumen",
+    "author": "Autor",
+    "optional": "Opcional",
+    "includedFiles": "Archivos incluidos",
+    "noFiles": "La instancia aún no tiene archivos del juego.",
+    "exporting": "Exportando…",
+    "submit": "Exportar…"
+  },
+  "copy": {
+    "title": "Copiar {{name}}",
+    "defaultName": "Copia de {{name}}",
+    "name": "Nombre",
+    "group": "Grupo",
+    "noGroup": "Sin grupo",
+    "flag": {
+      "copySaves": "Mundos",
+      "copyMods": "Mods y configuraciones",
+      "copyResourcePacks": "Paquetes de recursos",
+      "copyShaderPacks": "Paquetes de shaders",
+      "copyServers": "Servidores",
+      "copyScreenshots": "Capturas de pantalla",
+      "copyGameOptions": "Opciones del juego",
+      "keepPlayTime": "Conservar el tiempo de juego",
+      "useHardLinks": "Usar enlaces duros en lugar de copiar (los mundos siempre se copian)"
+    },
+    "copying": "Copiando…"
+  },
+  "shortcut": {
+    "title": "Acceso directo en el escritorio",
+    "creating": "Creando un acceso directo para {{name}}…",
+    "created": "Haz doble clic en el acceso directo para iniciar esta instancia directamente."
+  },
+  "iconPicker": {
+    "title": "Elige un icono",
+    "images": "Imágenes",
+    "remove": "Quitar icono",
+    "add": "Añadir icono…"
+  },
+  "changeVersion": {
+    "title": "Cambiar versión",
+    "description": "Los archivos del juego de la nueva versión se descargarán en el próximo inicio. Puede que haya que actualizar los mods."
+  },
+  "server": {
+    "addTitle": "Añadir servidor",
+    "editTitle": "Editar servidor",
+    "defaultName": "Servidor de Minecraft",
+    "name": "Nombre",
+    "address": "Dirección",
+    "resourcePacks": "Paquetes de recursos",
+    "policy": {
+      "prompt": "Preguntar",
+      "enabled": "Activados",
+      "disabled": "Desactivados"
+    }
+  },
+  "modListExport": {
+    "button": "Exportar lista",
+    "fileType": "Lista de mods",
+    "plainText": "Texto sin formato"
+  }
+}

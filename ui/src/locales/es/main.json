@@ -1,0 +1,66 @@
+{
+  "toolbar": {
+    "addInstance": "Añadir instancia",
+    "settings": "Ajustes",
+    "searchPlaceholder": "Buscar instancias",
+    "sortByName": "Por nombre",
+    "sortLastPlayed": "Jugadas recientemente"
+  },
+  "folders": {
+    "title": "Carpetas",
+    "instances": "Instancias",
+    "java": "Entornos de Java",
+    "root": "Datos del launcher"
+  },
+  "help": {
+    "title": "Ayuda",
+    "sourceCode": "Código fuente e incidencias",
+    "launcherLog": "Abrir registro del launcher",
+    "about": "Acerca de JeLauncher"
+  },
+  "accounts": {
+    "none": "Sin cuenta",
+    "remove": "Eliminar {{name}}",
+    "addMicrosoft": "Añadir cuenta de Microsoft…",
+    "addOffline": "Añadir cuenta sin conexión…",
+    "manage": "Gestionar cuentas…"
+  },
+  "news": {
+    "more": "Más noticias"
+  },
+  "grid": {
+    "loading": "Cargando instancias…",
+    "empty": "Aún no hay instancias.",
+    "noMatch": "Ninguna instancia coincide con «{{search}}».",
+    "ungrouped": "Sin grupo"
+  },
+  "panel": {
+    "played": "Tiempo de juego: {{time}}"
+  },
+  "actions": {
+    "launchDemo": "Jugar en modo demo",
+    "launchWithProfiler": "Jugar con perfilador",
+    "cancelLaunch": "Cancelar inicio",
+    "changeGroup": "Cambiar grupo",
+    "changeIcon": "Cambiar icono",
+    "copy": "Copiar…",
+    "export": "Exportar…",
+    "createShortcut": "Crear acceso directo"
+  },
+  "dialogs": {
+    "renameTitle": "Renombrar instancia",
+    "noGroup": "Sin grupo",
+    "deleteTitle": "¿Eliminar {{name}}?",
+    "deleteDescription": "La carpeta de la instancia, incluidos los mundos y los mods, se eliminará de forma permanente."
+  },
+  "status": {
+    "instances_one": "{{count}} instancia",
+    "instances_other": "{{count}} instancias",
+    "totalPlayTime": "Tiempo de juego total: {{time}}",
+    "running": "En ejecución: {{names}}"
+  },
+  "playTime": {
+    "hoursMinutes": "{{hours}} h {{minutes}} min",
+    "minutes": "{{minutes}} min"
+  }
+}

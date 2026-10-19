@@ -5,7 +5,7 @@ JeLauncher is a Minecraft launcher built with Rust + Tauri and a React frontend.
 ## Language
 
 - Everything is written in English: code, identifiers, comments, docs, commit
-  messages, PR descriptions and UI strings.
+  messages, PR descriptions and the English UI strings (translations live in locale files).
 - Keep comments to a minimum. Prefer clear names; comment only to explain *why*,
   never *what*.
 
@@ -82,6 +82,10 @@ ui/                 React + TypeScript + Vite + Tailwind + shadcn/ui
 
 - The frontend only renders state and calls Tauri commands — no business logic.
 - Types shared between Rust and the frontend are generated from Rust, never written by hand.
+- UI text goes through i18next: `useTranslation('<namespace>')` and keys in
+  `ui/src/locales/<lang>/<namespace>.json` for every language (`en`, `uk`, `ru`, `es`).
+  `pnpm --dir ui lint` fails when a language misses keys; `tsc` fails on unknown keys.
+  The native macOS menu reads its labels from `crates/tauri-app/locales/menu.<lang>.json`.
 
 ## License
 

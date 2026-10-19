@@ -1,5 +1,6 @@
 import { ArrowUp, Pencil, Play, Plus, RefreshCw, Server as ServerIcon, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { useSession } from '@/app/sessions'
 import type { Server } from '@/bindings'
@@ -17,6 +18,7 @@ import {
 type PendingAction = { kind: 'edit'; index: number | null } | { kind: 'delete'; index: number } | null
 
 export function ServersPage({ instanceId }: { instanceId: string }) {
+  const { t } = useTranslation(['instance', 'common'])
   const queryClient = useQueryClient()
   const { session, launch } = useSession(instanceId)
   const { data: servers = [], error, isPending } = useServers(instanceId)
@@ -35,14 +37,14 @@ export function ServersPage({ instanceId }: { instanceId: string }) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">{servers.length} servers</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-sm text-muted-foreground">{t('servers.count', { count: servers.length })}</span>
         <div className="ml-auto flex gap-1">
           <Button size="sm" variant="ghost" onClick={refresh}>
-            <RefreshCw /> Refresh
+            <RefreshCw /> {t('common:action.refresh')}
           </Button>
           <Button size="sm" onClick={() => setAction({ kind: 'edit', index: null })}>
-            <Plus /> Add Server
+            <Plus /> {t('servers.add')}
           </Button>
         </div>
       </div>
@@ -62,9 +64,9 @@ export function ServersPage({ instanceId }: { instanceId: string }) {
             onDelete={() => setAction({ kind: 'delete', index })}
           />
         ))}
-        {isPending && <p className="p-3 text-sm text-muted-foreground">Reading servers…</p>}
+        {isPending && <p className="p-3 text-sm text-muted-foreground">{t('servers.reading')}</p>}
         {!isPending && servers.length === 0 && (
-          <p className="p-3 text-sm text-muted-foreground">No servers yet.</p>
+          <p className="p-3 text-sm text-muted-foreground">{t('servers.empty')}</p>
         )}
       </div>
 
@@ -79,9 +81,9 @@ export function ServersPage({ instanceId }: { instanceId: string }) {
       )}
       {action?.kind === 'delete' && (
         <ConfirmDialog
-          title={`Remove ${servers[action.index]?.name ?? 'server'}?`}
-          description="The server will be removed from this instance's multiplayer list."
-          confirmLabel="Remove"
+          title={t('confirm.remove', { name: servers[action.index]?.name ?? t('servers.unnamed') })}
+          description={t('servers.removeDescription')}
+          confirmLabel={t('common:action.remove')}
           onConfirm={() => remove.mutate(action.index, { onSuccess: close })}
           onClose={close}
         />
@@ -101,6 +103,7 @@ interface ServerRowProps {
 }
 
 function ServerRow({ server, canMoveUp, canJoin, onJoin, onEdit, onMoveUp, onDelete }: ServerRowProps) {
+  const { t } = useTranslation(['instance', 'common'])
   const status = useServerStatus(server.address)
   const icon = status.data?.favicon ?? (server.icon && `data:image/png;base64,${server.icon}`)
 
@@ -118,7 +121,7 @@ function ServerRow({ server, canMoveUp, canJoin, onJoin, onEdit, onMoveUp, onDel
         </div>
         <p className="truncate whitespace-pre text-xs text-muted-foreground">
           {status.isPending
-            ? 'Pinging…'
+            ? t('servers.pinging')
             : status.error
               ? status.error.message
               : status.data.motd.replace(/\s+/g, ' ').trim()}
@@ -126,22 +129,20 @@ function ServerRow({ server, canMoveUp, canJoin, onJoin, onEdit, onMoveUp, onDel
       </div>
       {status.data && (
         <div className="shrink-0 text-right text-xs text-muted-foreground">
+          <p>{t('servers.players', { online: status.data.playersOnline, count: status.data.playersMax })}</p>
           <p>
-            {status.data.playersOnline}/{status.data.playersMax} players
-          </p>
-          <p>
-            {status.data.version} · {status.data.latencyMs} ms
+            {t('servers.versionLatency', { version: status.data.version, latency: status.data.latencyMs })}
           </p>
         </div>
       )}
       <Button size="sm" variant="outline" disabled={!canJoin} onClick={onJoin}>
-        <Play /> Join
+        <Play /> {t('servers.join')}
       </Button>
       <div className="flex shrink-0 gap-2 text-muted-foreground">
         <button
           type="button"
-          title="Move up"
-          aria-label={`Move ${server.name} up`}
+          title={t('servers.moveUp')}
+          aria-label={t('item.moveUp', { name: server.name })}
           className="hover:text-foreground disabled:opacity-30"
           disabled={!canMoveUp}
           onClick={onMoveUp}
@@ -150,8 +151,8 @@ function ServerRow({ server, canMoveUp, canJoin, onJoin, onEdit, onMoveUp, onDel
         </button>
         <button
           type="button"
-          title="Edit"
-          aria-label={`Edit ${server.name}`}
+          title={t('common:action.edit')}
+          aria-label={t('item.edit', { name: server.name })}
           className="hover:text-foreground"
           onClick={onEdit}
         >
@@ -159,8 +160,8 @@ function ServerRow({ server, canMoveUp, canJoin, onJoin, onEdit, onMoveUp, onDel
         </button>
         <button
           type="button"
-          title="Remove"
-          aria-label={`Remove ${server.name}`}
+          title={t('common:action.remove')}
+          aria-label={t('item.remove', { name: server.name })}
           className="hover:text-destructive"
           onClick={onDelete}
         >

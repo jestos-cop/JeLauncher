@@ -1,5 +1,6 @@
 import { FileCode, Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { InstanceSummary } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Button } from '@/components/ui/button'
@@ -14,6 +15,7 @@ const LOADER_NAMES = {
 } as const
 
 export function VersionPage({ instance }: { instance: InstanceSummary }) {
+  const { t } = useTranslation(['instance', 'common'])
   const [dialog, setDialog] = useState<'change' | 'removeLoader' | null>(null)
   const setInstanceVersion = useSetInstanceVersion()
   const openFile = useOpenInstanceFile()
@@ -22,25 +24,25 @@ export function VersionPage({ instance }: { instance: InstanceSummary }) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">Components</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-sm text-muted-foreground">{t('version.components')}</span>
         <Button
           size="sm"
           variant="ghost"
           className="ml-auto"
           onClick={() => openFile.mutate({ id: instance.id, file: 'config' })}
         >
-          <FileCode /> Edit instance.json
+          <FileCode /> {t('version.editFile', { file: 'instance.json' })}
         </Button>
         <Button
           size="sm"
           variant="ghost"
           onClick={() => openFile.mutate({ id: instance.id, file: 'gameOptions' })}
         >
-          <FileCode /> Edit options.txt
+          <FileCode /> {t('version.editFile', { file: 'options.txt' })}
         </Button>
         <Button size="sm" variant="ghost" onClick={() => setDialog('change')}>
-          <Pencil /> {loader ? 'Change Version' : 'Change Version or Install Loader'}
+          <Pencil /> {loader ? t('version.change') : t('version.changeOrInstallLoader')}
         </Button>
       </div>
 
@@ -53,8 +55,8 @@ export function VersionPage({ instance }: { instance: InstanceSummary }) {
         <table className="w-full text-sm">
           <thead className="text-left text-muted-foreground">
             <tr className="border-b">
-              <th className="p-2 font-medium">Name</th>
-              <th className="p-2 font-medium">Version</th>
+              <th className="p-2 font-medium">{t('columns.name')}</th>
+              <th className="p-2 font-medium">{t('columns.version')}</th>
               <th className="w-10 p-2" />
             </tr>
           </thead>
@@ -71,8 +73,8 @@ export function VersionPage({ instance }: { instance: InstanceSummary }) {
                 <td className="p-2">
                   <button
                     type="button"
-                    title="Remove loader"
-                    aria-label="Remove loader"
+                    title={t('version.removeLoader')}
+                    aria-label={t('version.removeLoader')}
                     className="text-muted-foreground hover:text-destructive"
                     onClick={() => setDialog('removeLoader')}
                   >
@@ -88,9 +90,9 @@ export function VersionPage({ instance }: { instance: InstanceSummary }) {
       {dialog === 'change' && <ChangeVersionDialog instance={instance} onClose={close} />}
       {dialog === 'removeLoader' && loader && (
         <ConfirmDialog
-          title={`Remove ${LOADER_NAMES[loader.kind]}?`}
-          description="The instance will launch as vanilla Minecraft; installed mods stay in the mods folder."
-          confirmLabel="Remove"
+          title={t('confirm.remove', { name: LOADER_NAMES[loader.kind] })}
+          description={t('version.removeLoaderDescription')}
+          confirmLabel={t('common:action.remove')}
           onConfirm={() =>
             setInstanceVersion.mutate(
               { id: instance.id, minecraftVersion: instance.minecraftVersion, loader: null },

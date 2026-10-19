@@ -1,0 +1,84 @@
+{
+  "title": "New Instance",
+  "source": {
+    "custom": "Custom",
+    "import": "Import"
+  },
+  "field": {
+    "name": "Name",
+    "group": "Group"
+  },
+  "placeholder": {
+    "instanceName": "Instance name",
+    "nameFromPack": "Name from the pack",
+    "noGroup": "No group"
+  },
+  "progress": {
+    "downloading": "Downloading files {{completed}}/{{total}}",
+    "preparing": "Preparing…"
+  },
+  "untrustedHosts": {
+    "title": "Download from untrusted hosts?",
+    "description": "This modpack downloads files from {{hosts}}. These hosts are not reviewed by the platform and may serve harmful files. Continue only if you trust the pack author.",
+    "confirm": "Download Anyway"
+  },
+  "optionalMods": {
+    "title": "Optional Mods",
+    "description": "Pick the extras to install. Mods they depend on are added automatically.",
+    "recommended": "recommended",
+    "shareCode": "Share code",
+    "useShareCode": "Use Share Code"
+  },
+  "blockedFiles": {
+    "title": "Some files need a manual download",
+    "description": "The instance was created, but these authors only allow downloads from the CurseForge website. Download each file and put it into the folder shown next to it.",
+    "downloadPage": "Download page",
+    "openModsFolder": "Open mods folder"
+  },
+  "modpackBrowser": {
+    "search": "Search {{provider}} modpacks",
+    "loadMore": "Load more",
+    "selectModpack": "Select a modpack to choose a version.",
+    "loadingVersions": "Loading versions…"
+  },
+  "releaseType": {
+    "release": "release",
+    "beta": "beta",
+    "alpha": "alpha"
+  },
+  "projectRow": {
+    "author": "by {{author}}",
+    "downloads_one": "{{downloads}} download",
+    "downloads_other": "{{downloads}} downloads"
+  },
+  "versionList": {
+    "search": "Search versions",
+    "filter": {
+      "release": "Releases",
+      "snapshot": "Snapshots",
+      "beta": "Betas",
+      "alpha": "Alphas"
+    },
+    "loadingVersions": "Loading versions…",
+    "latest": "Latest",
+    "type": {
+      "release": "release",
+      "snapshot": "snapshot",
+      "beta": "beta",
+      "alpha": "alpha",
+      "other": "other"
+    }
+  },
+  "loaderPicker": {
+    "label": "Loader",
+    "none": "None",
+    "noVersions": "No versions",
+    "beta": "beta"
+  },
+  "importSource": {
+    "description": "Import a Modrinth pack (.mrpack) or an exported instance (.zip) from a file or a URL.",
+    "placeholder": "File path or https:// URL",
+    "browse": "Browse…",
+    "filter": "Instance archives"
+  }
+}

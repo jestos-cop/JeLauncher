@@ -1,0 +1,165 @@
+{
+  "tabs": {
+    "log": "Minecraft Log",
+    "modpack": "Modpack",
+    "version": "Version",
+    "mod": "Mods",
+    "resourcePack": "Resource Packs",
+    "shaderPack": "Shader Packs",
+    "dataPack": "Data Packs",
+    "worlds": "Worlds",
+    "servers": "Servers",
+    "screenshots": "Screenshots",
+    "notes": "Notes",
+    "settings": "Settings"
+  },
+  "columns": {
+    "name": "Name",
+    "version": "Version",
+    "authors": "Authors",
+    "description": "Description",
+    "file": "File",
+    "mode": "Mode",
+    "lastPlayed": "Last played",
+    "seed": "Seed"
+  },
+  "item": {
+    "enable": "Enable {{name}}",
+    "remove": "Remove {{name}}",
+    "delete": "Delete {{name}}",
+    "rename": "Rename {{name}}",
+    "edit": "Edit {{name}}",
+    "play": "Play {{name}}",
+    "backUp": "Back up {{name}}",
+    "moveUp": "Move {{name}} up"
+  },
+  "confirm": {
+    "remove": "Remove {{name}}?",
+    "delete": "Delete {{name}}?"
+  },
+  "version": {
+    "components": "Components",
+    "editFile": "Edit {{file}}",
+    "change": "Change Version",
+    "changeOrInstallLoader": "Change Version or Install Loader",
+    "removeLoader": "Remove loader",
+    "removeLoaderDescription": "The instance will launch as vanilla Minecraft; installed mods stay in the mods folder."
+  },
+  "modpack": {
+    "source": "Version {{version}} from {{provider}}",
+    "sourceWithUpdate": "Version {{version}} from {{provider}} · {{latest}} is available",
+    "switchTo": "Switch to {{version}}",
+    "switchVersion": "Switch version",
+    "switchUnsupported": "Switching versions of {{provider}} packs is not supported yet.",
+    "downloadingFiles": "Downloading files {{completed}}/{{total}}",
+    "downloading": "Downloading modpack…",
+    "loadingVersions": "Loading versions…",
+    "installed": "Installed",
+    "releaseType": {
+      "release": "Release",
+      "beta": "Beta",
+      "alpha": "Alpha"
+    },
+    "noChangelog": "No changelog for this version.",
+    "selectVersion": "Select a version to see its changelog.",
+    "confirmTitle": "Switch to {{version}}?",
+    "confirmDescription": "Files from the current pack version are replaced. Worlds, screenshots and your own files are kept.",
+    "confirmSwitch": "Switch"
+  },
+  "resources": {
+    "mod": {
+      "search": "Search mods",
+      "download": "Download Mods",
+      "empty": "No mods installed. Put .jar files into the mods folder.",
+      "upToDate": "All mods from Modrinth are up to date."
+    },
+    "resourcePack": {
+      "search": "Search resource packs",
+      "download": "Download Resource Packs",
+      "empty": "No resource packs installed.",
+      "upToDate": "All resource packs from Modrinth are up to date."
+    },
+    "shaderPack": {
+      "search": "Search shader packs",
+      "download": "Download Shader Packs",
+      "empty": "No shader packs installed.",
+      "upToDate": "All shader packs from Modrinth are up to date."
+    },
+    "dataPack": {
+      "search": "Search data packs",
+      "download": "Download Data Packs",
+      "empty": "No data packs installed.",
+      "upToDate": "All data packs from Modrinth are up to date."
+    },
+    "enabledCount": "{{enabled}} of {{total}} enabled",
+    "checking": "Checking…",
+    "checkUpdates": "Check for Updates",
+    "updatesAvailable_one": "{{count}} update available.",
+    "updatesAvailable_other": "{{count}} updates available.",
+    "updating": "Updating…",
+    "reviewUpdates": "Review Updates",
+    "reading": "Reading files…",
+    "removeDescription": "{{file}} will be deleted from the instance."
+  },
+  "worlds": {
+    "count_one": "{{count}} world",
+    "count_other": "{{count}} worlds",
+    "backupSaved": "Backup saved to {{path}}",
+    "gameMode": {
+      "survival": "Survival",
+      "creative": "Creative",
+      "adventure": "Adventure",
+      "spectator": "Spectator",
+      "hardcore": "Hardcore",
+      "unknown": "Unknown"
+    },
+    "copySeed": "Copy seed",
+    "play": "Play",
+    "backUp": "Back up",
+    "reading": "Reading worlds…",
+    "empty": "No worlds yet.",
+    "deleteDescription": "The world will be permanently removed. Consider making a backup first."
+  },
+  "servers": {
+    "count_one": "{{count}} server",
+    "count_other": "{{count}} servers",
+    "add": "Add Server",
+    "reading": "Reading servers…",
+    "empty": "No servers yet.",
+    "unnamed": "server",
+    "removeDescription": "The server will be removed from this instance's multiplayer list.",
+    "pinging": "Pinging…",
+    "players_one": "{{online}}/{{count}} player",
+    "players_other": "{{online}}/{{count}} players",
+    "versionLatency": "{{version}} · {{latency}} ms",
+    "join": "Join",
+    "moveUp": "Move up"
+  },
+  "screenshots": {
+    "count_one": "{{count}} screenshot",
+    "count_other": "{{count}} screenshots",
+    "reading": "Reading screenshots…",
+    "empty": "No screenshots yet. Press F2 in game to take one.",
+    "renameTitle": "Rename Screenshot",
+    "deleteDescription": "The screenshot will be permanently removed."
+  },
+  "notes": {
+    "loading": "Loading notes…",
+    "unsaved": "Unsaved changes",
+    "hint": "Notes are stored with the instance.",
+    "placeholder": "Seeds, coordinates, server passwords, mod setup notes…"
+  },
+  "settings": {
+    "javaInstallation": "Java installation",
+    "minMemory": "Minimum memory",
+    "maxMemory": "Maximum memory",
+    "mib": "MiB",
+    "jvmArgs": "JVM arguments",
+    "gameWindow": "Game window",
+    "windowSize": "Window size",
+    "startMaximized": "Start maximized",
+    "customCommands": "Custom commands",
+    "memoryError": "Minimum memory must not exceed maximum memory.",
+    "override": "Override global settings"
+  }
+}
