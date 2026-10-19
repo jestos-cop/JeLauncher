@@ -29,6 +29,9 @@ pub enum Error {
     #[error("instance {0} does not exist")]
     UnknownInstance(String),
 
+    #[error("account {0} does not exist")]
+    UnknownAccount(String),
+
     #[error("{0}")]
     InvalidInput(String),
 

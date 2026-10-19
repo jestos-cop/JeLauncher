@@ -5,6 +5,30 @@
 
 
 export const commands = {
+async listAccounts() : Promise<Result<AccountSummary[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_accounts") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async removeAccount(id: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("remove_account", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async setDefaultAccount(id: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_default_account", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async listInstances() : Promise<Result<InstanceSummary[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_instances") };
@@ -65,6 +89,8 @@ async updateSettings(settings: GlobalSettings) : Promise<Result<null, CommandErr
 
 /** user-defined types **/
 
+export type AccountKind = { type: "offline" }
+export type AccountSummary = { id: string; username: string; kind: AccountKind; isDefault: boolean }
 export type CommandError = { message: string }
 export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings }
 export type InstanceSummary = { id: string; name: string; iconKey: string; group: string | null; minecraftVersion: string; lastLaunchTime: number; totalTimePlayed: number }
