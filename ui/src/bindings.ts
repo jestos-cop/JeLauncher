@@ -161,6 +161,17 @@ async installModpack(versionId: string, name: string | null) : Promise<Result<st
 }
 },
 /**
+ * Imports an instance from a `.mrpack` or exported instance archive (path or URL); returns its id.
+ */
+async importInstance(source: string, name: string | null) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("import_instance", { source, name }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Installs a version plus its required dependencies; returns the installed file names.
  */
 async installProjectVersion(instanceId: string, kind: ResourceKind, versionId: string) : Promise<Result<string[], CommandError>> {

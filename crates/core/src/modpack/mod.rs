@@ -1,8 +1,12 @@
+mod import;
 mod mrpack;
+
+use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
-pub use mrpack::{MrpackIndex, install_mrpack, read_mrpack_index};
+pub use import::{ArchiveKind, detect_archive, import_instance};
+pub use mrpack::{MRPACK_INDEX, MrpackIndex, install_mrpack, read_mrpack_index};
 
 use crate::modplatform::Provider;
 
@@ -23,4 +27,12 @@ pub struct PackSource {
     pub provider: Provider,
     pub project_id: String,
     pub version_id: String,
+}
+
+/// Where a downloaded or imported pack becomes a new instance.
+pub struct ModpackTarget<'a> {
+    pub instances_dir: &'a Path,
+    pub download_dir: &'a Path,
+    pub name: Option<String>,
+    pub concurrency: usize,
 }

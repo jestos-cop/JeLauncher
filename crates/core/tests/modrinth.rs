@@ -97,7 +97,7 @@ async fn installs_required_dependencies() -> jelauncher_core::Result<()> {
 #[tokio::test]
 #[ignore = "downloads a full modpack"]
 async fn installs_a_modpack_as_new_instance() -> jelauncher_core::Result<()> {
-    use jelauncher_core::modplatform::modrinth::ModpackTarget;
+    use jelauncher_core::modpack::ModpackTarget;
 
     let modrinth = Modrinth::new(HttpClient::new(&NetworkSettings::default())?);
     let versions = modrinth
@@ -137,5 +137,46 @@ async fn installs_a_modpack_as_new_instance() -> jelauncher_core::Result<()> {
         "overrides were not applied"
     );
     assert!(instance.config.managed_pack.is_some());
+    Ok(())
+}
+
+#[tokio::test]
+#[ignore = "downloads a full modpack"]
+async fn imports_a_modpack_from_its_url() -> jelauncher_core::Result<()> {
+    use jelauncher_core::modpack::{ModpackTarget, import_instance};
+
+    let http = HttpClient::new(&NetworkSettings::default())?;
+    let modrinth = Modrinth::new(http.clone());
+    let versions = modrinth
+        .versions(
+            "fabulously-optimized",
+            ResourceKind::Modpack,
+            Some("1.21.4"),
+            Some(LoaderKind::Fabric),
+        )
+        .await?;
+    let Some(url) = versions
+        .first()
+        .and_then(|pack| pack.primary_file())
+        .map(|file| file.url.clone())
+    else {
+        panic!("no Fabulously Optimized for 1.21.4");
+    };
+    let dir = tempfile::tempdir().map_err(|err| jelauncher_core::Error::Io {
+        path: "tempdir".into(),
+        source: err,
+    })?;
+    let target = ModpackTarget {
+        instances_dir: &dir.path().join("instances"),
+        download_dir: &dir.path().join("downloads"),
+        name: Some("Imported".into()),
+        concurrency: 8,
+    };
+    let instance = import_instance(&http, &url, &target, |_| {}).await?;
+
+    let mods = list_resources(&instance.resource_dir(ResourceKind::Mod), ResourceKind::Mod)?;
+    assert_eq!(instance.config.name, "Imported");
+    assert!(mods.len() > 10);
+    assert!(instance.config.managed_pack.is_none());
     Ok(())
 }

@@ -1,5 +1,8 @@
 use jelauncher_core::instance::Instance;
-use jelauncher_core::modplatform::modrinth::{InstallTarget, ModpackTarget};
+use std::path::Path;
+
+use jelauncher_core::modpack::{self, ModpackTarget};
+use jelauncher_core::modplatform::modrinth::InstallTarget;
 use jelauncher_core::modplatform::{ProjectVersion, ResourceKind, SearchPage, SearchQuery};
 use tauri::{AppHandle, State};
 use tauri_specta::Event;
@@ -85,18 +88,8 @@ pub async fn install_modpack(
     version_id: String,
     name: Option<String>,
 ) -> CommandResult<String> {
-    let concurrency = state
-        .settings
-        .read()
-        .map_err(|_| CommandError::poisoned())?
-        .network
-        .concurrent_downloads as usize;
-    let target = ModpackTarget {
-        instances_dir: &state.paths.instances(),
-        download_dir: &state.paths.downloads_cache(),
-        name: name.filter(|name| !name.trim().is_empty()),
-        concurrency,
-    };
+    let (instances_dir, download_dir) = (state.paths.instances(), state.paths.downloads_cache());
+    let target = modpack_target(&state, &instances_dir, &download_dir, name)?;
     let instance = state
         .modrinth
         .install_modpack(&version_id, &target, |progress| {
@@ -104,4 +97,42 @@ pub async fn install_modpack(
         })
         .await?;
     Ok(instance.id)
+}
+
+/// Imports an instance from a `.mrpack` or exported instance archive (path or URL); returns its id.
+#[tauri::command]
+#[specta::specta]
+pub async fn import_instance(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    source: String,
+    name: Option<String>,
+) -> CommandResult<String> {
+    let (instances_dir, download_dir) = (state.paths.instances(), state.paths.downloads_cache());
+    let target = modpack_target(&state, &instances_dir, &download_dir, name)?;
+    let instance = modpack::import_instance(&state.http, source.trim(), &target, |progress| {
+        let _ = ModpackProgressEvent { progress }.emit(&app);
+    })
+    .await?;
+    Ok(instance.id)
+}
+
+fn modpack_target<'a>(
+    state: &AppState,
+    instances_dir: &'a Path,
+    download_dir: &'a Path,
+    name: Option<String>,
+) -> CommandResult<ModpackTarget<'a>> {
+    let concurrency = state
+        .settings
+        .read()
+        .map_err(|_| CommandError::poisoned())?
+        .network
+        .concurrent_downloads as usize;
+    Ok(ModpackTarget {
+        instances_dir,
+        download_dir,
+        name: name.filter(|name| !name.trim().is_empty()),
+        concurrency,
+    })
 }

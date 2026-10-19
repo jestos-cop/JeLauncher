@@ -9,7 +9,7 @@ use super::{
 };
 use crate::instance::Instance;
 use crate::minecraft::LoaderKind;
-use crate::modpack::{PackSource, install_mrpack};
+use crate::modpack::{ModpackTarget, PackSource, install_mrpack};
 use crate::net::{DownloadProgress, HttpClient};
 use crate::{Error, Result};
 
@@ -162,14 +162,6 @@ impl Modrinth {
         self.http.download(&file.download_into(dir)).await?;
         Ok(file.file_name.clone())
     }
-}
-
-/// Where a downloaded modpack becomes a new instance.
-pub struct ModpackTarget<'a> {
-    pub instances_dir: &'a Path,
-    pub download_dir: &'a Path,
-    pub name: Option<String>,
-    pub concurrency: usize,
 }
 
 /// Where and for which game setup resources are installed.

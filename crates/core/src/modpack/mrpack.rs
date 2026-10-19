@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::io::Read;
 use std::path::{Path, PathBuf};
 
 use serde::Deserialize;
@@ -10,6 +9,8 @@ use crate::instance::{Instance, NewInstance, create_instance};
 use crate::minecraft::{LoaderKind, LoaderSpec};
 use crate::net::{Download, DownloadProgress, HttpClient};
 use crate::{Error, Result};
+
+pub const MRPACK_INDEX: &str = "modrinth.index.json";
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -97,15 +98,7 @@ impl MrpackIndex {
 }
 
 pub fn read_mrpack_index(archive_path: &Path) -> Result<MrpackIndex> {
-    let file = std::fs::File::open(archive_path).map_err(|err| Error::io(archive_path, err))?;
-    let mut zip = zip::ZipArchive::new(file).map_err(|err| Error::archive(archive_path, err))?;
-    let mut entry = zip
-        .by_name("modrinth.index.json")
-        .map_err(|err| Error::archive(archive_path, err))?;
-    let mut text = String::new();
-    entry
-        .read_to_string(&mut text)
-        .map_err(|err| Error::io(archive_path, err))?;
+    let text = archive::read_entry_to_string(archive_path, MRPACK_INDEX)?;
     serde_json::from_str(&text).map_err(|err| Error::json(archive_path, err))
 }
 

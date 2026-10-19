@@ -1,4 +1,5 @@
 use std::fs::File;
+use std::io::Read;
 use std::path::{Path, PathBuf};
 
 use crate::{Error, Result};
@@ -10,9 +11,7 @@ pub fn extract(
     dest: &Path,
     map: impl Fn(&Path) -> Option<PathBuf>,
 ) -> Result<()> {
-    let file = File::open(archive_path).map_err(|err| Error::io(archive_path, err))?;
-    let mut archive =
-        zip::ZipArchive::new(file).map_err(|err| Error::archive(archive_path, err))?;
+    let mut archive = open(archive_path)?;
     for index in 0..archive.len() {
         let mut entry = archive
             .by_index(index)
@@ -31,6 +30,34 @@ pub fn extract(
         std::io::copy(&mut entry, &mut out).map_err(|err| Error::io(&target, err))?;
     }
     Ok(())
+}
+
+/// Names of every file entry in a zip archive.
+pub fn entry_names(archive_path: &Path) -> Result<Vec<String>> {
+    let archive = open(archive_path)?;
+    Ok(archive
+        .file_names()
+        .flatten()
+        .filter(|name| !name.ends_with('/'))
+        .map(|name| name.into_owned())
+        .collect())
+}
+
+pub fn read_entry_to_string(archive_path: &Path, name: &str) -> Result<String> {
+    let mut archive = open(archive_path)?;
+    let mut entry = archive
+        .by_name(name)
+        .map_err(|err| Error::archive(archive_path, err))?;
+    let mut text = String::new();
+    entry
+        .read_to_string(&mut text)
+        .map_err(|err| Error::io(archive_path, err))?;
+    Ok(text)
+}
+
+fn open(archive_path: &Path) -> Result<zip::ZipArchive<File>> {
+    let file = File::open(archive_path).map_err(|err| Error::io(archive_path, err))?;
+    zip::ZipArchive::new(file).map_err(|err| Error::archive(archive_path, err))
 }
 
 /// Zips every file under `source` into `target`, storing entries under `prefix`.

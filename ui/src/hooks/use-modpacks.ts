@@ -18,3 +18,12 @@ export function useInstallModpack() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['instances'] }),
   })
 }
+
+export function useImportInstance() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ source, name }: { source: string; name: string | null }) =>
+      unwrap(commands.importInstance(source, name)),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['instances'] }),
+  })
+}

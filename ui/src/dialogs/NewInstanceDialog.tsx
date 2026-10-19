@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { events, type DownloadProgress, type LoaderSpec } from '@/bindings'
+import { ImportSource } from '@/components/ImportSource'
 import { LoaderPicker } from '@/components/LoaderPicker'
 import { ModpackBrowser } from '@/components/ModpackBrowser'
 import { VersionList } from '@/components/VersionList'
@@ -10,9 +11,9 @@ import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useCreateInstance } from '@/hooks/use-create-instance'
-import { useInstallModpack } from '@/hooks/use-modpacks'
+import { useImportInstance, useInstallModpack } from '@/hooks/use-modpacks'
 
-type Source = 'vanilla' | 'modrinth'
+type Source = 'vanilla' | 'modrinth' | 'import'
 
 interface NewInstanceDialogProps {
   open: boolean
@@ -26,11 +27,14 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
   const [version, setVersion] = useState<string | null>(null)
   const [loader, setLoader] = useState<LoaderSpec | null>(null)
   const [modpackVersion, setModpackVersion] = useState<string | null>(null)
+  const [importSource, setImportSource] = useState('')
   const createInstance = useCreateInstance()
   const installModpack = useInstallModpack()
-  const progress = useModpackProgress(installModpack.isPending)
-  const busy = createInstance.isPending || installModpack.isPending
-  const error = createInstance.error ?? installModpack.error
+  const importInstance = useImportInstance()
+  const downloading = installModpack.isPending || importInstance.isPending
+  const progress = useModpackProgress(downloading)
+  const busy = createInstance.isPending || downloading
+  const error = createInstance.error ?? installModpack.error ?? importInstance.error
 
   const close = () => {
     if (busy) return
@@ -39,18 +43,23 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
     setVersion(null)
     setLoader(null)
     setModpackVersion(null)
+    setImportSource('')
     createInstance.reset()
     installModpack.reset()
+    importInstance.reset()
     onOpenChange(false)
   }
 
-  const canCreate =
-    source === 'vanilla'
-      ? version !== null && (loader === null || loader.version !== '')
-      : modpackVersion !== null
+  const canCreate = {
+    vanilla: version !== null && (loader === null || loader.version !== ''),
+    modrinth: modpackVersion !== null,
+    import: importSource.trim() !== '',
+  }[source]
 
   const create = () => {
-    if (source === 'modrinth' && modpackVersion) {
+    if (source === 'import') {
+      importInstance.mutate({ source: importSource, name: name.trim() || null }, { onSuccess: close })
+    } else if (source === 'modrinth' && modpackVersion) {
       installModpack.mutate({ versionId: modpackVersion, name: name.trim() || null }, { onSuccess: close })
     } else if (version) {
       createInstance.mutate(
@@ -80,6 +89,7 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
           >
             <ToggleGroupItem value="vanilla">Custom</ToggleGroupItem>
             <ToggleGroupItem value="modrinth">Modrinth</ToggleGroupItem>
+            <ToggleGroupItem value="import">Import</ToggleGroupItem>
           </ToggleGroup>
         </DialogHeader>
 
@@ -87,7 +97,7 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
           <Label htmlFor="instance-name">Name</Label>
           <Input
             id="instance-name"
-            placeholder={source === 'vanilla' ? (version ?? 'Instance name') : 'Modpack name'}
+            placeholder={source === 'vanilla' ? (version ?? 'Instance name') : 'Name from the pack'}
             value={name}
             onChange={(event) => setName(event.target.value)}
           />
@@ -109,16 +119,16 @@ export function NewInstanceDialog({ open, onOpenChange }: NewInstanceDialogProps
             <VersionList selected={version} onSelect={setVersion} />
             <LoaderPicker minecraftVersion={version} value={loader} onChange={setLoader} />
           </>
-        ) : (
+        ) : source === 'modrinth' ? (
           <ModpackBrowser selectedVersionId={modpackVersion} onSelectVersion={setModpackVersion} />
+        ) : (
+          <ImportSource value={importSource} onChange={setImportSource} />
         )}
 
-        {installModpack.isPending && (
+        {downloading && (
           <div className="flex flex-col gap-1">
             <p className="text-sm text-muted-foreground">
-              {progress
-                ? `Downloading files ${progress.completed}/${progress.total}`
-                : 'Downloading modpack…'}
+              {progress ? `Downloading files ${progress.completed}/${progress.total}` : 'Preparing…'}
             </p>
             {progress && progress.total > 0 && (
               <Progress value={(progress.completed / progress.total) * 100} />

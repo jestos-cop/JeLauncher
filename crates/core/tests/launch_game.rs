@@ -77,8 +77,9 @@ async fn launches_latest_release() -> jelauncher_core::Result<()> {
 #[ignore = "downloads a modpack and opens a window"]
 async fn launches_a_fabric_modpack() -> jelauncher_core::Result<()> {
     use jelauncher_core::minecraft::LoaderKind;
+    use jelauncher_core::modpack::ModpackTarget;
     use jelauncher_core::modplatform::ResourceKind;
-    use jelauncher_core::modplatform::modrinth::{ModpackTarget, Modrinth};
+    use jelauncher_core::modplatform::modrinth::Modrinth;
 
     let root = std::env::var_os("JELAUNCHER_DATA_DIR")
         .map(PathBuf::from)
