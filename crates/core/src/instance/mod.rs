@@ -1,4 +1,5 @@
 mod config;
+mod copy;
 mod create;
 mod export;
 mod list;
@@ -7,6 +8,7 @@ mod manage;
 use std::path::{Path, PathBuf};
 
 pub use config::InstanceConfig;
+pub use copy::{CopyOptions, copy_instance};
 pub use create::{NewInstance, create_instance};
 pub use export::{ExportEntry, export_instance};
 pub use list::{InstanceSummary, discover_instances};

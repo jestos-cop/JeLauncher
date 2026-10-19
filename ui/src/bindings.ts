@@ -72,6 +72,17 @@ async listInstances() : Promise<Result<InstanceSummary[], CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Copies an instance with the selected contents and returns the new instance's id.
+ */
+async copyInstance(instanceId: string, options: CopyOptions) : Promise<Result<string, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("copy_instance", { instanceId, options }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async createInstance(newInstance: NewInstance) : Promise<Result<string, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("create_instance", { newInstance }) };
@@ -447,6 +458,11 @@ export type CommandSettings = { preLaunch: string;
  * Prefix for the Java invocation, e.g. `mangohud` or `prime-run`.
  */
 wrapper: string; postExit: string; environment: Partial<{ [key in string]: string }> }
+export type CopyOptions = { name: string; group: string | null; copySaves: boolean; copyGameOptions: boolean; copyResourcePacks: boolean; copyShaderPacks: boolean; copyServers: boolean; copyMods: boolean; copyScreenshots: boolean; keepPlayTime: boolean; 
+/**
+ * Hard-links game files instead of copying them; worlds are always copied.
+ */
+useHardLinks: boolean }
 export type Dependency = { projectId: string | null; versionId: string | null; required: boolean }
 export type DownloadProgress = { completed: number; total: number; downloadedBytes: number }
 /**

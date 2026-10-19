@@ -1,4 +1,4 @@
-use jelauncher_core::instance::{self, Instance, InstanceSummary, NewInstance};
+use jelauncher_core::instance::{self, CopyOptions, Instance, InstanceSummary, NewInstance};
 use jelauncher_core::resources::ResourceKind;
 use jelauncher_core::settings::InstanceSettings;
 use tauri::State;
@@ -19,6 +19,24 @@ pub async fn create_instance(
     new_instance: NewInstance,
 ) -> CommandResult<String> {
     Ok(instance::create_instance(&state.paths.instances(), new_instance)?.id)
+}
+
+/// Copies an instance with the selected contents and returns the new instance's id.
+#[tauri::command]
+#[specta::specta]
+pub async fn copy_instance(
+    state: State<'_, AppState>,
+    instance_id: String,
+    options: CopyOptions,
+) -> CommandResult<String> {
+    let instances_dir = state.paths.instances();
+    let source = Instance::open(&instances_dir, &instance_id)?;
+    let copy = tauri::async_runtime::spawn_blocking(move || {
+        instance::copy_instance(&instances_dir, &source, &options)
+    })
+    .await
+    .map_err(|err| CommandError::new(err.to_string()))??;
+    Ok(copy.id)
 }
 
 #[tauri::command]

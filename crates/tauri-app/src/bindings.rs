@@ -13,6 +13,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::export::export_mrpack,
             commands::export::list_export_entries,
             commands::instance::list_instances,
+            commands::instance::copy_instance,
             commands::instance::create_instance,
             commands::instance::delete_instance,
             commands::instance::get_instance_notes,
