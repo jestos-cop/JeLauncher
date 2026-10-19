@@ -16,6 +16,7 @@ const XSTS_URL: &str = "https://xsts.auth.xboxlive.com/xsts/authorize";
 const MINECRAFT_LOGIN_URL: &str =
     "https://api.minecraftservices.com/authentication/login_with_xbox";
 const PROFILE_URL: &str = "https://api.minecraftservices.com/minecraft/profile";
+const ENTITLEMENTS_URL: &str = "https://api.minecraftservices.com/entitlements/mcstore";
 const SCOPE: &str = "XboxLive.signin offline_access";
 const DEVICE_CODE_GRANT: &str = "urn:ietf:params:oauth:grant-type:device_code";
 /// Tokens are refreshed this long before they expire, so a game never starts with a stale one.
@@ -202,6 +203,7 @@ impl MicrosoftAuth<'_> {
         let access_token = string(&minecraft, "access_token")?;
         let expires_in = minecraft["expires_in"].as_i64().unwrap_or(86_400);
 
+        self.check_ownership(&access_token).await?;
         let (status, profile) = self
             .http
             .get_bearer_with_status(PROFILE_URL, &access_token)
@@ -227,6 +229,26 @@ impl MicrosoftAuth<'_> {
                 expires_at: unix_now() + expires_in,
             }),
         })
+    }
+
+    /// Fails unless the account owns the game, bought or through Game Pass.
+    async fn check_ownership(&self, access_token: &str) -> Result<()> {
+        let (status, entitlements) = self
+            .http
+            .get_bearer_with_status(ENTITLEMENTS_URL, access_token)
+            .await?;
+        if status != 200 {
+            return Err(Error::InvalidInput(format!(
+                "checking game ownership failed with status {status}"
+            )));
+        }
+        if owns_java_edition(&entitlements) {
+            Ok(())
+        } else {
+            Err(Error::InvalidInput(
+                "this Microsoft account does not own Minecraft: Java Edition".into(),
+            ))
+        }
     }
 
     async fn form(&self, url: &str, form: &[(&str, &str)]) -> Result<Value> {
@@ -256,6 +278,17 @@ pub fn needs_refresh(account: &Account) -> bool {
         .microsoft
         .as_ref()
         .is_some_and(|session| session.expires_at - REFRESH_MARGIN_SECS <= unix_now())
+}
+
+fn owns_java_edition(entitlements: &Value) -> bool {
+    entitlements["items"].as_array().is_some_and(|items| {
+        items.iter().any(|item| {
+            matches!(
+                item["name"].as_str(),
+                Some("game_minecraft" | "product_minecraft")
+            )
+        })
+    })
 }
 
 fn string(value: &Value, key: &str) -> Result<String> {
@@ -302,6 +335,16 @@ fn unix_now() -> i64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn recognizes_java_edition_entitlements() {
+        let owned =
+            json!({ "items": [{ "name": "product_minecraft" }, { "name": "game_minecraft" }] });
+        let bedrock_only = json!({ "items": [{ "name": "product_minecraft_bedrock" }] });
+        assert!(owns_java_edition(&owned));
+        assert!(!owns_java_edition(&bedrock_only));
+        assert!(!owns_java_edition(&json!({ "items": [] })));
+    }
 
     #[test]
     fn explains_xbox_errors() {

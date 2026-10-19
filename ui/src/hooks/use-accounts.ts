@@ -27,6 +27,10 @@ export function useSetDefaultAccount() {
   return useAccountMutation((id: string) => unwrap(commands.setDefaultAccount(id)))
 }
 
+export function useRefreshAccount() {
+  return useAccountMutation((id: string) => unwrap(commands.refreshAccount(id)))
+}
+
 export function useRemoveAccount() {
   return useAccountMutation((id: string) => unwrap(commands.removeAccount(id)))
 }

@@ -1,4 +1,4 @@
-import { Check, LogIn, Trash2, UserPlus, UserRound } from 'lucide-react'
+import { Check, LogIn, RefreshCw, Trash2, UserPlus, UserRound } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import type { AccountSummary } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
@@ -6,17 +6,18 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { MicrosoftLoginDialog } from '@/dialogs/MicrosoftLoginDialog'
 import { OfflineAccountDialog } from '@/dialogs/OfflineAccountDialog'
-import { useAccounts, useRemoveAccount, useSetDefaultAccount } from '@/hooks/use-accounts'
+import { useAccounts, useRefreshAccount, useRemoveAccount, useSetDefaultAccount } from '@/hooks/use-accounts'
 
 export function AccountsSettings() {
   const { data: accounts = [], error, isPending } = useAccounts()
   const setDefault = useSetDefaultAccount()
   const removeAccount = useRemoveAccount()
+  const refreshAccount = useRefreshAccount()
   const [isAdding, setIsAdding] = useState(false)
   const [isSigningIn, setIsSigningIn] = useState(false)
   const [pendingRemoval, setPendingRemoval] = useState<AccountSummary | null>(null)
   const closeSignIn = useCallback(() => setIsSigningIn(false), [])
-  const mutationError = setDefault.error ?? removeAccount.error
+  const mutationError = setDefault.error ?? removeAccount.error ?? refreshAccount.error
 
   return (
     <div className="flex max-w-3xl flex-col gap-3">
@@ -54,6 +55,18 @@ export function AccountsSettings() {
               <Button size="sm" variant="ghost" onClick={() => setDefault.mutate(account.id)}>
                 Use by default
               </Button>
+            )}
+            {account.kind.type === 'microsoft' && (
+              <button
+                type="button"
+                title="Sign in again"
+                aria-label={`Refresh ${account.username}`}
+                className="text-muted-foreground hover:text-foreground disabled:opacity-50"
+                disabled={refreshAccount.isPending}
+                onClick={() => refreshAccount.mutate(account.id)}
+              >
+                <RefreshCw className={refreshAccount.isPending ? 'size-4 animate-spin' : 'size-4'} />
+              </button>
             )}
             <button
               type="button"

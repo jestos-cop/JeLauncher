@@ -13,6 +13,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::accounts::cancel_microsoft_login,
             commands::accounts::finish_microsoft_login,
             commands::accounts::list_accounts,
+            commands::accounts::refresh_account,
             commands::accounts::remove_account,
             commands::accounts::set_default_account,
             commands::export::export_instance,

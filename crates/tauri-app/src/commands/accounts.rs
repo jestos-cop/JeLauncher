@@ -79,6 +79,24 @@ pub async fn finish_microsoft_login(state: State<'_, AppState>) -> CommandResult
     store_account(&state, account)
 }
 
+/// Signs a Microsoft account in again to pick up a new name or a renewed token.
+#[tauri::command]
+#[specta::specta]
+pub async fn refresh_account(
+    state: State<'_, AppState>,
+    id: String,
+) -> CommandResult<AccountSummary> {
+    let account = state
+        .accounts
+        .read()
+        .map_err(|_| CommandError::poisoned())?
+        .get(&id)
+        .cloned()
+        .ok_or_else(|| jelauncher_core::Error::UnknownAccount(id))?;
+    let refreshed = microsoft_auth(&state)?.refresh(&account).await?;
+    store_account(&state, refreshed)
+}
+
 #[tauri::command]
 #[specta::specta]
 pub fn cancel_microsoft_login(state: State<'_, AppState>) {

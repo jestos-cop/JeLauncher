@@ -71,6 +71,17 @@ async listAccounts() : Promise<Result<AccountSummary[], CommandError>> {
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Signs a Microsoft account in again to pick up a new name or a renewed token.
+ */
+async refreshAccount(id: string) : Promise<Result<AccountSummary, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("refresh_account", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async removeAccount(id: string) : Promise<Result<null, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("remove_account", { id }) };
