@@ -8,12 +8,6 @@
     "title": "Plunder fer {{instance}} · Minecraft {{version}}",
     "titleWithLoader": "Plunder fer {{instance}} · Minecraft {{version}} · {{loader}}",
     "search": "Search {{provider}}",
-    "sort": {
-      "relevance": "Relevance",
-      "downloads": "Downloads",
-      "updated": "Freshly updated",
-      "newest": "Newest"
-    },
     "loadMore": "Haul more",
     "searching": "Searchin'…",
     "selectProject": "Pick a project to see versions fit fer this ship.",

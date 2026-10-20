@@ -33,5 +33,11 @@
   },
   "language": {
     "system": "システムの言語"
+  },
+  "sort": {
+    "relevance": "関連度",
+    "downloads": "ダウンロード数",
+    "updated": "最近の更新",
+    "newest": "新しい順"
   }
 }

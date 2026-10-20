@@ -8,12 +8,6 @@
     "title": "Завантаження для {{instance}} · Minecraft {{version}}",
     "titleWithLoader": "Завантаження для {{instance}} · Minecraft {{version}} · {{loader}}",
     "search": "Пошук на {{provider}}",
-    "sort": {
-      "relevance": "За релевантністю",
-      "downloads": "За завантаженнями",
-      "updated": "Нещодавно оновлені",
-      "newest": "Найновіші"
-    },
     "loadMore": "Завантажити ще",
     "searching": "Пошук…",
     "selectProject": "Виберіть проєкт, щоб побачити сумісні версії.",

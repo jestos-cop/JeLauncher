@@ -4,15 +4,13 @@ import { useTranslation } from 'react-i18next'
 import type { InstanceSummary, ProjectHit, Provider, ResourceKind, SortOrder } from '@/bindings'
 import { ProjectRow } from '@/components/ProjectRow'
 import { Badge } from '@/components/ui/badge'
+import { SortSelect } from '@/components/SortSelect'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useInstallVersion, useProjectVersions, useResourceSearch } from '@/hooks/use-modplatform'
 import { PROVIDER_NAMES, RESOURCE_PROVIDERS } from '@/lib/providers'
-
-const SORT_ORDERS: SortOrder[] = ['relevance', 'downloads', 'updated', 'newest']
 
 interface ResourceDownloadDialogProps {
   instance: InstanceSummary
@@ -77,18 +75,7 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
             value={text}
             onChange={(event) => setText(event.target.value)}
           />
-          <Select value={sort} onValueChange={(value) => setSort(value as SortOrder)}>
-            <SelectTrigger className="w-44">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {SORT_ORDERS.map((value) => (
-                <SelectItem key={value} value={value}>
-                  {t(`resourceDownload.sort.${value}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <SortSelect provider={provider} value={sort} onChange={setSort} />
         </div>
 
         <div className="grid min-h-0 flex-1 grid-cols-[1fr_20rem] gap-3">

@@ -518,6 +518,12 @@ async searchResources(query: SearchQuery) : Promise<Result<SearchPage, CommandEr
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Search orders `provider` supports, the default first.
+ */
+async listSortOrders(provider: Provider) : Promise<SortOrder[]> {
+    return await TAURI_INVOKE("list_sort_orders", { provider });
+},
 async listResources(instanceId: string, kind: ResourceKind) : Promise<Result<ResourceFile[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("list_resources", { instanceId, kind }) };

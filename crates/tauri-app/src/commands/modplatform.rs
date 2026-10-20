@@ -7,6 +7,7 @@ use jelauncher_core::modpack::{self, BlockedFile, ModpackTarget, PackInstall};
 use jelauncher_core::modplatform::atlauncher::OptionalMod;
 use jelauncher_core::modplatform::{
     InstallTarget, ProjectVersion, Provider, ResourceKind, ResourceUpdate, SearchPage, SearchQuery,
+    SortOrder,
 };
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, State};
@@ -25,6 +26,13 @@ pub async fn search_resources(
     query: SearchQuery,
 ) -> CommandResult<SearchPage> {
     Ok(state.platforms.search(&query).await?)
+}
+
+/// Search orders `provider` supports, the default first.
+#[tauri::command]
+#[specta::specta]
+pub fn list_sort_orders(provider: Provider) -> Vec<SortOrder> {
+    provider.sort_orders().to_vec()
 }
 
 /// Versions of a project that fit the instance's game version and loader.

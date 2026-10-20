@@ -8,12 +8,6 @@
     "title": "Descargar para {{instance}} · Minecraft {{version}}",
     "titleWithLoader": "Descargar para {{instance}} · Minecraft {{version}} · {{loader}}",
     "search": "Buscar en {{provider}}",
-    "sort": {
-      "relevance": "Relevancia",
-      "downloads": "Descargas",
-      "updated": "Actualizados recientemente",
-      "newest": "Más recientes"
-    },
     "loadMore": "Cargar más",
     "searching": "Buscando…",
     "selectProject": "Selecciona un proyecto para ver las versiones compatibles.",

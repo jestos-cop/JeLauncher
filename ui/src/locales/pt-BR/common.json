@@ -33,5 +33,11 @@
   },
   "language": {
     "system": "Idioma do sistema"
+  },
+  "sort": {
+    "relevance": "Relevância",
+    "downloads": "Downloads",
+    "updated": "Atualizados recentemente",
+    "newest": "Mais recentes"
   }
 }

@@ -1,7 +1,8 @@
 import { useDeferredValue, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { ProjectHit, Provider } from '@/bindings'
+import type { ProjectHit, Provider, SortOrder } from '@/bindings'
 import { ProjectRow } from '@/components/ProjectRow'
+import { SortSelect } from '@/components/SortSelect'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,12 +20,13 @@ interface ModpackBrowserProps {
 export function ModpackBrowser({ provider, selected, onSelect }: ModpackBrowserProps) {
   const { t } = useTranslation('newInstance')
   const [text, setText] = useState('')
+  const [sort, setSort] = useState<SortOrder>('relevance')
   const [project, setProject] = useState<ProjectHit | null>(null)
   const search = useResourceSearch({
     provider,
     text: useDeferredValue(text),
     kind: 'modpack',
-    sort: 'relevance',
+    sort,
     gameVersion: null,
     loader: null,
   })
@@ -37,11 +39,15 @@ export function ModpackBrowser({ provider, selected, onSelect }: ModpackBrowserP
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-2">
-      <Input
-        placeholder={t('modpackBrowser.search', { provider: PROVIDER_NAMES[provider] })}
-        value={text}
-        onChange={(event) => setText(event.target.value)}
-      />
+      <div className="flex gap-2">
+        <Input
+          className="flex-1"
+          placeholder={t('modpackBrowser.search', { provider: PROVIDER_NAMES[provider] })}
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+        />
+        <SortSelect provider={provider} value={sort} onChange={setSort} />
+      </div>
       <div className="grid min-h-0 flex-1 grid-cols-[1fr_16rem] gap-3">
         <div className="min-h-0 overflow-auto rounded-md border">
           {search.error && <p className="p-3 text-sm text-destructive">{search.error.message}</p>}

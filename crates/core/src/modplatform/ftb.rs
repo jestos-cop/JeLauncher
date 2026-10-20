@@ -1,13 +1,20 @@
 use futures_util::{StreamExt, TryStreamExt, stream};
 use serde::Deserialize;
 
-use super::{ProjectHit, ProjectVersion, Provider, ReleaseType, SearchPage, SearchQuery};
+use super::{
+    ProjectHit, ProjectVersion, Provider, ReleaseType, SearchPage, SearchQuery, SortOrder,
+};
 use crate::minecraft::{LoaderKind, LoaderSpec};
 use crate::net::HttpClient;
 use crate::{Error, Result};
 
 const API: &str = "https://api.feed-the-beast.com/v1/modpacks/public";
 const MAX_RESULTS: u32 = 50;
+/// Pack list endpoints, best first.
+const MOST_INSTALLED: &str = "popular/installs";
+const RECENTLY_UPDATED: &str = "updated";
+/// How many ranked ids are fetched to order search results; covers every public pack.
+const RANKED_POOL: u32 = 500;
 /// The API rate-limits bursts, so pack details are fetched a few at a time.
 const PARALLEL_REQUESTS: usize = 4;
 
@@ -41,24 +48,41 @@ impl Ftb {
         Self { http }
     }
 
-    /// Searches by name, or lists the most installed packs for an empty query.
+    /// Searches by name, or lists packs for an empty query, ordered as `query.sort` asks.
     pub async fn search(&self, query: &SearchQuery) -> Result<SearchPage> {
         let limit = (query.offset + query.limit).clamp(1, MAX_RESULTS);
         let text = query.text.trim();
-        let ids: PackIds = if text.is_empty() {
-            self.http
-                .get_json(&format!("{API}/modpack/popular/installs/{limit}"))
+        let ranking = ranking_list(query.sort);
+        let ids = if text.is_empty() {
+            let list = ranking.unwrap_or(MOST_INSTALLED);
+            self.pack_ids(&format!("{API}/modpack/{list}/{limit}"), &[])
                 .await?
         } else {
-            self.http
-                .get_json_query(
-                    &format!("{API}/modpack/search/{limit}"),
+            // Ranked results need every match, not just the first page.
+            let found = self
+                .pack_ids(
+                    &format!(
+                        "{API}/modpack/search/{}",
+                        if ranking.is_some() {
+                            MAX_RESULTS
+                        } else {
+                            limit
+                        }
+                    ),
                     &[("term", text.to_owned())],
                 )
-                .await?
+                .await?;
+            match ranking {
+                Some(list) => {
+                    let ranked = self
+                        .pack_ids(&format!("{API}/modpack/{list}/{RANKED_POOL}"), &[])
+                        .await?;
+                    rank_by(found, &ranked)
+                }
+                None => found,
+            }
         };
         let page_ids: Vec<u64> = ids
-            .packs
             .into_iter()
             .skip(query.offset as usize)
             .take(query.limit as usize)
@@ -71,6 +95,11 @@ impl Ftb {
             total: (query.offset + packs.len() as u32).min(limit),
             hits: packs.into_iter().map(Into::into).collect(),
         })
+    }
+
+    async fn pack_ids(&self, url: &str, query: &[(&str, String)]) -> Result<Vec<u64>> {
+        let ids: PackIds = self.http.get_json_query(url, query).await?;
+        Ok(ids.packs)
     }
 
     /// Published versions of a pack, newest first.
@@ -299,6 +328,26 @@ fn published_date(secs: i64) -> String {
     crate::launcher_log::utc_timestamp(std::time::UNIX_EPOCH + std::time::Duration::from_secs(secs))
 }
 
+/// The pack list that orders results for `sort`; `None` keeps the API's relevance order.
+fn ranking_list(sort: SortOrder) -> Option<&'static str> {
+    match sort {
+        SortOrder::Downloads => Some(MOST_INSTALLED),
+        SortOrder::Updated => Some(RECENTLY_UPDATED),
+        SortOrder::Relevance | SortOrder::Newest => None,
+    }
+}
+
+/// Orders `ids` by their position in `ranking`; ids it does not list keep their order at the end.
+fn rank_by(mut ids: Vec<u64>, ranking: &[u64]) -> Vec<u64> {
+    ids.sort_by_key(|id| {
+        ranking
+            .iter()
+            .position(|ranked| ranked == id)
+            .unwrap_or(usize::MAX)
+    });
+    ids
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -316,5 +365,10 @@ mod tests {
         assert_eq!(converted.id, "100359");
         assert_eq!(converted.release_type, ReleaseType::Release);
         assert_eq!(converted.published, "2025-10-19T15:00:00Z");
+    }
+
+    #[test]
+    fn ranks_search_results_by_another_list() {
+        assert_eq!(rank_by(vec![7, 3, 9, 5], &[5, 9, 1, 7]), [5, 9, 7, 3]);
     }
 }

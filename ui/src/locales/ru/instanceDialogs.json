@@ -8,12 +8,6 @@
     "title": "Загрузка для {{instance}} · Minecraft {{version}}",
     "titleWithLoader": "Загрузка для {{instance}} · Minecraft {{version}} · {{loader}}",
     "search": "Поиск на {{provider}}",
-    "sort": {
-      "relevance": "По релевантности",
-      "downloads": "По загрузкам",
-      "updated": "Недавно обновлённые",
-      "newest": "Новые"
-    },
     "loadMore": "Загрузить ещё",
     "searching": "Поиск…",
     "selectProject": "Выберите проект, чтобы увидеть совместимые версии.",

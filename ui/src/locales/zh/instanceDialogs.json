@@ -8,12 +8,6 @@
     "title": "为 {{instance}} 下载 · Minecraft {{version}}",
     "titleWithLoader": "为 {{instance}} 下载 · Minecraft {{version}} · {{loader}}",
     "search": "搜索 {{provider}}",
-    "sort": {
-      "relevance": "相关性",
-      "downloads": "下载量",
-      "updated": "最近更新",
-      "newest": "最新发布"
-    },
     "loadMore": "加载更多",
     "searching": "正在搜索…",
     "selectProject": "选择一个项目以查看兼容的版本。",

@@ -8,12 +8,6 @@
     "title": "{{instance}} 用にダウンロード · Minecraft {{version}}",
     "titleWithLoader": "{{instance}} 用にダウンロード · Minecraft {{version}} · {{loader}}",
     "search": "{{provider}} を検索",
-    "sort": {
-      "relevance": "関連度",
-      "downloads": "ダウンロード数",
-      "updated": "最近の更新",
-      "newest": "新しい順"
-    },
     "loadMore": "さらに読み込む",
     "searching": "検索中…",
     "selectProject": "プロジェクトを選択すると対応バージョンが表示されます。",

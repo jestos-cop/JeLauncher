@@ -8,12 +8,6 @@
     "title": "Преузимање за {{instance}} · Minecraft {{version}}",
     "titleWithLoader": "Преузимање за {{instance}} · Minecraft {{version}} · {{loader}}",
     "search": "Претражи {{provider}}",
-    "sort": {
-      "relevance": "Релевантност",
-      "downloads": "Преузимања",
-      "updated": "Недавно ажурирано",
-      "newest": "Најновије"
-    },
     "loadMore": "Учитај још",
     "searching": "Претрага…",
     "selectProject": "Изаберите пројекат да бисте видели компатибилне верзије.",

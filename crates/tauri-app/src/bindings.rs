@@ -61,6 +61,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::modplatform::resolve_share_code,
             commands::modplatform::list_project_versions,
             commands::modplatform::search_resources,
+            commands::modplatform::list_sort_orders,
             commands::resources::list_resources,
             commands::resources::remove_resource,
             commands::resources::export_mod_list,

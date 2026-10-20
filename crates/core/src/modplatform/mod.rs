@@ -37,6 +37,26 @@ pub enum SortOrder {
     Newest,
 }
 
+impl Provider {
+    /// Search orders this platform can apply; the first one is the default.
+    pub fn sort_orders(self) -> &'static [SortOrder] {
+        match self {
+            Self::Modrinth | Self::CurseForge => &[
+                SortOrder::Relevance,
+                SortOrder::Downloads,
+                SortOrder::Updated,
+                SortOrder::Newest,
+            ],
+            Self::Ftb => &[
+                SortOrder::Relevance,
+                SortOrder::Downloads,
+                SortOrder::Updated,
+            ],
+            Self::Technic | Self::AtLauncher => &[SortOrder::Relevance],
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct SearchQuery {
