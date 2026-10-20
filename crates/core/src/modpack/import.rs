@@ -92,7 +92,9 @@ async fn import_archive(
         }
     };
     if target.track_sources {
-        platforms.identify_pack_sources(&installed.instance).await;
+        platforms
+            .identify_pack_sources(&installed.instance, target.source_order)
+            .await;
     }
     Ok(installed)
 }
@@ -207,6 +209,7 @@ mod tests {
             allow_untrusted_hosts: false,
             optional_mods: None,
             track_sources: false,
+            source_order: Default::default(),
         };
         let platforms = ModPlatforms::new(
             crate::net::HttpClient::new(&crate::settings::NetworkSettings::default())?,

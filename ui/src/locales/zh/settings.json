@@ -53,6 +53,12 @@
       "release": "仅正式版",
       "beta": "正式版和测试版",
       "alpha": "所有版本"
+    },
+    "sourceLookupOrder": "来源识别顺序",
+    "sourceLookupOrderHint": "“识别来源”先在哪里查找；找不到的文件会在另一个平台查找。",
+    "lookupOrder": {
+      "modrinthFirst": "先 Modrinth，再 CurseForge",
+      "curseForgeFirst": "先 CurseForge，再 Modrinth"
     }
   },
   "java": {

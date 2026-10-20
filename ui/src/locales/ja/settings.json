@@ -53,6 +53,12 @@
       "release": "安定版のみ",
       "beta": "安定版とベータ版",
       "alpha": "すべてのリリース"
+    },
+    "sourceLookupOrder": "ソースの検索先",
+    "sourceLookupOrderHint": "「ソースを特定」が最初に探す場所。見つからないファイルはもう一方のプラットフォームで探します。",
+    "lookupOrder": {
+      "modrinthFirst": "Modrinth、次に CurseForge",
+      "curseForgeFirst": "CurseForge、次に Modrinth"
     }
   },
   "java": {

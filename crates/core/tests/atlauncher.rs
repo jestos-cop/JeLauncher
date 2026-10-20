@@ -62,6 +62,7 @@ async fn installs_a_pack_with_optional_mods_and_extracted_files() -> jelauncher_
         allow_untrusted_hosts: false,
         optional_mods: Some(optional.iter().map(|module| module.name.clone()).collect()),
         track_sources: false,
+        source_order: Default::default(),
     };
     let installed = platforms
         .install_modpack(Provider::AtLauncher, &pack.id, &latest.id, &target, |_| {})

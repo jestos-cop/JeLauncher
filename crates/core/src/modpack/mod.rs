@@ -27,6 +27,7 @@ pub use mrpack_export::{MrpackExport, export_mrpack};
 pub use technic_pack::install_technic_pack;
 
 use crate::modplatform::Provider;
+use crate::settings::SourceLookupOrder;
 
 /// Where an instance created from a modpack came from, for updates and display.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
@@ -59,6 +60,7 @@ pub struct ModpackTarget<'a> {
     pub optional_mods: Option<Vec<String>>,
     /// Records where the installed mods and packs came from.
     pub track_sources: bool,
+    pub source_order: SourceLookupOrder,
 }
 
 /// A newly created pack instance plus the files the user still has to download by hand.

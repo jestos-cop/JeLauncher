@@ -10,6 +10,7 @@ use jelauncher_core::modplatform::{
     InstallTarget, ProjectVersion, Provider, ResourceKind, ResourceUpdate, SearchPage, SearchQuery,
     SortOrder,
 };
+use jelauncher_core::settings::SourceLookupOrder;
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, State};
 use tauri_specta::Event;
@@ -106,7 +107,10 @@ pub async fn check_resource_updates(
         )
     };
     if tracks {
-        state.platforms.identify_sources(&dir, kind, false).await?;
+        state
+            .platforms
+            .identify_sources(&dir, kind, false, source_order(&state)?)
+            .await?;
     }
     Ok(state
         .platforms
@@ -130,7 +134,12 @@ pub async fn identify_resource_sources(
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
     Ok(state
         .platforms
-        .identify_sources(&instance.resource_dir(kind), kind, false)
+        .identify_sources(
+            &instance.resource_dir(kind),
+            kind,
+            false,
+            source_order(&state)?,
+        )
         .await?)
 }
 
@@ -178,6 +187,15 @@ pub(crate) fn tracks_sources(state: &AppState) -> CommandResult<bool> {
         .map_err(|_| CommandError::poisoned())?
         .launcher
         .track_resource_sources)
+}
+
+fn source_order(state: &AppState) -> CommandResult<SourceLookupOrder> {
+    Ok(state
+        .settings
+        .read()
+        .map_err(|_| CommandError::poisoned())?
+        .launcher
+        .source_lookup_order)
 }
 
 /// A created instance and the pack files the user still has to download by hand.
@@ -353,7 +371,10 @@ pub async fn update_modpack(
         )
         .await?;
     if tracks_sources(&state)? {
-        state.platforms.identify_pack_sources(&instance).await;
+        state
+            .platforms
+            .identify_pack_sources(&instance, source_order(&state)?)
+            .await;
     }
     Ok(())
 }
@@ -372,6 +393,7 @@ fn modpack_target<'a>(
         allow_untrusted_hosts: options.allow_untrusted_hosts,
         optional_mods: options.optional_mods,
         track_sources: tracks_sources(state)?,
+        source_order: source_order(state)?,
     })
 }
 

@@ -3,7 +3,7 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
-use crate::modplatform::ReleaseType;
+use crate::modplatform::{Provider, ReleaseType};
 use crate::{Result, fs};
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
@@ -141,6 +141,25 @@ pub struct LauncherSettings {
     pub track_resource_sources: bool,
     /// The least stable releases "Check for Updates" offers.
     pub update_channel: UpdateChannel,
+    /// Which platform "Identify Sources" asks first; files it does not know go to the other.
+    pub source_lookup_order: SourceLookupOrder,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub enum SourceLookupOrder {
+    #[default]
+    ModrinthFirst,
+    CurseForgeFirst,
+}
+
+impl SourceLookupOrder {
+    pub fn providers(self) -> [Provider; 2] {
+        match self {
+            Self::ModrinthFirst => [Provider::Modrinth, Provider::CurseForge],
+            Self::CurseForgeFirst => [Provider::CurseForge, Provider::Modrinth],
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
@@ -181,6 +200,7 @@ impl Default for LauncherSettings {
             setup_completed: false,
             track_resource_sources: true,
             update_channel: UpdateChannel::default(),
+            source_lookup_order: SourceLookupOrder::default(),
         }
     }
 }

@@ -8,7 +8,7 @@ use jelauncher_core::modplatform::{
 };
 use jelauncher_core::net::HttpClient;
 use jelauncher_core::resources::{ResourceSource, read_sources, remove_source};
-use jelauncher_core::settings::NetworkSettings;
+use jelauncher_core::settings::{NetworkSettings, SourceLookupOrder};
 
 fn platforms() -> jelauncher_core::Result<ModPlatforms> {
     Ok(ModPlatforms::new(
@@ -81,7 +81,7 @@ async fn records_installs_and_identifies_unknown_files() -> jelauncher_core::Res
         remove_source(dir.path(), ResourceKind::Mod, name)?;
     }
     let report = platforms
-        .identify_sources(dir.path(), ResourceKind::Mod, false)
+        .identify_sources(dir.path(), ResourceKind::Mod, false, Default::default())
         .await?;
     println!("identify: {report:?}");
     assert_eq!(report.identified as usize, installed.len());
@@ -110,7 +110,7 @@ async fn records_installs_and_identifies_unknown_files() -> jelauncher_core::Res
         }
     })?;
     let report = platforms
-        .identify_sources(dir.path(), ResourceKind::Mod, false)
+        .identify_sources(dir.path(), ResourceKind::Mod, false, Default::default())
         .await?;
     println!("identify after JEI: {report:?}");
     let jei_source = sources(dir.path())
@@ -123,6 +123,30 @@ async fn records_installs_and_identifies_unknown_files() -> jelauncher_core::Res
     assert!(
         jei_source.is_some(),
         "a disabled file is identified under its enabled name"
+    );
+
+    // Asking CurseForge first finds Iris there, although Modrinth has it too.
+    for name in &installed {
+        remove_source(dir.path(), ResourceKind::Mod, name)?;
+    }
+    platforms
+        .identify_sources(
+            dir.path(),
+            ResourceKind::Mod,
+            false,
+            SourceLookupOrder::CurseForgeFirst,
+        )
+        .await?;
+    let iris_source = sources(dir.path())
+        .into_iter()
+        .find(|source| source.file_name == installed[0]);
+    println!(
+        "Iris source: {:?}",
+        iris_source.as_ref().map(|s| s.provider)
+    );
+    assert_eq!(
+        iris_source.map(|source| source.provider),
+        Some(Provider::CurseForge)
     );
     Ok(())
 }
@@ -152,6 +176,7 @@ async fn modpack_installs_record_locked_sources() -> jelauncher_core::Result<()>
         allow_untrusted_hosts: false,
         optional_mods: None,
         track_sources: true,
+        source_order: Default::default(),
     };
     let installed = platforms
         .install_modpack(

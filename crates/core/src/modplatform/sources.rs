@@ -12,6 +12,7 @@ use crate::net::sha1_of;
 use crate::resources::{
     ProjectInfo, ResourceKind, ResourceSource, attach_sources, list_resources, write_source,
 };
+use crate::settings::SourceLookupOrder;
 use crate::{Error, Result};
 
 /// Kinds of resources that modpacks ship and platforms publish.
@@ -97,13 +98,15 @@ impl ModPlatforms {
         Ok(())
     }
 
-    /// Finds the sources of files in `dir` that have none: on Modrinth by SHA-1, then on
-    /// CurseForge by fingerprint. A platform that cannot be reached only leaves files unknown.
+    /// Finds the sources of files in `dir` that have none, asking the platforms in `order`:
+    /// Modrinth by SHA-1, CurseForge by fingerprint. A platform that cannot be reached only
+    /// leaves files unknown.
     pub async fn identify_sources(
         &self,
         dir: &Path,
         kind: ResourceKind,
         lock_update: bool,
+        order: SourceLookupOrder,
     ) -> Result<IdentifyReport> {
         let mut files = list_resources(dir, kind)?;
         attach_sources(dir, kind, &mut files)?;
@@ -113,31 +116,20 @@ impl ModPlatforms {
             .map(|file| file.file_name)
             .collect();
         let total = unknown.len();
-        if total == 0 {
-            return Ok(IdentifyReport::default());
-        }
-
-        let found = self
-            .find_on_modrinth(dir, &unknown)
-            .await
-            .unwrap_or_else(|err| {
-                log::warn!("Modrinth source lookup failed: {err}");
-                Vec::new()
-            });
-        unknown.retain(|name| !found.iter().any(|file| &file.file_name == name));
-        self.record_sources(dir, kind, Provider::Modrinth, &found, lock_update)
-            .await?;
-        let mut identified = found.len();
-
-        if !unknown.is_empty() {
+        let mut identified = 0;
+        for provider in order.providers() {
+            if unknown.is_empty() {
+                break;
+            }
             let found = self
-                .find_on_curseforge(dir, &unknown)
+                .find_on(provider, dir, &unknown)
                 .await
                 .unwrap_or_else(|err| {
-                    log::warn!("CurseForge source lookup failed: {err}");
+                    log::warn!("{provider:?} source lookup failed: {err}");
                     Vec::new()
                 });
-            self.record_sources(dir, kind, Provider::CurseForge, &found, lock_update)
+            unknown.retain(|name| !found.iter().any(|file| &file.file_name == name));
+            self.record_sources(dir, kind, provider, &found, lock_update)
                 .await?;
             identified += found.len();
         }
@@ -148,10 +140,10 @@ impl ModPlatforms {
     }
 
     /// Identifies the mods and packs a modpack installed; their updates belong to the pack.
-    pub async fn identify_pack_sources(&self, instance: &Instance) {
+    pub async fn identify_pack_sources(&self, instance: &Instance, order: SourceLookupOrder) {
         for kind in PACK_KINDS {
             if let Err(err) = self
-                .identify_sources(&instance.resource_dir(kind), kind, true)
+                .identify_sources(&instance.resource_dir(kind), kind, true, order)
                 .await
             {
                 log::warn!(
@@ -159,6 +151,19 @@ impl ModPlatforms {
                     instance.id
                 );
             }
+        }
+    }
+
+    async fn find_on(
+        &self,
+        provider: Provider,
+        dir: &Path,
+        names: &[String],
+    ) -> Result<Vec<InstalledFile>> {
+        match provider {
+            Provider::Modrinth => self.find_on_modrinth(dir, names).await,
+            Provider::CurseForge => self.find_on_curseforge(dir, names).await,
+            Provider::Ftb | Provider::Technic | Provider::AtLauncher => Ok(Vec::new()),
         }
     }
 

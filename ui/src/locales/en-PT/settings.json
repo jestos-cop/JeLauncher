@@ -53,6 +53,12 @@
       "release": "Seaworthy only",
       "beta": "Seaworthy an' leaky",
       "alpha": "Every ship afloat"
+    },
+    "sourceLookupOrder": "Seek the port o' origin on",
+    "sourceLookupOrderHint": "Which harbour the lookout asks first; cargo unknown there be asked at t' other.",
+    "lookupOrder": {
+      "modrinthFirst": "Modrinth, then CurseForge",
+      "curseForgeFirst": "CurseForge, then Modrinth"
     }
   },
   "java": {

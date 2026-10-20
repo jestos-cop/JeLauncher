@@ -933,7 +933,11 @@ trackResourceSources: boolean;
 /**
  * The least stable releases "Check for Updates" offers.
  */
-updateChannel: UpdateChannel }
+updateChannel: UpdateChannel; 
+/**
+ * Which platform "Identify Sources" asks first; files it does not know go to the other.
+ */
+sourceLookupOrder: SourceLookupOrder }
 export type LoaderKind = "fabric" | "quilt" | "forge" | "neoforge"
 export type LoaderSpec = { kind: LoaderKind; version: string }
 export type LoaderVersion = { version: string; stable: boolean }
@@ -1096,6 +1100,7 @@ export type SortOrder = "relevance" | "downloads" | "updated" | "newest"
  * A project another one declares on its platform.
  */
 export type SourceDependency = { projectId: string; kind: DependencyKind }
+export type SourceLookupOrder = "modrinthFirst" | "curseForgeFirst"
 export type Theme = "system" | "light" | "dark"
 export type ToolSettings = { 
 /**

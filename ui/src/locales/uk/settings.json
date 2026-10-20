@@ -53,6 +53,12 @@
       "release": "Лише стабільні",
       "beta": "Стабільні й бета",
       "alpha": "Усі релізи"
+    },
+    "sourceLookupOrder": "Шукати джерела",
+    "sourceLookupOrderHint": "Де «Визначити джерела» шукає спершу; файли, яких там немає, шукаються на іншій платформі.",
+    "lookupOrder": {
+      "modrinthFirst": "Modrinth, потім CurseForge",
+      "curseForgeFirst": "CurseForge, потім Modrinth"
     }
   },
   "java": {

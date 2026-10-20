@@ -131,6 +131,7 @@ async fn installs_a_modpack_as_new_instance() -> jelauncher_core::Result<()> {
         allow_untrusted_hosts: false,
         optional_mods: None,
         track_sources: false,
+        source_order: Default::default(),
     };
     let instance = modrinth.install_modpack(&pack.id, &target, |_| {}).await?;
 
@@ -185,6 +186,7 @@ async fn imports_a_modpack_from_its_url() -> jelauncher_core::Result<()> {
         allow_untrusted_hosts: false,
         optional_mods: None,
         track_sources: false,
+        source_order: Default::default(),
     };
     let platforms =
         jelauncher_core::modplatform::ModPlatforms::new(http.clone(), Default::default());
@@ -232,6 +234,7 @@ async fn exported_modpack_references_modrinth_files_and_reimports() -> jelaunche
         allow_untrusted_hosts: false,
         optional_mods: None,
         track_sources: false,
+        source_order: Default::default(),
     };
     let original = modrinth.install_modpack(&pack.id, &target, |_| {}).await?;
     let original_mods =
@@ -303,6 +306,7 @@ async fn updates_a_modpack_to_another_version() -> jelauncher_core::Result<()> {
         allow_untrusted_hosts: false,
         optional_mods: None,
         track_sources: false,
+        source_order: Default::default(),
     };
     let mut instance = modrinth.install_modpack(&older.id, &target, |_| {}).await?;
     let saves = instance.saves_dir().join("My World");

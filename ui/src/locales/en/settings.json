@@ -53,6 +53,12 @@
       "release": "Stable releases only",
       "beta": "Stable and beta",
       "alpha": "All releases"
+    },
+    "sourceLookupOrder": "Identify sources on",
+    "sourceLookupOrderHint": "Where Identify Sources looks first; files it does not find there are looked up on the other platform.",
+    "lookupOrder": {
+      "modrinthFirst": "Modrinth, then CurseForge",
+      "curseForgeFirst": "CurseForge, then Modrinth"
     }
   },
   "java": {

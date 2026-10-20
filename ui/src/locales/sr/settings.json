@@ -53,6 +53,12 @@
       "release": "Само стабилна",
       "beta": "Стабилна и бета",
       "alpha": "Сва издања"
+    },
+    "sourceLookupOrder": "Тражи изворе на",
+    "sourceLookupOrderHint": "Где Препознај изворе прво тражи; датотеке које тамо нису нађене траже се на другој платформи.",
+    "lookupOrder": {
+      "modrinthFirst": "Modrinth, па CurseForge",
+      "curseForgeFirst": "CurseForge, па Modrinth"
     }
   },
   "java": {

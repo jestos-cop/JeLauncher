@@ -71,7 +71,8 @@ impl ModPlatforms {
             .install_pack_files(provider, project_id, version_id, target, on_progress)
             .await?;
         if target.track_sources {
-            self.identify_pack_sources(&installed.instance).await;
+            self.identify_pack_sources(&installed.instance, target.source_order)
+                .await;
         }
         Ok(installed)
     }

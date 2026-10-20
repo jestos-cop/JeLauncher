@@ -49,6 +49,7 @@ async fn installs_an_ftb_modpack() -> jelauncher_core::Result<()> {
         allow_untrusted_hosts: false,
         optional_mods: None,
         track_sources: false,
+        source_order: Default::default(),
     };
     let installed = platforms
         .install_modpack(Provider::Ftb, &pack.id, &latest.id, &target, |_| {})

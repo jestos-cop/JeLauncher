@@ -185,6 +185,7 @@ async fn launches_a_fabric_modpack() -> jelauncher_core::Result<()> {
                 allow_untrusted_hosts: false,
                 optional_mods: None,
                 track_sources: false,
+                source_order: Default::default(),
             },
             |_| {},
         )

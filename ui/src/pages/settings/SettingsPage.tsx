@@ -2,7 +2,7 @@ import { Coffee, Monitor, Rocket, Terminal, UsersRound, Wrench } from 'lucide-re
 import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigation, type SettingsTab } from '@/app/navigation'
-import { commands, type GlobalSettings, type UpdateChannel } from '@/bindings'
+import { commands, type GlobalSettings, type SourceLookupOrder, type UpdateChannel } from '@/bindings'
 import { CommandFields } from '@/components/CommandFields'
 import {
   Field,
@@ -23,6 +23,7 @@ import { unwrap } from '@/lib/command'
 import { AccountsSettings } from '@/pages/settings/AccountsSettings'
 
 const UPDATE_CHANNELS: UpdateChannel[] = ['release', 'beta', 'alpha']
+const SOURCE_LOOKUP_ORDERS: SourceLookupOrder[] = ['modrinthFirst', 'curseForgeFirst']
 const MODRINTH_TOKEN_DOCS = 'https://docs.modrinth.com/api/#authentication'
 
 const TABS: Omit<SidebarTab<SettingsTab>, 'label'>[] = [
@@ -145,6 +146,23 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
                   {UPDATE_CHANNELS.map((channel) => (
                     <SelectItem key={channel} value={channel}>
                       {t(`launcher.channel.${channel}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label={t('launcher.sourceLookupOrder')} hint={t('launcher.sourceLookupOrderHint')}>
+              <Select
+                value={draft.launcher.sourceLookupOrder}
+                onValueChange={(order) => setLauncher({ sourceLookupOrder: order as SourceLookupOrder })}
+              >
+                <SelectTrigger className="w-56">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {SOURCE_LOOKUP_ORDERS.map((order) => (
+                    <SelectItem key={order} value={order}>
+                      {t(`launcher.lookupOrder.${order}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
