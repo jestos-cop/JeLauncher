@@ -106,5 +106,14 @@
     "button": "Export List",
     "fileType": "Mod list",
     "plainText": "Plain text"
+  },
+  "dependencies": {
+    "title": "Install {{name}}",
+    "description": "These projects come along with it. Uncheck the ones you do not want.",
+    "optional": "Optional",
+    "installed": "Already installed",
+    "noVersion": "No version fits this game version",
+    "neededBy": "needed by {{names}}",
+    "install": "Install ({{total}})"
   }
 }

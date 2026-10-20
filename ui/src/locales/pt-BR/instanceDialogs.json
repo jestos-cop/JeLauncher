@@ -106,5 +106,14 @@
     "button": "Exportar lista",
     "fileType": "Lista de mods",
     "plainText": "Texto simples"
+  },
+  "dependencies": {
+    "title": "Instalar {{name}}",
+    "description": "Estes projetos vêm junto. Desmarque os que você não quer.",
+    "optional": "Opcional",
+    "installed": "Já instalado",
+    "noVersion": "Nenhuma versão serve para esta versão do jogo",
+    "neededBy": "necessário para {{names}}",
+    "install": "Instalar ({{total}})"
   }
 }

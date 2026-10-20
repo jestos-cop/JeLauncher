@@ -106,5 +106,14 @@
     "button": "导出列表",
     "fileType": "模组列表",
     "plainText": "纯文本"
+  },
+  "dependencies": {
+    "title": "安装 {{name}}",
+    "description": "这些项目会一同安装。取消勾选不需要的项目。",
+    "optional": "可选",
+    "installed": "已安装",
+    "noVersion": "没有适用于此游戏版本的版本",
+    "neededBy": "{{names}} 需要",
+    "install": "安装（{{total}}）"
   }
 }

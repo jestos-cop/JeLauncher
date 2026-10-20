@@ -4,8 +4,8 @@ use std::path::Path;
 use jelauncher_core::instance::Instance;
 
 use jelauncher_core::modpack::{self, BlockedFile, ModpackTarget, PackInstall};
-use jelauncher_core::modplatform::IdentifyReport;
 use jelauncher_core::modplatform::atlauncher::OptionalMod;
+use jelauncher_core::modplatform::{IdentifyReport, PlannedDependency};
 use jelauncher_core::modplatform::{
     InstallTarget, ProjectVersion, Provider, ResourceKind, ResourceUpdate, SearchPage, SearchQuery,
     SortOrder,
@@ -61,7 +61,32 @@ pub async fn list_project_versions(
         .await?)
 }
 
-/// Installs a version plus its required dependencies; returns the installed file names.
+/// The dependencies installing a version would bring along, for the user to review.
+#[tauri::command]
+#[specta::specta]
+pub async fn plan_project_install(
+    state: State<'_, AppState>,
+    instance_id: String,
+    kind: ResourceKind,
+    provider: Provider,
+    project_id: String,
+    version_id: String,
+) -> CommandResult<Vec<PlannedDependency>> {
+    let instance = Instance::open(&state.paths.instances(), &instance_id)?;
+    let version = state
+        .platforms
+        .version(provider, &project_id, &version_id)
+        .await?;
+    let dir = instance.resource_dir(kind);
+    let target = install_target(&instance, &dir, kind, tracks_sources(&state)?);
+    Ok(state
+        .platforms
+        .plan_dependencies(provider, &version, &target)
+        .await?)
+}
+
+/// Installs a version plus the dependency versions picked from its plan; returns the
+/// installed file names.
 #[tauri::command]
 #[specta::specta]
 pub async fn install_project_version(
@@ -71,6 +96,7 @@ pub async fn install_project_version(
     provider: Provider,
     project_id: String,
     version_id: String,
+    dependencies: Vec<ProjectVersion>,
 ) -> CommandResult<Vec<String>> {
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
     let version = state
@@ -81,7 +107,7 @@ pub async fn install_project_version(
     let target = install_target(&instance, &dir, kind, tracks_sources(&state)?);
     Ok(state
         .platforms
-        .install_with_dependencies(provider, version, &target)
+        .install_versions(provider, version, dependencies, &target)
         .await?)
 }
 

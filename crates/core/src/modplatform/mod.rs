@@ -1,5 +1,6 @@
 pub mod atlauncher;
 pub mod curseforge;
+mod dependencies;
 pub mod ftb;
 pub mod modrinth;
 mod platforms;
@@ -12,6 +13,7 @@ use serde::{Deserialize, Serialize};
 use crate::minecraft::LoaderKind;
 use std::path::Path;
 
+pub use dependencies::PlannedDependency;
 pub use platforms::{ModPlatforms, PlatformConfig};
 pub use sources::{IdentifyReport, InstalledFile};
 
@@ -105,7 +107,7 @@ pub enum ReleaseType {
     Alpha,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, specta::Type)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct ProjectVersion {
     pub id: String,
@@ -124,7 +126,7 @@ pub struct ProjectVersion {
     pub game_versions: Vec<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, specta::Type)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct VersionFile {
     pub url: String,
@@ -144,7 +146,7 @@ pub struct ResourceUpdate {
     pub version: ProjectVersion,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, specta::Type)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct Dependency {
     pub project_id: Option<String>,

@@ -3,6 +3,7 @@ import { useDeferredValue, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type {
   InstanceSummary,
+  PlannedDependency,
   ProjectHit,
   Provider,
   ResourceFile,
@@ -17,7 +18,13 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { useInstallVersion, useProjectVersions, useResourceSearch } from '@/hooks/use-modplatform'
+import { DependencyReviewDialog } from '@/dialogs/DependencyReviewDialog'
+import {
+  useInstallVersion,
+  usePlanInstall,
+  useProjectVersions,
+  useResourceSearch,
+} from '@/hooks/use-modplatform'
 import { useChangeVersion, useResources } from '@/hooks/use-resources'
 import { PROVIDER_NAMES, RESOURCE_PROVIDERS } from '@/lib/providers'
 
@@ -171,23 +178,46 @@ function VersionPanel({ instanceId, kind, project, installedFile }: VersionPanel
 function InstallVersionList({ instanceId, kind, project }: Omit<VersionPanelProps, 'installedFile'>) {
   const { t } = useTranslation(['instanceDialogs', 'common'])
   const install = useInstallVersion(instanceId, kind, project)
+  const plan = usePlanInstall(instanceId, kind, project)
+  const [review, setReview] = useState<{ versionId: string; dependencies: PlannedDependency[] } | null>(null)
+  const pick = (versionId: string) =>
+    plan.mutate(versionId, {
+      onSuccess: (dependencies) => {
+        if (dependencies.every((dep) => dep.installed)) install.mutate({ versionId, dependencies: [] })
+        else setReview({ versionId, dependencies })
+      },
+    })
   return (
-    <VersionList
-      instanceId={instanceId}
-      kind={kind}
-      project={project}
-      currentVersionId={undefined}
-      error={install.error}
-      note={
-        install.data && install.data.length > 1
-          ? t('resourceDownload.alsoInstalled', { names: install.data.slice(1).join(', ') })
-          : null
-      }
-      isBusy={install.isPending}
-      doneVersionId={install.isSuccess ? install.variables : undefined}
-      actionLabel={t('common:action.install')}
-      onPick={(versionId) => install.mutate(versionId)}
-    />
+    <>
+      <VersionList
+        instanceId={instanceId}
+        kind={kind}
+        project={project}
+        currentVersionId={undefined}
+        error={install.error ?? plan.error}
+        note={
+          install.data && install.data.length > 1
+            ? t('resourceDownload.alsoInstalled', { names: install.data.slice(1).join(', ') })
+            : null
+        }
+        isBusy={install.isPending || plan.isPending}
+        doneVersionId={install.isSuccess ? install.variables.versionId : undefined}
+        actionLabel={t('common:action.install')}
+        onPick={pick}
+      />
+      {review && (
+        <DependencyReviewDialog
+          name={project.title}
+          projectId={project.id}
+          dependencies={review.dependencies}
+          onInstall={(dependencies) => {
+            install.mutate({ versionId: review.versionId, dependencies })
+            setReview(null)
+          }}
+          onClose={() => setReview(null)}
+        />
+      )}
+    </>
   )
 }
 

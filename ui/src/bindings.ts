@@ -469,11 +469,23 @@ async updateResource(instanceId: string, kind: ResourceKind, fileName: string, p
 }
 },
 /**
- * Installs a version plus its required dependencies; returns the installed file names.
+ * The dependencies installing a version would bring along, for the user to review.
  */
-async installProjectVersion(instanceId: string, kind: ResourceKind, provider: Provider, projectId: string, versionId: string) : Promise<Result<string[], CommandError>> {
+async planProjectInstall(instanceId: string, kind: ResourceKind, provider: Provider, projectId: string, versionId: string) : Promise<Result<PlannedDependency[], CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("install_project_version", { instanceId, kind, provider, projectId, versionId }) };
+    return { status: "ok", data: await TAURI_INVOKE("plan_project_install", { instanceId, kind, provider, projectId, versionId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Installs a version plus the dependency versions picked from its plan; returns the
+ * installed file names.
+ */
+async installProjectVersion(instanceId: string, kind: ResourceKind, provider: Provider, projectId: string, versionId: string, dependencies: ProjectVersion[]) : Promise<Result<string[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("install_project_version", { instanceId, kind, provider, projectId, versionId, dependencies }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -985,6 +997,26 @@ name: string | null; allowUntrustedHosts: boolean;
  * Picked optional mods; `None` keeps the pack's defaults.
  */
 optionalMods: string[] | null }
+/**
+ * A project a version to install depends on, directly or through other dependencies.
+ */
+export type PlannedDependency = { projectId: string; name: string; 
+/**
+ * Optional dependencies are only offered for the version itself, not for its dependencies.
+ */
+kind: DependencyKind; 
+/**
+ * The version that would be installed; `None` when none fits the game version and loader.
+ */
+version: ProjectVersion | null; 
+/**
+ * Projects in the plan that need this one: the installed version or other dependencies.
+ */
+requiredBy: string[]; 
+/**
+ * Already installed from the same platform, so it is left alone.
+ */
+installed: boolean }
 export type Profiler = "jprofiler" | "visualVm"
 export type ProjectHit = { provider: Provider; id: string; slug: string; title: string; description: string; author: string; iconUrl: string | null; downloads: number }
 export type ProjectVersion = { id: string; projectId: string; name: string; versionNumber: string; releaseType: ReleaseType; published: string; 

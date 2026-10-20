@@ -87,6 +87,18 @@ async fn installs_required_dependencies() -> jelauncher_core::Result<()> {
         HttpClient::new(&NetworkSettings::default())?,
         Default::default(),
     );
+    let plan = platforms
+        .plan_dependencies(Provider::Modrinth, &iris, &target)
+        .await?;
+    println!(
+        "plan {:?}",
+        plan.iter()
+            .map(|dep| (&dep.name, dep.kind, dep.version.is_some()))
+            .collect::<Vec<_>>()
+    );
+    assert!(plan.iter().any(|dep| dep.name == "Sodium"
+        && dep.kind == jelauncher_core::modplatform::DependencyKind::Required
+        && dep.version.is_some()));
     let installed = platforms
         .install_with_dependencies(Provider::Modrinth, iris, &target)
         .await?;

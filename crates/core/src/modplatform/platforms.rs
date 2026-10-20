@@ -1,21 +1,15 @@
-use std::collections::{HashSet, VecDeque};
-
 use super::atlauncher::AtLauncher;
 use super::curseforge::CurseForge;
 use super::ftb::Ftb;
 use super::modrinth::Modrinth;
 use super::technic::Technic;
-use super::{
-    InstallTarget, InstalledFile, ProjectVersion, Provider, ResourceKind, SearchPage, SearchQuery,
-    download_version,
-};
+use super::{ProjectVersion, Provider, ResourceKind, SearchPage, SearchQuery, download_version};
 use crate::minecraft::LoaderKind;
 use crate::modpack::{
     ModpackTarget, PackInstall, PackSource, install_atlauncher_pack, install_curseforge_pack,
     install_ftb_pack, install_technic_pack,
 };
 use crate::net::{DownloadProgress, HttpClient};
-use crate::resources::read_sources;
 use crate::{Error, Result};
 
 /// Every supported mod platform behind one interface, chosen per call by [`Provider`].
@@ -203,82 +197,6 @@ impl ModPlatforms {
             Provider::Technic => self.technic.version(project_id, version_id).await,
             Provider::AtLauncher => self.atlauncher.version(project_id, version_id).await,
         }
-    }
-
-    /// Installs the version and, recursively, the required dependencies that fit the target.
-    /// Returns the installed file names, the requested version first.
-    pub async fn install_with_dependencies(
-        &self,
-        provider: Provider,
-        version: ProjectVersion,
-        target: &InstallTarget<'_>,
-    ) -> Result<Vec<String>> {
-        let mut seen = HashSet::from([version.project_id.clone()]);
-        // Dependencies already installed from the same platform are not installed again.
-        if target.track_sources {
-            seen.extend(
-                read_sources(target.dir, target.kind)
-                    .into_iter()
-                    .filter(|(_, source)| source.provider == provider)
-                    .map(|(_, source)| source.project_id),
-            );
-        }
-        let mut queue = VecDeque::from([version]);
-        let mut installed = Vec::new();
-        let mut recorded = Vec::new();
-        while let Some(version) = queue.pop_front() {
-            let file_name = download_version(&self.http, &version, target.dir).await?;
-            if let Some(file) = version.primary_file() {
-                recorded.push(InstalledFile {
-                    file_name: file_name.clone(),
-                    file: file.clone(),
-                    version: version.clone(),
-                });
-            }
-            installed.push(file_name);
-            for dependency in version.dependencies.iter().filter(|dep| dep.is_required()) {
-                let Some(project_id) = &dependency.project_id else {
-                    continue;
-                };
-                if !seen.insert(project_id.clone()) {
-                    continue;
-                }
-                let resolved = match &dependency.version_id {
-                    Some(version_id) => self.version(provider, project_id, version_id).await?,
-                    None => self.latest_compatible(provider, project_id, target).await?,
-                };
-                queue.push_back(resolved);
-            }
-        }
-        if target.track_sources {
-            self.record_sources(target.dir, target.kind, provider, &recorded, false)
-                .await?;
-        }
-        Ok(installed)
-    }
-
-    async fn latest_compatible(
-        &self,
-        provider: Provider,
-        project_id: &str,
-        target: &InstallTarget<'_>,
-    ) -> Result<ProjectVersion> {
-        self.versions(
-            provider,
-            project_id,
-            target.kind,
-            Some(target.game_version),
-            target.loader,
-        )
-        .await?
-        .into_iter()
-        .next()
-        .ok_or_else(|| {
-            Error::InvalidInput(format!(
-                "no version of required dependency {project_id} supports Minecraft {}",
-                target.game_version
-            ))
-        })
     }
 }
 

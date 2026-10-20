@@ -1,5 +1,11 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { commands, type ProjectHit, type ResourceKind, type SearchQuery } from '@/bindings'
+import {
+  commands,
+  type ProjectHit,
+  type ProjectVersion,
+  type ResourceKind,
+  type SearchQuery,
+} from '@/bindings'
 import { resourcesKey } from '@/hooks/use-resources'
 import { unwrap } from '@/lib/command'
 
@@ -28,8 +34,25 @@ export function useProjectVersions(instanceId: string, project: ProjectHit, kind
 export function useInstallVersion(instanceId: string, kind: ResourceKind, project: ProjectHit) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (versionId: string) =>
-      unwrap(commands.installProjectVersion(instanceId, kind, project.provider, project.id, versionId)),
+    mutationFn: ({ versionId, dependencies }: { versionId: string; dependencies: ProjectVersion[] }) =>
+      unwrap(
+        commands.installProjectVersion(
+          instanceId,
+          kind,
+          project.provider,
+          project.id,
+          versionId,
+          dependencies,
+        ),
+      ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: resourcesKey(instanceId, kind) }),
+  })
+}
+
+/** The dependencies installing a version would bring along. */
+export function usePlanInstall(instanceId: string, kind: ResourceKind, project: ProjectHit) {
+  return useMutation({
+    mutationFn: (versionId: string) =>
+      unwrap(commands.planProjectInstall(instanceId, kind, project.provider, project.id, versionId)),
   })
 }

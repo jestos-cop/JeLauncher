@@ -106,5 +106,14 @@
     "button": "Ship Out List",
     "fileType": "Mod list",
     "plainText": "Plain text"
+  },
+  "dependencies": {
+    "title": "Haul aboard {{name}}",
+    "description": "These come aboard with it. Untick the ones ye don't fancy.",
+    "optional": "Optional",
+    "installed": "Already in the hold",
+    "noVersion": "No version sails with this game version",
+    "neededBy": "needed by {{names}}",
+    "install": "Haul aboard ({{total}})"
   }
 }

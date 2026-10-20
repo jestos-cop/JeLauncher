@@ -106,5 +106,14 @@
     "button": "Eksportuj listę",
     "fileType": "Lista modów",
     "plainText": "Zwykły tekst"
+  },
+  "dependencies": {
+    "title": "Zainstaluj {{name}}",
+    "description": "Te projekty zostaną zainstalowane razem z nim. Odznacz te, których nie chcesz.",
+    "optional": "Opcjonalna",
+    "installed": "Już zainstalowano",
+    "noVersion": "Brak wersji dla tej wersji gry",
+    "neededBy": "potrzebna dla {{names}}",
+    "install": "Zainstaluj ({{total}})"
   }
 }

@@ -106,5 +106,14 @@
     "button": "リストをエクスポート",
     "fileType": "Mod リスト",
     "plainText": "プレーンテキスト"
+  },
+  "dependencies": {
+    "title": "{{name}} をインストール",
+    "description": "これらのプロジェクトも一緒にインストールされます。不要なもののチェックを外してください。",
+    "optional": "任意",
+    "installed": "インストール済み",
+    "noVersion": "このゲームバージョンに合うバージョンがありません",
+    "neededBy": "{{names}} が必要とする",
+    "install": "インストール（{{total}}）"
   }
 }
