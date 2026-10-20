@@ -7,6 +7,8 @@ import { FoldersMenu } from '@/components/FoldersMenu'
 import { HelpMenu } from '@/components/HelpMenu'
 import { Logo } from '@/components/Logo'
 import { NewsBar } from '@/components/NewsBar'
+import { ToolbarLabel } from '@/components/ToolbarLabel'
+import { WindowHeader } from '@/components/WindowHeader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -29,28 +31,33 @@ export function MainPage() {
 
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
-      <header className="flex flex-wrap items-center gap-2 border-b px-3 py-2">
+      <WindowHeader className="flex-wrap gap-2">
         <Logo className="mr-1" />
         <Button size="sm" onClick={() => setIsCreating(true)}>
           <Plus /> {t('toolbar.addInstance')}
         </Button>
-        <Button size="sm" variant="ghost" onClick={() => refetch()}>
-          <RefreshCw /> {t('common:action.refresh')}
+        <Button size="sm" variant="ghost" title={t('common:action.refresh')} onClick={() => refetch()}>
+          <RefreshCw /> <ToolbarLabel>{t('common:action.refresh')}</ToolbarLabel>
         </Button>
         <FoldersMenu />
-        <Button size="sm" variant="ghost" onClick={() => navigate({ page: 'settings', tab: 'launcher' })}>
-          <Settings /> {t('toolbar.settings')}
+        <Button
+          size="sm"
+          variant="ghost"
+          title={t('toolbar.settings')}
+          onClick={() => navigate({ page: 'settings', tab: 'launcher' })}
+        >
+          <Settings /> <ToolbarLabel>{t('toolbar.settings')}</ToolbarLabel>
         </Button>
         <HelpMenu />
         <div className="ml-auto flex items-center gap-2">
           <Input
-            className="h-8 w-48"
+            className="h-8 w-32 lg:w-48"
             placeholder={t('toolbar.searchPlaceholder')}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
           <Select value={sort} onValueChange={(value) => setSort(value as InstanceSort)}>
-            <SelectTrigger size="sm" className="w-36">
+            <SelectTrigger size="sm" className="w-32 lg:w-36">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -60,7 +67,7 @@ export function MainPage() {
           </Select>
           <AccountsMenu />
         </div>
-      </header>
+      </WindowHeader>
       <NewsBar />
 
       <div className="flex min-h-0 flex-1">

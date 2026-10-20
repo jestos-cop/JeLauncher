@@ -2,6 +2,7 @@ import { ChevronDown, Folder } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { commands, type LauncherFolder } from '@/bindings'
 import { Button } from '@/components/ui/button'
+import { ToolbarLabel } from '@/components/ToolbarLabel'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,8 +18,8 @@ export function FoldersMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="sm" variant="ghost">
-          <Folder /> {t('folders.title')} <ChevronDown />
+        <Button size="sm" variant="ghost" title={t('folders.title')}>
+          <Folder /> <ToolbarLabel>{t('folders.title')}</ToolbarLabel> <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">

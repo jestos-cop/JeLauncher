@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { commands } from '@/bindings'
 import { Button } from '@/components/ui/button'
+import { ToolbarLabel } from '@/components/ToolbarLabel'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,8 +20,8 @@ export function HelpMenu() {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="sm" variant="ghost">
-            <CircleHelp /> {t('help.title')} <ChevronDown />
+          <Button size="sm" variant="ghost" title={t('help.title')}>
+            <CircleHelp /> <ToolbarLabel>{t('help.title')}</ToolbarLabel> <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
