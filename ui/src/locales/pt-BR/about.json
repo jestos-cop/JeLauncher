@@ -4,7 +4,8 @@
     "version": "Versão",
     "license": "Licença",
     "trademark": "Minecraft é uma marca registrada da Mojang Studios. O JeLauncher não é afiliado à Mojang nem à Microsoft.",
-    "sourceCode": "Código-fonte"
+    "sourceCode": "Código-fonte",
+    "discord": "Discord"
   },
   "news": {
     "title": "Notícias do Minecraft",

@@ -15,6 +15,7 @@
   "help": {
     "title": "Pomoc",
     "sourceCode": "Kod źródłowy i zgłoszenia",
+    "discord": "Serwer Discord",
     "launcherLog": "Otwórz dziennik launchera",
     "about": "O JeLauncher"
   },

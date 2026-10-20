@@ -19,11 +19,12 @@ pub enum MenuAction {
     ManageAccounts,
     News,
     SourceCode,
+    Discord,
     LauncherLog,
 }
 
 impl MenuAction {
-    const ALL: [Self; 11] = [
+    const ALL: [Self; 12] = [
         Self::About,
         Self::Settings,
         Self::NewInstance,
@@ -34,6 +35,7 @@ impl MenuAction {
         Self::ManageAccounts,
         Self::News,
         Self::SourceCode,
+        Self::Discord,
         Self::LauncherLog,
     ];
 
@@ -50,6 +52,7 @@ impl MenuAction {
             Self::ManageAccounts => ("manage-accounts", None),
             Self::News => ("news", None),
             Self::SourceCode => ("source-code", None),
+            Self::Discord => ("discord", None),
             Self::LauncherLog => ("launcher-log", None),
         }
     }
@@ -146,6 +149,7 @@ pub fn build<R: Runtime>(app: &AppHandle<R>, language: &str) -> tauri::Result<Me
         .build()?;
     let help = SubmenuBuilder::new(app, text.get("help"))
         .item(&item(MenuAction::SourceCode)?)
+        .item(&item(MenuAction::Discord)?)
         .item(&item(MenuAction::LauncherLog)?)
         .build()?;
     MenuBuilder::new(app)

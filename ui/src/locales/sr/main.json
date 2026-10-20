@@ -15,6 +15,7 @@
   "help": {
     "title": "Помоћ",
     "sourceCode": "Изворни код и пријаве проблема",
+    "discord": "Discord сервер",
     "launcherLog": "Отвори дневник лаунчера",
     "about": "О програму JeLauncher"
   },

@@ -4,6 +4,9 @@ use tauri_plugin_opener::OpenerExt;
 
 use crate::error::{CommandError, CommandResult};
 
+/// Invite to the JeLauncher Discord server.
+const DISCORD_URL: &str = "https://discord.gg/4RmmGNtk63";
+
 #[derive(Debug, Clone, Serialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct AppInfo {
@@ -28,6 +31,15 @@ pub fn app_info() -> AppInfo {
 pub fn open_repository(app: AppHandle) -> CommandResult<()> {
     app.opener()
         .open_url(env!("CARGO_PKG_REPOSITORY"), None::<&str>)
+        .map_err(|err| CommandError::new(err.to_string()))
+}
+
+/// Opens the invite to the JeLauncher Discord server in the browser.
+#[tauri::command]
+#[specta::specta]
+pub fn open_discord(app: AppHandle) -> CommandResult<()> {
+    app.opener()
+        .open_url(DISCORD_URL, None::<&str>)
         .map_err(|err| CommandError::new(err.to_string()))
 }
 

@@ -38,6 +38,8 @@ export function MenuActions() {
           return void unwrap(commands.openLauncherFolder('root'))
         case 'sourceCode':
           return void unwrap(commands.openRepository())
+        case 'discord':
+          return void unwrap(commands.openDiscord())
         case 'launcherLog':
           return void unwrap(commands.openLauncherLog())
       }

@@ -4,7 +4,8 @@
     "version": "Верзија",
     "license": "Лиценца",
     "trademark": "Minecraft је заштитни знак компаније Mojang Studios. JeLauncher није повезан са компанијама Mojang или Microsoft.",
-    "sourceCode": "Изворни код"
+    "sourceCode": "Изворни код",
+    "discord": "Discord"
   },
   "news": {
     "title": "Minecraft вести",

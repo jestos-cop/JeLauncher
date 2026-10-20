@@ -15,6 +15,7 @@
   "help": {
     "title": "帮助",
     "sourceCode": "源代码与问题反馈",
+    "discord": "Discord 服务器",
     "launcherLog": "打开启动器日志",
     "about": "关于 JeLauncher"
   },

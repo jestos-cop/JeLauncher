@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Code } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { commands } from '@/bindings'
+import { DiscordIcon } from '@/components/DiscordIcon'
 import { Logo } from '@/components/Logo'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -26,9 +27,14 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
           <dd>{info?.license}</dd>
         </dl>
         <p className="text-xs text-muted-foreground">{t('about.trademark')}</p>
-        <Button variant="outline" onClick={() => void unwrap(commands.openRepository())}>
-          <Code /> {t('about.sourceCode')}
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button variant="outline" onClick={() => void unwrap(commands.openRepository())}>
+            <Code /> {t('about.sourceCode')}
+          </Button>
+          <Button variant="outline" onClick={() => void unwrap(commands.openDiscord())}>
+            <DiscordIcon /> {t('about.discord')}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   )

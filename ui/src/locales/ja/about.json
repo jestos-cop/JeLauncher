@@ -4,7 +4,8 @@
     "version": "バージョン",
     "license": "ライセンス",
     "trademark": "Minecraft は Mojang Studios の商標です。JeLauncher は Mojang および Microsoft とは関係ありません。",
-    "sourceCode": "ソースコード"
+    "sourceCode": "ソースコード",
+    "discord": "Discord"
   },
   "news": {
     "title": "Minecraft ニュース",

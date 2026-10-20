@@ -4,7 +4,8 @@
     "version": "Wersja",
     "license": "Licencja",
     "trademark": "Minecraft jest znakiem towarowym Mojang Studios. JeLauncher nie jest powiązany z Mojang ani Microsoft.",
-    "sourceCode": "Kod źródłowy"
+    "sourceCode": "Kod źródłowy",
+    "discord": "Discord"
   },
   "news": {
     "title": "Aktualności Minecrafta",

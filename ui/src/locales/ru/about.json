@@ -4,7 +4,8 @@
     "version": "Версия",
     "license": "Лицензия",
     "trademark": "Minecraft — товарный знак Mojang Studios. JeLauncher не связан с Mojang или Microsoft.",
-    "sourceCode": "Исходный код"
+    "sourceCode": "Исходный код",
+    "discord": "Discord"
   },
   "news": {
     "title": "Новости Minecraft",

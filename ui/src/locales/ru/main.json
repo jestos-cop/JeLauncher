@@ -15,6 +15,7 @@
   "help": {
     "title": "Справка",
     "sourceCode": "Исходный код и баг-трекер",
+    "discord": "Discord-сервер",
     "launcherLog": "Открыть лог лаунчера",
     "about": "О JeLauncher"
   },

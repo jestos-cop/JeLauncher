@@ -2,6 +2,7 @@ import { ChevronDown, CircleHelp, Code, FileText, Info } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { commands } from '@/bindings'
+import { DiscordIcon } from '@/components/DiscordIcon'
 import { Button } from '@/components/ui/button'
 import { ToolbarLabel } from '@/components/ToolbarLabel'
 import {
@@ -27,6 +28,9 @@ export function HelpMenu() {
         <DropdownMenuContent align="start" className="w-max">
           <DropdownMenuItem onSelect={() => void unwrap(commands.openRepository())}>
             <Code /> {t('help.sourceCode')}
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => void unwrap(commands.openDiscord())}>
+            <DiscordIcon /> {t('help.discord')}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => void unwrap(commands.openLauncherLog())}>
             <FileText /> {t('help.launcherLog')}

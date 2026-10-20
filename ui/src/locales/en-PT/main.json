@@ -15,6 +15,7 @@
   "help": {
     "title": "Help",
     "sourceCode": "Source code and troubles",
+    "discord": "The crew's Discord",
     "launcherLog": "Open launcher's log",
     "about": "About JeLauncher"
   },

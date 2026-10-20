@@ -15,6 +15,7 @@
   "help": {
     "title": "Aide",
     "sourceCode": "Code source et signalements",
+    "discord": "Serveur Discord",
     "launcherLog": "Ouvrir le journal du launcher",
     "about": "À propos de JeLauncher"
   },

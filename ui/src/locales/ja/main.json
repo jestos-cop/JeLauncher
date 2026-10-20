@@ -15,6 +15,7 @@
   "help": {
     "title": "ヘルプ",
     "sourceCode": "ソースコードと問題報告",
+    "discord": "Discord サーバー",
     "launcherLog": "ランチャーのログを開く",
     "about": "JeLauncher について"
   },

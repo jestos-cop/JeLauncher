@@ -20,6 +20,17 @@ async openRepository() : Promise<Result<null, CommandError>> {
 }
 },
 /**
+ * Opens the invite to the JeLauncher Discord server in the browser.
+ */
+async openDiscord() : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("open_discord") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Opens a web page in the browser; only http(s) links are allowed.
  */
 async openUrl(url: string) : Promise<Result<null, CommandError>> {
@@ -973,7 +984,7 @@ export type ManagedPack = { provider: Provider; projectId: string; versionId: st
 /**
  * A menu bar command the frontend carries out.
  */
-export type MenuAction = "about" | "settings" | "newInstance" | "importInstance" | "refresh" | "openInstancesFolder" | "openLauncherFolder" | "manageAccounts" | "news" | "sourceCode" | "launcherLog"
+export type MenuAction = "about" | "settings" | "newInstance" | "importInstance" | "refresh" | "openInstancesFolder" | "openLauncherFolder" | "manageAccounts" | "news" | "sourceCode" | "discord" | "launcherLog"
 export type MenuActionEvent = { action: MenuAction }
 export type MinecraftVersions = { latest: LatestVersions; versions: VersionEntry[] }
 export type ModListFormat = "plainText" | "markdown" | "html" | "json" | "csv"
