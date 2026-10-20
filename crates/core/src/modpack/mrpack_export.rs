@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
-use super::export_files::{OVERRIDES_DIR, entry_name, is_resolvable};
+use super::export_files::{OVERRIDES_DIR, entry_name, is_resolvable, is_source_metadata};
 use super::{MRPACK_INDEX, MrpackFile, MrpackIndex};
 use crate::archive::ZipBuilder;
 use crate::instance::Instance;
@@ -25,7 +25,11 @@ pub async fn export_mrpack(
 ) -> Result<()> {
     instance.set_blocked_paths(options.blocked)?;
     let game_dir = instance.game_dir();
-    let files = instance.exported_files(options.blocked)?;
+    let files: Vec<_> = instance
+        .exported_files(options.blocked)?
+        .into_iter()
+        .filter(|path| !is_source_metadata(path))
+        .collect();
     let mut by_hash = HashMap::new();
     for relative in files.iter().filter(|path| is_resolvable(path)) {
         by_hash.insert(sha1_of(&game_dir.join(relative)).await?, relative.clone());

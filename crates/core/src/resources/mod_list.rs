@@ -116,6 +116,7 @@ mod tests {
             size: 1,
             modified: 0,
             metadata,
+            source: None,
         };
         vec![
             file(

@@ -21,7 +21,8 @@
     "file": "File",
     "mode": "Mode",
     "lastPlayed": "Last played",
-    "seed": "Seed"
+    "seed": "Seed",
+    "source": "Source"
   },
   "item": {
     "enable": "Enable {{name}}",
@@ -99,7 +100,11 @@
     "updating": "Updating…",
     "reviewUpdates": "Review Updates",
     "reading": "Reading files…",
-    "removeDescription": "{{file}} will be deleted from the instance."
+    "removeDescription": "{{file}} will be deleted from the instance.",
+    "identifySources": "Identify Sources",
+    "identifying": "Identifying…",
+    "identified": "Sources found: {{identified}}. Not found: {{unknown}}.",
+    "unknownSource": "Unknown source"
   },
   "worlds": {
     "count_one": "{{count}} world",

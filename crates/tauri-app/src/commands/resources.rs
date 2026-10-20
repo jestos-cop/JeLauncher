@@ -19,11 +19,17 @@ pub async fn list_resources(
     kind: ResourceKind,
 ) -> CommandResult<Vec<ResourceFile>> {
     let dir = resource_dir(&state, &instance_id, kind)?;
+    let tracks = super::modplatform::tracks_sources(&state)?;
     // Opening every archive is blocking file I/O.
-    tauri::async_runtime::spawn_blocking(move || resources::list_resources(&dir, kind))
-        .await
-        .map_err(|err| CommandError::new(err.to_string()))?
-        .map_err(Into::into)
+    tauri::async_runtime::spawn_blocking(move || {
+        let mut files = resources::list_resources(&dir, kind)?;
+        if tracks {
+            resources::attach_sources(&dir, kind, &mut files)?;
+        }
+        Ok(files)
+    })
+    .await
+    .map_err(|err| CommandError::new(err.to_string()))?
 }
 
 #[tauri::command]
@@ -47,10 +53,9 @@ pub fn remove_resource(
     kind: ResourceKind,
     file_name: String,
 ) -> CommandResult<()> {
-    Ok(resources::remove_resource(
-        &resource_dir(&state, &instance_id, kind)?,
-        &file_name,
-    )?)
+    let dir = resource_dir(&state, &instance_id, kind)?;
+    resources::remove_resource(&dir, &file_name)?;
+    Ok(resources::remove_source(&dir, kind, &file_name)?)
 }
 
 /// Writes the instance's enabled mods as a list in `format` to `output`.

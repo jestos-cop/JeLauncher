@@ -21,7 +21,8 @@
     "file": "Файл",
     "mode": "Режим",
     "lastPlayed": "Остання гра",
-    "seed": "Сід"
+    "seed": "Сід",
+    "source": "Джерело"
   },
   "item": {
     "enable": "Увімкнути {{name}}",
@@ -101,7 +102,11 @@
     "updating": "Оновлення…",
     "reviewUpdates": "Переглянути оновлення",
     "reading": "Читання файлів…",
-    "removeDescription": "{{file}} буде видалено зі збірки."
+    "removeDescription": "{{file}} буде видалено зі збірки.",
+    "identifySources": "Визначити джерела",
+    "identifying": "Визначення…",
+    "identified": "Знайдено джерел: {{identified}}. Не знайдено: {{unknown}}.",
+    "unknownSource": "Джерело невідоме"
   },
   "worlds": {
     "count_one": "{{count}} світ",

@@ -43,7 +43,10 @@
     "modrinthFallbackHint": "Gdy autor na CurseForge blokuje pobieranie poza stroną, ten sam plik jest pobierany z Modrinth, jeśli tam jest.",
     "technicClientId": "Identyfikator klienta Technic",
     "technicClientIdHint": "Potrzebny tylko do dostępu do prywatnych paczek.",
-    "apisRestartHint": "Zmiany zostaną zastosowane po ponownym uruchomieniu launchera."
+    "apisRestartHint": "Zmiany zostaną zastosowane po ponownym uruchomieniu launchera.",
+    "resources": "Mody i paczki",
+    "trackSources": "Śledź źródła",
+    "trackSourcesHint": "Zapamiętuje, z którego projektu na Modrinth lub CurseForge pochodzą zainstalowane mody i paczki. Potrzebne do kolumny Źródło i aktualizacji."
   },
   "java": {
     "installation": "Instalacja Java",

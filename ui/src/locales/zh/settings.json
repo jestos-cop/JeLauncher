@@ -43,7 +43,10 @@
     "modrinthFallbackHint": "当 CurseForge 作者禁止在网站外下载时，如果 Modrinth 上有相同文件，则从 Modrinth 下载。",
     "technicClientId": "Technic 客户端 ID",
     "technicClientIdHint": "仅在访问私有整合包时需要。",
-    "apisRestartHint": "此处的更改将在重启启动器后生效。"
+    "apisRestartHint": "此处的更改将在重启启动器后生效。",
+    "resources": "模组与资源包",
+    "trackSources": "记录来源",
+    "trackSourcesHint": "记住已安装的模组和资源包来自 Modrinth 或 CurseForge 上的哪个项目。“来源”列和更新功能需要此项。"
   },
   "java": {
     "installation": "Java 安装",

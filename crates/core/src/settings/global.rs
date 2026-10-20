@@ -136,6 +136,8 @@ pub struct LauncherSettings {
     pub record_game_time: bool,
     /// Set once the first-run setup has been finished or skipped.
     pub setup_completed: bool,
+    /// Remembers which platform project installed mods and packs came from.
+    pub track_resource_sources: bool,
 }
 
 impl Default for LauncherSettings {
@@ -146,6 +148,7 @@ impl Default for LauncherSettings {
             auto_close_console: false,
             record_game_time: true,
             setup_completed: false,
+            track_resource_sources: true,
         }
     }
 }

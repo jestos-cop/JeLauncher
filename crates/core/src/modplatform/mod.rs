@@ -3,6 +3,7 @@ pub mod curseforge;
 pub mod ftb;
 pub mod modrinth;
 mod platforms;
+mod sources;
 pub mod technic;
 
 use serde::{Deserialize, Serialize};
@@ -11,6 +12,7 @@ use crate::minecraft::LoaderKind;
 use std::path::Path;
 
 pub use platforms::{ModPlatforms, PlatformConfig};
+pub use sources::{IdentifyReport, InstalledFile};
 
 use crate::net::{Download, HttpClient};
 pub use crate::resources::ResourceKind;
@@ -91,7 +93,7 @@ pub struct ProjectHit {
     pub downloads: u64,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, specta::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub enum ReleaseType {
     Release,
@@ -168,6 +170,8 @@ pub struct InstallTarget<'a> {
     pub kind: ResourceKind,
     pub game_version: &'a str,
     pub loader: Option<LoaderKind>,
+    /// Records where installed files came from.
+    pub track_sources: bool,
 }
 
 /// Downloads the version's primary file into `dir` and returns the file name.

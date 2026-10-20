@@ -43,7 +43,10 @@
     "modrinthFallbackHint": "Si un auteur CurseForge bloque les téléchargements hors de son site, le même fichier est récupéré sur Modrinth s’il y est publié.",
     "technicClientId": "ID client Technic",
     "technicClientIdHint": "Utile uniquement pour accéder aux packs privés.",
-    "apisRestartHint": "Les modifications s’appliquent après le redémarrage du launcher."
+    "apisRestartHint": "Les modifications s’appliquent après le redémarrage du launcher.",
+    "resources": "Mods et packs",
+    "trackSources": "Suivre les sources",
+    "trackSourcesHint": "Mémorise de quel projet Modrinth ou CurseForge proviennent les mods et packs installés. Nécessaire pour la colonne Source et les mises à jour."
   },
   "java": {
     "installation": "Installation Java",

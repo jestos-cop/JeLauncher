@@ -21,7 +21,8 @@
     "file": "ファイル",
     "mode": "モード",
     "lastPlayed": "最終プレイ",
-    "seed": "シード値"
+    "seed": "シード値",
+    "source": "入手元"
   },
   "item": {
     "enable": "{{name}} を有効化",
@@ -98,7 +99,11 @@
     "updating": "アップデート中…",
     "reviewUpdates": "アップデートを確認",
     "reading": "ファイルを読み込み中…",
-    "removeDescription": "{{file}} はインスタンスから削除されます。"
+    "removeDescription": "{{file}} はインスタンスから削除されます。",
+    "identifySources": "入手元を特定",
+    "identifying": "特定中…",
+    "identified": "入手元が見つかりました: {{identified}}。見つかりません: {{unknown}}。",
+    "unknownSource": "入手元不明"
   },
   "worlds": {
     "count_other": "{{count}} 個のワールド",

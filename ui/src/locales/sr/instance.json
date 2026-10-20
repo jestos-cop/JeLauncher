@@ -21,7 +21,8 @@
     "file": "Датотека",
     "mode": "Режим",
     "lastPlayed": "Последње играно",
-    "seed": "Семе"
+    "seed": "Семе",
+    "source": "Извор"
   },
   "item": {
     "enable": "Укључи {{name}}",
@@ -100,7 +101,11 @@
     "updating": "Ажурирање…",
     "reviewUpdates": "Прегледај ажурирања",
     "reading": "Читање датотека…",
-    "removeDescription": "{{file}} ће бити обрисана из инстанце."
+    "removeDescription": "{{file}} ће бити обрисана из инстанце.",
+    "identifySources": "Препознај изворе",
+    "identifying": "Препознавање…",
+    "identified": "Пронађено извора: {{identified}}. Није пронађено: {{unknown}}.",
+    "unknownSource": "Непознат извор"
   },
   "worlds": {
     "count_one": "{{count}} свет",

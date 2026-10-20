@@ -57,6 +57,8 @@ pub struct ModpackTarget<'a> {
     pub allow_untrusted_hosts: bool,
     /// Optional mods the user picked, for platforms that offer them; `None` keeps the defaults.
     pub optional_mods: Option<Vec<String>>,
+    /// Records where the installed mods and packs came from.
+    pub track_sources: bool,
 }
 
 /// A newly created pack instance plus the files the user still has to download by hand.

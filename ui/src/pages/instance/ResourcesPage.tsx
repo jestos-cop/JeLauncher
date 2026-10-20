@@ -1,22 +1,26 @@
-import { ArrowUpCircle, Download, FolderOpen, RefreshCw, Trash2 } from 'lucide-react'
+import { ArrowUpCircle, Download, FolderOpen, RefreshCw, ScanSearch, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { InstanceSummary, ResourceFile, ResourceKind } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { ModListExportMenu } from '@/components/ModListExportMenu'
+import { SourceBadge } from '@/components/SourceBadge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { ResourceDownloadDialog } from '@/dialogs/ResourceDownloadDialog'
 import { ResourceUpdateDialog } from '@/dialogs/ResourceUpdateDialog'
 import { openInstanceFolder } from '@/hooks/use-instance-actions'
+import { useSettings } from '@/hooks/use-settings'
 import {
   useRemoveResource,
   useResources,
   useResourceUpdates,
+  useIdentifySources,
   useSetResourceEnabled,
   useUpdateResources,
 } from '@/hooks/use-resources'
+import { PROVIDER_NAMES } from '@/lib/providers'
 import { cn } from '@/lib/utils'
 
 interface ResourcesPageProps {
@@ -35,6 +39,9 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
   const [checkUpdates, setCheckUpdates] = useState(false)
   const [isReviewing, setIsReviewing] = useState(false)
   const updates = useResourceUpdates(instance.id, kind, checkUpdates)
+  const identify = useIdentifySources(instance.id, kind)
+  const { data: settings } = useSettings()
+  const tracksSources = settings?.launcher.trackResourceSources ?? true
   const applyUpdates = useUpdateResources(instance.id, kind)
   const updateFor = (file: ResourceFile) => updates.data?.find((update) => update.fileName === file.fileName)
 
@@ -42,7 +49,9 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
     const query = search.trim().toLowerCase()
     return files.filter(
       (file) =>
-        displayName(file).toLowerCase().includes(query) || file.fileName.toLowerCase().includes(query),
+        displayName(file).toLowerCase().includes(query) ||
+        file.fileName.toLowerCase().includes(query) ||
+        (file.source !== null && PROVIDER_NAMES[file.source.provider].toLowerCase().includes(query)),
     )
   }, [files, search])
 
@@ -73,6 +82,17 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
           >
             <ArrowUpCircle /> {updates.isFetching ? t('resources.checking') : t('resources.checkUpdates')}
           </Button>
+          {tracksSources && (
+            <Button
+              size="sm"
+              variant="ghost"
+              disabled={identify.isPending}
+              onClick={() => identify.mutate(undefined)}
+            >
+              <ScanSearch />{' '}
+              {identify.isPending ? t('resources.identifying') : t('resources.identifySources')}
+            </Button>
+          )}
           <Button size="sm" variant="ghost" onClick={() => refetch()}>
             <RefreshCw /> {t('common:action.refresh')}
           </Button>
@@ -85,6 +105,10 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
 
       {error && <p className="text-sm text-destructive">{error.message}</p>}
       {setEnabled.error && <p className="text-sm text-destructive">{setEnabled.error.message}</p>}
+      {identify.error && <p className="text-sm text-destructive">{identify.error.message}</p>}
+      {identify.data && (
+        <p className="text-sm text-muted-foreground">{t('resources.identified', identify.data)}</p>
+      )}
       {(updates.error ?? applyUpdates.error) && (
         <p className="text-sm text-destructive">{(updates.error ?? applyUpdates.error)?.message}</p>
       )}
@@ -113,6 +137,7 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
               <th className="w-10 p-2" />
               <th className="p-2 font-medium">{t('columns.name')}</th>
               <th className="p-2 font-medium">{t('columns.version')}</th>
+              {tracksSources && <th className="p-2 font-medium">{t('columns.source')}</th>}
               <th className="p-2 font-medium">
                 {kind === 'mod' ? t('columns.authors') : t('columns.description')}
               </th>
@@ -157,6 +182,11 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
                     </button>
                   )}
                 </td>
+                {tracksSources && (
+                  <td className="p-2">
+                    <SourceBadge source={file.source} />
+                  </td>
+                )}
                 <td className="p-2">
                   {kind === 'mod' ? file.metadata?.authors.join(', ') : file.metadata?.description}
                 </td>

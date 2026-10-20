@@ -6,7 +6,7 @@ use super::ftb::Ftb;
 use super::modrinth::Modrinth;
 use super::technic::Technic;
 use super::{
-    InstallTarget, ProjectVersion, Provider, ResourceKind, SearchPage, SearchQuery,
+    InstallTarget, InstalledFile, ProjectVersion, Provider, ResourceKind, SearchPage, SearchQuery,
     download_version,
 };
 use crate::minecraft::LoaderKind;
@@ -56,8 +56,26 @@ impl ModPlatforms {
         &self.http
     }
 
-    /// Downloads a modpack version and installs it as a new instance.
+    /// Downloads a modpack version and installs it as a new instance, recording where its
+    /// files came from when the target asks for it.
     pub async fn install_modpack(
+        &self,
+        provider: Provider,
+        project_id: &str,
+        version_id: &str,
+        target: &ModpackTarget<'_>,
+        on_progress: impl Fn(DownloadProgress),
+    ) -> Result<PackInstall> {
+        let installed = self
+            .install_pack_files(provider, project_id, version_id, target, on_progress)
+            .await?;
+        if target.track_sources {
+            self.identify_pack_sources(&installed.instance).await;
+        }
+        Ok(installed)
+    }
+
+    async fn install_pack_files(
         &self,
         provider: Provider,
         project_id: &str,
@@ -196,8 +214,17 @@ impl ModPlatforms {
         let mut seen = HashSet::from([version.project_id.clone()]);
         let mut queue = VecDeque::from([version]);
         let mut installed = Vec::new();
+        let mut recorded = Vec::new();
         while let Some(version) = queue.pop_front() {
-            installed.push(download_version(&self.http, &version, target.dir).await?);
+            let file_name = download_version(&self.http, &version, target.dir).await?;
+            if let Some(file) = version.primary_file() {
+                recorded.push(InstalledFile {
+                    file_name: file_name.clone(),
+                    file: file.clone(),
+                    version: version.clone(),
+                });
+            }
+            installed.push(file_name);
             for dependency in version.dependencies.iter().filter(|dep| dep.required) {
                 let Some(project_id) = &dependency.project_id else {
                     continue;
@@ -211,6 +238,10 @@ impl ModPlatforms {
                 };
                 queue.push_back(resolved);
             }
+        }
+        if target.track_sources {
+            self.record_sources(target.dir, target.kind, provider, &recorded, false)
+                .await?;
         }
         Ok(installed)
     }

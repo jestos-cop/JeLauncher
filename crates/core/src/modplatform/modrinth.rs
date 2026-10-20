@@ -12,7 +12,7 @@ use crate::instance::Instance;
 use crate::minecraft::LoaderKind;
 use crate::modpack::{ModpackTarget, PackSource, install_mrpack, update_mrpack};
 use crate::net::{DownloadProgress, HttpClient, sha1_of};
-use crate::resources::{DISABLED_SUFFIX, list_resources, set_resource_enabled};
+use crate::resources::{DISABLED_SUFFIX, ProjectInfo, list_resources, set_resource_enabled};
 use crate::{Error, Result};
 
 const API: &str = "https://api.modrinth.com/v2";
@@ -102,6 +102,28 @@ impl Modrinth {
             .get(&format!("{API}/version/{version_id}"), &[])
             .await?;
         version.try_into()
+    }
+
+    /// Slugs and names of several projects at once, keyed by project id.
+    pub async fn projects(&self, ids: &[String]) -> Result<HashMap<String, ProjectInfo>> {
+        if ids.is_empty() {
+            return Ok(HashMap::new());
+        }
+        let ids = serde_json::to_string(ids)
+            .map_err(|err| Error::InvalidInput(format!("cannot encode project ids: {err}")))?;
+        let projects: Vec<ApiProject> = self
+            .get(&format!("{API}/projects"), &[("ids", ids)])
+            .await?;
+        Ok(projects
+            .into_iter()
+            .map(|project| {
+                let info = ProjectInfo {
+                    slug: project.slug,
+                    name: project.title,
+                };
+                (project.id, info)
+            })
+            .collect())
     }
 
     /// Looks up the published versions that contain files with the given SHA-1 hashes.
@@ -417,6 +439,13 @@ impl TryFrom<ApiVersion> for ProjectVersion {
                 .collect(),
         })
     }
+}
+
+#[derive(Deserialize)]
+struct ApiProject {
+    id: String,
+    slug: String,
+    title: String,
 }
 
 #[cfg(test)]

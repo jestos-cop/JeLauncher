@@ -21,7 +21,8 @@
     "file": "文件",
     "mode": "模式",
     "lastPlayed": "上次游玩",
-    "seed": "种子"
+    "seed": "种子",
+    "source": "来源"
   },
   "item": {
     "enable": "启用 {{name}}",
@@ -98,7 +99,11 @@
     "updating": "正在更新…",
     "reviewUpdates": "查看更新",
     "reading": "正在读取文件…",
-    "removeDescription": "{{file}} 将从实例中删除。"
+    "removeDescription": "{{file}} 将从实例中删除。",
+    "identifySources": "识别来源",
+    "identifying": "正在识别…",
+    "identified": "已找到来源：{{identified}}。未找到：{{unknown}}。",
+    "unknownSource": "来源未知"
   },
   "worlds": {
     "count_other": "{{count}} 个世界",

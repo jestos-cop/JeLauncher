@@ -81,6 +81,7 @@ async fn installs_required_dependencies() -> jelauncher_core::Result<()> {
         kind: ResourceKind::Mod,
         game_version,
         loader: Some(LoaderKind::Fabric),
+        track_sources: false,
     };
     let platforms = ModPlatforms::new(
         HttpClient::new(&NetworkSettings::default())?,
@@ -129,6 +130,7 @@ async fn installs_a_modpack_as_new_instance() -> jelauncher_core::Result<()> {
         concurrency: 8,
         allow_untrusted_hosts: false,
         optional_mods: None,
+        track_sources: false,
     };
     let instance = modrinth.install_modpack(&pack.id, &target, |_| {}).await?;
 
@@ -182,6 +184,7 @@ async fn imports_a_modpack_from_its_url() -> jelauncher_core::Result<()> {
         concurrency: 8,
         allow_untrusted_hosts: false,
         optional_mods: None,
+        track_sources: false,
     };
     let platforms =
         jelauncher_core::modplatform::ModPlatforms::new(http.clone(), Default::default());
@@ -228,6 +231,7 @@ async fn exported_modpack_references_modrinth_files_and_reimports() -> jelaunche
         concurrency: 8,
         allow_untrusted_hosts: false,
         optional_mods: None,
+        track_sources: false,
     };
     let original = modrinth.install_modpack(&pack.id, &target, |_| {}).await?;
     let original_mods =
@@ -298,6 +302,7 @@ async fn updates_a_modpack_to_another_version() -> jelauncher_core::Result<()> {
         concurrency: 8,
         allow_untrusted_hosts: false,
         optional_mods: None,
+        track_sources: false,
     };
     let mut instance = modrinth.install_modpack(&older.id, &target, |_| {}).await?;
     let saves = instance.saves_dir().join("My World");
@@ -353,6 +358,7 @@ async fn finds_and_applies_mod_updates() -> jelauncher_core::Result<()> {
         kind: ResourceKind::Mod,
         game_version: "1.21.4",
         loader: Some(LoaderKind::Fabric),
+        track_sources: false,
     };
 
     let updates = modrinth.check_updates(&target).await?;

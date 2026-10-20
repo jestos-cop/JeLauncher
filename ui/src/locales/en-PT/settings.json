@@ -43,7 +43,10 @@
     "modrinthFallbackHint": "When a CurseForge captain blockades their harbour, the same cargo be fetched from Modrinth if it's moored there.",
     "technicClientId": "Technic's ship papers",
     "technicClientIdHint": "Only needed fer secret fleets.",
-    "apisRestartHint": "These orders take hold once ye drop anchor an' set sail again."
+    "apisRestartHint": "These orders take hold once ye drop anchor an' set sail again.",
+    "resources": "Trinkets an' cargo",
+    "trackSources": "Log every port of origin",
+    "trackSourcesHint": "Remembers which Modrinth or CurseForge harbour each trinket sailed from. Needed fer the origin column an' fresh cargo."
   },
   "java": {
     "installation": "Java installation",

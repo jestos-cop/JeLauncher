@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { commands, type ResourceKind, type ResourceUpdate } from '@/bindings'
+import { commands, type IdentifyReport, type ResourceKind, type ResourceUpdate } from '@/bindings'
 import { unwrap } from '@/lib/command'
 
 export const resourcesKey = (instanceId: string, kind: ResourceKind) => ['resources', instanceId, kind]
@@ -11,10 +11,10 @@ export function useResources(instanceId: string, kind: ResourceKind) {
   })
 }
 
-function useResourceMutation<T>(
+function useResourceMutation<T, R>(
   instanceId: string,
   kind: ResourceKind,
-  mutationFn: (input: T) => Promise<unknown>,
+  mutationFn: (input: T) => Promise<R>,
 ) {
   const queryClient = useQueryClient()
   return useMutation({
@@ -40,14 +40,26 @@ export function useRemoveResource(instanceId: string, kind: ResourceKind) {
 
 const updatesKey = (instanceId: string, kind: ResourceKind) => ['resource-updates', instanceId, kind]
 
-/** Update check on demand: nothing is fetched until `enabled` becomes true. */
+/** Update check on demand: nothing is fetched until `enabled` becomes true. The check also
+ * identifies sources, so the file list is refreshed afterwards. */
 export function useResourceUpdates(instanceId: string, kind: ResourceKind, enabled: boolean) {
+  const queryClient = useQueryClient()
   return useQuery({
     queryKey: updatesKey(instanceId, kind),
-    queryFn: () => unwrap(commands.checkResourceUpdates(instanceId, kind)),
+    queryFn: async () => {
+      const updates = await unwrap(commands.checkResourceUpdates(instanceId, kind))
+      void queryClient.invalidateQueries({ queryKey: resourcesKey(instanceId, kind) })
+      return updates
+    },
     enabled,
     staleTime: Infinity,
   })
+}
+
+export function useIdentifySources(instanceId: string, kind: ResourceKind) {
+  return useResourceMutation<void, IdentifyReport>(instanceId, kind, () =>
+    unwrap(commands.identifyResourceSources(instanceId, kind)),
+  )
 }
 
 export function useUpdateResources(instanceId: string, kind: ResourceKind) {

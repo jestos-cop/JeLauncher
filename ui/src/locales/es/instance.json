@@ -21,7 +21,8 @@
     "file": "Archivo",
     "mode": "Modo",
     "lastPlayed": "Última partida",
-    "seed": "Semilla"
+    "seed": "Semilla",
+    "source": "Origen"
   },
   "item": {
     "enable": "Activar {{name}}",
@@ -100,7 +101,11 @@
     "updating": "Actualizando…",
     "reviewUpdates": "Revisar actualizaciones",
     "reading": "Leyendo archivos…",
-    "removeDescription": "{{file}} se eliminará de la instancia."
+    "removeDescription": "{{file}} se eliminará de la instancia.",
+    "identifySources": "Identificar orígenes",
+    "identifying": "Identificando…",
+    "identified": "Orígenes encontrados: {{identified}}. Sin encontrar: {{unknown}}.",
+    "unknownSource": "Origen desconocido"
   },
   "worlds": {
     "count_one": "{{count}} mundo",

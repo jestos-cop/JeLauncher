@@ -21,7 +21,8 @@
     "file": "File",
     "mode": "Mode",
     "lastPlayed": "Last voyage",
-    "seed": "Seed"
+    "seed": "Seed",
+    "source": "Port of origin"
   },
   "item": {
     "enable": "Enable {{name}}",
@@ -99,7 +100,11 @@
     "updating": "Updatin'…",
     "reviewUpdates": "Review Updates",
     "reading": "Readin' files…",
-    "removeDescription": "{{file}} will be tossed overboard from the ship."
+    "removeDescription": "{{file}} will be tossed overboard from the ship.",
+    "identifySources": "Chart the origins",
+    "identifying": "Charting…",
+    "identified": "Origins charted: {{identified}}. Lost at sea: {{unknown}}.",
+    "unknownSource": "Origin unknown"
   },
   "worlds": {
     "count_one": "{{count}} world",

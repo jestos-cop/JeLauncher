@@ -21,7 +21,8 @@
     "file": "Plik",
     "mode": "Tryb",
     "lastPlayed": "Ostatnio grane",
-    "seed": "Ziarno"
+    "seed": "Ziarno",
+    "source": "Źródło"
   },
   "item": {
     "enable": "Włącz {{name}}",
@@ -101,7 +102,11 @@
     "updating": "Aktualizowanie…",
     "reviewUpdates": "Przejrzyj aktualizacje",
     "reading": "Odczytywanie plików…",
-    "removeDescription": "Plik {{file}} zostanie usunięty z instancji."
+    "removeDescription": "Plik {{file}} zostanie usunięty z instancji.",
+    "identifySources": "Rozpoznaj źródła",
+    "identifying": "Rozpoznawanie…",
+    "identified": "Znalezione źródła: {{identified}}. Nieznalezione: {{unknown}}.",
+    "unknownSource": "Nieznane źródło"
   },
   "worlds": {
     "count_one": "{{count}} świat",

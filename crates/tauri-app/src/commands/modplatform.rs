@@ -5,6 +5,7 @@ use jelauncher_core::instance::Instance;
 
 use jelauncher_core::modpack::{self, BlockedFile, ModpackTarget, PackInstall};
 use jelauncher_core::modplatform::atlauncher::OptionalMod;
+use jelauncher_core::modplatform::{IdentifyReport, InstalledFile};
 use jelauncher_core::modplatform::{
     InstallTarget, ProjectVersion, Provider, ResourceKind, ResourceUpdate, SearchPage, SearchQuery,
     SortOrder,
@@ -76,13 +77,15 @@ pub async fn install_project_version(
         .version(provider, &project_id, &version_id)
         .await?;
     let dir = instance.resource_dir(kind);
+    let target = install_target(&instance, &dir, kind, tracks_sources(&state)?);
     Ok(state
         .platforms
-        .install_with_dependencies(provider, version, &install_target(&instance, &dir, kind))
+        .install_with_dependencies(provider, version, &target)
         .await?)
 }
 
-/// Newer Modrinth versions of the installed resources of `kind`.
+/// Newer Modrinth versions of the installed resources of `kind`. Files without a known
+/// source are identified first.
 #[tauri::command]
 #[specta::specta]
 pub async fn check_resource_updates(
@@ -92,10 +95,34 @@ pub async fn check_resource_updates(
 ) -> CommandResult<Vec<ResourceUpdate>> {
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
     let dir = instance.resource_dir(kind);
+    let tracks = tracks_sources(&state)?;
+    if tracks {
+        state.platforms.identify_sources(&dir, kind, false).await?;
+    }
     Ok(state
         .platforms
         .modrinth
-        .check_updates(&install_target(&instance, &dir, kind))
+        .check_updates(&install_target(&instance, &dir, kind, tracks))
+        .await?)
+}
+
+/// Looks up the platform source of every resource of `kind` that has none yet.
+#[tauri::command]
+#[specta::specta]
+pub async fn identify_resource_sources(
+    state: State<'_, AppState>,
+    instance_id: String,
+    kind: ResourceKind,
+) -> CommandResult<IdentifyReport> {
+    if !tracks_sources(&state)? {
+        return Err(CommandError::new(
+            "tracking resource sources is turned off in the settings",
+        ));
+    }
+    let instance = Instance::open(&state.paths.instances(), &instance_id)?;
+    Ok(state
+        .platforms
+        .identify_sources(&instance.resource_dir(kind), kind, false)
         .await?)
 }
 
@@ -111,24 +138,48 @@ pub async fn update_resource(
 ) -> CommandResult<String> {
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
     let version = state.platforms.modrinth.version(&version_id).await?;
-    Ok(state
+    let dir = instance.resource_dir(kind);
+    let new_name = state
         .platforms
         .modrinth
-        .apply_update(&instance.resource_dir(kind), &file_name, &version)
-        .await?)
+        .apply_update(&dir, &file_name, &version)
+        .await?;
+    if let (true, Some(file)) = (tracks_sources(&state)?, version.primary_file()) {
+        let installed = InstalledFile {
+            file_name: new_name.clone(),
+            file: file.clone(),
+            version: version.clone(),
+        };
+        state
+            .platforms
+            .record_sources(&dir, kind, Provider::Modrinth, &[installed], false)
+            .await?;
+    }
+    Ok(new_name)
 }
 
 fn install_target<'a>(
     instance: &'a Instance,
     dir: &'a Path,
     kind: ResourceKind,
+    track_sources: bool,
 ) -> InstallTarget<'a> {
     InstallTarget {
         dir,
         kind,
         game_version: &instance.config.minecraft_version,
         loader: instance.config.loader.as_ref().map(|loader| loader.kind),
+        track_sources,
     }
+}
+
+pub(crate) fn tracks_sources(state: &AppState) -> CommandResult<bool> {
+    Ok(state
+        .settings
+        .read()
+        .map_err(|_| CommandError::poisoned())?
+        .launcher
+        .track_resource_sources)
 }
 
 /// A created instance and the pack files the user still has to download by hand.
@@ -303,6 +354,9 @@ pub async fn update_modpack(
             },
         )
         .await?;
+    if tracks_sources(&state)? {
+        state.platforms.identify_pack_sources(&instance).await;
+    }
     Ok(())
 }
 
@@ -319,6 +373,7 @@ fn modpack_target<'a>(
         concurrency: concurrent_downloads(state)?,
         allow_untrusted_hosts: options.allow_untrusted_hosts,
         optional_mods: options.optional_mods,
+        track_sources: tracks_sources(state)?,
     })
 }
 

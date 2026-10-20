@@ -434,11 +434,23 @@ async updateModpack(instanceId: string, versionId: string) : Promise<Result<null
 }
 },
 /**
- * Newer Modrinth versions of the installed resources of `kind`.
+ * Newer Modrinth versions of the installed resources of `kind`. Files without a known
+ * source are identified first.
  */
 async checkResourceUpdates(instanceId: string, kind: ResourceKind) : Promise<Result<ResourceUpdate[], CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("check_resource_updates", { instanceId, kind }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Looks up the platform source of every resource of `kind` that has none yet.
+ */
+async identifyResourceSources(instanceId: string, kind: ResourceKind) : Promise<Result<IdentifyReport, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("identify_resource_sources", { instanceId, kind }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -831,6 +843,10 @@ export type ExportEntry = { path: string; isDir: boolean; blocked: boolean }
 export type GameMode = "survival" | "creative" | "adventure" | "spectator" | "unknown"
 export type GlobalSettings = { java: JavaSettings; window: WindowSettings; launcher: LauncherSettings; network: NetworkSettings; commands: CommandSettings; appearance: AppearanceSettings; apis: ApiSettings; tools: ToolSettings }
 /**
+ * How many files without a source a lookup found and how many stay unknown.
+ */
+export type IdentifyReport = { identified: number; unknown: number }
+/**
  * A created instance and the pack files the user still has to download by hand.
  */
 export type InstalledPack = { instanceId: string; blocked: BlockedFile[] }
@@ -869,7 +885,11 @@ export type LauncherSettings = { showConsole: boolean; showConsoleOnError: boole
 /**
  * Set once the first-run setup has been finished or skipped.
  */
-setupCompleted: boolean }
+setupCompleted: boolean; 
+/**
+ * Remembers which platform project installed mods and packs came from.
+ */
+trackResourceSources: boolean }
 export type LoaderKind = "fabric" | "quilt" | "forge" | "neoforge"
 export type LoaderSpec = { kind: LoaderKind; version: string }
 export type LoaderVersion = { version: string; stable: boolean }
@@ -942,10 +962,30 @@ export type ResourceFile = { fileName: string; enabled: boolean; size: number;
 /**
  * Unix time in milliseconds.
  */
-modified: number; metadata: ResourceMetadata | null }
+modified: number; metadata: ResourceMetadata | null; 
+/**
+ * The platform project the file was installed from, when known.
+ */
+source: ResourceSource | null }
 export type ResourceKind = "mod" | "resourcePack" | "shaderPack" | "dataPack" | "modpack"
 export type ResourceMetadata = { id: string; name: string; version: string; description: string; authors: string[]; homepage: string | null }
 export type ResourcePackPolicy = "prompt" | "enabled" | "disabled"
+/**
+ * The platform project and version an installed resource file was downloaded from.
+ */
+export type ResourceSource = { provider: Provider; projectId: string; 
+/**
+ * Modrinth version id or CurseForge file id.
+ */
+versionId: string; slug: string; name: string; 
+/**
+ * The file name without the `.disabled` suffix.
+ */
+fileName: string; versionNumber: string | null; releaseType: ReleaseType | null; 
+/**
+ * Kept as it is: updates are left to the modpack the file came with.
+ */
+lockUpdate: boolean }
 /**
  * A newer published version of an installed resource file.
  */

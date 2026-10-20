@@ -21,7 +21,8 @@
     "file": "Arquivo",
     "mode": "Modo",
     "lastPlayed": "Jogado por último",
-    "seed": "Seed"
+    "seed": "Seed",
+    "source": "Origem"
   },
   "item": {
     "enable": "Ativar {{name}}",
@@ -100,7 +101,11 @@
     "updating": "Atualizando…",
     "reviewUpdates": "Revisar atualizações",
     "reading": "Lendo arquivos…",
-    "removeDescription": "{{file}} será excluído da instância."
+    "removeDescription": "{{file}} será excluído da instância.",
+    "identifySources": "Identificar origens",
+    "identifying": "Identificando…",
+    "identified": "Origens encontradas: {{identified}}. Não encontradas: {{unknown}}.",
+    "unknownSource": "Origem desconhecida"
   },
   "worlds": {
     "count_one": "{{count}} mundo",

@@ -43,7 +43,10 @@
     "modrinthFallbackHint": "CurseForge の作者がサイト外でのダウンロードをブロックしている場合、同じファイルが Modrinth にあればそこから取得します。",
     "technicClientId": "Technic クライアント ID",
     "technicClientIdHint": "非公開の Modpack にアクセスする場合にのみ必要です。",
-    "apisRestartHint": "ここでの変更はランチャーの再起動後に反映されます。"
+    "apisRestartHint": "ここでの変更はランチャーの再起動後に反映されます。",
+    "resources": "Mod とパック",
+    "trackSources": "入手元を記録",
+    "trackSourcesHint": "インストールした Mod やパックがどの Modrinth / CurseForge プロジェクトから来たかを記録します。入手元列と更新に必要です。"
   },
   "java": {
     "installation": "Java のインストール",

@@ -1,6 +1,7 @@
 mod mod_list;
 mod mod_metadata;
 mod pack_metadata;
+mod sources;
 
 use std::path::Path;
 use std::time::UNIX_EPOCH;
@@ -10,6 +11,10 @@ use serde::{Deserialize, Serialize};
 pub use mod_list::{ModListFormat, format_mod_list};
 pub use mod_metadata::read_mod_metadata;
 pub use pack_metadata::read_pack_metadata;
+pub use sources::{
+    ProjectInfo, ResourceSource, attach_sources, index_dir, is_source_entry, read_sources,
+    remove_source, set_update_lock, write_source,
+};
 
 use crate::fs::child_path;
 use crate::{Error, Result};
@@ -64,6 +69,8 @@ pub struct ResourceFile {
     /// Unix time in milliseconds.
     pub modified: i64,
     pub metadata: Option<ResourceMetadata>,
+    /// The platform project the file was installed from, when known.
+    pub source: Option<ResourceSource>,
 }
 
 /// Lists installed resources of `kind` in `dir`, including disabled ones.
@@ -83,6 +90,9 @@ pub fn list_resources(dir: &Path, kind: ResourceKind) -> Result<Vec<ResourceFile
 
 fn resource_file(path: &Path, kind: ResourceKind) -> Option<ResourceFile> {
     let file_name = path.file_name()?.to_str()?.to_owned();
+    if file_name.starts_with('.') || is_source_entry(&file_name) {
+        return None;
+    }
     let base = file_name
         .strip_suffix(DISABLED_SUFFIX)
         .unwrap_or(&file_name);
@@ -107,6 +117,7 @@ fn resource_file(path: &Path, kind: ResourceKind) -> Option<ResourceFile> {
         size: if is_folder { 0 } else { fs_metadata.len() },
         modified,
         metadata,
+        source: None,
         file_name,
     })
 }

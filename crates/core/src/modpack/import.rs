@@ -77,19 +77,24 @@ async fn import_archive(
     target: &ModpackTarget<'_>,
     on_progress: impl Fn(DownloadProgress),
 ) -> Result<PackInstall> {
-    match detect_archive(archive_path)? {
+    let installed = match detect_archive(archive_path)? {
         ArchiveKind::Mrpack => {
             install_mrpack(platforms.http(), archive_path, target, None, on_progress)
                 .await
-                .map(PackInstall::complete)
+                .map(PackInstall::complete)?
         }
         ArchiveKind::CurseForge => {
-            install_curseforge_pack(platforms, archive_path, target, None, on_progress).await
+            install_curseforge_pack(platforms, archive_path, target, None, on_progress).await?
         }
+        // Exported instances carry their sources with them.
         ArchiveKind::Native { config_entry } => {
-            import_native(archive_path, &config_entry, target).map(PackInstall::complete)
+            return import_native(archive_path, &config_entry, target).map(PackInstall::complete);
         }
+    };
+    if target.track_sources {
+        platforms.identify_pack_sources(&installed.instance).await;
     }
+    Ok(installed)
 }
 
 fn import_native(
@@ -201,6 +206,7 @@ mod tests {
             concurrency: 1,
             allow_untrusted_hosts: false,
             optional_mods: None,
+            track_sources: false,
         };
         let platforms = ModPlatforms::new(
             crate::net::HttpClient::new(&crate::settings::NetworkSettings::default())?,

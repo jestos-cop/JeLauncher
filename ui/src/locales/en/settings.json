@@ -43,7 +43,10 @@
     "modrinthFallbackHint": "When a CurseForge author blocks downloads outside their website, the same file is fetched from Modrinth if it is published there.",
     "technicClientId": "Technic client ID",
     "technicClientIdHint": "Only needed to access private packs.",
-    "apisRestartHint": "Changes here apply after restarting the launcher."
+    "apisRestartHint": "Changes here apply after restarting the launcher.",
+    "resources": "Mods and packs",
+    "trackSources": "Keep track of sources",
+    "trackSourcesHint": "Remembers which Modrinth or CurseForge project installed mods and packs came from. Needed for the Source column and updates."
   },
   "java": {
     "installation": "Java installation",

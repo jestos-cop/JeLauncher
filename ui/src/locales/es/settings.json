@@ -43,7 +43,10 @@
     "modrinthFallbackHint": "Si un autor de CurseForge bloquea las descargas fuera de su web, el mismo archivo se descarga de Modrinth cuando está publicado allí.",
     "technicClientId": "ID de cliente de Technic",
     "technicClientIdHint": "Solo hace falta para acceder a packs privados.",
-    "apisRestartHint": "Los cambios aquí se aplican al reiniciar el launcher."
+    "apisRestartHint": "Los cambios aquí se aplican al reiniciar el launcher.",
+    "resources": "Mods y paquetes",
+    "trackSources": "Registrar los orígenes",
+    "trackSourcesHint": "Recuerda de qué proyecto de Modrinth o CurseForge vienen los mods y paquetes instalados. Necesario para la columna Origen y las actualizaciones."
   },
   "java": {
     "installation": "Instalación de Java",

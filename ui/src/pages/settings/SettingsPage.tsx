@@ -124,6 +124,14 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
               />
             </Field>
           </SettingsSection>
+          <SettingsSection title={t('launcher.resources')}>
+            <Field label={t('launcher.trackSources')} hint={t('launcher.trackSourcesHint')}>
+              <Checkbox
+                checked={draft.launcher.trackResourceSources}
+                onCheckedChange={(checked) => setLauncher({ trackResourceSources: checked === true })}
+              />
+            </Field>
+          </SettingsSection>
           <SettingsSection title={t('launcher.network')}>
             <Field label={t('launcher.concurrentDownloads')}>
               <NumberInput

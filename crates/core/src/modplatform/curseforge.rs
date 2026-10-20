@@ -156,6 +156,7 @@ impl CurseForge {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CurseProject {
     pub id: String,
+    pub slug: String,
     pub name: String,
     pub website_url: String,
     /// Where files of this project go inside the game directory.
@@ -166,6 +167,8 @@ pub struct CurseProject {
 #[serde(rename_all = "camelCase")]
 struct ApiProject {
     id: u64,
+    #[serde(default)]
+    slug: String,
     name: String,
     class_id: Option<u32>,
     links: ApiLinks,
@@ -187,6 +190,7 @@ impl From<ApiProject> for CurseProject {
         };
         Self {
             id: project.id.to_string(),
+            slug: project.slug,
             name: project.name,
             website_url: project.links.website_url,
             install_dir: kind.install_dir(),

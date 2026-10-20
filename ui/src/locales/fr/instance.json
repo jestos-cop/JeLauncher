@@ -21,7 +21,8 @@
     "file": "Fichier",
     "mode": "Mode",
     "lastPlayed": "Dernière partie",
-    "seed": "Graine"
+    "seed": "Graine",
+    "source": "Source"
   },
   "item": {
     "enable": "Activer {{name}}",
@@ -100,7 +101,11 @@
     "updating": "Mise à jour…",
     "reviewUpdates": "Examiner les mises à jour",
     "reading": "Lecture des fichiers…",
-    "removeDescription": "{{file}} sera supprimé de l'instance."
+    "removeDescription": "{{file}} sera supprimé de l'instance.",
+    "identifySources": "Identifier les sources",
+    "identifying": "Identification…",
+    "identified": "Sources trouvées : {{identified}}. Introuvables : {{unknown}}.",
+    "unknownSource": "Source inconnue"
   },
   "worlds": {
     "count_one": "{{count}} monde",

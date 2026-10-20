@@ -21,7 +21,8 @@
     "file": "Файл",
     "mode": "Режим",
     "lastPlayed": "Последняя игра",
-    "seed": "Сид"
+    "seed": "Сид",
+    "source": "Источник"
   },
   "item": {
     "enable": "Включить {{name}}",
@@ -101,7 +102,11 @@
     "updating": "Обновление…",
     "reviewUpdates": "Просмотреть обновления",
     "reading": "Чтение файлов…",
-    "removeDescription": "{{file}} будет удалён из сборки."
+    "removeDescription": "{{file}} будет удалён из сборки.",
+    "identifySources": "Определить источники",
+    "identifying": "Определение…",
+    "identified": "Найдено источников: {{identified}}. Не найдено: {{unknown}}.",
+    "unknownSource": "Источник неизвестен"
   },
   "worlds": {
     "count_one": "{{count}} мир",

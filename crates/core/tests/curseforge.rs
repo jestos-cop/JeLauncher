@@ -58,6 +58,7 @@ async fn searches_and_installs_a_mod_with_dependencies() -> jelauncher_core::Res
         kind: ResourceKind::Mod,
         game_version,
         loader: Some(loader),
+        track_sources: false,
     };
     let installed = platforms
         .install_with_dependencies(Provider::CurseForge, latest, &target)
@@ -124,6 +125,7 @@ async fn installs_a_curseforge_modpack() -> jelauncher_core::Result<()> {
         concurrency: 8,
         allow_untrusted_hosts: false,
         optional_mods: None,
+        track_sources: false,
     };
     let installed = platforms
         .install_modpack(Provider::CurseForge, &pack.id, &latest.id, &target, |_| {})
@@ -199,6 +201,7 @@ async fn exports_a_pack_that_references_curseforge_files() -> jelauncher_core::R
         kind: ResourceKind::Mod,
         game_version: "1.21.1",
         loader: Some(LoaderKind::NeoForge),
+        track_sources: false,
     };
     let installed = platforms
         .install_with_dependencies(Provider::CurseForge, jei, &target)

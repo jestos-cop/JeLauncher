@@ -43,7 +43,10 @@
     "modrinthFallbackHint": "Если автор на CurseForge запрещает скачивание вне сайта, тот же файл скачивается с Modrinth, если он там есть.",
     "technicClientId": "Client ID для Technic",
     "technicClientIdHint": "Нужен только для доступа к приватным пакам.",
-    "apisRestartHint": "Изменения здесь применятся после перезапуска лаунчера."
+    "apisRestartHint": "Изменения здесь применятся после перезапуска лаунчера.",
+    "resources": "Моды и паки",
+    "trackSources": "Отслеживать источники",
+    "trackSourcesHint": "Запоминает, из какого проекта на Modrinth или CurseForge установлены моды и паки. Нужно для колонки «Источник» и обновлений."
   },
   "java": {
     "installation": "Установленная Java",
