@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>JeLauncher (macOS)</title>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g transform="translate(100 100) scale(6.866667)" filter="url(#shadow)">
+    <rect width="120" height="120" rx="27" fill="#5BD16B"/>
+    <path fill="#0F1A12" transform="translate(33 24) scale(0.9)"
+          d="M10 0H60V10H50V70H40V80H10V70H0V60H20V70H30V10H10Z"/>
+    <rect x="92" y="16" width="12" height="12" fill="#0F1A12"/>
+  </g>
+</svg>

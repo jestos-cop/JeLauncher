@@ -43,6 +43,8 @@ ui/                 React + TypeScript + Vite + Tailwind + shadcn/ui
   macOS, Windows and Linux bundles. Repository secrets `CURSEFORGE_API_KEY` and `MICROSOFT_CLIENT_ID`
   are baked into the build; `APPLE_*` secrets enable signing and notarization.
 - Local builds read the same keys from the git-ignored `.cargo/config.toml` (`[env]` section).
+- App icons: `cargo tauri icon icons/icon.svg -o icons` (from `crates/tauri-app`), then rebuild
+  `icons/icon.icns` from `icons/icon-macos.svg`, which follows the macOS icon grid (padding and shadow).
 
 ## Task tracking (Plane)
 
