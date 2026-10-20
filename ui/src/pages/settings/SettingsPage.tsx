@@ -7,6 +7,7 @@ import { CommandFields } from '@/components/CommandFields'
 import {
   Field,
   JavaPicker,
+  SettingsSection,
   LanguageSelect,
   NumberInput,
   PathInput,
@@ -72,99 +73,104 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
     <div className="flex min-h-full max-w-4xl flex-col gap-5">
       {tab === 'launcher' && (
         <>
-          <h3 className="text-sm font-semibold">{t('launcher.appearance')}</h3>
-          <Field label={t('launcher.theme')}>
-            <ThemeSelect
-              value={draft.appearance.theme}
-              onChange={(theme) =>
-                setDraft((current) => ({ ...current, appearance: { ...current.appearance, theme } }))
-              }
-            />
-          </Field>
-          <Field label={t('launcher.language')}>
-            <LanguageSelect
-              value={draft.appearance.language}
-              onChange={(language) =>
-                setDraft((current) => ({ ...current, appearance: { ...current.appearance, language } }))
-              }
-            />
-          </Field>
-          <h3 className="text-sm font-semibold">{t('launcher.console')}</h3>
-          <Field label={t('launcher.showConsole')}>
-            <Checkbox
-              checked={draft.launcher.showConsole}
-              onCheckedChange={(checked) => setLauncher({ showConsole: checked === true })}
-            />
-          </Field>
-          <Field label={t('launcher.showConsoleOnError')}>
-            <Checkbox
-              checked={draft.launcher.showConsoleOnError}
-              onCheckedChange={(checked) => setLauncher({ showConsoleOnError: checked === true })}
-            />
-          </Field>
-          <Field label={t('launcher.autoCloseConsole')}>
-            <Checkbox
-              checked={draft.launcher.autoCloseConsole}
-              onCheckedChange={(checked) => setLauncher({ autoCloseConsole: checked === true })}
-            />
-          </Field>
-          <h3 className="text-sm font-semibold">{t('launcher.gameTime')}</h3>
-          <Field label={t('launcher.recordGameTime')}>
-            <Checkbox
-              checked={draft.launcher.recordGameTime}
-              onCheckedChange={(checked) => setLauncher({ recordGameTime: checked === true })}
-            />
-          </Field>
-          <h3 className="text-sm font-semibold">{t('launcher.network')}</h3>
-          <Field label={t('launcher.concurrentDownloads')}>
-            <NumberInput
-              value={draft.network.concurrentDownloads}
-              min={1}
-              max={64}
-              onChange={(concurrentDownloads) => setNetwork({ concurrentDownloads })}
-            />
-          </Field>
-          <Field label={t('launcher.requestTimeout')} hint={t('launcher.requestTimeoutHint')}>
-            <NumberInput
-              value={draft.network.requestTimeoutSecs}
-              min={5}
-              suffix={t('units.seconds')}
-              onChange={(requestTimeoutSecs) => setNetwork({ requestTimeoutSecs })}
-            />
-          </Field>
-          <Field label={t('launcher.proxy')} hint={t('launcher.proxyHint')}>
-            <Input
-              placeholder={t('launcher.proxyPlaceholder')}
-              value={draft.network.proxy ?? ''}
-              onChange={(event) => setNetwork({ proxy: event.target.value || null })}
-            />
-          </Field>
-          <Field label={t('launcher.retries')}>
-            <NumberInput
-              value={draft.network.retries}
-              min={0}
-              max={10}
-              onChange={(retries) => setNetwork({ retries })}
-            />
-          </Field>
-          <h3 className="text-sm font-semibold">{t('launcher.apis')}</h3>
-          <Field label={t('launcher.curseforgeApiKey')} hint={t('launcher.curseforgeApiKeyHint')}>
-            <Input
-              type="password"
-              placeholder={t('launcher.curseforgeApiKeyPlaceholder')}
-              value={draft.apis.curseforgeApiKey ?? ''}
-              onChange={(event) =>
-                setDraft((current) => ({
-                  ...current,
-                  apis: { curseforgeApiKey: event.target.value || null },
-                }))
-              }
-            />
-          </Field>
+          <SettingsSection title={t('launcher.appearance')}>
+            <Field label={t('launcher.theme')}>
+              <ThemeSelect
+                value={draft.appearance.theme}
+                onChange={(theme) =>
+                  setDraft((current) => ({ ...current, appearance: { ...current.appearance, theme } }))
+                }
+              />
+            </Field>
+            <Field label={t('launcher.language')}>
+              <LanguageSelect
+                value={draft.appearance.language}
+                onChange={(language) =>
+                  setDraft((current) => ({ ...current, appearance: { ...current.appearance, language } }))
+                }
+              />
+            </Field>
+          </SettingsSection>
+          <SettingsSection title={t('launcher.console')}>
+            <Field label={t('launcher.showConsole')}>
+              <Checkbox
+                checked={draft.launcher.showConsole}
+                onCheckedChange={(checked) => setLauncher({ showConsole: checked === true })}
+              />
+            </Field>
+            <Field label={t('launcher.showConsoleOnError')}>
+              <Checkbox
+                checked={draft.launcher.showConsoleOnError}
+                onCheckedChange={(checked) => setLauncher({ showConsoleOnError: checked === true })}
+              />
+            </Field>
+            <Field label={t('launcher.autoCloseConsole')}>
+              <Checkbox
+                checked={draft.launcher.autoCloseConsole}
+                onCheckedChange={(checked) => setLauncher({ autoCloseConsole: checked === true })}
+              />
+            </Field>
+          </SettingsSection>
+          <SettingsSection title={t('launcher.gameTime')}>
+            <Field label={t('launcher.recordGameTime')}>
+              <Checkbox
+                checked={draft.launcher.recordGameTime}
+                onCheckedChange={(checked) => setLauncher({ recordGameTime: checked === true })}
+              />
+            </Field>
+          </SettingsSection>
+          <SettingsSection title={t('launcher.network')}>
+            <Field label={t('launcher.concurrentDownloads')}>
+              <NumberInput
+                value={draft.network.concurrentDownloads}
+                min={1}
+                max={64}
+                onChange={(concurrentDownloads) => setNetwork({ concurrentDownloads })}
+              />
+            </Field>
+            <Field label={t('launcher.requestTimeout')} hint={t('launcher.requestTimeoutHint')}>
+              <NumberInput
+                value={draft.network.requestTimeoutSecs}
+                min={5}
+                suffix={t('units.seconds')}
+                onChange={(requestTimeoutSecs) => setNetwork({ requestTimeoutSecs })}
+              />
+            </Field>
+            <Field label={t('launcher.proxy')} hint={t('launcher.proxyHint')}>
+              <Input
+                placeholder={t('launcher.proxyPlaceholder')}
+                value={draft.network.proxy ?? ''}
+                onChange={(event) => setNetwork({ proxy: event.target.value || null })}
+              />
+            </Field>
+            <Field label={t('launcher.retries')}>
+              <NumberInput
+                value={draft.network.retries}
+                min={0}
+                max={10}
+                onChange={(retries) => setNetwork({ retries })}
+              />
+            </Field>
+          </SettingsSection>
+          <SettingsSection title={t('launcher.apis')}>
+            <Field label={t('launcher.curseforgeApiKey')} hint={t('launcher.curseforgeApiKeyHint')}>
+              <Input
+                type="password"
+                placeholder={t('launcher.curseforgeApiKeyPlaceholder')}
+                value={draft.apis.curseforgeApiKey ?? ''}
+                onChange={(event) =>
+                  setDraft((current) => ({
+                    ...current,
+                    apis: { curseforgeApiKey: event.target.value || null },
+                  }))
+                }
+              />
+            </Field>
+          </SettingsSection>
         </>
       )}
       {tab === 'java' && (
-        <>
+        <SettingsSection>
           <Field label={t('java.installation')}>
             <JavaPicker value={draft.java.path} onChange={(path) => setJava({ path })} />
           </Field>
@@ -199,10 +205,10 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
               onChange={(event) => setJava({ jvmArgs: event.target.value })}
             />
           </Field>
-        </>
+        </SettingsSection>
       )}
       {tab === 'minecraft' && (
-        <>
+        <SettingsSection>
           <Field label={t('minecraft.windowSize')}>
             <div className="flex items-center gap-2">
               <NumberInput value={draft.window.width} min={320} onChange={(width) => setWindow({ width })} />
@@ -220,50 +226,54 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
               onCheckedChange={(checked) => setWindow({ maximized: checked === true })}
             />
           </Field>
-        </>
+        </SettingsSection>
       )}
 
       {tab === 'commands' && (
-        <CommandFields
-          value={draft.commands}
-          onChange={(commands) => setDraft((current) => ({ ...current, commands }))}
-        />
+        <SettingsSection>
+          <CommandFields
+            value={draft.commands}
+            onChange={(commands) => setDraft((current) => ({ ...current, commands }))}
+          />
+        </SettingsSection>
       )}
 
       {tab === 'tools' && (
         <>
-          <h3 className="text-sm font-semibold">{t('tools.profilers')}</h3>
-          <Field label={t('tools.jprofilerPath')} hint={t('tools.jprofilerPathHint')}>
-            <PathInput
-              directory
-              placeholder={t('tools.notSet')}
-              value={draft.tools.jprofilerPath}
-              onChange={(jprofilerPath) => setTools({ jprofilerPath })}
-            />
-          </Field>
-          <Field label={t('tools.jprofilerPort')}>
-            <NumberInput
-              value={draft.tools.jprofilerPort}
-              min={1024}
-              max={65535}
-              onChange={(jprofilerPort) => setTools({ jprofilerPort })}
-            />
-          </Field>
-          <Field label={t('tools.visualvm')} hint={t('tools.visualvmHint')}>
-            <PathInput
-              placeholder={t('tools.visualvmPlaceholder')}
-              value={draft.tools.visualvmPath}
-              onChange={(visualvmPath) => setTools({ visualvmPath })}
-            />
-          </Field>
-          <h3 className="text-sm font-semibold">{t('tools.editor')}</h3>
-          <Field label={t('tools.textEditor')} hint={t('tools.textEditorHint')}>
-            <Input
-              placeholder={t('tools.defaultApp')}
-              value={draft.tools.editor ?? ''}
-              onChange={(event) => setTools({ editor: event.target.value || null })}
-            />
-          </Field>
+          <SettingsSection title={t('tools.profilers')}>
+            <Field label={t('tools.jprofilerPath')} hint={t('tools.jprofilerPathHint')}>
+              <PathInput
+                directory
+                placeholder={t('tools.notSet')}
+                value={draft.tools.jprofilerPath}
+                onChange={(jprofilerPath) => setTools({ jprofilerPath })}
+              />
+            </Field>
+            <Field label={t('tools.jprofilerPort')}>
+              <NumberInput
+                value={draft.tools.jprofilerPort}
+                min={1024}
+                max={65535}
+                onChange={(jprofilerPort) => setTools({ jprofilerPort })}
+              />
+            </Field>
+            <Field label={t('tools.visualvm')} hint={t('tools.visualvmHint')}>
+              <PathInput
+                placeholder={t('tools.visualvmPlaceholder')}
+                value={draft.tools.visualvmPath}
+                onChange={(visualvmPath) => setTools({ visualvmPath })}
+              />
+            </Field>
+          </SettingsSection>
+          <SettingsSection title={t('tools.editor')}>
+            <Field label={t('tools.textEditor')} hint={t('tools.textEditorHint')}>
+              <Input
+                placeholder={t('tools.defaultApp')}
+                value={draft.tools.editor ?? ''}
+                onChange={(event) => setTools({ editor: event.target.value || null })}
+              />
+            </Field>
+          </SettingsSection>
         </>
       )}
 

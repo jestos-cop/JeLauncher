@@ -24,6 +24,18 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
   )
 }
 
+/** A titled card that groups related settings. */
+export function SettingsSection({ title, children }: { title?: string; children: ReactNode }) {
+  return (
+    <section className="flex flex-col gap-4 rounded-lg border bg-card p-4">
+      {title && (
+        <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{title}</h3>
+      )}
+      {children}
+    </section>
+  )
+}
+
 interface NumberInputProps {
   value: number
   onChange: (value: number) => void
