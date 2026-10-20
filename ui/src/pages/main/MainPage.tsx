@@ -8,7 +8,6 @@ import { HelpMenu } from '@/components/HelpMenu'
 import { Logo } from '@/components/Logo'
 import { NewsBar } from '@/components/NewsBar'
 import { ToolbarLabel } from '@/components/ToolbarLabel'
-import { WindowHeader } from '@/components/WindowHeader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -31,7 +30,7 @@ export function MainPage() {
 
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
-      <WindowHeader className="flex-wrap gap-2">
+      <header className="flex flex-wrap items-center gap-2 border-b px-3 py-2">
         <Logo className="mr-1" />
         <Button size="sm" onClick={() => setIsCreating(true)}>
           <Plus /> {t('toolbar.addInstance')}
@@ -67,7 +66,7 @@ export function MainPage() {
           </Select>
           <AccountsMenu />
         </div>
-      </WindowHeader>
+      </header>
       <NewsBar />
 
       <div className="flex min-h-0 flex-1">
