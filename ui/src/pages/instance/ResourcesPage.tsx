@@ -19,6 +19,7 @@ import { commands, type InstanceSummary, type ResourceFile, type ResourceKind } 
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { ModListExportMenu } from '@/components/ModListExportMenu'
 import { RelatedChangesDialog } from '@/components/RelatedChangesDialog'
+import { ResourceFilterMenu } from '@/components/ResourceFilterMenu'
 import { SourceBadge } from '@/components/SourceBadge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -47,6 +48,7 @@ import {
 } from '@/hooks/use-resources'
 import { unwrap } from '@/lib/command'
 import { PROVIDER_NAMES } from '@/lib/providers'
+import { matchesFilters, NO_FILTERS, type ResourceFilters } from '@/lib/resource-filters'
 import { cn } from '@/lib/utils'
 
 interface ResourcesPageProps {
@@ -60,6 +62,7 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
   const setEnabled = useSetResourceEnabled(instance.id, kind)
   const remove = useRemoveResource(instance.id, kind)
   const [search, setSearch] = useState('')
+  const [filters, setFilters] = useState<ResourceFilters>(NO_FILTERS)
   const [pendingRemoval, setPendingRemoval] = useState<{ file: ResourceFile; dependents: string[] } | null>(
     null,
   )
@@ -109,13 +112,16 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
 
   const visible = useMemo(() => {
     const query = search.trim().toLowerCase()
+    const hasUpdate = (file: ResourceFile) =>
+      updates.data?.some((update) => update.fileName === file.fileName) ?? false
     return files.filter(
       (file) =>
-        displayName(file).toLowerCase().includes(query) ||
-        file.fileName.toLowerCase().includes(query) ||
-        (file.source !== null && PROVIDER_NAMES[file.source.provider].toLowerCase().includes(query)),
+        (displayName(file).toLowerCase().includes(query) ||
+          file.fileName.toLowerCase().includes(query) ||
+          (file.source !== null && PROVIDER_NAMES[file.source.provider].toLowerCase().includes(query))) &&
+        matchesFilters(file, filters, hasUpdate),
     )
-  }, [files, search])
+  }, [files, search, filters, updates.data])
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
@@ -126,11 +132,18 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
+        <ResourceFilterMenu
+          filters={filters}
+          onChange={setFilters}
+          withSources={tracksSources}
+          withUpdates={updates.data !== undefined}
+        />
         <span className="text-xs whitespace-nowrap text-muted-foreground">
           {t('resources.enabledCount', {
             enabled: files.filter((file) => file.enabled).length,
             total: files.length,
           })}
+          {visible.length !== files.length && ` · ${t('resources.shownCount', { shown: visible.length })}`}
         </span>
         <div className="ml-auto flex gap-1">
           <Button size="sm" onClick={() => setIsDownloading(true)}>
@@ -337,6 +350,9 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
         {isPending && <p className="p-3 text-sm text-muted-foreground">{t('resources.reading')}</p>}
         {!isPending && files.length === 0 && (
           <p className="p-3 text-sm text-muted-foreground">{t(`resources.${kind}.empty`)}</p>
+        )}
+        {files.length > 0 && visible.length === 0 && (
+          <p className="p-3 text-sm text-muted-foreground">{t('resources.nothingMatches')}</p>
         )}
       </div>
 

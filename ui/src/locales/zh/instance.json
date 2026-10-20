@@ -123,7 +123,26 @@
     "removeRelatedTitle": "其他模组需要 {{name}}",
     "removeRelated": "这些模组需要 {{name}}。也要禁用它们吗？",
     "disableAndRemove": "禁用它们并移除",
-    "onlyRemove": "仅移除"
+    "onlyRemove": "仅移除",
+    "shownCount": "显示：{{shown}}",
+    "nothingMatches": "没有符合搜索和筛选条件的项目。",
+    "filter": {
+      "button": "筛选",
+      "status": "状态",
+      "enabled": "已启用",
+      "disabled": "已禁用",
+      "source": "来源",
+      "modrinth": "Modrinth",
+      "curseForge": "CurseForge",
+      "none": "未知",
+      "only": "仅显示",
+      "hasUpdate": "有可用更新",
+      "locked": "已锁定更新",
+      "incompatible": "与此版本不兼容",
+      "isDependency": "被其他模组依赖",
+      "hasDependencies": "依赖其他模组",
+      "clear": "清除筛选"
+    }
   },
   "worlds": {
     "count_other": "{{count}} 个世界",

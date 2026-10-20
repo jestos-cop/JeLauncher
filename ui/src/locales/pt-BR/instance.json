@@ -125,7 +125,26 @@
     "removeRelatedTitle": "Outros mods requerem {{name}}",
     "removeRelated": "Estes mods requerem {{name}}. Desativá-los também?",
     "disableAndRemove": "Desativar e remover",
-    "onlyRemove": "Só remover"
+    "onlyRemove": "Só remover",
+    "shownCount": "exibidos: {{shown}}",
+    "nothingMatches": "Nada corresponde à busca e aos filtros.",
+    "filter": {
+      "button": "Filtrar",
+      "status": "Estado",
+      "enabled": "Ativados",
+      "disabled": "Desativados",
+      "source": "Origem",
+      "modrinth": "Modrinth",
+      "curseForge": "CurseForge",
+      "none": "Desconhecida",
+      "only": "Somente",
+      "hasUpdate": "Atualização disponível",
+      "locked": "Atualizações bloqueadas",
+      "incompatible": "Incompatíveis com esta versão",
+      "isDependency": "Exigidos por outros mods",
+      "hasDependencies": "Exigem outros mods",
+      "clear": "Limpar filtros"
+    }
   },
   "worlds": {
     "count_one": "{{count}} mundo",

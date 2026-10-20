@@ -125,7 +125,26 @@
     "removeRelatedTitle": "Други модови захтевају {{name}}",
     "removeRelated": "Ови модови захтевају {{name}}. Искључити и њих?",
     "disableAndRemove": "Искључи их и уклони",
-    "onlyRemove": "Само уклони"
+    "onlyRemove": "Само уклони",
+    "shownCount": "приказано: {{shown}}",
+    "nothingMatches": "Ништа не одговара претрази и филтерима.",
+    "filter": {
+      "button": "Филтер",
+      "status": "Стање",
+      "enabled": "Укључени",
+      "disabled": "Искључени",
+      "source": "Извор",
+      "modrinth": "Modrinth",
+      "curseForge": "CurseForge",
+      "none": "Непознат",
+      "only": "Само",
+      "hasUpdate": "Има ажурирање",
+      "locked": "Ажурирања закључана",
+      "incompatible": "Некомпатибилни са овом верзијом",
+      "isDependency": "Потребни другим модовима",
+      "hasDependencies": "Захтевају друге модове",
+      "clear": "Обриши филтере"
+    }
   },
   "worlds": {
     "count_one": "{{count}} свет",

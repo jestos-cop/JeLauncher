@@ -126,7 +126,26 @@
     "removeRelatedTitle": "От {{name}} зависят другие моды",
     "removeRelated": "Эти моды требуют {{name}}. Отключить и их?",
     "disableAndRemove": "Отключить их и удалить",
-    "onlyRemove": "Только удалить"
+    "onlyRemove": "Только удалить",
+    "shownCount": "показано: {{shown}}",
+    "nothingMatches": "Ничего не соответствует поиску и фильтрам.",
+    "filter": {
+      "button": "Фильтр",
+      "status": "Состояние",
+      "enabled": "Включённые",
+      "disabled": "Выключенные",
+      "source": "Источник",
+      "modrinth": "Modrinth",
+      "curseForge": "CurseForge",
+      "none": "Неизвестный",
+      "only": "Только",
+      "hasUpdate": "Есть обновление",
+      "locked": "Обновления заблокированы",
+      "incompatible": "Несовместимые с этой версией",
+      "isDependency": "Нужны другим модам",
+      "hasDependencies": "Требуют другие моды",
+      "clear": "Сбросить фильтры"
+    }
   },
   "worlds": {
     "count_one": "{{count}} мир",

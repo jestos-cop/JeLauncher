@@ -124,7 +124,26 @@
     "removeRelatedTitle": "Other hands need {{name}}",
     "removeRelated": "These hands need {{name}}. Send them below deck too?",
     "disableAndRemove": "Below deck, then scuttle",
-    "onlyRemove": "Just scuttle"
+    "onlyRemove": "Just scuttle",
+    "shownCount": "in sight: {{shown}}",
+    "nothingMatches": "Nothin' matches yer search an' sieves.",
+    "filter": {
+      "button": "Sieve",
+      "status": "State",
+      "enabled": "Hoisted",
+      "disabled": "Struck",
+      "source": "Port o' origin",
+      "modrinth": "Modrinth",
+      "curseForge": "CurseForge",
+      "none": "Unknown waters",
+      "only": "Only",
+      "hasUpdate": "Fresh cargo waitin'",
+      "locked": "Cargo lashed down",
+      "incompatible": "Won't sail with this version",
+      "isDependency": "Needed by other mods",
+      "hasDependencies": "Needs other mods",
+      "clear": "Clear the Sieves"
+    }
   },
   "worlds": {
     "count_one": "{{count}} world",

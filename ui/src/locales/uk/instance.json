@@ -126,7 +126,26 @@
     "removeRelatedTitle": "Від {{name}} залежать інші моди",
     "removeRelated": "Ці моди потребують {{name}}. Вимкнути й їх?",
     "disableAndRemove": "Вимкнути їх і видалити",
-    "onlyRemove": "Лише видалити"
+    "onlyRemove": "Лише видалити",
+    "shownCount": "показано: {{shown}}",
+    "nothingMatches": "Нічого не відповідає пошуку та фільтрам.",
+    "filter": {
+      "button": "Фільтр",
+      "status": "Стан",
+      "enabled": "Увімкнені",
+      "disabled": "Вимкнені",
+      "source": "Джерело",
+      "modrinth": "Modrinth",
+      "curseForge": "CurseForge",
+      "none": "Невідоме",
+      "only": "Лише",
+      "hasUpdate": "Є оновлення",
+      "locked": "Оновлення заблоковані",
+      "incompatible": "Несумісні з цією версією",
+      "isDependency": "Потрібні іншим модам",
+      "hasDependencies": "Потребують інших модів",
+      "clear": "Скинути фільтри"
+    }
   },
   "worlds": {
     "count_one": "{{count}} світ",

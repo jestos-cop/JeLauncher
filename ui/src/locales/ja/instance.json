@@ -123,7 +123,26 @@
     "removeRelatedTitle": "他の Mod が {{name}} を必要としています",
     "removeRelated": "次の Mod は {{name}} を必要としています。これらも無効にしますか？",
     "disableAndRemove": "無効にして削除",
-    "onlyRemove": "削除のみ"
+    "onlyRemove": "削除のみ",
+    "shownCount": "表示：{{shown}}",
+    "nothingMatches": "検索とフィルターに一致する項目はありません。",
+    "filter": {
+      "button": "フィルター",
+      "status": "状態",
+      "enabled": "有効",
+      "disabled": "無効",
+      "source": "ソース",
+      "modrinth": "Modrinth",
+      "curseForge": "CurseForge",
+      "none": "不明",
+      "only": "次のみ",
+      "hasUpdate": "更新あり",
+      "locked": "更新をロック中",
+      "incompatible": "このバージョンと非互換",
+      "isDependency": "他の Mod に必要とされる",
+      "hasDependencies": "他の Mod が必要",
+      "clear": "フィルターをクリア"
+    }
   },
   "worlds": {
     "count_other": "{{count}} 個のワールド",
