@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::path::Path;
 
+use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
 use super::{
@@ -19,11 +20,46 @@ const API: &str = "https://api.modrinth.com/v2";
 #[derive(Debug, Clone)]
 pub struct Modrinth {
     http: HttpClient,
+    /// Personal access token; only needed for private projects.
+    token: Option<String>,
 }
 
 impl Modrinth {
     pub fn new(http: HttpClient) -> Self {
-        Self { http }
+        Self::with_token(http, None)
+    }
+
+    pub fn with_token(http: HttpClient, token: Option<String>) -> Self {
+        Self {
+            http,
+            token: token.filter(|token| !token.trim().is_empty()),
+        }
+    }
+
+    async fn get<T: DeserializeOwned>(&self, url: &str, query: &[(&str, String)]) -> Result<T> {
+        match &self.token {
+            Some(token) => {
+                self.http
+                    .get_json_with_header(url, query, ("Authorization", token))
+                    .await
+            }
+            None => self.http.get_json_query(url, query).await,
+        }
+    }
+
+    async fn post<B: Serialize + ?Sized, T: DeserializeOwned>(
+        &self,
+        url: &str,
+        body: &B,
+    ) -> Result<T> {
+        match &self.token {
+            Some(token) => {
+                self.http
+                    .post_json_with_header(url, body, ("Authorization", token))
+                    .await
+            }
+            None => self.http.post_json(url, body).await,
+        }
     }
 
     pub async fn search(&self, query: &SearchQuery) -> Result<SearchPage> {
@@ -34,10 +70,7 @@ impl Modrinth {
             ("offset", query.offset.to_string()),
             ("limit", query.limit.clamp(1, 100).to_string()),
         ];
-        let response: SearchResponse = self
-            .http
-            .get_json_query(&format!("{API}/search"), &params)
-            .await?;
+        let response: SearchResponse = self.get(&format!("{API}/search"), &params).await?;
         Ok(SearchPage {
             total: response.total_hits,
             hits: response.hits.into_iter().map(Into::into).collect(),
@@ -60,14 +93,13 @@ impl Modrinth {
             params.push(("loaders", json_list(loader.id())));
         }
         let url = format!("{API}/project/{project_id}/version");
-        let versions: Vec<ApiVersion> = self.http.get_json_query(&url, &params).await?;
+        let versions: Vec<ApiVersion> = self.get(&url, &params).await?;
         versions.into_iter().map(TryInto::try_into).collect()
     }
 
     pub async fn version(&self, version_id: &str) -> Result<ProjectVersion> {
         let version: ApiVersion = self
-            .http
-            .get_json(&format!("{API}/version/{version_id}"))
+            .get(&format!("{API}/version/{version_id}"), &[])
             .await?;
         version.try_into()
     }
@@ -84,10 +116,8 @@ impl Modrinth {
             hashes,
             algorithm: "sha1",
         };
-        let versions: HashMap<String, ApiVersion> = self
-            .http
-            .post_json(&format!("{API}/version_files"), &body)
-            .await?;
+        let versions: HashMap<String, ApiVersion> =
+            self.post(&format!("{API}/version_files"), &body).await?;
         versions
             .into_iter()
             .map(|(hash, version)| Ok((hash, version.try_into()?)))
@@ -117,8 +147,7 @@ impl Modrinth {
             game_versions: vec![target.game_version],
         };
         let latest: HashMap<String, ApiVersion> = self
-            .http
-            .post_json(&format!("{API}/version_files/update"), &body)
+            .post(&format!("{API}/version_files/update"), &body)
             .await?;
         let mut updates = Vec::new();
         for (hash, version) in latest {

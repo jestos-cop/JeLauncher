@@ -32,8 +32,18 @@
     "retries": "重试次数",
     "apis": "API",
     "curseforgeApiKey": "CurseForge API 密钥",
-    "curseforgeApiKeyHint": "可选。替换此版本内置的密钥。网络和 API 更改将在重启后生效。",
-    "curseforgeApiKeyPlaceholder": "内置密钥"
+    "curseforgeApiKeyHint": "仅当使用内置密钥无法访问 CurseForge 时才需要填写。",
+    "microsoftClientId": "Microsoft 客户端 ID",
+    "microsoftClientIdHint": "仅当使用内置 ID 无法登录 Microsoft 时才需要填写。",
+    "builtInPlaceholder": "内置",
+    "modrinthToken": "Modrinth 令牌",
+    "modrinthTokenHint": "仅在访问私有项目时需要。请参阅<open>文档</open>。",
+    "notUsedPlaceholder": "未使用",
+    "modrinthFallback": "使用 Modrinth 作为被屏蔽模组的备用来源",
+    "modrinthFallbackHint": "当 CurseForge 作者禁止在网站外下载时，如果 Modrinth 上有相同文件，则从 Modrinth 下载。",
+    "technicClientId": "Technic 客户端 ID",
+    "technicClientIdHint": "仅在访问私有整合包时需要。",
+    "apisRestartHint": "此处的更改将在重启启动器后生效。"
   },
   "java": {
     "installation": "Java 安装",

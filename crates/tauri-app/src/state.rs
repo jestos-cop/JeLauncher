@@ -4,7 +4,7 @@ use std::sync::{Mutex, RwLock};
 
 use jelauncher_core::auth::{AccountStore, DeviceCode};
 use jelauncher_core::meta::MetaService;
-use jelauncher_core::modplatform::ModPlatforms;
+use jelauncher_core::modplatform::{ModPlatforms, PlatformConfig};
 use jelauncher_core::net::HttpClient;
 use jelauncher_core::paths::DataPaths;
 use jelauncher_core::settings::GlobalSettings;
@@ -19,8 +19,8 @@ pub struct AppState {
     pub http: HttpClient,
     pub meta: MetaService,
     pub platforms: ModPlatforms,
-    /// Azure application id used for Microsoft sign-in, set at build time.
-    pub microsoft_client_id: Option<&'static str>,
+    /// Azure application id used for Microsoft sign-in: the user's own or the built-in one.
+    pub microsoft_client_id: Option<String>,
     /// The device code of the Microsoft sign-in in progress, tagged with its attempt number.
     pub pending_login: Mutex<Option<(u64, DeviceCode)>>,
     /// Bumped by every new or cancelled sign-in so an older attempt stops polling.
@@ -40,14 +40,22 @@ impl AppState {
         let accounts = AccountStore::load(&paths.accounts_file())?;
         let http = HttpClient::new(&settings.network)?;
         let meta = MetaService::new(http.clone(), paths.meta());
+        let apis = &settings.apis;
         let platforms = ModPlatforms::new(
             http.clone(),
-            settings
-                .apis
-                .curseforge_api_key
-                .clone()
-                .filter(|key| !key.trim().is_empty())
-                .or_else(|| option_env!("CURSEFORGE_API_KEY").map(str::to_owned)),
+            PlatformConfig {
+                curseforge_api_key: configured_or_built_in(
+                    &apis.curseforge_api_key,
+                    option_env!("CURSEFORGE_API_KEY"),
+                ),
+                modrinth_token: apis.modrinth_token.clone(),
+                technic_client_id: apis.technic_client_id.clone(),
+                modrinth_fallback_for_blocked: apis.modrinth_fallback_for_blocked,
+            },
+        );
+        let microsoft_client_id = configured_or_built_in(
+            &apis.microsoft_client_id,
+            option_env!("MICROSOFT_CLIENT_ID"),
         );
         Ok(Self {
             paths,
@@ -56,7 +64,7 @@ impl AppState {
             http,
             meta,
             platforms,
-            microsoft_client_id: option_env!("MICROSOFT_CLIENT_ID").filter(|id| !id.is_empty()),
+            microsoft_client_id,
             pending_login: Mutex::default(),
             pending_cli: Mutex::default(),
             login_attempt: AtomicU64::default(),
@@ -64,4 +72,16 @@ impl AppState {
             modpack_cancel: Mutex::default(),
         })
     }
+}
+
+/// The value from the settings, or the one baked into this build when the setting is empty.
+fn configured_or_built_in(configured: &Option<String>, built_in: Option<&str>) -> Option<String> {
+    configured
+        .clone()
+        .filter(|value| !value.trim().is_empty())
+        .or_else(|| {
+            built_in
+                .filter(|value| !value.is_empty())
+                .map(str::to_owned)
+        })
 }

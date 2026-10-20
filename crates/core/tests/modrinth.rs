@@ -82,7 +82,10 @@ async fn installs_required_dependencies() -> jelauncher_core::Result<()> {
         game_version,
         loader: Some(LoaderKind::Fabric),
     };
-    let platforms = ModPlatforms::new(HttpClient::new(&NetworkSettings::default())?, None);
+    let platforms = ModPlatforms::new(
+        HttpClient::new(&NetworkSettings::default())?,
+        Default::default(),
+    );
     let installed = platforms
         .install_with_dependencies(Provider::Modrinth, iris, &target)
         .await?;
@@ -180,7 +183,8 @@ async fn imports_a_modpack_from_its_url() -> jelauncher_core::Result<()> {
         allow_untrusted_hosts: false,
         optional_mods: None,
     };
-    let platforms = jelauncher_core::modplatform::ModPlatforms::new(http.clone(), None);
+    let platforms =
+        jelauncher_core::modplatform::ModPlatforms::new(http.clone(), Default::default());
     let instance = import_instance(&platforms, &url, &target, |_| {})
         .await?
         .instance;
@@ -253,7 +257,8 @@ async fn exported_modpack_references_modrinth_files_and_reimports() -> jelaunche
     assert!(index.files.len() > 10);
     assert_eq!(index.minecraft_version()?, "1.21.4");
 
-    let platforms = jelauncher_core::modplatform::ModPlatforms::new(http.clone(), None);
+    let platforms =
+        jelauncher_core::modplatform::ModPlatforms::new(http.clone(), Default::default());
     let copy = import_instance(&platforms, &output.to_string_lossy(), &target, |_| {})
         .await?
         .instance;

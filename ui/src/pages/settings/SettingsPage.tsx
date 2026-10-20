@@ -1,8 +1,8 @@
 import { Coffee, Monitor, Rocket, Terminal, UsersRound, Wrench } from 'lucide-react'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useNavigation, type SettingsTab } from '@/app/navigation'
-import type { GlobalSettings } from '@/bindings'
+import { commands, type GlobalSettings } from '@/bindings'
 import { CommandFields } from '@/components/CommandFields'
 import {
   Field,
@@ -18,7 +18,10 @@ import { SidebarLayout, type SidebarTab } from '@/components/SidebarLayout'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { useMemoryHint, useSettings, useUpdateSettings } from '@/hooks/use-settings'
+import { unwrap } from '@/lib/command'
 import { AccountsSettings } from '@/pages/settings/AccountsSettings'
+
+const MODRINTH_TOKEN_DOCS = 'https://docs.modrinth.com/api/#authentication'
 
 const TABS: Omit<SidebarTab<SettingsTab>, 'label'>[] = [
   { tab: 'launcher', icon: Rocket },
@@ -66,6 +69,8 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
     setDraft((current) => ({ ...current, launcher: { ...current.launcher, ...patch } }))
   const setTools = (patch: Partial<GlobalSettings['tools']>) =>
     setDraft((current) => ({ ...current, tools: { ...current.tools, ...patch } }))
+  const setApis = (patch: Partial<GlobalSettings['apis']>) =>
+    setDraft((current) => ({ ...current, apis: { ...current.apis, ...patch } }))
   const setNetwork = (patch: Partial<GlobalSettings['network']>) =>
     setDraft((current) => ({ ...current, network: { ...current.network, ...patch } }))
 
@@ -153,17 +158,59 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
             </Field>
           </SettingsSection>
           <SettingsSection title={t('launcher.apis')}>
+            <p className="text-xs text-muted-foreground">{t('launcher.apisRestartHint')}</p>
+            <Field label={t('launcher.microsoftClientId')} hint={t('launcher.microsoftClientIdHint')}>
+              <Input
+                placeholder={t('launcher.builtInPlaceholder')}
+                value={draft.apis.microsoftClientId ?? ''}
+                onChange={(event) => setApis({ microsoftClientId: event.target.value || null })}
+              />
+            </Field>
+            <Field
+              label={t('launcher.modrinthToken')}
+              hint={
+                <Trans
+                  t={t}
+                  i18nKey="launcher.modrinthTokenHint"
+                  components={{
+                    open: (
+                      <button
+                        type="button"
+                        className="text-primary underline-offset-2 hover:underline"
+                        onClick={() => void unwrap(commands.openUrl(MODRINTH_TOKEN_DOCS))}
+                      />
+                    ),
+                  }}
+                />
+              }
+            >
+              <Input
+                type="password"
+                placeholder={t('launcher.notUsedPlaceholder')}
+                value={draft.apis.modrinthToken ?? ''}
+                onChange={(event) => setApis({ modrinthToken: event.target.value || null })}
+              />
+            </Field>
             <Field label={t('launcher.curseforgeApiKey')} hint={t('launcher.curseforgeApiKeyHint')}>
               <Input
                 type="password"
-                placeholder={t('launcher.curseforgeApiKeyPlaceholder')}
+                placeholder={t('launcher.builtInPlaceholder')}
                 value={draft.apis.curseforgeApiKey ?? ''}
-                onChange={(event) =>
-                  setDraft((current) => ({
-                    ...current,
-                    apis: { curseforgeApiKey: event.target.value || null },
-                  }))
-                }
+                onChange={(event) => setApis({ curseforgeApiKey: event.target.value || null })}
+              />
+            </Field>
+            <Field label={t('launcher.modrinthFallback')} hint={t('launcher.modrinthFallbackHint')}>
+              <Checkbox
+                checked={draft.apis.modrinthFallbackForBlocked}
+                onCheckedChange={(checked) => setApis({ modrinthFallbackForBlocked: checked === true })}
+              />
+            </Field>
+            <Field label={t('launcher.technicClientId')} hint={t('launcher.technicClientIdHint')}>
+              <Input
+                type="password"
+                placeholder={t('launcher.notUsedPlaceholder')}
+                value={draft.apis.technicClientId ?? ''}
+                onChange={(event) => setApis({ technicClientId: event.target.value || null })}
               />
             </Field>
           </SettingsSection>

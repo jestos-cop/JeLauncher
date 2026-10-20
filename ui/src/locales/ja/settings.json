@@ -32,8 +32,18 @@
     "retries": "再試行回数",
     "apis": "API",
     "curseforgeApiKey": "CurseForge API キー",
-    "curseforgeApiKeyHint": "任意。このビルドに組み込まれたキーを置き換えます。ネットワークと API の変更は再起動後に適用されます。",
-    "curseforgeApiKeyPlaceholder": "組み込みのキー"
+    "curseforgeApiKeyHint": "内蔵のキーで CurseForge が動作しない場合にのみ必要です。",
+    "microsoftClientId": "Microsoft クライアント ID",
+    "microsoftClientIdHint": "内蔵の ID で Microsoft サインインが動作しない場合にのみ必要です。",
+    "builtInPlaceholder": "内蔵",
+    "modrinthToken": "Modrinth トークン",
+    "modrinthTokenHint": "非公開プロジェクトにアクセスする場合にのみ必要です。<open>ドキュメント</open>を参照してください。",
+    "notUsedPlaceholder": "使用しない",
+    "modrinthFallback": "ブロックされた Mod の代わりに Modrinth を使う",
+    "modrinthFallbackHint": "CurseForge の作者がサイト外でのダウンロードをブロックしている場合、同じファイルが Modrinth にあればそこから取得します。",
+    "technicClientId": "Technic クライアント ID",
+    "technicClientIdHint": "非公開の Modpack にアクセスする場合にのみ必要です。",
+    "apisRestartHint": "ここでの変更はランチャーの再起動後に反映されます。"
   },
   "java": {
     "installation": "Java のインストール",

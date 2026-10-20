@@ -741,11 +741,26 @@ modpackProgressEvent: "modpack-progress-event"
 
 export type AccountKind = { type: "offline" } | { type: "microsoft" }
 export type AccountSummary = { id: string; username: string; kind: AccountKind; isDefault: boolean }
+/**
+ * Credentials that replace or add to the ones the launcher was built with.
+ */
 export type ApiSettings = { 
 /**
- * Replaces the CurseForge API key the launcher was built with.
+ * Azure application id for Microsoft sign-in.
  */
-curseforgeApiKey: string | null }
+microsoftClientId: string | null; 
+/**
+ * Modrinth personal access token, only needed for private projects.
+ */
+modrinthToken: string | null; curseforgeApiKey: string | null; 
+/**
+ * Fetches CurseForge files their authors block from Modrinth when it has the same file.
+ */
+modrinthFallbackForBlocked: boolean; 
+/**
+ * Technic client id, only needed for private packs.
+ */
+technicClientId: string | null }
 export type AppInfo = { version: string; license: string; repository: string }
 export type AppearanceSettings = { theme: Theme; 
 /**

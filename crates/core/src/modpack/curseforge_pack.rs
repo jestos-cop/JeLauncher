@@ -7,8 +7,8 @@ use super::{ManagedPack, ModpackTarget, PackInstall, PackSource};
 use crate::archive;
 use crate::instance::{DraftGuard, Instance, NewInstance, create_instance};
 use crate::minecraft::{LoaderKind, LoaderSpec};
-use crate::modplatform::curseforge::CurseForge;
-use crate::net::{Download, DownloadProgress, HttpClient};
+use crate::modplatform::ModPlatforms;
+use crate::net::{Download, DownloadProgress};
 use crate::{Error, Result};
 
 pub const CURSEFORGE_MANIFEST: &str = "manifest.json";
@@ -125,10 +125,10 @@ pub fn read_curseforge_manifest(archive_path: &Path) -> Result<CurseManifest> {
 }
 
 /// Creates a new instance from a CurseForge modpack archive. Files that cannot be downloaded
-/// automatically are returned so the user can fetch them by hand.
+/// automatically, from CurseForge or the Modrinth fallback, are returned so the user can fetch
+/// them by hand.
 pub async fn install_curseforge_pack(
-    curseforge: &CurseForge,
-    http: &HttpClient,
+    platforms: &ModPlatforms,
     archive_path: &Path,
     target: &ModpackTarget<'_>,
     source: Option<PackSource>,
@@ -147,8 +147,7 @@ pub async fn install_curseforge_pack(
     )?;
     let draft = DraftGuard::new(&instance);
     let blocked = populate(
-        curseforge,
-        http,
+        platforms,
         archive_path,
         &manifest,
         &instance,
@@ -169,8 +168,7 @@ pub async fn install_curseforge_pack(
 }
 
 async fn populate(
-    curseforge: &CurseForge,
-    http: &HttpClient,
+    platforms: &ModPlatforms,
     archive_path: &Path,
     manifest: &CurseManifest,
     instance: &Instance,
@@ -181,6 +179,7 @@ async fn populate(
     let file_ids: Vec<u64> = required.iter().map(|file| file.file_id).collect();
     let mut project_ids: Vec<u64> = required.iter().map(|file| file.project_id).collect();
     project_ids.dedup();
+    let curseforge = &platforms.curseforge;
     let projects: HashMap<String, _> = curseforge
         .projects(&project_ids)
         .await?
@@ -198,12 +197,13 @@ async fn populate(
             continue;
         };
         if file.url.is_empty() {
-            blocked.push(BlockedFile {
+            let blocked_file = BlockedFile {
                 project_name: project.name.clone(),
                 file_name: file.file_name.clone(),
                 url: format!("{}/files/{}", project.website_url, version.id),
                 install_dir: project.install_dir.to_owned(),
-            });
+            };
+            blocked.push((blocked_file, file.sha1.clone()));
         } else {
             downloads.push(Download {
                 path: game_dir.join(project.install_dir).join(&file.file_name),
@@ -211,7 +211,16 @@ async fn populate(
             });
         }
     }
-    http.download_all(downloads, concurrency, on_progress)
+    let mut blocked = if platforms.modrinth_fallback_for_blocked {
+        let (found, still_blocked) = modrinth_copies(platforms, blocked, &game_dir).await;
+        downloads.extend(found);
+        still_blocked
+    } else {
+        blocked.into_iter().map(|(file, _)| file).collect()
+    };
+    platforms
+        .http()
+        .download_all(downloads, concurrency, on_progress)
         .await?;
     let prefix = manifest.overrides.trim_matches('/').to_owned();
     archive::extract(archive_path, &game_dir, |name| {
@@ -219,6 +228,47 @@ async fn populate(
     })?;
     blocked.sort_by(|a, b| a.project_name.cmp(&b.project_name));
     Ok(blocked)
+}
+
+/// Looks blocked files up on Modrinth by SHA-1; returns downloads for the ones it has and the
+/// files that stay blocked. A Modrinth failure only means nothing is found there.
+async fn modrinth_copies(
+    platforms: &ModPlatforms,
+    blocked: Vec<(BlockedFile, Option<String>)>,
+    game_dir: &Path,
+) -> (Vec<Download>, Vec<BlockedFile>) {
+    let hashes: Vec<String> = blocked
+        .iter()
+        .filter_map(|(_, sha1)| sha1.clone())
+        .collect();
+    let versions = match platforms.modrinth.versions_by_sha1(&hashes).await {
+        Ok(versions) => versions,
+        Err(err) => {
+            log::warn!("Modrinth lookup for blocked CurseForge files failed: {err}");
+            HashMap::new()
+        }
+    };
+    let mut downloads = Vec::new();
+    let mut still_blocked = Vec::new();
+    for (file, sha1) in blocked {
+        let copy = sha1.as_ref().and_then(|sha1| {
+            versions
+                .get(sha1)?
+                .files
+                .iter()
+                .find(|candidate| candidate.sha1.as_ref() == Some(sha1))
+        });
+        match copy {
+            Some(copy) => downloads.push(Download {
+                url: copy.url.clone(),
+                path: game_dir.join(&file.install_dir).join(&file.file_name),
+                sha1: copy.sha1.clone(),
+                size: Some(copy.size),
+            }),
+            None => still_blocked.push(file),
+        }
+    }
+    (downloads, still_blocked)
 }
 
 #[cfg(test)]

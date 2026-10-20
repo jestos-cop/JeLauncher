@@ -32,8 +32,18 @@
     "retries": "Поновни покушаји",
     "apis": "API-ји",
     "curseforgeApiKey": "CurseForge API кључ",
-    "curseforgeApiKeyHint": "Опционо. Замењује кључ који долази уз ову верзију. Измене мреже и API-ја примењују се након поновног покретања.",
-    "curseforgeApiKeyPlaceholder": "Уграђени кључ"
+    "curseforgeApiKeyHint": "Потребан само ако CurseForge не ради са уграђеним кључем.",
+    "microsoftClientId": "Microsoft ID клијента",
+    "microsoftClientIdHint": "Потребно само ако пријава преко Microsoft-а не ради са уграђеним ID-јем.",
+    "builtInPlaceholder": "Уграђени",
+    "modrinthToken": "Modrinth токен",
+    "modrinthTokenHint": "Потребан само за приступ приватним пројектима. Погледајте <open>документацију</open>.",
+    "notUsedPlaceholder": "Не користи се",
+    "modrinthFallback": "Користи Modrinth као резерву за блокиране модове",
+    "modrinthFallbackHint": "Када аутор на CurseForge-у блокира преузимање ван сајта, исти фајл се преузима са Modrinth-а ако је тамо објављен.",
+    "technicClientId": "Technic ID клијента",
+    "technicClientIdHint": "Потребан само за приступ приватним паковима.",
+    "apisRestartHint": "Измене се примењују након поновног покретања лаунчера."
   },
   "java": {
     "installation": "Java инсталација",

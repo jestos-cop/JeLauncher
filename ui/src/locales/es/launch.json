@@ -14,7 +14,7 @@
     "upload": "Subir",
     "uploading": "Subiendo…",
     "clear": "Limpiar",
-    "uploaded": "Registro subido: <link>{{url}}</link>",
+    "uploaded": "Registro subido: <open>{{url}}</open>",
     "copyLink": "Copiar enlace",
     "confirmUploadTitle": "¿Subir este registro?",
     "confirmUploadDescription": "El registro completo se publica en mclo.gs y cualquiera con el enlace podrá leerlo. Tu carpeta personal se oculta en las rutas de archivos."

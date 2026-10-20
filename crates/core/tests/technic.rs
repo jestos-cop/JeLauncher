@@ -10,7 +10,10 @@ use jelauncher_core::settings::NetworkSettings;
 #[tokio::test]
 #[ignore = "requires network access; downloads a large modpack"]
 async fn installs_a_solder_pack() -> jelauncher_core::Result<()> {
-    let platforms = ModPlatforms::new(HttpClient::new(&NetworkSettings::default())?, None);
+    let platforms = ModPlatforms::new(
+        HttpClient::new(&NetworkSettings::default())?,
+        Default::default(),
+    );
     let page = platforms
         .search(&SearchQuery {
             provider: Provider::Technic,

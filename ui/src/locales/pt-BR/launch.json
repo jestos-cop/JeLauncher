@@ -14,7 +14,7 @@
     "upload": "Enviar",
     "uploading": "Enviando…",
     "clear": "Limpar",
-    "uploaded": "Registro enviado: <link>{{url}}</link>",
+    "uploaded": "Registro enviado: <open>{{url}}</open>",
     "copyLink": "Copiar link",
     "confirmUploadTitle": "Enviar este registro?",
     "confirmUploadDescription": "O registro inteiro é publicado no mclo.gs e qualquer pessoa com o link pode lê-lo. Sua pasta pessoal é ocultada nos caminhos de arquivos."

@@ -13,7 +13,7 @@
     "upload": "Send Off",
     "uploading": "Sendin' off…",
     "clear": "Swab",
-    "uploaded": "Ship's log sent: <link>{{url}}</link>",
+    "uploaded": "Ship's log sent: <open>{{url}}</open>",
     "copyLink": "Copy link",
     "confirmUploadTitle": "Send off this ship's log?",
     "confirmUploadDescription": "The whole log be posted on mclo.gs and any scallywag with the link can read it. Yer home folder be hidden from file paths."

@@ -121,7 +121,7 @@ pub async fn launch_account(state: &AppState) -> CommandResult<Account> {
 }
 
 fn microsoft_auth(state: &AppState) -> CommandResult<MicrosoftAuth<'_>> {
-    let client_id = state.microsoft_client_id.ok_or_else(|| {
+    let client_id = state.microsoft_client_id.as_deref().ok_or_else(|| {
         CommandError::new(
             "Microsoft sign-in is not available in this build: no client id is configured",
         )

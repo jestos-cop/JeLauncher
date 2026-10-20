@@ -15,7 +15,7 @@
     "upload": "Wyślij",
     "uploading": "Wysyłanie…",
     "clear": "Wyczyść",
-    "uploaded": "Dziennik wysłany: <link>{{url}}</link>",
+    "uploaded": "Dziennik wysłany: <open>{{url}}</open>",
     "copyLink": "Kopiuj link",
     "confirmUploadTitle": "Wysłać ten dziennik?",
     "confirmUploadDescription": "Cały dziennik zostanie opublikowany na mclo.gs i każdy, kto ma link, będzie mógł go przeczytać. Twój folder domowy jest ukrywany w ścieżkach plików."

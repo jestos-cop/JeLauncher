@@ -12,7 +12,7 @@ import { LANGUAGES } from '@/i18n'
 
 const AUTO_JAVA = 'auto'
 
-export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+export function Field({ label, hint, children }: { label: string; hint?: ReactNode; children: ReactNode }) {
   return (
     <div className="grid grid-cols-[12rem_1fr] items-center gap-3">
       <Label>{label}</Label>

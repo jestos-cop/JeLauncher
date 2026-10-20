@@ -9,7 +9,10 @@ use jelauncher_core::settings::NetworkSettings;
 #[tokio::test]
 #[ignore = "requires network access; downloads a modpack"]
 async fn installs_a_pack_with_optional_mods_and_extracted_files() -> jelauncher_core::Result<()> {
-    let platforms = ModPlatforms::new(HttpClient::new(&NetworkSettings::default())?, None);
+    let platforms = ModPlatforms::new(
+        HttpClient::new(&NetworkSettings::default())?,
+        Default::default(),
+    );
     let page = platforms
         .search(&SearchQuery {
             provider: Provider::AtLauncher,

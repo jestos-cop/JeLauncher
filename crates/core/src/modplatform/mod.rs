@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use crate::minecraft::LoaderKind;
 use std::path::Path;
 
-pub use platforms::ModPlatforms;
+pub use platforms::{ModPlatforms, PlatformConfig};
 
 use crate::net::{Download, HttpClient};
 pub use crate::resources::ResourceKind;

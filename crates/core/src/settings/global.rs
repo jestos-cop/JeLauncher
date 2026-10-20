@@ -41,11 +41,31 @@ impl Default for ToolSettings {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
+/// Credentials that replace or add to the ones the launcher was built with.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(default, rename_all = "camelCase")]
 pub struct ApiSettings {
-    /// Replaces the CurseForge API key the launcher was built with.
+    /// Azure application id for Microsoft sign-in.
+    pub microsoft_client_id: Option<String>,
+    /// Modrinth personal access token, only needed for private projects.
+    pub modrinth_token: Option<String>,
     pub curseforge_api_key: Option<String>,
+    /// Fetches CurseForge files their authors block from Modrinth when it has the same file.
+    pub modrinth_fallback_for_blocked: bool,
+    /// Technic client id, only needed for private packs.
+    pub technic_client_id: Option<String>,
+}
+
+impl Default for ApiSettings {
+    fn default() -> Self {
+        Self {
+            microsoft_client_id: None,
+            modrinth_token: None,
+            curseforge_api_key: None,
+            modrinth_fallback_for_blocked: true,
+            technic_client_id: None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]

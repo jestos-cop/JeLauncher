@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use serde::de::DeserializeOwned;
 
 use super::{ProjectHit, ProjectVersion, Provider, ReleaseType, SearchPage, SearchQuery};
 use crate::net::HttpClient;
@@ -12,6 +13,8 @@ const BUILD: &str = "jelauncher";
 #[derive(Debug, Clone)]
 pub struct Technic {
     http: HttpClient,
+    /// Platform client id; only needed for private packs.
+    client_id: Option<String>,
 }
 
 /// Where the files of one Technic pack version come from.
@@ -43,7 +46,26 @@ pub struct TechnicPackVersion {
 
 impl Technic {
     pub fn new(http: HttpClient) -> Self {
-        Self { http }
+        Self::with_client_id(http, None)
+    }
+
+    pub fn with_client_id(http: HttpClient, client_id: Option<String>) -> Self {
+        Self {
+            http,
+            client_id: client_id.filter(|id| !id.trim().is_empty()),
+        }
+    }
+
+    /// GET on the platform API with the build name and, when set, the client id.
+    async fn get<T: DeserializeOwned>(&self, path: &str, extra: &[(&str, String)]) -> Result<T> {
+        let mut query = vec![("build", BUILD.to_owned())];
+        if let Some(client_id) = &self.client_id {
+            query.push(("cid", client_id.clone()));
+        }
+        query.extend_from_slice(extra);
+        self.http
+            .get_json_query(&format!("{API}/{path}"), &query)
+            .await
     }
 
     /// Searches by name, or lists trending packs for an empty query. A pack slug or
@@ -58,16 +80,9 @@ impl Technic {
             });
         }
         let list: ApiPackList = if text.is_empty() {
-            self.http
-                .get_json_query(&format!("{API}/trending"), &[("build", BUILD.into())])
-                .await?
+            self.get("trending", &[]).await?
         } else {
-            self.http
-                .get_json_query(
-                    &format!("{API}/search"),
-                    &[("build", BUILD.into()), ("q", text.to_owned())],
-                )
-                .await?
+            self.get("search", &[("q", text.to_owned())]).await?
         };
         Ok(SearchPage {
             total: list.modpacks.len() as u32,
@@ -148,9 +163,7 @@ impl Technic {
     }
 
     async fn pack(&self, slug: &str) -> Result<ApiPack> {
-        self.http
-            .get_json_query(&format!("{API}/modpack/{slug}"), &[("build", BUILD.into())])
-            .await
+        self.get(&format!("modpack/{slug}"), &[]).await
     }
 }
 

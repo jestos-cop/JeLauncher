@@ -25,16 +25,28 @@ pub struct ModPlatforms {
     pub ftb: Ftb,
     pub technic: Technic,
     pub atlauncher: AtLauncher,
+    pub modrinth_fallback_for_blocked: bool,
     http: HttpClient,
 }
 
+/// Credentials and behaviour of the platforms; every credential is optional.
+#[derive(Debug, Clone, Default)]
+pub struct PlatformConfig {
+    pub curseforge_api_key: Option<String>,
+    pub modrinth_token: Option<String>,
+    pub technic_client_id: Option<String>,
+    /// Downloads CurseForge files their authors block from Modrinth when it has the same file.
+    pub modrinth_fallback_for_blocked: bool,
+}
+
 impl ModPlatforms {
-    pub fn new(http: HttpClient, curseforge_api_key: Option<String>) -> Self {
+    pub fn new(http: HttpClient, config: PlatformConfig) -> Self {
         Self {
-            modrinth: Modrinth::new(http.clone()),
-            curseforge: CurseForge::new(http.clone(), curseforge_api_key),
+            modrinth: Modrinth::with_token(http.clone(), config.modrinth_token),
+            curseforge: CurseForge::new(http.clone(), config.curseforge_api_key),
             ftb: Ftb::new(http.clone()),
-            technic: Technic::new(http.clone()),
+            technic: Technic::with_client_id(http.clone(), config.technic_client_id),
+            modrinth_fallback_for_blocked: config.modrinth_fallback_for_blocked,
             atlauncher: AtLauncher::new(http.clone()),
             http,
         }
@@ -69,15 +81,9 @@ impl ModPlatforms {
                     project_id: version.project_id,
                     version_id: version.id,
                 };
-                let installed = install_curseforge_pack(
-                    &self.curseforge,
-                    &self.http,
-                    &archive,
-                    target,
-                    Some(source),
-                    on_progress,
-                )
-                .await;
+                let installed =
+                    install_curseforge_pack(self, &archive, target, Some(source), on_progress)
+                        .await;
                 let _ = std::fs::remove_file(&archive);
                 installed
             }

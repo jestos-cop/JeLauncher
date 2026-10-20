@@ -32,8 +32,18 @@
     "retries": "Повторные попытки",
     "apis": "API",
     "curseforgeApiKey": "Ключ API CurseForge",
-    "curseforgeApiKeyHint": "Необязательно. Заменяет ключ, встроенный в эту версию лаунчера. Изменения сети и API применяются после перезапуска.",
-    "curseforgeApiKeyPlaceholder": "Встроенный ключ"
+    "curseforgeApiKeyHint": "Нужен, только если CurseForge не работает со встроенным ключом.",
+    "microsoftClientId": "Client ID для Microsoft",
+    "microsoftClientIdHint": "Нужно, только если вход через Microsoft не работает со встроенным ID.",
+    "builtInPlaceholder": "Встроенный",
+    "modrinthToken": "Токен Modrinth",
+    "modrinthTokenHint": "Нужен только для доступа к приватным проектам. Подробнее в <open>документации</open>.",
+    "notUsedPlaceholder": "Не используется",
+    "modrinthFallback": "Брать заблокированные моды с Modrinth",
+    "modrinthFallbackHint": "Если автор на CurseForge запрещает скачивание вне сайта, тот же файл скачивается с Modrinth, если он там есть.",
+    "technicClientId": "Client ID для Technic",
+    "technicClientIdHint": "Нужен только для доступа к приватным пакам.",
+    "apisRestartHint": "Изменения здесь применятся после перезапуска лаунчера."
   },
   "java": {
     "installation": "Установленная Java",

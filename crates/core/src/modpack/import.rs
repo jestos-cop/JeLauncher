@@ -84,15 +84,7 @@ async fn import_archive(
                 .map(PackInstall::complete)
         }
         ArchiveKind::CurseForge => {
-            install_curseforge_pack(
-                &platforms.curseforge,
-                platforms.http(),
-                archive_path,
-                target,
-                None,
-                on_progress,
-            )
-            .await
+            install_curseforge_pack(platforms, archive_path, target, None, on_progress).await
         }
         ArchiveKind::Native { config_entry } => {
             import_native(archive_path, &config_entry, target).map(PackInstall::complete)
@@ -212,7 +204,7 @@ mod tests {
         };
         let platforms = ModPlatforms::new(
             crate::net::HttpClient::new(&crate::settings::NetworkSettings::default())?,
-            None,
+            Default::default(),
         );
         let instance =
             import_instance(&platforms, &archive_path.to_string_lossy(), &target, |_| {})

@@ -13,7 +13,7 @@
     "upload": "Upload",
     "uploading": "Uploading…",
     "clear": "Clear",
-    "uploaded": "Log uploaded: <link>{{url}}</link>",
+    "uploaded": "Log uploaded: <open>{{url}}</open>",
     "copyLink": "Copy link",
     "confirmUploadTitle": "Upload this log?",
     "confirmUploadDescription": "The whole log is published on mclo.gs and anyone with the link can read it. Your home folder is hidden from file paths."

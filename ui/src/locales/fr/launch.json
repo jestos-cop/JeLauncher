@@ -14,7 +14,7 @@
     "upload": "Envoyer",
     "uploading": "Envoi…",
     "clear": "Effacer",
-    "uploaded": "Journal envoyé : <link>{{url}}</link>",
+    "uploaded": "Journal envoyé : <open>{{url}}</open>",
     "copyLink": "Copier le lien",
     "confirmUploadTitle": "Envoyer ce journal ?",
     "confirmUploadDescription": "Le journal entier est publié sur mclo.gs et toute personne disposant du lien peut le lire. Votre dossier personnel est masqué dans les chemins de fichiers."

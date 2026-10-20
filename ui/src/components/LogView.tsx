@@ -93,7 +93,7 @@ export function LogView({ lines, onClear }: LogViewProps) {
             i18nKey="log.uploaded"
             values={{ url: upload.data }}
             components={{
-              link: (
+              open: (
                 <button
                   type="button"
                   className="text-primary underline underline-offset-2"

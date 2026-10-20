@@ -3,7 +3,7 @@
 
 use jelauncher_core::minecraft::LoaderKind;
 use jelauncher_core::modplatform::{
-    InstallTarget, ModPlatforms, Provider, ResourceKind, SearchQuery, SortOrder,
+    InstallTarget, ModPlatforms, PlatformConfig, Provider, ResourceKind, SearchQuery, SortOrder,
 };
 use jelauncher_core::net::HttpClient;
 use jelauncher_core::resources::list_resources;
@@ -14,7 +14,10 @@ use jelauncher_core::settings::NetworkSettings;
 async fn searches_and_installs_a_mod_with_dependencies() -> jelauncher_core::Result<()> {
     let platforms = ModPlatforms::new(
         HttpClient::new(&NetworkSettings::default())?,
-        std::env::var("CURSEFORGE_API_KEY").ok(),
+        PlatformConfig {
+            curseforge_api_key: std::env::var("CURSEFORGE_API_KEY").ok(),
+            ..Default::default()
+        },
     );
     let (game_version, loader) = ("1.21.1", LoaderKind::NeoForge);
     let page = platforms
@@ -73,7 +76,11 @@ async fn installs_a_curseforge_modpack() -> jelauncher_core::Result<()> {
 
     let platforms = ModPlatforms::new(
         HttpClient::new(&NetworkSettings::default())?,
-        std::env::var("CURSEFORGE_API_KEY").ok(),
+        PlatformConfig {
+            curseforge_api_key: std::env::var("CURSEFORGE_API_KEY").ok(),
+            modrinth_fallback_for_blocked: true,
+            ..Default::default()
+        },
     );
     let page = platforms
         .search(&SearchQuery {
@@ -151,7 +158,10 @@ async fn exports_a_pack_that_references_curseforge_files() -> jelauncher_core::R
 
     let platforms = ModPlatforms::new(
         HttpClient::new(&NetworkSettings::default())?,
-        std::env::var("CURSEFORGE_API_KEY").ok(),
+        PlatformConfig {
+            curseforge_api_key: std::env::var("CURSEFORGE_API_KEY").ok(),
+            ..Default::default()
+        },
     );
     let io = |err| jelauncher_core::Error::Io {
         path: "tempdir".into(),

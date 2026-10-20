@@ -32,8 +32,18 @@
     "retries": "Ponowienia",
     "apis": "API",
     "curseforgeApiKey": "Klucz API CurseForge",
-    "curseforgeApiKeyHint": "Opcjonalnie. Zastępuje klucz wbudowany w tę wersję. Zmiany sieci i API zostaną zastosowane po ponownym uruchomieniu.",
-    "curseforgeApiKeyPlaceholder": "Wbudowany klucz"
+    "curseforgeApiKeyHint": "Potrzebny tylko, gdy CurseForge nie działa z wbudowanym kluczem.",
+    "microsoftClientId": "Identyfikator klienta Microsoft",
+    "microsoftClientIdHint": "Potrzebne tylko, gdy logowanie przez Microsoft nie działa z wbudowanym identyfikatorem.",
+    "builtInPlaceholder": "Wbudowany",
+    "modrinthToken": "Token Modrinth",
+    "modrinthTokenHint": "Potrzebny tylko do dostępu do prywatnych projektów. Zobacz <open>dokumentację</open>.",
+    "notUsedPlaceholder": "Nieużywany",
+    "modrinthFallback": "Używaj Modrinth jako zapasowego źródła zablokowanych modów",
+    "modrinthFallbackHint": "Gdy autor na CurseForge blokuje pobieranie poza stroną, ten sam plik jest pobierany z Modrinth, jeśli tam jest.",
+    "technicClientId": "Identyfikator klienta Technic",
+    "technicClientIdHint": "Potrzebny tylko do dostępu do prywatnych paczek.",
+    "apisRestartHint": "Zmiany zostaną zastosowane po ponownym uruchomieniu launchera."
   },
   "java": {
     "installation": "Instalacja Java",

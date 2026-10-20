@@ -12,7 +12,7 @@
     "upload": "アップロード",
     "uploading": "アップロード中…",
     "clear": "クリア",
-    "uploaded": "ログをアップロードしました: <link>{{url}}</link>",
+    "uploaded": "ログをアップロードしました: <open>{{url}}</open>",
     "copyLink": "リンクをコピー",
     "confirmUploadTitle": "このログをアップロードしますか？",
     "confirmUploadDescription": "ログ全体が mclo.gs で公開され、リンクを知っている人は誰でも閲覧できます。ファイルパス内のホームフォルダーは伏せられます。"
