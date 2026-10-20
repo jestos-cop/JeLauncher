@@ -103,7 +103,14 @@
     "identifySources": "识别来源",
     "identifying": "正在识别…",
     "identified": "已找到来源：{{identified}}。未找到：{{unknown}}。",
-    "unknownSource": "来源未知"
+    "unknownSource": "来源未知",
+    "moreActions": "更多操作",
+    "viewOn": "在 {{provider}} 上查看",
+    "changeVersion": "更改版本",
+    "lockUpdates": "锁定更新",
+    "unlockUpdates": "解锁更新",
+    "forgetSource": "忘记来源",
+    "updatesLocked": "更新已锁定"
   },
   "worlds": {
     "count_other": "{{count}} 个世界",

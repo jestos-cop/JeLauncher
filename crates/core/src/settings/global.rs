@@ -3,6 +3,7 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
+use crate::modplatform::ReleaseType;
 use crate::{Result, fs};
 
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
@@ -138,6 +139,36 @@ pub struct LauncherSettings {
     pub setup_completed: bool,
     /// Remembers which platform project installed mods and packs came from.
     pub track_resource_sources: bool,
+    /// The least stable releases "Check for Updates" offers.
+    pub update_channel: UpdateChannel,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub enum UpdateChannel {
+    Release,
+    #[default]
+    Beta,
+    Alpha,
+}
+
+impl UpdateChannel {
+    pub fn allows(self, release_type: ReleaseType) -> bool {
+        match self {
+            Self::Release => release_type == ReleaseType::Release,
+            Self::Beta => release_type != ReleaseType::Alpha,
+            Self::Alpha => true,
+        }
+    }
+
+    /// Modrinth's names of the release types this channel allows.
+    pub fn version_types(self) -> Vec<&'static str> {
+        match self {
+            Self::Release => vec!["release"],
+            Self::Beta => vec!["release", "beta"],
+            Self::Alpha => vec!["release", "beta", "alpha"],
+        }
+    }
 }
 
 impl Default for LauncherSettings {
@@ -149,6 +180,7 @@ impl Default for LauncherSettings {
             record_game_time: true,
             setup_completed: false,
             track_resource_sources: true,
+            update_channel: UpdateChannel::default(),
         }
     }
 }

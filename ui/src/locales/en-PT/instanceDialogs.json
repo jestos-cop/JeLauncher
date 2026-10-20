@@ -14,7 +14,11 @@
     "alsoInstalled": "Also hauled aboard: {{names}}",
     "loadingVersions": "Fetchin' versions…",
     "noVersions": "No versions fit fer this ship.",
-    "installed": "Aboard"
+    "installed": "Aboard",
+    "changeTitle": "Swap {{name}} cargo",
+    "switch": "Swap",
+    "current": "Aboard",
+    "installedBadge": "Aboard"
   },
   "resourceUpdate": {
     "title": "Review Updates",
@@ -22,7 +26,8 @@
     "select": "Update {{name}}",
     "changelog": "Changelog",
     "noChangelog": "No changelog fer this version.",
-    "apply": "Update {{selected}} o' {{total}}"
+    "apply": "Update {{selected}} o' {{total}}",
+    "websiteOnly": "Ashore only"
   },
   "export": {
     "title": "Ship Out {{name}}",

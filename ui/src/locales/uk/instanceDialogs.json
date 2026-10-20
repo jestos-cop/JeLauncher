@@ -14,7 +14,11 @@
     "alsoInstalled": "Також встановлено: {{names}}",
     "loadingVersions": "Завантаження версій…",
     "noVersions": "Немає версій для цієї збірки.",
-    "installed": "Встановлено"
+    "installed": "Встановлено",
+    "changeTitle": "Змінити версію {{name}}",
+    "switch": "Перейти",
+    "current": "Поточна",
+    "installedBadge": "Встановлено"
   },
   "resourceUpdate": {
     "title": "Перегляд оновлень",
@@ -22,7 +26,8 @@
     "select": "Оновити {{name}}",
     "changelog": "Список змін",
     "noChangelog": "Для цієї версії немає списку змін.",
-    "apply": "Оновити {{selected}} з {{total}}"
+    "apply": "Оновити {{selected}} з {{total}}",
+    "websiteOnly": "Лише на сайті"
   },
   "export": {
     "title": "Експорт {{name}}",

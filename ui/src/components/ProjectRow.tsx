@@ -1,16 +1,19 @@
 import { Package } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { ProjectHit } from '@/bindings'
+import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 interface ProjectRowProps {
   hit: ProjectHit
   isSelected: boolean
   onSelect: () => void
+  /** The instance already has this project. */
+  installed?: boolean
 }
 
-export function ProjectRow({ hit, isSelected, onSelect }: ProjectRowProps) {
-  const { t } = useTranslation('newInstance')
+export function ProjectRow({ hit, isSelected, onSelect, installed = false }: ProjectRowProps) {
+  const { t } = useTranslation(['newInstance', 'instanceDialogs'])
   return (
     <li>
       <button
@@ -26,6 +29,9 @@ export function ProjectRow({ hit, isSelected, onSelect }: ProjectRowProps) {
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-2">
             <span className="font-medium">{hit.title}</span>
+            {installed && (
+              <Badge variant="secondary">{t('instanceDialogs:resourceDownload.installedBadge')}</Badge>
+            )}
             {hit.author && (
               <span className="text-xs text-muted-foreground">
                 {t('projectRow.author', { author: hit.author })}

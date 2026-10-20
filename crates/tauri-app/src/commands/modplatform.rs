@@ -4,8 +4,8 @@ use std::path::Path;
 use jelauncher_core::instance::Instance;
 
 use jelauncher_core::modpack::{self, BlockedFile, ModpackTarget, PackInstall};
+use jelauncher_core::modplatform::IdentifyReport;
 use jelauncher_core::modplatform::atlauncher::OptionalMod;
-use jelauncher_core::modplatform::{IdentifyReport, InstalledFile};
 use jelauncher_core::modplatform::{
     InstallTarget, ProjectVersion, Provider, ResourceKind, ResourceUpdate, SearchPage, SearchQuery,
     SortOrder,
@@ -84,8 +84,8 @@ pub async fn install_project_version(
         .await?)
 }
 
-/// Newer Modrinth versions of the installed resources of `kind`. Files without a known
-/// source are identified first.
+/// Newer versions of the installed resources of `kind`, each checked on the platform it
+/// came from. Files without a known source are identified first.
 #[tauri::command]
 #[specta::specta]
 pub async fn check_resource_updates(
@@ -95,14 +95,22 @@ pub async fn check_resource_updates(
 ) -> CommandResult<Vec<ResourceUpdate>> {
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
     let dir = instance.resource_dir(kind);
-    let tracks = tracks_sources(&state)?;
+    let (tracks, channel) = {
+        let settings = state
+            .settings
+            .read()
+            .map_err(|_| CommandError::poisoned())?;
+        (
+            settings.launcher.track_resource_sources,
+            settings.launcher.update_channel,
+        )
+    };
     if tracks {
         state.platforms.identify_sources(&dir, kind, false).await?;
     }
     Ok(state
         .platforms
-        .modrinth
-        .check_updates(&install_target(&instance, &dir, kind, tracks))
+        .check_updates(&install_target(&instance, &dir, kind, tracks), channel)
         .await?)
 }
 
@@ -126,7 +134,8 @@ pub async fn identify_resource_sources(
         .await?)
 }
 
-/// Replaces an installed resource file with another version; returns the new file name.
+/// Replaces an installed resource file with another version of its project; returns the
+/// new file name.
 #[tauri::command]
 #[specta::specta]
 pub async fn update_resource(
@@ -134,28 +143,17 @@ pub async fn update_resource(
     instance_id: String,
     kind: ResourceKind,
     file_name: String,
+    provider: Provider,
+    project_id: String,
     version_id: String,
 ) -> CommandResult<String> {
     let instance = Instance::open(&state.paths.instances(), &instance_id)?;
-    let version = state.platforms.modrinth.version(&version_id).await?;
     let dir = instance.resource_dir(kind);
-    let new_name = state
+    let target = install_target(&instance, &dir, kind, tracks_sources(&state)?);
+    Ok(state
         .platforms
-        .modrinth
-        .apply_update(&dir, &file_name, &version)
-        .await?;
-    if let (true, Some(file)) = (tracks_sources(&state)?, version.primary_file()) {
-        let installed = InstalledFile {
-            file_name: new_name.clone(),
-            file: file.clone(),
-            version: version.clone(),
-        };
-        state
-            .platforms
-            .record_sources(&dir, kind, Provider::Modrinth, &[installed], false)
-            .await?;
-    }
-    Ok(new_name)
+        .update_resource(&target, &file_name, provider, &project_id, &version_id)
+        .await?)
 }
 
 fn install_target<'a>(

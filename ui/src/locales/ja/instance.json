@@ -103,7 +103,14 @@
     "identifySources": "入手元を特定",
     "identifying": "特定中…",
     "identified": "入手元が見つかりました: {{identified}}。見つかりません: {{unknown}}。",
-    "unknownSource": "入手元不明"
+    "unknownSource": "入手元不明",
+    "moreActions": "その他の操作",
+    "viewOn": "{{provider}} で表示",
+    "changeVersion": "バージョンを変更",
+    "lockUpdates": "更新をロック",
+    "unlockUpdates": "更新のロックを解除",
+    "forgetSource": "入手元を削除",
+    "updatesLocked": "更新はロック中"
   },
   "worlds": {
     "count_other": "{{count}} 個のワールド",

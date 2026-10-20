@@ -46,7 +46,14 @@
     "apisRestartHint": "Changes here apply after restarting the launcher.",
     "resources": "Mods and packs",
     "trackSources": "Keep track of sources",
-    "trackSourcesHint": "Remembers which Modrinth or CurseForge project installed mods and packs came from. Needed for the Source column and updates."
+    "trackSourcesHint": "Remembers which Modrinth or CurseForge project installed mods and packs came from. Needed for the Source column and updates.",
+    "updateChannel": "Offer updates",
+    "updateChannelHint": "Which releases Check for Updates suggests.",
+    "channel": {
+      "release": "Stable releases only",
+      "beta": "Stable and beta",
+      "alpha": "All releases"
+    }
   },
   "java": {
     "installation": "Java installation",

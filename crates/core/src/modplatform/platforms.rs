@@ -15,6 +15,7 @@ use crate::modpack::{
     install_ftb_pack, install_technic_pack,
 };
 use crate::net::{DownloadProgress, HttpClient};
+use crate::resources::read_sources;
 use crate::{Error, Result};
 
 /// Every supported mod platform behind one interface, chosen per call by [`Provider`].
@@ -212,6 +213,15 @@ impl ModPlatforms {
         target: &InstallTarget<'_>,
     ) -> Result<Vec<String>> {
         let mut seen = HashSet::from([version.project_id.clone()]);
+        // Dependencies already installed from the same platform are not installed again.
+        if target.track_sources {
+            seen.extend(
+                read_sources(target.dir, target.kind)
+                    .into_iter()
+                    .filter(|(_, source)| source.provider == provider)
+                    .map(|(_, source)| source.project_id),
+            );
+        }
         let mut queue = VecDeque::from([version]);
         let mut installed = Vec::new();
         let mut recorded = Vec::new();

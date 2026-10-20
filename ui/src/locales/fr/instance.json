@@ -105,7 +105,14 @@
     "identifySources": "Identifier les sources",
     "identifying": "Identification…",
     "identified": "Sources trouvées : {{identified}}. Introuvables : {{unknown}}.",
-    "unknownSource": "Source inconnue"
+    "unknownSource": "Source inconnue",
+    "moreActions": "Plus d’actions",
+    "viewOn": "Voir sur {{provider}}",
+    "changeVersion": "Changer de version",
+    "lockUpdates": "Bloquer les mises à jour",
+    "unlockUpdates": "Débloquer les mises à jour",
+    "forgetSource": "Oublier la source",
+    "updatesLocked": "Mises à jour bloquées"
   },
   "worlds": {
     "count_one": "{{count}} monde",

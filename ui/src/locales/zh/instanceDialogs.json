@@ -14,7 +14,11 @@
     "alsoInstalled": "同时安装：{{names}}",
     "loadingVersions": "正在加载版本…",
     "noVersions": "没有适用于此实例的版本。",
-    "installed": "已安装"
+    "installed": "已安装",
+    "changeTitle": "更改 {{name}} 的版本",
+    "switch": "切换",
+    "current": "当前",
+    "installedBadge": "已安装"
   },
   "resourceUpdate": {
     "title": "查看更新",
@@ -22,7 +26,8 @@
     "select": "更新 {{name}}",
     "changelog": "更新日志",
     "noChangelog": "此版本没有更新日志。",
-    "apply": "更新 {{selected}}/{{total}} 项"
+    "apply": "更新 {{selected}}/{{total}} 项",
+    "websiteOnly": "仅限网站"
   },
   "export": {
     "title": "导出 {{name}}",

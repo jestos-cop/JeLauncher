@@ -106,7 +106,14 @@
     "identifySources": "Определить источники",
     "identifying": "Определение…",
     "identified": "Найдено источников: {{identified}}. Не найдено: {{unknown}}.",
-    "unknownSource": "Источник неизвестен"
+    "unknownSource": "Источник неизвестен",
+    "moreActions": "Другие действия",
+    "viewOn": "Открыть на {{provider}}",
+    "changeVersion": "Изменить версию",
+    "lockUpdates": "Не обновлять",
+    "unlockUpdates": "Разрешить обновления",
+    "forgetSource": "Забыть источник",
+    "updatesLocked": "Обновления заблокированы"
   },
   "worlds": {
     "count_one": "{{count}} мир",

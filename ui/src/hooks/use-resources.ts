@@ -1,5 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { commands, type IdentifyReport, type ResourceKind, type ResourceUpdate } from '@/bindings'
+import {
+  commands,
+  type IdentifyReport,
+  type ResourceKind,
+  type ResourceSource,
+  type ResourceUpdate,
+} from '@/bindings'
 import { unwrap } from '@/lib/command'
 
 export const resourcesKey = (instanceId: string, kind: ResourceKind) => ['resources', instanceId, kind]
@@ -67,7 +73,16 @@ export function useUpdateResources(instanceId: string, kind: ResourceKind) {
   return useMutation({
     mutationFn: async (updates: ResourceUpdate[]) => {
       for (const update of updates) {
-        await unwrap(commands.updateResource(instanceId, kind, update.fileName, update.version.id))
+        await unwrap(
+          commands.updateResource(
+            instanceId,
+            kind,
+            update.fileName,
+            update.provider,
+            update.version.projectId,
+            update.version.id,
+          ),
+        )
       }
     },
     onSettled: () =>
@@ -76,4 +91,31 @@ export function useUpdateResources(instanceId: string, kind: ResourceKind) {
         queryClient.invalidateQueries({ queryKey: updatesKey(instanceId, kind) }),
       ]),
   })
+}
+
+export function useSetUpdateLock(instanceId: string, kind: ResourceKind) {
+  return useResourceMutation(
+    instanceId,
+    kind,
+    ({ fileName, locked }: { fileName: string; locked: boolean }) =>
+      unwrap(commands.setResourceUpdateLock(instanceId, kind, fileName, locked)),
+  )
+}
+
+export function useForgetSource(instanceId: string, kind: ResourceKind) {
+  return useResourceMutation(instanceId, kind, (fileName: string) =>
+    unwrap(commands.forgetResourceSource(instanceId, kind, fileName)),
+  )
+}
+
+/** Replaces an installed file with another version of the project it came from. */
+export function useChangeVersion(
+  instanceId: string,
+  kind: ResourceKind,
+  fileName: string,
+  source: ResourceSource,
+) {
+  return useResourceMutation(instanceId, kind, (versionId: string) =>
+    unwrap(commands.updateResource(instanceId, kind, fileName, source.provider, source.projectId, versionId)),
+  )
 }

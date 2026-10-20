@@ -76,3 +76,30 @@ pub async fn export_mod_list(
     let list = resources::format_mod_list(&files, format);
     std::fs::write(&output, list).map_err(|err| CommandError::new(err.to_string()))
 }
+
+/// Turns update checks off or on for one resource with a known source.
+#[tauri::command]
+#[specta::specta]
+pub fn set_resource_update_lock(
+    state: State<'_, AppState>,
+    instance_id: String,
+    kind: ResourceKind,
+    file_name: String,
+    locked: bool,
+) -> CommandResult<()> {
+    let dir = resource_dir(&state, &instance_id, kind)?;
+    Ok(resources::set_update_lock(&dir, kind, &file_name, locked)?)
+}
+
+/// Forgets where a resource came from, keeping the file.
+#[tauri::command]
+#[specta::specta]
+pub fn forget_resource_source(
+    state: State<'_, AppState>,
+    instance_id: String,
+    kind: ResourceKind,
+    file_name: String,
+) -> CommandResult<()> {
+    let dir = resource_dir(&state, &instance_id, kind)?;
+    Ok(resources::remove_source(&dir, kind, &file_name)?)
+}

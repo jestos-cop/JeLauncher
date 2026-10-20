@@ -27,8 +27,10 @@ pub struct ResourceSource {
     pub file_name: String,
     pub version_number: Option<String>,
     pub release_type: Option<ReleaseType>,
-    /// Kept as it is: updates are left to the modpack the file came with.
+    /// Update checks skip the file, e.g. because it came with a modpack.
     pub lock_update: bool,
+    /// The project page on the platform's website.
+    pub homepage: String,
     #[serde(skip)]
     download: Download,
     #[serde(skip)]
@@ -76,6 +78,7 @@ impl ResourceSource {
             version_number: Some(version.version_number.clone()),
             release_type: Some(version.release_type),
             lock_update,
+            homepage: project_url(provider, &version.project_id),
             download: Download {
                 url: if provider == Provider::CurseForge {
                     String::new()
@@ -94,15 +97,12 @@ impl ResourceSource {
                 .collect(),
         }
     }
+}
 
-    /// The project page on the platform's website.
-    pub fn project_url(&self) -> String {
-        match self.provider {
-            Provider::CurseForge => {
-                format!("https://www.curseforge.com/projects/{}", self.project_id)
-            }
-            _ => format!("https://modrinth.com/project/{}", self.project_id),
-        }
+fn project_url(provider: Provider, project_id: &str) -> String {
+    match provider {
+        Provider::CurseForge => format!("https://www.curseforge.com/projects/{project_id}"),
+        _ => format!("https://modrinth.com/project/{project_id}"),
     }
 }
 
@@ -261,6 +261,7 @@ fn parse_source(text: &str, path: &Path) -> Option<ResourceSource> {
         .to_str()?
         .strip_suffix(METADATA_SUFFIX)?
         .to_owned();
+    let homepage = project_url(provider, &project_id);
     Some(ResourceSource {
         provider,
         project_id,
@@ -271,6 +272,7 @@ fn parse_source(text: &str, path: &Path) -> Option<ResourceSource> {
         version_number: file.version_number,
         release_type: file.release_type,
         lock_update: file.lock_update,
+        homepage,
         download: Download {
             url: file.download.url,
             hash_format: file.download.hash_format,

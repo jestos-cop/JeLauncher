@@ -46,7 +46,14 @@
     "apisRestartHint": "These orders take hold once ye drop anchor an' set sail again.",
     "resources": "Trinkets an' cargo",
     "trackSources": "Log every port of origin",
-    "trackSourcesHint": "Remembers which Modrinth or CurseForge harbour each trinket sailed from. Needed fer the origin column an' fresh cargo."
+    "trackSourcesHint": "Remembers which Modrinth or CurseForge harbour each trinket sailed from. Needed fer the origin column an' fresh cargo.",
+    "updateChannel": "Offer fresh cargo",
+    "updateChannelHint": "Which cargo the lookout calls out.",
+    "channel": {
+      "release": "Seaworthy only",
+      "beta": "Seaworthy an' leaky",
+      "alpha": "Every ship afloat"
+    }
   },
   "java": {
     "installation": "Java installation",

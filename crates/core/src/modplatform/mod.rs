@@ -5,6 +5,7 @@ pub mod modrinth;
 mod platforms;
 mod sources;
 pub mod technic;
+mod updates;
 
 use serde::{Deserialize, Serialize};
 
@@ -16,6 +17,7 @@ pub use sources::{IdentifyReport, InstalledFile};
 
 use crate::net::{Download, HttpClient};
 pub use crate::resources::ResourceKind;
+use crate::resources::{DISABLED_SUFFIX, set_resource_enabled};
 use crate::{Error, Result};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
@@ -132,6 +134,7 @@ pub struct VersionFile {
 #[serde(rename_all = "camelCase")]
 pub struct ResourceUpdate {
     pub file_name: String,
+    pub provider: Provider,
     pub version: ProjectVersion,
 }
 
@@ -191,4 +194,23 @@ pub async fn download_version(
     }
     http.download(&file.download_into(dir)).await?;
     Ok(file.file_name.clone())
+}
+
+/// Replaces the installed file `file_name` with the primary file of `version`, keeping it
+/// disabled if it was. Returns the new file name.
+pub async fn replace_resource(
+    http: &HttpClient,
+    dir: &Path,
+    file_name: &str,
+    version: &ProjectVersion,
+) -> Result<String> {
+    let old = crate::fs::child_path(dir, file_name)?;
+    let new_name = download_version(http, version, dir).await?;
+    if new_name != file_name {
+        std::fs::remove_file(&old).map_err(|err| Error::io(&old, err))?;
+    }
+    if file_name.ends_with(DISABLED_SUFFIX) {
+        return set_resource_enabled(dir, &new_name, false);
+    }
+    Ok(new_name)
 }

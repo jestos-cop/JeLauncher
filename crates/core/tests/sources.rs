@@ -180,3 +180,74 @@ async fn modpack_installs_record_locked_sources() -> jelauncher_core::Result<()>
     assert!(recorded.iter().all(|source| source.lock_update));
     Ok(())
 }
+
+#[tokio::test]
+#[ignore = "requires network access and an API key"]
+async fn updates_curseforge_files_on_curseforge() -> jelauncher_core::Result<()> {
+    let platforms = platforms()?;
+    let dir = tempdir()?;
+    let target = InstallTarget {
+        dir: dir.path(),
+        kind: ResourceKind::Mod,
+        game_version: "1.21.1",
+        loader: Some(LoaderKind::NeoForge),
+        track_sources: true,
+    };
+    let mut versions = platforms
+        .versions(
+            Provider::CurseForge,
+            "238222",
+            ResourceKind::Mod,
+            Some("1.21.1"),
+            Some(LoaderKind::NeoForge),
+        )
+        .await?;
+    versions.sort_by(|a, b| a.published.cmp(&b.published));
+    let Some(oldest) = versions.first().cloned() else {
+        panic!("no JEI for 1.21.1");
+    };
+    let old_name = platforms
+        .install_with_dependencies(Provider::CurseForge, oldest.clone(), &target)
+        .await?
+        .remove(0);
+    let channel = jelauncher_core::settings::UpdateChannel::Alpha;
+    let updates = platforms.check_updates(&target, channel).await?;
+    let Some(update) = updates.iter().find(|update| update.file_name == old_name) else {
+        panic!("{old_name} has no update in {updates:?}");
+    };
+    println!(
+        "{old_name} -> {} on {:?}",
+        update.version.version_number, update.provider
+    );
+    assert_eq!(update.provider, Provider::CurseForge);
+
+    // Locked files are left alone.
+    jelauncher_core::resources::set_update_lock(dir.path(), ResourceKind::Mod, &old_name, true)?;
+    assert!(
+        platforms
+            .check_updates(&target, channel)
+            .await?
+            .iter()
+            .all(|u| u.file_name != old_name)
+    );
+    jelauncher_core::resources::set_update_lock(dir.path(), ResourceKind::Mod, &old_name, false)?;
+
+    let new_name = platforms
+        .update_resource(
+            &target,
+            &old_name,
+            update.provider,
+            &update.version.project_id,
+            &update.version.id,
+        )
+        .await?;
+    let source = sources(dir.path())
+        .into_iter()
+        .find(|source| source.file_name == new_name);
+    assert_eq!(
+        source.map(|source| source.version_id),
+        Some(update.version.id.clone())
+    );
+    assert!(!dir.path().join(&old_name).exists() || old_name == new_name);
+    Ok(())
+}

@@ -105,7 +105,14 @@
     "identifySources": "Препознај изворе",
     "identifying": "Препознавање…",
     "identified": "Пронађено извора: {{identified}}. Није пронађено: {{unknown}}.",
-    "unknownSource": "Непознат извор"
+    "unknownSource": "Непознат извор",
+    "moreActions": "Још радњи",
+    "viewOn": "Погледај на {{provider}}",
+    "changeVersion": "Промени верзију",
+    "lockUpdates": "Закључај ажурирања",
+    "unlockUpdates": "Откључај ажурирања",
+    "forgetSource": "Заборави извор",
+    "updatesLocked": "Ажурирања закључана"
   },
   "worlds": {
     "count_one": "{{count}} свет",

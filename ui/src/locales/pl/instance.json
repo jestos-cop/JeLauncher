@@ -106,7 +106,14 @@
     "identifySources": "Rozpoznaj źródła",
     "identifying": "Rozpoznawanie…",
     "identified": "Znalezione źródła: {{identified}}. Nieznalezione: {{unknown}}.",
-    "unknownSource": "Nieznane źródło"
+    "unknownSource": "Nieznane źródło",
+    "moreActions": "Więcej akcji",
+    "viewOn": "Zobacz na {{provider}}",
+    "changeVersion": "Zmień wersję",
+    "lockUpdates": "Zablokuj aktualizacje",
+    "unlockUpdates": "Odblokuj aktualizacje",
+    "forgetSource": "Zapomnij źródło",
+    "updatesLocked": "Aktualizacje zablokowane"
   },
   "worlds": {
     "count_one": "{{count}} świat",

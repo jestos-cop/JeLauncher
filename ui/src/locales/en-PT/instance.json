@@ -104,7 +104,14 @@
     "identifySources": "Chart the origins",
     "identifying": "Charting…",
     "identified": "Origins charted: {{identified}}. Lost at sea: {{unknown}}.",
-    "unknownSource": "Origin unknown"
+    "unknownSource": "Origin unknown",
+    "moreActions": "More orders",
+    "viewOn": "Spy it on {{provider}}",
+    "changeVersion": "Swap the cargo",
+    "lockUpdates": "Chain it to the mast",
+    "unlockUpdates": "Unchain it",
+    "forgetSource": "Forget the port",
+    "updatesLocked": "Chained to the mast"
   },
   "worlds": {
     "count_one": "{{count}} world",

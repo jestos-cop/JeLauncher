@@ -14,7 +14,11 @@
     "alsoInstalled": "Также установлено: {{names}}",
     "loadingVersions": "Загрузка версий…",
     "noVersions": "Нет версий для этой сборки.",
-    "installed": "Установлено"
+    "installed": "Установлено",
+    "changeTitle": "Изменить версию {{name}}",
+    "switch": "Перейти",
+    "current": "Текущая",
+    "installedBadge": "Установлено"
   },
   "resourceUpdate": {
     "title": "Просмотр обновлений",
@@ -22,7 +26,8 @@
     "select": "Обновить {{name}}",
     "changelog": "Список изменений",
     "noChangelog": "Для этой версии нет списка изменений.",
-    "apply": "Обновить {{selected}} из {{total}}"
+    "apply": "Обновить {{selected}} из {{total}}",
+    "websiteOnly": "Только на сайте"
   },
   "export": {
     "title": "Экспорт {{name}}",

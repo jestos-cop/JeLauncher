@@ -46,7 +46,14 @@
     "apisRestartHint": "As alterações aqui valem após reiniciar o launcher.",
     "resources": "Mods e pacotes",
     "trackSources": "Registrar origens",
-    "trackSourcesHint": "Lembra de qual projeto do Modrinth ou CurseForge vieram os mods e pacotes instalados. Necessário para a coluna Origem e as atualizações."
+    "trackSourcesHint": "Lembra de qual projeto do Modrinth ou CurseForge vieram os mods e pacotes instalados. Necessário para a coluna Origem e as atualizações.",
+    "updateChannel": "Oferecer atualizações",
+    "updateChannelHint": "Quais versões Verificar atualizações sugere.",
+    "channel": {
+      "release": "Só estáveis",
+      "beta": "Estáveis e beta",
+      "alpha": "Todas as versões"
+    }
   },
   "java": {
     "installation": "Instalação do Java",

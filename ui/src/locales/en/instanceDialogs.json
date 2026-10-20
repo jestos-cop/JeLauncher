@@ -14,7 +14,11 @@
     "alsoInstalled": "Also installed: {{names}}",
     "loadingVersions": "Loading versions…",
     "noVersions": "No versions for this instance.",
-    "installed": "Installed"
+    "installed": "Installed",
+    "changeTitle": "Change {{name}} Version",
+    "switch": "Switch",
+    "current": "Current",
+    "installedBadge": "Installed"
   },
   "resourceUpdate": {
     "title": "Review Updates",
@@ -22,7 +26,8 @@
     "select": "Update {{name}}",
     "changelog": "Changelog",
     "noChangelog": "No changelog for this version.",
-    "apply": "Update {{selected}} of {{total}}"
+    "apply": "Update {{selected}} of {{total}}",
+    "websiteOnly": "Website only"
   },
   "export": {
     "title": "Export {{name}}",

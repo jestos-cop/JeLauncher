@@ -2,7 +2,7 @@ import { Coffee, Monitor, Rocket, Terminal, UsersRound, Wrench } from 'lucide-re
 import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigation, type SettingsTab } from '@/app/navigation'
-import { commands, type GlobalSettings } from '@/bindings'
+import { commands, type GlobalSettings, type UpdateChannel } from '@/bindings'
 import { CommandFields } from '@/components/CommandFields'
 import {
   Field,
@@ -17,10 +17,12 @@ import { SaveBar } from '@/components/SaveBar'
 import { SidebarLayout, type SidebarTab } from '@/components/SidebarLayout'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useMemoryHint, useSettings, useUpdateSettings } from '@/hooks/use-settings'
 import { unwrap } from '@/lib/command'
 import { AccountsSettings } from '@/pages/settings/AccountsSettings'
 
+const UPDATE_CHANNELS: UpdateChannel[] = ['release', 'beta', 'alpha']
 const MODRINTH_TOKEN_DOCS = 'https://docs.modrinth.com/api/#authentication'
 
 const TABS: Omit<SidebarTab<SettingsTab>, 'label'>[] = [
@@ -130,6 +132,23 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
                 checked={draft.launcher.trackResourceSources}
                 onCheckedChange={(checked) => setLauncher({ trackResourceSources: checked === true })}
               />
+            </Field>
+            <Field label={t('launcher.updateChannel')} hint={t('launcher.updateChannelHint')}>
+              <Select
+                value={draft.launcher.updateChannel}
+                onValueChange={(channel) => setLauncher({ updateChannel: channel as UpdateChannel })}
+              >
+                <SelectTrigger className="w-56">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {UPDATE_CHANNELS.map((channel) => (
+                    <SelectItem key={channel} value={channel}>
+                      {t(`launcher.channel.${channel}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </Field>
           </SettingsSection>
           <SettingsSection title={t('launcher.network')}>

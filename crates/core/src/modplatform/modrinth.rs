@@ -7,12 +7,14 @@ use serde::{Deserialize, Serialize};
 use super::{
     Dependency, InstallTarget, ProjectHit, ProjectVersion, Provider, ReleaseType, ResourceKind,
     ResourceUpdate, SearchPage, SearchQuery, SortOrder, VersionFile, download_version,
+    replace_resource,
 };
 use crate::instance::Instance;
 use crate::minecraft::LoaderKind;
 use crate::modpack::{ModpackTarget, PackSource, install_mrpack, update_mrpack};
 use crate::net::{DownloadProgress, HttpClient, sha1_of};
-use crate::resources::{DISABLED_SUFFIX, ProjectInfo, list_resources, set_resource_enabled};
+use crate::resources::ProjectInfo;
+use crate::settings::UpdateChannel;
 use crate::{Error, Result};
 
 const API: &str = "https://api.modrinth.com/v2";
@@ -146,13 +148,19 @@ impl Modrinth {
             .collect()
     }
 
-    /// Finds newer versions of the resource files in `target.dir` that fit the target.
-    pub async fn check_updates(&self, target: &InstallTarget<'_>) -> Result<Vec<ResourceUpdate>> {
+    /// Finds newer versions of the files `file_names` in `target.dir` that fit the target and
+    /// the release channel.
+    pub async fn check_updates(
+        &self,
+        target: &InstallTarget<'_>,
+        file_names: &[String],
+        channel: UpdateChannel,
+    ) -> Result<Vec<ResourceUpdate>> {
         let mut by_hash = HashMap::new();
-        for file in list_resources(target.dir, target.kind)? {
-            let path = target.dir.join(&file.file_name);
+        for file_name in file_names {
+            let path = target.dir.join(file_name);
             if path.is_file() {
-                by_hash.insert(sha1_of(&path).await?, file.file_name);
+                by_hash.insert(sha1_of(&path).await?, file_name.clone());
             }
         }
         if by_hash.is_empty() {
@@ -167,6 +175,7 @@ impl Modrinth {
                 _ => Vec::new(),
             },
             game_versions: vec![target.game_version],
+            version_types: channel.version_types(),
         };
         let latest: HashMap<String, ApiVersion> = self
             .post(&format!("{API}/version_files/update"), &body)
@@ -179,31 +188,24 @@ impl Modrinth {
                 .iter()
                 .any(|file| file.sha1.as_deref() == Some(hash.as_str()));
             if let (false, Some(file_name)) = (is_current, by_hash.remove(&hash)) {
-                updates.push(ResourceUpdate { file_name, version });
+                updates.push(ResourceUpdate {
+                    file_name,
+                    provider: Provider::Modrinth,
+                    version,
+                });
             }
         }
-        updates.sort_by(|a, b| a.file_name.to_lowercase().cmp(&b.file_name.to_lowercase()));
         Ok(updates)
     }
 
-    /// Replaces an installed file with the primary file of `version`, keeping it disabled if it was.
-    /// Returns the new file name.
+    /// Replaces an installed file with the primary file of `version`; see [`replace_resource`].
     pub async fn apply_update(
         &self,
         dir: &Path,
         file_name: &str,
         version: &ProjectVersion,
     ) -> Result<String> {
-        let old = crate::fs::child_path(dir, file_name)?;
-        let new_name = self.install(version, dir).await?;
-        let was_disabled = file_name.ends_with(DISABLED_SUFFIX);
-        if new_name != file_name {
-            std::fs::remove_file(&old).map_err(|err| Error::io(&old, err))?;
-        }
-        if was_disabled {
-            return set_resource_enabled(dir, &new_name, false);
-        }
-        Ok(new_name)
+        replace_resource(&self.http, dir, file_name, version).await
     }
 
     /// Downloads a modpack version and installs it as a new instance.
@@ -306,6 +308,7 @@ struct UpdateLookup<'a> {
     algorithm: &'a str,
     loaders: Vec<&'a str>,
     game_versions: Vec<&'a str>,
+    version_types: Vec<&'a str>,
 }
 
 #[derive(Serialize)]

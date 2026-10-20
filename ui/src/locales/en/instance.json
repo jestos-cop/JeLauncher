@@ -104,7 +104,14 @@
     "identifySources": "Identify Sources",
     "identifying": "Identifying…",
     "identified": "Sources found: {{identified}}. Not found: {{unknown}}.",
-    "unknownSource": "Unknown source"
+    "unknownSource": "Unknown source",
+    "moreActions": "More actions",
+    "viewOn": "View on {{provider}}",
+    "changeVersion": "Change Version",
+    "lockUpdates": "Lock Updates",
+    "unlockUpdates": "Unlock Updates",
+    "forgetSource": "Forget Source",
+    "updatesLocked": "Updates locked"
   },
   "worlds": {
     "count_one": "{{count}} world",

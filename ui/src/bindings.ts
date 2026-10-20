@@ -434,8 +434,8 @@ async updateModpack(instanceId: string, versionId: string) : Promise<Result<null
 }
 },
 /**
- * Newer Modrinth versions of the installed resources of `kind`. Files without a known
- * source are identified first.
+ * Newer versions of the installed resources of `kind`, each checked on the platform it
+ * came from. Files without a known source are identified first.
  */
 async checkResourceUpdates(instanceId: string, kind: ResourceKind) : Promise<Result<ResourceUpdate[], CommandError>> {
     try {
@@ -457,11 +457,12 @@ async identifyResourceSources(instanceId: string, kind: ResourceKind) : Promise<
 }
 },
 /**
- * Replaces an installed resource file with another version; returns the new file name.
+ * Replaces an installed resource file with another version of its project; returns the
+ * new file name.
  */
-async updateResource(instanceId: string, kind: ResourceKind, fileName: string, versionId: string) : Promise<Result<string, CommandError>> {
+async updateResource(instanceId: string, kind: ResourceKind, fileName: string, provider: Provider, projectId: string, versionId: string) : Promise<Result<string, CommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("update_resource", { instanceId, kind, fileName, versionId }) };
+    return { status: "ok", data: await TAURI_INVOKE("update_resource", { instanceId, kind, fileName, provider, projectId, versionId }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -547,6 +548,28 @@ async listResources(instanceId: string, kind: ResourceKind) : Promise<Result<Res
 async removeResource(instanceId: string, kind: ResourceKind, fileName: string) : Promise<Result<null, CommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("remove_resource", { instanceId, kind, fileName }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Turns update checks off or on for one resource with a known source.
+ */
+async setResourceUpdateLock(instanceId: string, kind: ResourceKind, fileName: string, locked: boolean) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_resource_update_lock", { instanceId, kind, fileName, locked }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Forgets where a resource came from, keeping the file.
+ */
+async forgetResourceSource(instanceId: string, kind: ResourceKind, fileName: string) : Promise<Result<null, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("forget_resource_source", { instanceId, kind, fileName }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -889,7 +912,11 @@ setupCompleted: boolean;
 /**
  * Remembers which platform project installed mods and packs came from.
  */
-trackResourceSources: boolean }
+trackResourceSources: boolean; 
+/**
+ * The least stable releases "Check for Updates" offers.
+ */
+updateChannel: UpdateChannel }
 export type LoaderKind = "fabric" | "quilt" | "forge" | "neoforge"
 export type LoaderSpec = { kind: LoaderKind; version: string }
 export type LoaderVersion = { version: string; stable: boolean }
@@ -983,13 +1010,17 @@ versionId: string; slug: string; name: string;
  */
 fileName: string; versionNumber: string | null; releaseType: ReleaseType | null; 
 /**
- * Kept as it is: updates are left to the modpack the file came with.
+ * Update checks skip the file, e.g. because it came with a modpack.
  */
-lockUpdate: boolean }
+lockUpdate: boolean; 
+/**
+ * The project page on the platform's website.
+ */
+homepage: string }
 /**
  * A newer published version of an installed resource file.
  */
-export type ResourceUpdate = { fileName: string; version: ProjectVersion }
+export type ResourceUpdate = { fileName: string; provider: Provider; version: ProjectVersion }
 export type Screenshot = { fileName: string; path: string; size: number; 
 /**
  * Unix time in milliseconds.
@@ -1022,6 +1053,7 @@ visualvmPath: string | null;
  * Command that opens instance files, e.g. `code`; `None` uses the system default app.
  */
 editor: string | null }
+export type UpdateChannel = "release" | "beta" | "alpha"
 export type VersionEntry = { id: string; type: VersionType; url: string; sha1: string; releaseTime: string }
 export type VersionFile = { url: string; fileName: string; sha1: string | null; sha512: string | null; size: number; primary: boolean }
 export type VersionType = "release" | "snapshot" | "old_beta" | "old_alpha" | "other"

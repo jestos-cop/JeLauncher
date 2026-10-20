@@ -14,7 +14,11 @@
     "alsoInstalled": "Такође инсталирано: {{names}}",
     "loadingVersions": "Учитавање верзија…",
     "noVersions": "Нема верзија за ову инстанцу.",
-    "installed": "Инсталирано"
+    "installed": "Инсталирано",
+    "changeTitle": "Промени верзију за {{name}}",
+    "switch": "Пребаци",
+    "current": "Тренутна",
+    "installedBadge": "Инсталирано"
   },
   "resourceUpdate": {
     "title": "Преглед ажурирања",
@@ -22,7 +26,8 @@
     "select": "Ажурирај {{name}}",
     "changelog": "Листа измена",
     "noChangelog": "Нема листе измена за ову верзију.",
-    "apply": "Ажурирај {{selected}} од {{total}}"
+    "apply": "Ажурирај {{selected}} од {{total}}",
+    "websiteOnly": "Само на сајту"
   },
   "export": {
     "title": "Извоз: {{name}}",

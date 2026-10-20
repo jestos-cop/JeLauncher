@@ -1,7 +1,15 @@
 import { Check, Download } from 'lucide-react'
 import { useDeferredValue, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { InstanceSummary, ProjectHit, Provider, ResourceKind, SortOrder } from '@/bindings'
+import type {
+  InstanceSummary,
+  ProjectHit,
+  Provider,
+  ResourceFile,
+  ResourceKind,
+  ResourceSource,
+  SortOrder,
+} from '@/bindings'
 import { ProjectRow } from '@/components/ProjectRow'
 import { Badge } from '@/components/ui/badge'
 import { SortSelect } from '@/components/SortSelect'
@@ -10,6 +18,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Input } from '@/components/ui/input'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useInstallVersion, useProjectVersions, useResourceSearch } from '@/hooks/use-modplatform'
+import { useChangeVersion, useResources } from '@/hooks/use-resources'
 import { PROVIDER_NAMES, RESOURCE_PROVIDERS } from '@/lib/providers'
 
 interface ResourceDownloadDialogProps {
@@ -19,8 +28,17 @@ interface ResourceDownloadDialogProps {
   onOpenChange: (open: boolean) => void
 }
 
+/** Key of an installed project, for marking it in search results. */
+const projectKey = (provider: Provider, projectId: string) => `${provider}:${projectId}`
+
 export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: ResourceDownloadDialogProps) {
   const { t } = useTranslation(['instanceDialogs', 'common'])
+  const { data: files = [] } = useResources(instance.id, kind)
+  const installedFiles = new Map(
+    files.flatMap((file) =>
+      file.source ? [[projectKey(file.source.provider, file.source.projectId), file]] : [],
+    ),
+  )
   const [provider, setProvider] = useState<Provider>('modrinth')
   const [text, setText] = useState('')
   const [sort, setSort] = useState<SortOrder>('relevance')
@@ -86,6 +104,7 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
                 <ProjectRow
                   key={hit.id}
                   hit={hit}
+                  installed={installedFiles.has(projectKey(hit.provider, hit.id))}
                   isSelected={hit.id === selected?.id}
                   onSelect={() => setSelected(hit)}
                 />
@@ -111,6 +130,7 @@ export function ResourceDownloadDialog({ instance, kind, open, onOpenChange }: R
               instanceId={instance.id}
               kind={kind}
               project={selected}
+              installedFile={installedFiles.get(projectKey(selected.provider, selected.id))}
             />
           ) : (
             <p className="p-3 text-sm text-muted-foreground">{t('resourceDownload.selectProject')}</p>
@@ -125,22 +145,159 @@ interface VersionPanelProps {
   instanceId: string
   kind: ResourceKind
   project: ProjectHit
+  /** The installed file of this project; picking another version then replaces it. */
+  installedFile?: ResourceFile
 }
 
-function VersionPanel({ instanceId, kind, project }: VersionPanelProps) {
-  const { t } = useTranslation(['instanceDialogs', 'common'])
-  const { data: versions, error, isPending } = useProjectVersions(instanceId, project, kind)
-  const install = useInstallVersion(instanceId, kind, project)
-
+function VersionPanel({ instanceId, kind, project, installedFile }: VersionPanelProps) {
   return (
     <div className="flex min-h-0 flex-col gap-2">
       <h3 className="font-semibold">{project.title}</h3>
-      {install.error && <p className="text-sm text-destructive">{install.error.message}</p>}
-      {install.data && install.data.length > 1 && (
-        <p className="text-sm text-muted-foreground">
-          {t('resourceDownload.alsoInstalled', { names: install.data.slice(1).join(', ') })}
-        </p>
+      {installedFile?.source ? (
+        <SwitchVersionList
+          instanceId={instanceId}
+          kind={kind}
+          project={project}
+          fileName={installedFile.fileName}
+          source={installedFile.source}
+        />
+      ) : (
+        <InstallVersionList instanceId={instanceId} kind={kind} project={project} />
       )}
+    </div>
+  )
+}
+
+function InstallVersionList({ instanceId, kind, project }: Omit<VersionPanelProps, 'installedFile'>) {
+  const { t } = useTranslation(['instanceDialogs', 'common'])
+  const install = useInstallVersion(instanceId, kind, project)
+  return (
+    <VersionList
+      instanceId={instanceId}
+      kind={kind}
+      project={project}
+      currentVersionId={undefined}
+      error={install.error}
+      note={
+        install.data && install.data.length > 1
+          ? t('resourceDownload.alsoInstalled', { names: install.data.slice(1).join(', ') })
+          : null
+      }
+      isBusy={install.isPending}
+      doneVersionId={install.isSuccess ? install.variables : undefined}
+      actionLabel={t('common:action.install')}
+      onPick={(versionId) => install.mutate(versionId)}
+    />
+  )
+}
+
+interface SwitchVersionListProps {
+  instanceId: string
+  kind: ResourceKind
+  project: ProjectHit
+  fileName: string
+  source: ResourceSource
+  onDone?: () => void
+}
+
+/** Versions of an installed project; picking one replaces the installed file. */
+function SwitchVersionList({ instanceId, kind, project, fileName, source, onDone }: SwitchVersionListProps) {
+  const { t } = useTranslation(['instanceDialogs', 'common'])
+  const change = useChangeVersion(instanceId, kind, fileName, source)
+  return (
+    <VersionList
+      instanceId={instanceId}
+      kind={kind}
+      project={project}
+      currentVersionId={source.versionId}
+      error={change.error}
+      note={null}
+      isBusy={change.isPending}
+      doneVersionId={undefined}
+      actionLabel={t('resourceDownload.switch')}
+      onPick={(versionId) => change.mutate(versionId, { onSuccess: onDone })}
+    />
+  )
+}
+
+interface ChangeVersionDialogProps {
+  instance: InstanceSummary
+  kind: ResourceKind
+  fileName: string
+  source: ResourceSource
+  onClose: () => void
+}
+
+/** Picks another version of the project an installed file came from and switches to it. */
+export function ChangeResourceVersionDialog({
+  instance,
+  kind,
+  fileName,
+  source,
+  onClose,
+}: ChangeVersionDialogProps) {
+  const { t } = useTranslation(['instanceDialogs', 'common'])
+  const project: ProjectHit = {
+    provider: source.provider,
+    id: source.projectId,
+    slug: source.slug,
+    title: source.name,
+    description: '',
+    author: '',
+    iconUrl: null,
+    downloads: 0,
+  }
+  return (
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="flex h-[70vh] flex-col sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{t('resourceDownload.changeTitle', { name: source.name })}</DialogTitle>
+        </DialogHeader>
+        <SwitchVersionList
+          instanceId={instance.id}
+          kind={kind}
+          project={project}
+          fileName={fileName}
+          source={source}
+          onDone={onClose}
+        />
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+interface VersionListProps {
+  instanceId: string
+  kind: ResourceKind
+  project: ProjectHit
+  currentVersionId: string | undefined
+  error: Error | null
+  note: string | null
+  isBusy: boolean
+  doneVersionId: string | undefined
+  actionLabel: string
+  onPick: (versionId: string) => void
+}
+
+function VersionList({
+  instanceId,
+  kind,
+  project,
+  currentVersionId,
+  error: actionError,
+  note,
+  isBusy,
+  doneVersionId,
+  actionLabel,
+  onPick,
+}: VersionListProps) {
+  const { t } = useTranslation(['instanceDialogs', 'common'])
+  const { data: versions, error, isPending } = useProjectVersions(instanceId, project, kind)
+
+  return (
+    <div className="flex min-h-0 flex-col gap-2">
+      {actionError && <p className="text-sm text-destructive">{actionError.message}</p>}
+      {note && <p className="text-sm text-muted-foreground">{note}</p>}
       {error && <p className="text-sm text-destructive">{error.message}</p>}
       <div className="min-h-0 flex-1 overflow-auto rounded-md border">
         {isPending && (
@@ -151,7 +308,7 @@ function VersionPanel({ instanceId, kind, project }: VersionPanelProps) {
         )}
         <ul>
           {versions?.map((version) => {
-            const installed = install.isSuccess && install.variables === version.id
+            const installed = version.id === doneVersionId || version.id === currentVersionId
             return (
               <li key={version.id} className="flex items-center gap-2 border-b p-2 last:border-0">
                 <div className="min-w-0 flex-1">
@@ -166,11 +323,15 @@ function VersionPanel({ instanceId, kind, project }: VersionPanelProps) {
                 <Button
                   size="sm"
                   variant={installed ? 'secondary' : 'default'}
-                  disabled={install.isPending || installed}
-                  onClick={() => install.mutate(version.id)}
+                  disabled={isBusy || installed}
+                  onClick={() => onPick(version.id)}
                 >
                   {installed ? <Check /> : <Download />}
-                  {installed ? t('resourceDownload.installed') : t('common:action.install')}
+                  {version.id === currentVersionId
+                    ? t('resourceDownload.current')
+                    : installed
+                      ? t('resourceDownload.installed')
+                      : actionLabel}
                 </Button>
               </li>
             )

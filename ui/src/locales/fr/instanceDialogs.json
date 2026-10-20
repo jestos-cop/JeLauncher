@@ -14,7 +14,11 @@
     "alsoInstalled": "Également installés : {{names}}",
     "loadingVersions": "Chargement des versions…",
     "noVersions": "Aucune version pour cette instance.",
-    "installed": "Installé"
+    "installed": "Installé",
+    "changeTitle": "Changer la version de {{name}}",
+    "switch": "Basculer",
+    "current": "Actuelle",
+    "installedBadge": "Installé"
   },
   "resourceUpdate": {
     "title": "Examiner les mises à jour",
@@ -22,7 +26,8 @@
     "select": "Mettre à jour {{name}}",
     "changelog": "Journal des modifications",
     "noChangelog": "Aucun journal des modifications pour cette version.",
-    "apply": "Mettre à jour {{selected}} sur {{total}}"
+    "apply": "Mettre à jour {{selected}} sur {{total}}",
+    "websiteOnly": "Sur le site uniquement"
   },
   "export": {
     "title": "Exporter {{name}}",

@@ -105,7 +105,14 @@
     "identifySources": "Identificar orígenes",
     "identifying": "Identificando…",
     "identified": "Orígenes encontrados: {{identified}}. Sin encontrar: {{unknown}}.",
-    "unknownSource": "Origen desconocido"
+    "unknownSource": "Origen desconocido",
+    "moreActions": "Más acciones",
+    "viewOn": "Ver en {{provider}}",
+    "changeVersion": "Cambiar versión",
+    "lockUpdates": "Bloquear actualizaciones",
+    "unlockUpdates": "Desbloquear actualizaciones",
+    "forgetSource": "Olvidar origen",
+    "updatesLocked": "Actualizaciones bloqueadas"
   },
   "worlds": {
     "count_one": "{{count}} mundo",

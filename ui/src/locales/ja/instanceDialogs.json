@@ -14,7 +14,11 @@
     "alsoInstalled": "同時にインストール: {{names}}",
     "loadingVersions": "バージョンを読み込み中…",
     "noVersions": "このインスタンスに対応するバージョンはありません。",
-    "installed": "インストール済み"
+    "installed": "インストール済み",
+    "changeTitle": "{{name}} のバージョンを変更",
+    "switch": "切り替え",
+    "current": "現在",
+    "installedBadge": "インストール済み"
   },
   "resourceUpdate": {
     "title": "アップデートを確認",
@@ -22,7 +26,8 @@
     "select": "{{name}} をアップデート",
     "changelog": "更新履歴",
     "noChangelog": "このバージョンの更新履歴はありません。",
-    "apply": "{{total}} 件中 {{selected}} 件をアップデート"
+    "apply": "{{total}} 件中 {{selected}} 件をアップデート",
+    "websiteOnly": "サイトのみ"
   },
   "export": {
     "title": "{{name}} をエクスポート",

@@ -1,14 +1,34 @@
-import { ArrowUpCircle, Download, FolderOpen, RefreshCw, ScanSearch, Trash2 } from 'lucide-react'
+import {
+  ArrowUpCircle,
+  Download,
+  ExternalLink,
+  FolderOpen,
+  History,
+  Lock,
+  LockOpen,
+  MoreHorizontal,
+  RefreshCw,
+  ScanSearch,
+  Trash2,
+  Unlink,
+} from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { InstanceSummary, ResourceFile, ResourceKind } from '@/bindings'
+import { commands, type InstanceSummary, type ResourceFile, type ResourceKind } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { ModListExportMenu } from '@/components/ModListExportMenu'
 import { SourceBadge } from '@/components/SourceBadge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
-import { ResourceDownloadDialog } from '@/dialogs/ResourceDownloadDialog'
+import { ChangeResourceVersionDialog, ResourceDownloadDialog } from '@/dialogs/ResourceDownloadDialog'
 import { ResourceUpdateDialog } from '@/dialogs/ResourceUpdateDialog'
 import { openInstanceFolder } from '@/hooks/use-instance-actions'
 import { useSettings } from '@/hooks/use-settings'
@@ -16,10 +36,13 @@ import {
   useRemoveResource,
   useResources,
   useResourceUpdates,
+  useForgetSource,
   useIdentifySources,
   useSetResourceEnabled,
+  useSetUpdateLock,
   useUpdateResources,
 } from '@/hooks/use-resources'
+import { unwrap } from '@/lib/command'
 import { PROVIDER_NAMES } from '@/lib/providers'
 import { cn } from '@/lib/utils'
 
@@ -40,6 +63,9 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
   const [isReviewing, setIsReviewing] = useState(false)
   const updates = useResourceUpdates(instance.id, kind, checkUpdates)
   const identify = useIdentifySources(instance.id, kind)
+  const setLock = useSetUpdateLock(instance.id, kind)
+  const forgetSource = useForgetSource(instance.id, kind)
+  const [changing, setChanging] = useState<ResourceFile | null>(null)
   const { data: settings } = useSettings()
   const tracksSources = settings?.launcher.trackResourceSources ?? true
   const applyUpdates = useUpdateResources(instance.id, kind)
@@ -105,7 +131,11 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
 
       {error && <p className="text-sm text-destructive">{error.message}</p>}
       {setEnabled.error && <p className="text-sm text-destructive">{setEnabled.error.message}</p>}
-      {identify.error && <p className="text-sm text-destructive">{identify.error.message}</p>}
+      {(identify.error ?? setLock.error ?? forgetSource.error) && (
+        <p className="text-sm text-destructive">
+          {(identify.error ?? setLock.error ?? forgetSource.error)?.message}
+        </p>
+      )}
       {identify.data && (
         <p className="text-sm text-muted-foreground">{t('resources.identified', identify.data)}</p>
       )}
@@ -184,7 +214,17 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
                 </td>
                 {tracksSources && (
                   <td className="p-2">
-                    <SourceBadge source={file.source} />
+                    <span className="inline-flex items-center gap-1.5">
+                      <SourceBadge source={file.source} />
+                      {file.source?.lockUpdate && (
+                        <Lock
+                          className="size-3 text-muted-foreground"
+                          aria-label={t('resources.updatesLocked')}
+                        >
+                          <title>{t('resources.updatesLocked')}</title>
+                        </Lock>
+                      )}
+                    </span>
                   </td>
                 )}
                 <td className="p-2">
@@ -192,14 +232,49 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
                 </td>
                 <td className="p-2 text-muted-foreground">{file.fileName}</td>
                 <td className="p-2">
-                  <button
-                    type="button"
-                    aria-label={t('item.remove', { name: displayName(file) })}
-                    className="text-muted-foreground hover:text-destructive"
-                    onClick={() => setPendingRemoval(file)}
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label={t('resources.moreActions')}
+                        className="text-muted-foreground hover:text-foreground"
+                      >
+                        <MoreHorizontal className="size-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-max">
+                      {file.source && (
+                        <>
+                          <DropdownMenuItem
+                            onSelect={() => void unwrap(commands.openUrl(file.source!.homepage))}
+                          >
+                            <ExternalLink />
+                            {t('resources.viewOn', { provider: PROVIDER_NAMES[file.source.provider] })}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onSelect={() => setChanging(file)}>
+                            <History /> {t('resources.changeVersion')}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onSelect={() =>
+                              setLock.mutate({ fileName: file.fileName, locked: !file.source?.lockUpdate })
+                            }
+                          >
+                            {file.source.lockUpdate ? <LockOpen /> : <Lock />}
+                            {file.source.lockUpdate
+                              ? t('resources.unlockUpdates')
+                              : t('resources.lockUpdates')}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onSelect={() => forgetSource.mutate(file.fileName)}>
+                            <Unlink /> {t('resources.forgetSource')}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                        </>
+                      )}
+                      <DropdownMenuItem variant="destructive" onSelect={() => setPendingRemoval(file)}>
+                        <Trash2 /> {t('common:action.remove')}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </td>
               </tr>
             ))}
@@ -220,6 +295,15 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
             remove.mutate(pendingRemoval.fileName, { onSuccess: () => setPendingRemoval(null) })
           }
           onClose={() => setPendingRemoval(null)}
+        />
+      )}
+      {changing?.source && (
+        <ChangeResourceVersionDialog
+          instance={instance}
+          kind={kind}
+          fileName={changing.fileName}
+          source={changing.source}
+          onClose={() => setChanging(null)}
         />
       )}
       {isReviewing && updates.data && (

@@ -358,10 +358,15 @@ async fn finds_and_applies_mod_updates() -> jelauncher_core::Result<()> {
         kind: ResourceKind::Mod,
         game_version: "1.21.4",
         loader: Some(LoaderKind::Fabric),
-        track_sources: false,
+        track_sources: true,
     };
+    let platforms = jelauncher_core::modplatform::ModPlatforms::new(
+        HttpClient::new(&NetworkSettings::default())?,
+        Default::default(),
+    );
+    let channel = jelauncher_core::settings::UpdateChannel::Alpha;
 
-    let updates = modrinth.check_updates(&target).await?;
+    let updates = platforms.check_updates(&target, channel).await?;
     let Some(update) = updates.first() else {
         panic!("{old_name} has no update");
     };
@@ -369,12 +374,21 @@ async fn finds_and_applies_mod_updates() -> jelauncher_core::Result<()> {
     assert_eq!(update.file_name, old_name);
     assert_eq!(update.version.id, latest.id);
 
-    let new_name = modrinth
-        .apply_update(dir.path(), &update.file_name, &update.version)
+    let new_name = platforms
+        .update_resource(
+            &target,
+            &update.file_name,
+            update.provider,
+            &update.version.project_id,
+            &update.version.id,
+        )
         .await?;
     let files = list_resources(dir.path(), ResourceKind::Mod)?;
     assert_eq!(files.len(), 1);
     assert_eq!(files[0].file_name, new_name);
-    assert!(modrinth.check_updates(&target).await?.is_empty());
+    let sources = jelauncher_core::resources::read_sources(dir.path(), ResourceKind::Mod);
+    assert_eq!(sources.len(), 1);
+    assert_eq!(sources[0].1.version_id, latest.id);
+    assert!(platforms.check_updates(&target, channel).await?.is_empty());
     Ok(())
 }

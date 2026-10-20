@@ -14,7 +14,11 @@
     "alsoInstalled": "También instalado: {{names}}",
     "loadingVersions": "Cargando versiones…",
     "noVersions": "No hay versiones para esta instancia.",
-    "installed": "Instalado"
+    "installed": "Instalado",
+    "changeTitle": "Cambiar versión de {{name}}",
+    "switch": "Cambiar",
+    "current": "Actual",
+    "installedBadge": "Instalado"
   },
   "resourceUpdate": {
     "title": "Revisar actualizaciones",
@@ -22,7 +26,8 @@
     "select": "Actualizar {{name}}",
     "changelog": "Registro de cambios",
     "noChangelog": "Esta versión no tiene registro de cambios.",
-    "apply": "Actualizar {{selected}} de {{total}}"
+    "apply": "Actualizar {{selected}} de {{total}}",
+    "websiteOnly": "Solo en la web"
   },
   "export": {
     "title": "Exportar {{name}}",

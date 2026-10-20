@@ -46,7 +46,14 @@
     "apisRestartHint": "ここでの変更はランチャーの再起動後に反映されます。",
     "resources": "Mod とパック",
     "trackSources": "入手元を記録",
-    "trackSourcesHint": "インストールした Mod やパックがどの Modrinth / CurseForge プロジェクトから来たかを記録します。入手元列と更新に必要です。"
+    "trackSourcesHint": "インストールした Mod やパックがどの Modrinth / CurseForge プロジェクトから来たかを記録します。入手元列と更新に必要です。",
+    "updateChannel": "提案する更新",
+    "updateChannelHint": "「更新を確認」が提案するリリース。",
+    "channel": {
+      "release": "安定版のみ",
+      "beta": "安定版とベータ版",
+      "alpha": "すべてのリリース"
+    }
   },
   "java": {
     "installation": "Java のインストール",

@@ -106,7 +106,14 @@
     "identifySources": "Визначити джерела",
     "identifying": "Визначення…",
     "identified": "Знайдено джерел: {{identified}}. Не знайдено: {{unknown}}.",
-    "unknownSource": "Джерело невідоме"
+    "unknownSource": "Джерело невідоме",
+    "moreActions": "Інші дії",
+    "viewOn": "Відкрити на {{provider}}",
+    "changeVersion": "Змінити версію",
+    "lockUpdates": "Не оновлювати",
+    "unlockUpdates": "Дозволити оновлення",
+    "forgetSource": "Забути джерело",
+    "updatesLocked": "Оновлення заблоковано"
   },
   "worlds": {
     "count_one": "{{count}} світ",
