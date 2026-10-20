@@ -578,6 +578,18 @@ async resourcesAffectedByToggle(instanceId: string, kind: ResourceKind, fileName
 }
 },
 /**
+ * What removing `file_names` leaves behind: files that need them and dependencies nothing
+ * else needs.
+ */
+async resourcesRemovalPlan(instanceId: string, kind: ResourceKind, fileNames: string[]) : Promise<Result<RemovalPlan, CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("resources_removal_plan", { instanceId, kind, fileNames }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Turns update checks off or on for one resource with a known source.
  */
 async setResourceUpdateLock(instanceId: string, kind: ResourceKind, fileName: string, locked: boolean) : Promise<Result<null, CommandError>> {
@@ -1046,6 +1058,18 @@ export type QuickPlay =
  */
 { type: "world"; target: string }
 export type ReleaseType = "release" | "beta" | "alpha"
+/**
+ * What removing some files leaves behind.
+ */
+export type RemovalPlan = { 
+/**
+ * Files that require a removed one, directly or through other files.
+ */
+dependents: string[]; 
+/**
+ * Files nothing but the removed ones requires, directly or through other such files.
+ */
+unusedDependencies: string[] }
 export type ResourceFile = { fileName: string; enabled: boolean; size: number; 
 /**
  * Unix time in milliseconds.

@@ -67,6 +67,7 @@ pub fn builder() -> Builder<tauri::Wry> {
             commands::resources::list_resources,
             commands::resources::remove_resource,
             commands::resources::resources_affected_by_toggle,
+            commands::resources::resources_removal_plan,
             commands::resources::set_resource_update_lock,
             commands::resources::forget_resource_source,
             commands::resources::export_mod_list,

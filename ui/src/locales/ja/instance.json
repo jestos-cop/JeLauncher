@@ -120,10 +120,6 @@
     "relatedDisable": "次の Mod は {{name}} を必要としており、ないと動作しない可能性があります:",
     "toggleRelated": "一緒に切り替え",
     "toggleOnlyThis": "これだけ",
-    "removeRelatedTitle": "他の Mod が {{name}} を必要としています",
-    "removeRelated": "次の Mod は {{name}} を必要としています。これらも無効にしますか？",
-    "disableAndRemove": "無効にして削除",
-    "onlyRemove": "削除のみ",
     "shownCount": "表示：{{shown}}",
     "nothingMatches": "検索とフィルターに一致する項目はありません。",
     "filter": {
@@ -142,6 +138,13 @@
       "isDependency": "他の Mod に必要とされる",
       "hasDependencies": "他の Mod が必要",
       "clear": "フィルターをクリア"
+    },
+    "removal": {
+      "dependents": "これを必要とする Mod",
+      "dependentsHint": "チェックしたものも削除されます。それ以外はこれがないと動かないため無効になります。",
+      "unused": "他に必要とされていない依存関係",
+      "unusedHint": "チェックしたものも削除されます。",
+      "confirm": "削除（{{total}}）"
     }
   },
   "worlds": {

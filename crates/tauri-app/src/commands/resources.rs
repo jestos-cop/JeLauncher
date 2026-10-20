@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use jelauncher_core::instance::Instance;
-use jelauncher_core::resources::{self, ModListFormat, ResourceFile, ResourceKind};
+use jelauncher_core::resources::{self, ModListFormat, RemovalPlan, ResourceFile, ResourceKind};
 use tauri::State;
 
 use crate::error::{CommandError, CommandResult};
@@ -60,6 +60,26 @@ pub async fn resources_affected_by_toggle(
     tauri::async_runtime::spawn_blocking(move || {
         let files = annotated_resources(&instance, kind, tracks)?;
         Ok(resources::affected_by_toggle(&files, &file_names, enable))
+    })
+    .await
+    .map_err(|err| CommandError::new(err.to_string()))?
+}
+
+/// What removing `file_names` leaves behind: files that need them and dependencies nothing
+/// else needs.
+#[tauri::command]
+#[specta::specta]
+pub async fn resources_removal_plan(
+    state: State<'_, AppState>,
+    instance_id: String,
+    kind: ResourceKind,
+    file_names: Vec<String>,
+) -> CommandResult<RemovalPlan> {
+    let instance = Instance::open(&state.paths.instances(), &instance_id)?;
+    let tracks = super::modplatform::tracks_sources(&state)?;
+    tauri::async_runtime::spawn_blocking(move || {
+        let files = annotated_resources(&instance, kind, tracks)?;
+        Ok(resources::removal_plan(&files, &file_names))
     })
     .await
     .map_err(|err| CommandError::new(err.to_string()))?

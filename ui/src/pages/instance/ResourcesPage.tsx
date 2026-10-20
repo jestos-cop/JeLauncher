@@ -16,7 +16,6 @@ import {
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { commands, type InstanceSummary, type ResourceFile, type ResourceKind } from '@/bindings'
-import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { ModListExportMenu } from '@/components/ModListExportMenu'
 import { RelatedChangesDialog } from '@/components/RelatedChangesDialog'
 import { ResourceFilterMenu } from '@/components/ResourceFilterMenu'
@@ -32,11 +31,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { ChangeResourceVersionDialog, ResourceDownloadDialog } from '@/dialogs/ResourceDownloadDialog'
+import { RemoveResourceDialog } from '@/dialogs/RemoveResourceDialog'
 import { ResourceUpdateDialog } from '@/dialogs/ResourceUpdateDialog'
 import { openInstanceFolder } from '@/hooks/use-instance-actions'
 import { useSettings } from '@/hooks/use-settings'
 import {
-  useRemoveResource,
   useResources,
   useResourceUpdates,
   useForgetSource,
@@ -60,12 +59,9 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
   const { t } = useTranslation(['instance', 'common'])
   const { data: files = [], error, isPending, refetch } = useResources(instance.id, kind)
   const setEnabled = useSetResourceEnabled(instance.id, kind)
-  const remove = useRemoveResource(instance.id, kind)
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState<ResourceFilters>(NO_FILTERS)
-  const [pendingRemoval, setPendingRemoval] = useState<{ file: ResourceFile; dependents: string[] } | null>(
-    null,
-  )
+  const [pendingRemoval, setPendingRemoval] = useState<ResourceFile | null>(null)
   const [pendingToggle, setPendingToggle] = useState<{
     file: ResourceFile
     enable: boolean
@@ -89,14 +85,6 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
     }
   }
 
-  const startRemoval = async (file: ResourceFile) => {
-    try {
-      const dependents = file.enabled ? await affectedByToggle(instance.id, kind, [file.fileName], false) : []
-      setPendingRemoval({ file, dependents })
-    } catch (error) {
-      setLinkError(error instanceof Error ? error : new Error(String(error)))
-    }
-  }
   const [isDownloading, setIsDownloading] = useState(false)
   const [checkUpdates, setCheckUpdates] = useState(false)
   const [isReviewing, setIsReviewing] = useState(false)
@@ -337,7 +325,7 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
                           <DropdownMenuSeparator />
                         </>
                       )}
-                      <DropdownMenuItem variant="destructive" onSelect={() => void startRemoval(file)}>
+                      <DropdownMenuItem variant="destructive" onSelect={() => setPendingRemoval(file)}>
                         <Trash2 /> {t('common:action.remove')}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -356,36 +344,13 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
         )}
       </div>
 
-      {pendingRemoval && pendingRemoval.dependents.length === 0 && (
-        <ConfirmDialog
-          title={t('confirm.remove', { name: displayName(pendingRemoval.file) })}
-          description={t('resources.removeDescription', { file: pendingRemoval.file.fileName })}
-          confirmLabel={t('common:action.remove')}
-          onConfirm={() =>
-            remove.mutate(pendingRemoval.file.fileName, { onSuccess: () => setPendingRemoval(null) })
-          }
-          onClose={() => setPendingRemoval(null)}
-        />
-      )}
-      {pendingRemoval && pendingRemoval.dependents.length > 0 && (
-        <RelatedChangesDialog
-          title={t('resources.removeRelatedTitle', { name: displayName(pendingRemoval.file) })}
-          description={t('resources.removeRelated', { name: displayName(pendingRemoval.file) })}
-          names={pendingRemoval.dependents.map(nameOf)}
-          withRelatedLabel={t('resources.disableAndRemove')}
-          onlySelectedLabel={t('resources.onlyRemove')}
-          onWithRelated={() => {
-            const { file, dependents } = pendingRemoval
-            setPendingRemoval(null)
-            setEnabled.mutate(
-              { fileNames: dependents, enabled: false },
-              { onSuccess: () => remove.mutate(file.fileName) },
-            )
-          }}
-          onOnlySelected={() => {
-            remove.mutate(pendingRemoval.file.fileName)
-            setPendingRemoval(null)
-          }}
+      {pendingRemoval && (
+        <RemoveResourceDialog
+          instanceId={instance.id}
+          kind={kind}
+          file={pendingRemoval}
+          files={files}
+          nameOf={nameOf}
           onClose={() => setPendingRemoval(null)}
         />
       )}

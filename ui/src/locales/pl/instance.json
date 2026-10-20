@@ -123,10 +123,6 @@
     "relatedDisable": "Te mody wymagają {{name}} i mogą bez niego nie działać:",
     "toggleRelated": "Przełącz też je",
     "toggleOnlyThis": "Tylko ten",
-    "removeRelatedTitle": "Inne mody wymagają {{name}}",
-    "removeRelated": "Te mody wymagają {{name}}. Wyłączyć je również?",
-    "disableAndRemove": "Wyłącz je i usuń",
-    "onlyRemove": "Tylko usuń",
     "shownCount": "wyświetlono: {{shown}}",
     "nothingMatches": "Nic nie pasuje do wyszukiwania i filtrów.",
     "filter": {
@@ -145,6 +141,13 @@
       "isDependency": "Wymagane przez inne mody",
       "hasDependencies": "Wymagają innych modów",
       "clear": "Wyczyść filtry"
+    },
+    "removal": {
+      "dependents": "Mody, które go potrzebują",
+      "dependentsHint": "Zaznaczone też zostaną usunięte. Pozostałe zostaną wyłączone, bo bez niego nie działają.",
+      "unused": "Zależności, których nic więcej nie potrzebuje",
+      "unusedHint": "Zaznaczone też zostaną usunięte.",
+      "confirm": "Usuń ({{total}})"
     }
   },
   "worlds": {

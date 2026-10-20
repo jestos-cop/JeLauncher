@@ -12,7 +12,9 @@ use serde::{Deserialize, Serialize};
 pub use mod_list::{ModListFormat, format_mod_list};
 pub use mod_metadata::read_mod_metadata;
 pub use pack_metadata::read_pack_metadata;
-pub use relations::{affected_by_toggle, attach_compatibility, attach_relations};
+pub use relations::{
+    RemovalPlan, affected_by_toggle, attach_compatibility, attach_relations, removal_plan,
+};
 pub use sources::{
     ProjectInfo, ResourceSource, attach_sources, index_dir, is_source_entry, read_sources,
     remove_source, set_update_lock, write_source,

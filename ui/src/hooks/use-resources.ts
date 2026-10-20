@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   commands,
   type IdentifyReport,
@@ -51,10 +51,30 @@ export function affectedByToggle(
   return unwrap(commands.resourcesAffectedByToggle(instanceId, kind, fileNames, enable))
 }
 
-export function useRemoveResource(instanceId: string, kind: ResourceKind) {
-  return useResourceMutation(instanceId, kind, (fileName: string) =>
-    unwrap(commands.removeResource(instanceId, kind, fileName)),
+/** Disables `disable`, then deletes `remove`. */
+export function useRemoveResources(instanceId: string, kind: ResourceKind) {
+  return useResourceMutation(
+    instanceId,
+    kind,
+    async ({ remove, disable }: { remove: string[]; disable: string[] }) => {
+      for (const fileName of disable) {
+        await unwrap(commands.setResourceEnabled(instanceId, kind, fileName, false))
+      }
+      for (const fileName of remove) {
+        await unwrap(commands.removeResource(instanceId, kind, fileName))
+      }
+    },
   )
+}
+
+/** Files that need `fileNames` and dependencies only they need. */
+export function useRemovalPlan(instanceId: string, kind: ResourceKind, fileNames: string[]) {
+  return useQuery({
+    queryKey: ['removal-plan', instanceId, kind, [...fileNames].sort()],
+    queryFn: () => unwrap(commands.resourcesRemovalPlan(instanceId, kind, fileNames)),
+    placeholderData: keepPreviousData,
+    gcTime: 0,
+  })
 }
 
 const updatesKey = (instanceId: string, kind: ResourceKind) => ['resource-updates', instanceId, kind]

@@ -121,10 +121,6 @@
     "relatedDisable": "These mods require {{name}} and may break without it:",
     "toggleRelated": "Toggle Them Too",
     "toggleOnlyThis": "Only This One",
-    "removeRelatedTitle": "Other mods require {{name}}",
-    "removeRelated": "These mods require {{name}}. Disable them as well?",
-    "disableAndRemove": "Disable Them and Remove",
-    "onlyRemove": "Only Remove",
     "shownCount": "shown: {{shown}}",
     "nothingMatches": "Nothing matches the search and filters.",
     "filter": {
@@ -143,6 +139,13 @@
       "isDependency": "Required by other mods",
       "hasDependencies": "Requires other mods",
       "clear": "Clear Filters"
+    },
+    "removal": {
+      "dependents": "Mods that need it",
+      "dependentsHint": "Checked ones are removed too. The others are disabled, since they cannot run without it.",
+      "unused": "Dependencies nothing else needs",
+      "unusedHint": "Checked ones are removed too.",
+      "confirm": "Remove ({{total}})"
     }
   },
   "worlds": {

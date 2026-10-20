@@ -121,10 +121,6 @@
     "relatedDisable": "These hands need {{name}} an' may sink without it:",
     "toggleRelated": "Them too",
     "toggleOnlyThis": "Just this one",
-    "removeRelatedTitle": "Other hands need {{name}}",
-    "removeRelated": "These hands need {{name}}. Send them below deck too?",
-    "disableAndRemove": "Below deck, then scuttle",
-    "onlyRemove": "Just scuttle",
     "shownCount": "in sight: {{shown}}",
     "nothingMatches": "Nothin' matches yer search an' sieves.",
     "filter": {
@@ -143,6 +139,13 @@
       "isDependency": "Needed by other mods",
       "hasDependencies": "Needs other mods",
       "clear": "Clear the Sieves"
+    },
+    "removal": {
+      "dependents": "Mods that be needin' it",
+      "dependentsHint": "Ticked ones walk the plank too. The rest be struck, for they can't sail without it.",
+      "unused": "Riggin' nothin' else needs",
+      "unusedHint": "Ticked ones walk the plank too.",
+      "confirm": "Scuttle ({{total}})"
     }
   },
   "worlds": {

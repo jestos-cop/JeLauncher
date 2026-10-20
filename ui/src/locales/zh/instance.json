@@ -120,10 +120,6 @@
     "relatedDisable": "这些模组需要 {{name}}，缺少它可能无法运行：",
     "toggleRelated": "一并切换",
     "toggleOnlyThis": "仅此模组",
-    "removeRelatedTitle": "其他模组需要 {{name}}",
-    "removeRelated": "这些模组需要 {{name}}。也要禁用它们吗？",
-    "disableAndRemove": "禁用它们并移除",
-    "onlyRemove": "仅移除",
     "shownCount": "显示：{{shown}}",
     "nothingMatches": "没有符合搜索和筛选条件的项目。",
     "filter": {
@@ -142,6 +138,13 @@
       "isDependency": "被其他模组依赖",
       "hasDependencies": "依赖其他模组",
       "clear": "清除筛选"
+    },
+    "removal": {
+      "dependents": "需要它的模组",
+      "dependentsHint": "勾选的也会被删除。其余的会被禁用，因为没有它无法运行。",
+      "unused": "不再被其他内容需要的依赖",
+      "unusedHint": "勾选的也会被删除。",
+      "confirm": "删除（{{total}}）"
     }
   },
   "worlds": {
