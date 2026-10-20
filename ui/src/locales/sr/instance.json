@@ -112,7 +112,20 @@
     "lockUpdates": "Закључај ажурирања",
     "unlockUpdates": "Откључај ажурирања",
     "forgetSource": "Заборави извор",
-    "updatesLocked": "Ажурирања закључана"
+    "updatesLocked": "Ажурирања закључана",
+    "requires": "Захтева: {{names}}",
+    "requiredBy": "Потребан за: {{names}}",
+    "incompatible": "Није означен као компатибилан са Minecraft {{version}}",
+    "relatedEnableTitle": "Укључити потребне модове?",
+    "relatedEnable": "{{name}} захтева ове искључене модове:",
+    "relatedDisableTitle": "Искључити зависне модове?",
+    "relatedDisable": "Ови модови захтевају {{name}} и могу престати да раде без њега:",
+    "toggleRelated": "Пребаци и њих",
+    "toggleOnlyThis": "Само овај",
+    "removeRelatedTitle": "Други модови захтевају {{name}}",
+    "removeRelated": "Ови модови захтевају {{name}}. Искључити и њих?",
+    "disableAndRemove": "Искључи их и уклони",
+    "onlyRemove": "Само уклони"
   },
   "worlds": {
     "count_one": "{{count}} свет",

@@ -222,6 +222,8 @@ impl AtLauncher {
                 changelog: None,
                 files: Vec::new(),
                 dependencies: Vec::new(),
+                loaders: Vec::new(),
+                game_versions: Vec::new(),
             })
             .collect())
     }

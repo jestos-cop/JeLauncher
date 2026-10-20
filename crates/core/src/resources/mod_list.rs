@@ -117,6 +117,9 @@ mod tests {
             modified: 0,
             metadata,
             source: None,
+            requires: Vec::new(),
+            required_by: Vec::new(),
+            incompatible: false,
         };
         vec![
             file(
@@ -129,6 +132,7 @@ mod tests {
                     description: String::new(),
                     authors: vec!["Jelly, Squid".into()],
                     homepage: Some("https://modrinth.com/mod/sodium".into()),
+                    dependencies: Vec::new(),
                 }),
             ),
             file("plain.jar", true, None),

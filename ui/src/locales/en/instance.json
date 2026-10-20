@@ -111,7 +111,20 @@
     "lockUpdates": "Lock Updates",
     "unlockUpdates": "Unlock Updates",
     "forgetSource": "Forget Source",
-    "updatesLocked": "Updates locked"
+    "updatesLocked": "Updates locked",
+    "requires": "Requires: {{names}}",
+    "requiredBy": "Required by: {{names}}",
+    "incompatible": "Not marked as compatible with Minecraft {{version}}",
+    "relatedEnableTitle": "Enable required mods?",
+    "relatedEnable": "{{name}} requires these disabled mods:",
+    "relatedDisableTitle": "Disable dependent mods?",
+    "relatedDisable": "These mods require {{name}} and may break without it:",
+    "toggleRelated": "Toggle Them Too",
+    "toggleOnlyThis": "Only This One",
+    "removeRelatedTitle": "Other mods require {{name}}",
+    "removeRelated": "These mods require {{name}}. Disable them as well?",
+    "disableAndRemove": "Disable Them and Remove",
+    "onlyRemove": "Only Remove"
   },
   "worlds": {
     "count_one": "{{count}} world",

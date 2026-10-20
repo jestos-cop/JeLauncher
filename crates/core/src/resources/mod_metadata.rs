@@ -80,6 +80,15 @@ fn parse_fabric(json: &str) -> Option<ResourceMetadata> {
             .pointer("/contact/homepage")
             .and_then(Value::as_str)
             .map(str::to_owned),
+        // The loader, the game and Fabric API modules are always there.
+        dependencies: root
+            .get("depends")
+            .and_then(Value::as_object)
+            .into_iter()
+            .flat_map(|depends| depends.keys())
+            .filter(|id| *id != "fabricloader" && *id != "minecraft" && !id.starts_with("fabric-"))
+            .cloned()
+            .collect(),
         id,
     })
 }
@@ -105,6 +114,20 @@ fn parse_quilt(json: &str) -> Option<ResourceMetadata> {
             .pointer("/contact/homepage")
             .and_then(Value::as_str)
             .map(str::to_owned),
+        dependencies: loader
+            .get("depends")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(|dependency| match dependency {
+                Value::String(id) => Some(id.clone()),
+                Value::Object(object) if object.get("optional") != Some(&Value::Bool(true)) => {
+                    object.get("id")?.as_str().map(str::to_owned)
+                }
+                _ => None,
+            })
+            .filter(|id| id != "minecraft" && !id.starts_with("quilt_"))
+            .collect(),
         id,
     })
 }
@@ -139,8 +162,33 @@ fn parse_forge(toml_text: &str, jar_version: Option<&str>) -> Option<ResourceMet
         description: field("description").unwrap_or_default().trim().to_owned(),
         authors,
         homepage: field("displayURL"),
+        dependencies: forge_dependencies(&root, &id),
         id,
     })
+}
+
+/// Required dependencies of a `mods.toml`: `mandatory = true` on Forge, `type = "required"` on
+/// NeoForge, either as `[[dependencies.<modid>]]` or a plain `[[dependencies]]` list.
+fn forge_dependencies(root: &toml::Table, mod_id: &str) -> Vec<String> {
+    let list = match root.get("dependencies") {
+        Some(toml::Value::Array(list)) => Some(list),
+        Some(toml::Value::Table(by_mod)) => by_mod
+            .get(mod_id)
+            .or_else(|| by_mod.values().next())
+            .and_then(toml::Value::as_array),
+        _ => None,
+    };
+    list.into_iter()
+        .flatten()
+        .filter_map(toml::Value::as_table)
+        .filter(|dependency| {
+            dependency.get("mandatory").and_then(toml::Value::as_bool) == Some(true)
+                || dependency.get("type").and_then(toml::Value::as_str) == Some("required")
+        })
+        .filter_map(|dependency| dependency.get("modId")?.as_str())
+        .filter(|id| !matches!(*id, "" | "forge" | "neoforge" | "minecraft"))
+        .map(str::to_owned)
+        .collect()
 }
 
 fn parse_mcmod_info(json: &str) -> Option<ResourceMetadata> {
@@ -161,8 +209,28 @@ fn parse_mcmod_info(json: &str) -> Option<ResourceMetadata> {
         description: text(first, "description"),
         authors,
         homepage: Some(text(first, "url")).filter(|url| !url.is_empty()),
+        dependencies: first
+            .get("requiredMods")
+            .or_else(|| first.get("dependencies"))
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .filter_map(legacy_dependency)
+            .collect(),
         id,
     })
+}
+
+/// A `mcmod.info` dependency like `required-after:Forge@[10.13,)` as a mod id.
+fn legacy_dependency(dependency: &str) -> Option<String> {
+    if matches!(dependency, "mod_MinecraftForge" | "Forge") {
+        return None;
+    }
+    let id = dependency.split_once(':').map_or(dependency, |(_, id)| id);
+    let id = id.split('@').next().unwrap_or(id);
+    let id = id.strip_prefix("mod_").unwrap_or(id);
+    (!id.is_empty()).then(|| id.to_owned())
 }
 
 #[cfg(test)]
@@ -226,5 +294,41 @@ mod tests {
             manifest_value(manifest, "Implementation-Version").as_deref(),
             Some("2.3.4")
         );
+    }
+
+    #[test]
+    fn reads_required_dependencies() {
+        let fabric = parse_fabric(
+            r#"{"id":"iris","depends":{"fabricloader":"*","minecraft":"1.21","fabric-api":"*","sodium":"*"}}"#,
+        );
+        assert_eq!(
+            fabric.map(|m| m.dependencies),
+            Some(vec!["sodium".to_owned()])
+        );
+        let quilt = parse_quilt(
+            r#"{"quilt_loader":{"id":"q","depends":["minecraft","quilt_base","lib",{"id":"opt","optional":true},{"id":"req"}]}}"#,
+        );
+        assert_eq!(
+            quilt.map(|m| m.dependencies),
+            Some(vec!["lib".to_owned(), "req".to_owned()])
+        );
+        let neoforge = parse_forge(
+            "[[mods]]\nmodId=\"jade\"\n[[dependencies.jade]]\nmodId=\"neoforge\"\ntype=\"required\"\n[[dependencies.jade]]\nmodId=\"balm\"\ntype=\"required\"\n[[dependencies.jade]]\nmodId=\"jei\"\ntype=\"optional\"\n",
+            None,
+        );
+        assert_eq!(
+            neoforge.map(|m| m.dependencies),
+            Some(vec!["balm".to_owned()])
+        );
+        let forge = parse_forge(
+            "[[mods]]\nmodId=\"a\"\n[[dependencies.a]]\nmodId=\"b\"\nmandatory=true\n[[dependencies.a]]\nmodId=\"c\"\nmandatory=false\n",
+            None,
+        );
+        assert_eq!(forge.map(|m| m.dependencies), Some(vec!["b".to_owned()]));
+        assert_eq!(
+            legacy_dependency("required-after:mod_IC2@[1.0,)"),
+            Some("IC2".to_owned())
+        );
+        assert_eq!(legacy_dependency("Forge"), None);
     }
 }

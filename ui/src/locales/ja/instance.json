@@ -110,7 +110,20 @@
     "lockUpdates": "更新をロック",
     "unlockUpdates": "更新のロックを解除",
     "forgetSource": "入手元を削除",
-    "updatesLocked": "更新はロック中"
+    "updatesLocked": "更新はロック中",
+    "requires": "必要: {{names}}",
+    "requiredBy": "必要としているもの: {{names}}",
+    "incompatible": "Minecraft {{version}} 対応と記載されていません",
+    "relatedEnableTitle": "必要な Mod を有効にしますか？",
+    "relatedEnable": "{{name}} には次の無効な Mod が必要です:",
+    "relatedDisableTitle": "依存している Mod を無効にしますか？",
+    "relatedDisable": "次の Mod は {{name}} を必要としており、ないと動作しない可能性があります:",
+    "toggleRelated": "一緒に切り替え",
+    "toggleOnlyThis": "これだけ",
+    "removeRelatedTitle": "他の Mod が {{name}} を必要としています",
+    "removeRelated": "次の Mod は {{name}} を必要としています。これらも無効にしますか？",
+    "disableAndRemove": "無効にして削除",
+    "onlyRemove": "削除のみ"
   },
   "worlds": {
     "count_other": "{{count}} 個のワールド",

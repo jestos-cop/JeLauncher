@@ -235,7 +235,7 @@ impl ModPlatforms {
                 });
             }
             installed.push(file_name);
-            for dependency in version.dependencies.iter().filter(|dep| dep.required) {
+            for dependency in version.dependencies.iter().filter(|dep| dep.is_required()) {
                 let Some(project_id) = &dependency.project_id else {
                     continue;
                 };

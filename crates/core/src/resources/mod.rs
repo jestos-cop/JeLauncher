@@ -1,6 +1,7 @@
 mod mod_list;
 mod mod_metadata;
 mod pack_metadata;
+mod relations;
 mod sources;
 
 use std::path::Path;
@@ -11,6 +12,7 @@ use serde::{Deserialize, Serialize};
 pub use mod_list::{ModListFormat, format_mod_list};
 pub use mod_metadata::read_mod_metadata;
 pub use pack_metadata::read_pack_metadata;
+pub use relations::{affected_by_toggle, attach_compatibility, attach_relations};
 pub use sources::{
     ProjectInfo, ResourceSource, attach_sources, index_dir, is_source_entry, read_sources,
     remove_source, set_update_lock, write_source,
@@ -58,6 +60,8 @@ pub struct ResourceMetadata {
     pub description: String,
     pub authors: Vec<String>,
     pub homepage: Option<String>,
+    /// Ids of the mods this one declares as required.
+    pub dependencies: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, specta::Type)]
@@ -71,6 +75,12 @@ pub struct ResourceFile {
     pub metadata: Option<ResourceMetadata>,
     /// The platform project the file was installed from, when known.
     pub source: Option<ResourceSource>,
+    /// Enabled names of the listed files this one requires.
+    pub requires: Vec<String>,
+    /// Enabled names of the listed files that require this one.
+    pub required_by: Vec<String>,
+    /// The source does not list the instance's Minecraft version.
+    pub incompatible: bool,
 }
 
 /// Lists installed resources of `kind` in `dir`, including disabled ones.
@@ -118,6 +128,9 @@ fn resource_file(path: &Path, kind: ResourceKind) -> Option<ResourceFile> {
         modified,
         metadata,
         source: None,
+        requires: Vec::new(),
+        required_by: Vec::new(),
+        incompatible: false,
         file_name,
     })
 }

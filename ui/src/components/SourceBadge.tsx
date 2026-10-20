@@ -19,7 +19,12 @@ export function SourceBadge({ source }: { source: ResourceSource | null }) {
     )
   }
   return (
-    <span className="inline-flex items-center gap-1.5 whitespace-nowrap" title={source.name}>
+    <span
+      className="inline-flex items-center gap-1.5 whitespace-nowrap"
+      title={[source.name, source.loaders.join(', '), source.gameVersions.join(', ')]
+        .filter(Boolean)
+        .join(' · ')}
+    >
       <span
         className={cn('size-2 rounded-full', PROVIDER_COLORS[source.provider] ?? 'bg-muted-foreground')}
       />

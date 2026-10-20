@@ -113,7 +113,20 @@
     "lockUpdates": "Не оновлювати",
     "unlockUpdates": "Дозволити оновлення",
     "forgetSource": "Забути джерело",
-    "updatesLocked": "Оновлення заблоковано"
+    "updatesLocked": "Оновлення заблоковано",
+    "requires": "Потребує: {{names}}",
+    "requiredBy": "Потрібен для: {{names}}",
+    "incompatible": "Не позначено як сумісний з Minecraft {{version}}",
+    "relatedEnableTitle": "Увімкнути потрібні моди?",
+    "relatedEnable": "{{name}} потребує цих вимкнених модів:",
+    "relatedDisableTitle": "Вимкнути залежні моди?",
+    "relatedDisable": "Ці моди потребують {{name}} і можуть зламатися без нього:",
+    "toggleRelated": "Перемкнути й їх",
+    "toggleOnlyThis": "Лише цей",
+    "removeRelatedTitle": "Від {{name}} залежать інші моди",
+    "removeRelated": "Ці моди потребують {{name}}. Вимкнути й їх?",
+    "disableAndRemove": "Вимкнути їх і видалити",
+    "onlyRemove": "Лише видалити"
   },
   "worlds": {
     "count_one": "{{count}} світ",

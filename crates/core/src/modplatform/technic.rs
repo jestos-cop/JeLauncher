@@ -188,6 +188,8 @@ fn project_version(slug: &str, version: &str, name: &str) -> ProjectVersion {
         changelog: None,
         files: Vec::new(),
         dependencies: Vec::new(),
+        loaders: Vec::new(),
+        game_versions: Vec::new(),
     }
 }
 

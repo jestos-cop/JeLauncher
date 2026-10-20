@@ -34,6 +34,7 @@ fn parse_pack_mcmeta(text: &str, name: &str) -> Option<ResourceMetadata> {
             .unwrap_or_default(),
         authors: Vec::new(),
         homepage: None,
+        dependencies: Vec::new(),
     })
 }
 

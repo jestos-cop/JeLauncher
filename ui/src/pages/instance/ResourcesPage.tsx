@@ -8,6 +8,7 @@ import {
   LockOpen,
   MoreHorizontal,
   RefreshCw,
+  TriangleAlert,
   ScanSearch,
   Trash2,
   Unlink,
@@ -17,6 +18,7 @@ import { useTranslation } from 'react-i18next'
 import { commands, type InstanceSummary, type ResourceFile, type ResourceKind } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { ModListExportMenu } from '@/components/ModListExportMenu'
+import { RelatedChangesDialog } from '@/components/RelatedChangesDialog'
 import { SourceBadge } from '@/components/SourceBadge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -39,6 +41,7 @@ import {
   useForgetSource,
   useIdentifySources,
   useSetResourceEnabled,
+  affectedByToggle,
   useSetUpdateLock,
   useUpdateResources,
 } from '@/hooks/use-resources'
@@ -57,7 +60,40 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
   const setEnabled = useSetResourceEnabled(instance.id, kind)
   const remove = useRemoveResource(instance.id, kind)
   const [search, setSearch] = useState('')
-  const [pendingRemoval, setPendingRemoval] = useState<ResourceFile | null>(null)
+  const [pendingRemoval, setPendingRemoval] = useState<{ file: ResourceFile; dependents: string[] } | null>(
+    null,
+  )
+  const [pendingToggle, setPendingToggle] = useState<{
+    file: ResourceFile
+    enable: boolean
+    related: string[]
+  } | null>(null)
+  const nameOf = (fileName: string) => {
+    const file = files.find(
+      (candidate) => candidate.fileName === fileName || enabledName(candidate) === fileName,
+    )
+    return file ? displayName(file) : fileName
+  }
+  const [linkError, setLinkError] = useState<Error | null>(null)
+
+  const toggle = async (file: ResourceFile, enable: boolean) => {
+    try {
+      const related = await affectedByToggle(instance.id, kind, [file.fileName], enable)
+      if (related.length === 0) setEnabled.mutate({ fileNames: [file.fileName], enabled: enable })
+      else setPendingToggle({ file, enable, related })
+    } catch (error) {
+      setLinkError(error instanceof Error ? error : new Error(String(error)))
+    }
+  }
+
+  const startRemoval = async (file: ResourceFile) => {
+    try {
+      const dependents = file.enabled ? await affectedByToggle(instance.id, kind, [file.fileName], false) : []
+      setPendingRemoval({ file, dependents })
+    } catch (error) {
+      setLinkError(error instanceof Error ? error : new Error(String(error)))
+    }
+  }
   const [isDownloading, setIsDownloading] = useState(false)
   const [checkUpdates, setCheckUpdates] = useState(false)
   const [isReviewing, setIsReviewing] = useState(false)
@@ -130,7 +166,9 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
       </div>
 
       {error && <p className="text-sm text-destructive">{error.message}</p>}
-      {setEnabled.error && <p className="text-sm text-destructive">{setEnabled.error.message}</p>}
+      {(setEnabled.error ?? linkError) && (
+        <p className="text-sm text-destructive">{(setEnabled.error ?? linkError)?.message}</p>
+      )}
       {(identify.error ?? setLock.error ?? forgetSource.error) && (
         <p className="text-sm text-destructive">
           {(identify.error ?? setLock.error ?? forgetSource.error)?.message}
@@ -188,16 +226,32 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
                   <Checkbox
                     checked={file.enabled}
                     aria-label={t('item.enable', { name: displayName(file) })}
-                    onCheckedChange={(checked) =>
-                      setEnabled.mutate({ fileName: file.fileName, enabled: checked === true })
-                    }
+                    onCheckedChange={(checked) => void toggle(file, checked === true)}
                   />
                 </td>
-                <td className="p-2 font-medium" title={file.metadata?.description}>
-                  {displayName(file)}
+                <td className="p-2" title={file.metadata?.description}>
+                  <p className="font-medium">{displayName(file)}</p>
+                  {file.requires.length > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      {t('resources.requires', { names: file.requires.map(nameOf).join(', ') })}
+                    </p>
+                  )}
+                  {file.requiredBy.length > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      {t('resources.requiredBy', { names: file.requiredBy.map(nameOf).join(', ') })}
+                    </p>
+                  )}
                 </td>
                 <td className="p-2">
-                  {file.metadata?.version}
+                  {file.incompatible && (
+                    <TriangleAlert
+                      className="mr-1 inline size-3.5 text-amber-500"
+                      aria-label={t('resources.incompatible', { version: instance.minecraftVersion })}
+                    >
+                      <title>{t('resources.incompatible', { version: instance.minecraftVersion })}</title>
+                    </TriangleAlert>
+                  )}
+                  {file.metadata?.version ?? file.source?.versionNumber}
                   {updateFor(file) && (
                     <button
                       type="button"
@@ -270,7 +324,7 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
                           <DropdownMenuSeparator />
                         </>
                       )}
-                      <DropdownMenuItem variant="destructive" onSelect={() => setPendingRemoval(file)}>
+                      <DropdownMenuItem variant="destructive" onSelect={() => void startRemoval(file)}>
                         <Trash2 /> {t('common:action.remove')}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -286,15 +340,59 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
         )}
       </div>
 
-      {pendingRemoval && (
+      {pendingRemoval && pendingRemoval.dependents.length === 0 && (
         <ConfirmDialog
-          title={t('confirm.remove', { name: displayName(pendingRemoval) })}
-          description={t('resources.removeDescription', { file: pendingRemoval.fileName })}
+          title={t('confirm.remove', { name: displayName(pendingRemoval.file) })}
+          description={t('resources.removeDescription', { file: pendingRemoval.file.fileName })}
           confirmLabel={t('common:action.remove')}
           onConfirm={() =>
-            remove.mutate(pendingRemoval.fileName, { onSuccess: () => setPendingRemoval(null) })
+            remove.mutate(pendingRemoval.file.fileName, { onSuccess: () => setPendingRemoval(null) })
           }
           onClose={() => setPendingRemoval(null)}
+        />
+      )}
+      {pendingRemoval && pendingRemoval.dependents.length > 0 && (
+        <RelatedChangesDialog
+          title={t('resources.removeRelatedTitle', { name: displayName(pendingRemoval.file) })}
+          description={t('resources.removeRelated', { name: displayName(pendingRemoval.file) })}
+          names={pendingRemoval.dependents.map(nameOf)}
+          withRelatedLabel={t('resources.disableAndRemove')}
+          onlySelectedLabel={t('resources.onlyRemove')}
+          onWithRelated={() => {
+            const { file, dependents } = pendingRemoval
+            setPendingRemoval(null)
+            setEnabled.mutate(
+              { fileNames: dependents, enabled: false },
+              { onSuccess: () => remove.mutate(file.fileName) },
+            )
+          }}
+          onOnlySelected={() => {
+            remove.mutate(pendingRemoval.file.fileName)
+            setPendingRemoval(null)
+          }}
+          onClose={() => setPendingRemoval(null)}
+        />
+      )}
+      {pendingToggle && (
+        <RelatedChangesDialog
+          title={t(pendingToggle.enable ? 'resources.relatedEnableTitle' : 'resources.relatedDisableTitle')}
+          description={t(pendingToggle.enable ? 'resources.relatedEnable' : 'resources.relatedDisable', {
+            name: displayName(pendingToggle.file),
+          })}
+          names={pendingToggle.related.map(nameOf)}
+          withRelatedLabel={t('resources.toggleRelated')}
+          onlySelectedLabel={t('resources.toggleOnlyThis')}
+          onWithRelated={() => {
+            const { file, enable, related } = pendingToggle
+            setPendingToggle(null)
+            setEnabled.mutate({ fileNames: [file.fileName, ...related], enabled: enable })
+          }}
+          onOnlySelected={() => {
+            const { file, enable } = pendingToggle
+            setPendingToggle(null)
+            setEnabled.mutate({ fileNames: [file.fileName], enabled: enable })
+          }}
+          onClose={() => setPendingToggle(null)}
         />
       )}
       {changing?.source && (
@@ -328,5 +426,9 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
 }
 
 function displayName(file: ResourceFile) {
-  return file.metadata?.name ?? file.fileName
+  return file.metadata?.name ?? file.source?.name ?? file.fileName
+}
+
+function enabledName(file: ResourceFile) {
+  return file.fileName.replace(/\.disabled$/, '')
 }

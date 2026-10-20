@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 
 use super::{DISABLED_SUFFIX, ResourceFile, ResourceKind};
-use crate::modplatform::{ProjectVersion, Provider, ReleaseType, VersionFile};
+use crate::modplatform::{DependencyKind, ProjectVersion, Provider, ReleaseType, VersionFile};
 use crate::{Error, Result, fs};
 
 const INDEX_DIR: &str = ".index";
@@ -31,12 +31,24 @@ pub struct ResourceSource {
     pub lock_update: bool,
     /// The project page on the platform's website.
     pub homepage: String,
+    /// Loaders the installed version is published for.
+    pub loaders: Vec<String>,
+    /// Minecraft versions the installed version is published for; empty when unknown.
+    pub game_versions: Vec<String>,
+    /// Projects on the same platform the installed version declares.
+    pub dependencies: Vec<SourceDependency>,
     #[serde(skip)]
     download: Download,
     #[serde(skip)]
     side: Option<String>,
-    #[serde(skip)]
-    dependencies: Vec<String>,
+}
+
+/// A project another one declares on its platform.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct SourceDependency {
+    pub project_id: String,
+    pub kind: DependencyKind,
 }
 
 /// The parts of a platform project a source needs.
@@ -89,11 +101,17 @@ impl ResourceSource {
                 hash,
             },
             side: None,
+            loaders: version.loaders.clone(),
+            game_versions: version.game_versions.clone(),
             dependencies: version
                 .dependencies
                 .iter()
-                .filter(|dependency| dependency.required)
-                .filter_map(|dependency| dependency.project_id.clone())
+                .filter_map(|dependency| {
+                    Some(SourceDependency {
+                        project_id: dependency.project_id.clone()?,
+                        kind: dependency.kind,
+                    })
+                })
                 .collect(),
         }
     }
@@ -279,10 +297,15 @@ fn parse_source(text: &str, path: &Path) -> Option<ResourceSource> {
             hash: file.download.hash,
         },
         side: file.side,
+        loaders: file.loaders,
+        game_versions: file.game_versions,
         dependencies: file
             .dependencies
             .into_iter()
-            .map(|dependency| dependency.project_id)
+            .map(|dependency| SourceDependency {
+                project_id: dependency.project_id,
+                kind: dependency.kind,
+            })
             .collect(),
     })
 }
@@ -309,6 +332,18 @@ struct PackwizFile {
     #[serde(rename = "x-jelauncher-lock-update", default)]
     lock_update: bool,
     #[serde(
+        rename = "x-jelauncher-loaders",
+        default,
+        skip_serializing_if = "Vec::is_empty"
+    )]
+    loaders: Vec<String>,
+    #[serde(
+        rename = "x-jelauncher-mc-versions",
+        default,
+        skip_serializing_if = "Vec::is_empty"
+    )]
+    game_versions: Vec<String>,
+    #[serde(
         rename = "x-jelauncher-dependencies",
         default,
         skip_serializing_if = "Vec::is_empty"
@@ -323,7 +358,7 @@ struct PackwizDependency {
     #[serde(rename = "project-id")]
     project_id: String,
     #[serde(rename = "type")]
-    kind: String,
+    kind: DependencyKind,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -385,12 +420,14 @@ impl From<&ResourceSource> for PackwizFile {
             version_number: source.version_number.clone(),
             release_type: source.release_type,
             lock_update: source.lock_update,
+            loaders: source.loaders.clone(),
+            game_versions: source.game_versions.clone(),
             dependencies: source
                 .dependencies
                 .iter()
-                .map(|project_id| PackwizDependency {
-                    project_id: project_id.clone(),
-                    kind: "required".to_owned(),
+                .map(|dependency| PackwizDependency {
+                    project_id: dependency.project_id.clone(),
+                    kind: dependency.kind,
                 })
                 .collect(),
             download: PackwizDownload {
@@ -447,8 +484,10 @@ mod tests {
             dependencies: vec![Dependency {
                 project_id: Some("P7dR8mSH".into()),
                 version_id: None,
-                required: true,
+                kind: DependencyKind::Required,
             }],
+            loaders: vec!["fabric".into()],
+            game_versions: vec!["1.21.4".into()],
         };
         (version, file)
     }
@@ -486,7 +525,9 @@ mod tests {
             assert_eq!(back.project_id, source.project_id);
             assert_eq!(back.version_id, source.version_id);
             assert_eq!(back.file_name, "sodium.jar");
-            assert_eq!(back.dependencies, ["P7dR8mSH"]);
+            assert_eq!(back.dependencies, source.dependencies);
+            assert_eq!(back.loaders, ["fabric"]);
+            assert_eq!(back.game_versions, ["1.21.4"]);
         }
         Ok(())
     }
@@ -551,6 +592,9 @@ project-id = 327154
             modified: 0,
             metadata: None,
             source: None,
+            requires: Vec::new(),
+            required_by: Vec::new(),
+            incompatible: false,
         }];
         attach_sources(dir.path(), ResourceKind::Mod, &mut files)?;
         assert_eq!(

@@ -110,7 +110,20 @@
     "lockUpdates": "锁定更新",
     "unlockUpdates": "解锁更新",
     "forgetSource": "忘记来源",
-    "updatesLocked": "更新已锁定"
+    "updatesLocked": "更新已锁定",
+    "requires": "需要：{{names}}",
+    "requiredBy": "被以下需要：{{names}}",
+    "incompatible": "未标记为兼容 Minecraft {{version}}",
+    "relatedEnableTitle": "启用所需模组？",
+    "relatedEnable": "{{name}} 需要这些已禁用的模组：",
+    "relatedDisableTitle": "禁用依赖它的模组？",
+    "relatedDisable": "这些模组需要 {{name}}，缺少它可能无法运行：",
+    "toggleRelated": "一并切换",
+    "toggleOnlyThis": "仅此模组",
+    "removeRelatedTitle": "其他模组需要 {{name}}",
+    "removeRelated": "这些模组需要 {{name}}。也要禁用它们吗？",
+    "disableAndRemove": "禁用它们并移除",
+    "onlyRemove": "仅移除"
   },
   "worlds": {
     "count_other": "{{count}} 个世界",

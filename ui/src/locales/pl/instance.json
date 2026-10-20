@@ -113,7 +113,20 @@
     "lockUpdates": "Zablokuj aktualizacje",
     "unlockUpdates": "Odblokuj aktualizacje",
     "forgetSource": "Zapomnij źródło",
-    "updatesLocked": "Aktualizacje zablokowane"
+    "updatesLocked": "Aktualizacje zablokowane",
+    "requires": "Wymaga: {{names}}",
+    "requiredBy": "Wymagany przez: {{names}}",
+    "incompatible": "Nie oznaczono jako zgodny z Minecraft {{version}}",
+    "relatedEnableTitle": "Włączyć wymagane mody?",
+    "relatedEnable": "{{name}} wymaga tych wyłączonych modów:",
+    "relatedDisableTitle": "Wyłączyć zależne mody?",
+    "relatedDisable": "Te mody wymagają {{name}} i mogą bez niego nie działać:",
+    "toggleRelated": "Przełącz też je",
+    "toggleOnlyThis": "Tylko ten",
+    "removeRelatedTitle": "Inne mody wymagają {{name}}",
+    "removeRelated": "Te mody wymagają {{name}}. Wyłączyć je również?",
+    "disableAndRemove": "Wyłącz je i usuń",
+    "onlyRemove": "Tylko usuń"
   },
   "worlds": {
     "count_one": "{{count}} świat",

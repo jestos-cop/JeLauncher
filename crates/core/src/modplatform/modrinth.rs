@@ -5,9 +5,9 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
 use super::{
-    Dependency, InstallTarget, ProjectHit, ProjectVersion, Provider, ReleaseType, ResourceKind,
-    ResourceUpdate, SearchPage, SearchQuery, SortOrder, VersionFile, download_version,
-    replace_resource,
+    Dependency, DependencyKind, InstallTarget, ProjectHit, ProjectVersion, Provider, ReleaseType,
+    ResourceKind, ResourceUpdate, SearchPage, SearchQuery, SortOrder, VersionFile,
+    download_version, replace_resource,
 };
 use crate::instance::Instance;
 use crate::minecraft::LoaderKind;
@@ -362,6 +362,10 @@ struct ApiVersion {
     files: Vec<ApiFile>,
     #[serde(default)]
     dependencies: Vec<ApiDependency>,
+    #[serde(default)]
+    loaders: Vec<String>,
+    #[serde(default)]
+    game_versions: Vec<String>,
 }
 
 #[derive(Deserialize)]
@@ -431,15 +435,23 @@ impl TryFrom<ApiVersion> for ProjectVersion {
             dependencies: version
                 .dependencies
                 .into_iter()
-                .filter(|dep| {
-                    dep.dependency_type == "required" || dep.dependency_type == "optional"
-                })
-                .map(|dep| Dependency {
-                    required: dep.dependency_type == "required",
-                    project_id: dep.project_id,
-                    version_id: dep.version_id,
+                .filter_map(|dep| {
+                    let kind = match dep.dependency_type.as_str() {
+                        "required" => DependencyKind::Required,
+                        "optional" => DependencyKind::Optional,
+                        "incompatible" => DependencyKind::Incompatible,
+                        "embedded" => DependencyKind::Embedded,
+                        _ => return None,
+                    };
+                    Some(Dependency {
+                        kind,
+                        project_id: dep.project_id,
+                        version_id: dep.version_id,
+                    })
                 })
                 .collect(),
+            loaders: version.loaders,
+            game_versions: version.game_versions,
         })
     }
 }

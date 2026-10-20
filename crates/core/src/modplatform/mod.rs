@@ -20,7 +20,9 @@ pub use crate::resources::ResourceKind;
 use crate::resources::{DISABLED_SUFFIX, set_resource_enabled};
 use crate::{Error, Result};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize, specta::Type,
+)]
 #[serde(rename_all = "camelCase")]
 pub enum Provider {
     #[default]
@@ -116,6 +118,10 @@ pub struct ProjectVersion {
     pub changelog: Option<String>,
     pub files: Vec<VersionFile>,
     pub dependencies: Vec<Dependency>,
+    /// Loaders the version is published for, e.g. `fabric`; empty when the platform does not say.
+    pub loaders: Vec<String>,
+    /// Minecraft versions the version is published for; empty when the platform does not say.
+    pub game_versions: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, specta::Type)]
@@ -143,7 +149,23 @@ pub struct ResourceUpdate {
 pub struct Dependency {
     pub project_id: Option<String>,
     pub version_id: Option<String>,
-    pub required: bool,
+    pub kind: DependencyKind,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub enum DependencyKind {
+    Required,
+    Optional,
+    Incompatible,
+    /// Bundled inside the file itself.
+    Embedded,
+}
+
+impl Dependency {
+    pub fn is_required(&self) -> bool {
+        self.kind == DependencyKind::Required
+    }
 }
 
 impl ProjectVersion {

@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use serde::Deserialize;
 
 use super::{
-    Dependency, ProjectHit, ProjectVersion, Provider, ReleaseType, ResourceKind, SearchPage,
-    SearchQuery, SortOrder, VersionFile,
+    Dependency, DependencyKind, ProjectHit, ProjectVersion, Provider, ReleaseType, ResourceKind,
+    SearchPage, SearchQuery, SortOrder, VersionFile,
 };
 use crate::minecraft::LoaderKind;
 use crate::net::HttpClient;
@@ -15,8 +15,10 @@ const MINECRAFT_GAME_ID: &str = "432";
 /// The API rejects requests that page past this many results.
 const MAX_RESULTS: u32 = 10_000;
 const SHA1_ALGORITHM: u32 = 1;
-const REQUIRED_DEPENDENCY: u32 = 3;
+const EMBEDDED_DEPENDENCY: u32 = 1;
 const OPTIONAL_DEPENDENCY: u32 = 2;
+const REQUIRED_DEPENDENCY: u32 = 3;
+const INCOMPATIBLE_DEPENDENCY: u32 = 5;
 
 #[derive(Debug, Clone)]
 pub struct CurseForge {
@@ -306,6 +308,9 @@ struct ApiFile {
     hashes: Vec<ApiHash>,
     #[serde(default)]
     dependencies: Vec<ApiDependency>,
+    /// Game versions mixed with loader names such as `NeoForge` and sides such as `Client`.
+    #[serde(default)]
+    game_versions: Vec<String>,
 }
 
 #[derive(Deserialize)]
@@ -358,14 +363,31 @@ impl TryFrom<ApiFile> for ProjectVersion {
             dependencies: file
                 .dependencies
                 .into_iter()
-                .filter(|dep| {
-                    matches!(dep.relation_type, REQUIRED_DEPENDENCY | OPTIONAL_DEPENDENCY)
+                .filter_map(|dep| {
+                    let kind = match dep.relation_type {
+                        REQUIRED_DEPENDENCY => DependencyKind::Required,
+                        OPTIONAL_DEPENDENCY => DependencyKind::Optional,
+                        EMBEDDED_DEPENDENCY => DependencyKind::Embedded,
+                        INCOMPATIBLE_DEPENDENCY => DependencyKind::Incompatible,
+                        _ => return None,
+                    };
+                    Some(Dependency {
+                        project_id: Some(dep.mod_id.to_string()),
+                        version_id: None,
+                        kind,
+                    })
                 })
-                .map(|dep| Dependency {
-                    project_id: Some(dep.mod_id.to_string()),
-                    version_id: None,
-                    required: dep.relation_type == REQUIRED_DEPENDENCY,
-                })
+                .collect(),
+            loaders: file
+                .game_versions
+                .iter()
+                .map(|name| name.to_lowercase())
+                .filter(|name| matches!(name.as_str(), "forge" | "neoforge" | "fabric" | "quilt"))
+                .collect(),
+            game_versions: file
+                .game_versions
+                .into_iter()
+                .filter(|name| name.starts_with(|c: char| c.is_ascii_digit()))
                 .collect(),
         })
     }
@@ -438,8 +460,9 @@ mod tests {
         assert_eq!(version.release_type, ReleaseType::Beta);
         assert_eq!(version.files[0].sha1.as_deref(), Some("a5d3"));
         assert!(version.files[0].url.is_empty());
-        assert_eq!(version.dependencies.len(), 2);
-        assert!(version.dependencies[0].required);
+        assert_eq!(version.dependencies.len(), 3);
+        assert!(version.dependencies[0].is_required());
+        assert_eq!(version.dependencies[2].kind, DependencyKind::Incompatible);
         Ok(())
     }
 

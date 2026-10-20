@@ -111,7 +111,20 @@
     "lockUpdates": "Chain it to the mast",
     "unlockUpdates": "Unchain it",
     "forgetSource": "Forget the port",
-    "updatesLocked": "Chained to the mast"
+    "updatesLocked": "Chained to the mast",
+    "requires": "Needs aboard: {{names}}",
+    "requiredBy": "Needed by: {{names}}",
+    "incompatible": "Not charted fer Minecraft {{version}} waters",
+    "relatedEnableTitle": "Wake the needed crew?",
+    "relatedEnable": "{{name}} needs these sleepin' hands:",
+    "relatedDisableTitle": "Send the dependents below deck?",
+    "relatedDisable": "These hands need {{name}} an' may sink without it:",
+    "toggleRelated": "Them too",
+    "toggleOnlyThis": "Just this one",
+    "removeRelatedTitle": "Other hands need {{name}}",
+    "removeRelated": "These hands need {{name}}. Send them below deck too?",
+    "disableAndRemove": "Below deck, then scuttle",
+    "onlyRemove": "Just scuttle"
   },
   "worlds": {
     "count_one": "{{count}} world",

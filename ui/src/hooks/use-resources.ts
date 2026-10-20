@@ -33,9 +33,22 @@ export function useSetResourceEnabled(instanceId: string, kind: ResourceKind) {
   return useResourceMutation(
     instanceId,
     kind,
-    ({ fileName, enabled }: { fileName: string; enabled: boolean }) =>
-      unwrap(commands.setResourceEnabled(instanceId, kind, fileName, enabled)),
+    async ({ fileNames, enabled }: { fileNames: string[]; enabled: boolean }) => {
+      for (const fileName of fileNames) {
+        await unwrap(commands.setResourceEnabled(instanceId, kind, fileName, enabled))
+      }
+    },
   )
+}
+
+/** Files that should be switched along with `fileNames` because of their dependencies. */
+export function affectedByToggle(
+  instanceId: string,
+  kind: ResourceKind,
+  fileNames: string[],
+  enable: boolean,
+) {
+  return unwrap(commands.resourcesAffectedByToggle(instanceId, kind, fileNames, enable))
 }
 
 export function useRemoveResource(instanceId: string, kind: ResourceKind) {

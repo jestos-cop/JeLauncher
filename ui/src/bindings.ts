@@ -554,6 +554,18 @@ async removeResource(instanceId: string, kind: ResourceKind, fileName: string) :
 }
 },
 /**
+ * Files that should be switched along when `file_names` are enabled or disabled, because they
+ * require them or are required by them.
+ */
+async resourcesAffectedByToggle(instanceId: string, kind: ResourceKind, fileNames: string[], enable: boolean) : Promise<Result<string[], CommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("resources_affected_by_toggle", { instanceId, kind, fileNames, enable }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Turns update checks off or on for one resource with a known source.
  */
 async setResourceUpdateLock(instanceId: string, kind: ResourceKind, fileName: string, locked: boolean) : Promise<Result<null, CommandError>> {
@@ -841,7 +853,12 @@ export type CopyOptions = { name: string; group: string | null; copySaves: boole
  */
 useHardLinks: boolean }
 export type CustomIcon = { key: string; path: string }
-export type Dependency = { projectId: string | null; versionId: string | null; required: boolean }
+export type Dependency = { projectId: string | null; versionId: string | null; kind: DependencyKind }
+export type DependencyKind = "required" | "optional" | "incompatible" | 
+/**
+ * Bundled inside the file itself.
+ */
+"embedded"
 /**
  * What the user needs to finish signing in on another device or in the browser.
  */
@@ -970,7 +987,15 @@ export type ProjectVersion = { id: string; projectId: string; name: string; vers
 /**
  * Markdown release notes.
  */
-changelog: string | null; files: VersionFile[]; dependencies: Dependency[] }
+changelog: string | null; files: VersionFile[]; dependencies: Dependency[]; 
+/**
+ * Loaders the version is published for, e.g. `fabric`; empty when the platform does not say.
+ */
+loaders: string[]; 
+/**
+ * Minecraft versions the version is published for; empty when the platform does not say.
+ */
+gameVersions: string[] }
 export type Provider = "modrinth" | "curseForge" | "ftb" | "technic" | "atLauncher"
 /**
  * Where the game should go right after starting.
@@ -993,9 +1018,25 @@ modified: number; metadata: ResourceMetadata | null;
 /**
  * The platform project the file was installed from, when known.
  */
-source: ResourceSource | null }
+source: ResourceSource | null; 
+/**
+ * Enabled names of the listed files this one requires.
+ */
+requires: string[]; 
+/**
+ * Enabled names of the listed files that require this one.
+ */
+requiredBy: string[]; 
+/**
+ * The source does not list the instance's Minecraft version.
+ */
+incompatible: boolean }
 export type ResourceKind = "mod" | "resourcePack" | "shaderPack" | "dataPack" | "modpack"
-export type ResourceMetadata = { id: string; name: string; version: string; description: string; authors: string[]; homepage: string | null }
+export type ResourceMetadata = { id: string; name: string; version: string; description: string; authors: string[]; homepage: string | null; 
+/**
+ * Ids of the mods this one declares as required.
+ */
+dependencies: string[] }
 export type ResourcePackPolicy = "prompt" | "enabled" | "disabled"
 /**
  * The platform project and version an installed resource file was downloaded from.
@@ -1016,7 +1057,19 @@ lockUpdate: boolean;
 /**
  * The project page on the platform's website.
  */
-homepage: string }
+homepage: string; 
+/**
+ * Loaders the installed version is published for.
+ */
+loaders: string[]; 
+/**
+ * Minecraft versions the installed version is published for; empty when unknown.
+ */
+gameVersions: string[]; 
+/**
+ * Projects on the same platform the installed version declares.
+ */
+dependencies: SourceDependency[] }
 /**
  * A newer published version of an installed resource file.
  */
@@ -1039,6 +1092,10 @@ export type ServerStatus = { version: string; playersOnline: number; playersMax:
  */
 favicon: string | null; latencyMs: number }
 export type SortOrder = "relevance" | "downloads" | "updated" | "newest"
+/**
+ * A project another one declares on its platform.
+ */
+export type SourceDependency = { projectId: string; kind: DependencyKind }
 export type Theme = "system" | "light" | "dark"
 export type ToolSettings = { 
 /**

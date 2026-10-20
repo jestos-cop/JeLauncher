@@ -113,7 +113,20 @@
     "lockUpdates": "Не обновлять",
     "unlockUpdates": "Разрешить обновления",
     "forgetSource": "Забыть источник",
-    "updatesLocked": "Обновления заблокированы"
+    "updatesLocked": "Обновления заблокированы",
+    "requires": "Требует: {{names}}",
+    "requiredBy": "Нужен для: {{names}}",
+    "incompatible": "Не отмечен как совместимый с Minecraft {{version}}",
+    "relatedEnableTitle": "Включить нужные моды?",
+    "relatedEnable": "{{name}} требует эти отключённые моды:",
+    "relatedDisableTitle": "Отключить зависимые моды?",
+    "relatedDisable": "Эти моды требуют {{name}} и могут сломаться без него:",
+    "toggleRelated": "Переключить и их",
+    "toggleOnlyThis": "Только этот",
+    "removeRelatedTitle": "От {{name}} зависят другие моды",
+    "removeRelated": "Эти моды требуют {{name}}. Отключить и их?",
+    "disableAndRemove": "Отключить их и удалить",
+    "onlyRemove": "Только удалить"
   },
   "worlds": {
     "count_one": "{{count}} мир",
