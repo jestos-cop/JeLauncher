@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next'
 import type { GlobalSettings, InstanceSettings } from '@/bindings'
 import { CommandFields } from '@/components/CommandFields'
 import { Field, JavaPicker, NumberInput } from '@/components/SettingsFields'
-import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useInstanceSettings, useSetInstanceSettings } from '@/hooks/use-instance-settings'
 import { useMemoryHint, useSettings } from '@/hooks/use-settings'
+import { SaveBar } from '@/components/SaveBar'
 
 export function InstanceSettingsPage({ instanceId }: { instanceId: string }) {
   const { data: saved } = useInstanceSettings(instanceId)
@@ -65,7 +65,7 @@ function SettingsForm({ instanceId, saved, global }: SettingsFormProps) {
   const memoryHint = useMemoryHint(maxMemory)
 
   return (
-    <div className="flex max-w-4xl flex-col gap-6">
+    <div className="flex min-h-full max-w-4xl flex-col gap-6">
       <OverrideGroup title="Java" overridden={javaOverridden} onToggle={toggleJava}>
         <Field label={t('settings.javaInstallation')}>
           <JavaPicker value={draft.javaPath ?? global.java.path} onChange={(javaPath) => set({ javaPath })} />
@@ -132,17 +132,12 @@ function SettingsForm({ instanceId, saved, global }: SettingsFormProps) {
 
       {minMemory > maxMemory && <p className="text-sm text-destructive">{t('settings.memoryError')}</p>}
       {save.error && <p className="text-sm text-destructive">{save.error.message}</p>}
-      <div className="flex gap-2">
-        <Button
-          disabled={!isDirty || save.isPending || minMemory > maxMemory}
-          onClick={() => save.mutate(draft)}
-        >
-          {t('common:action.save')}
-        </Button>
-        <Button variant="ghost" disabled={!isDirty} onClick={() => setDraft(saved)}>
-          {t('common:action.reset')}
-        </Button>
-      </div>
+      <SaveBar
+        isDirty={isDirty}
+        canSave={!save.isPending && minMemory <= maxMemory}
+        onSave={() => save.mutate(draft)}
+        onReset={() => setDraft(saved)}
+      />
     </div>
   )
 }

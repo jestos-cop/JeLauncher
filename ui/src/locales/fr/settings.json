@@ -78,5 +78,6 @@
     "textEditor": "Éditeur de texte",
     "textEditorHint": "Commande qui ouvre les fichiers de l'instance, par exemple code ou subl. Laissez vide pour utiliser l'application par défaut.",
     "defaultApp": "Application par défaut"
-  }
+  },
+  "unsavedChanges": "Modifications non enregistrées"
 }

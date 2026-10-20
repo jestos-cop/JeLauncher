@@ -24,7 +24,7 @@ export function HelpMenu() {
             <CircleHelp /> <ToolbarLabel>{t('help.title')}</ToolbarLabel> <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
+        <DropdownMenuContent align="start" className="w-max">
           <DropdownMenuItem onSelect={() => void unwrap(commands.openRepository())}>
             <Code /> {t('help.sourceCode')}
           </DropdownMenuItem>

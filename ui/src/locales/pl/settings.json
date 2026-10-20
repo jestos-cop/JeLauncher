@@ -78,5 +78,6 @@
     "textEditor": "Edytor tekstu",
     "textEditorHint": "Polecenie otwierające pliki instancji, na przykład code lub subl. Pozostaw puste, aby użyć domyślnej aplikacji.",
     "defaultApp": "Domyślna aplikacja"
-  }
+  },
+  "unsavedChanges": "Niezapisane zmiany"
 }

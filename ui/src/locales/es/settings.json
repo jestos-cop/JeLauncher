@@ -78,5 +78,6 @@
     "textEditor": "Editor de texto",
     "textEditorHint": "Comando que abre los archivos de la instancia, por ejemplo code o subl. Déjalo vacío para usar la aplicación predeterminada.",
     "defaultApp": "Aplicación predeterminada"
-  }
+  },
+  "unsavedChanges": "Cambios sin guardar"
 }

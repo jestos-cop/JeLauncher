@@ -78,5 +78,6 @@
     "textEditor": "Text editor",
     "textEditorHint": "Command that opens ship files, fer example code or subl. Leave empty to use the default app.",
     "defaultApp": "Default app"
-  }
+  },
+  "unsavedChanges": "Cargo not yet stowed"
 }

@@ -36,7 +36,7 @@ export function ModListExportMenu({ instance }: { instance: InstanceSummary }) {
           <FileText /> {t('modListExport.button')} <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="w-max">
         {FORMATS.map(({ format, label, extension }) => (
           <DropdownMenuItem key={format} onSelect={() => void exportList(format, extension)}>
             {label ?? t('modListExport.plainText')}

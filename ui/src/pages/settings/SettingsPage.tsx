@@ -12,8 +12,8 @@ import {
   PathInput,
   ThemeSelect,
 } from '@/components/SettingsFields'
+import { SaveBar } from '@/components/SaveBar'
 import { SidebarLayout, type SidebarTab } from '@/components/SidebarLayout'
-import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { useMemoryHint, useSettings, useUpdateSettings } from '@/hooks/use-settings'
@@ -69,7 +69,7 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
     setDraft((current) => ({ ...current, network: { ...current.network, ...patch } }))
 
   return (
-    <div className="flex max-w-4xl flex-col gap-5">
+    <div className="flex min-h-full max-w-4xl flex-col gap-5">
       {tab === 'launcher' && (
         <>
           <h3 className="text-sm font-semibold">{t('launcher.appearance')}</h3>
@@ -271,17 +271,12 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
         <p className="text-sm text-destructive">{t('java.memoryRange')}</p>
       )}
       {update.error && <p className="text-sm text-destructive">{update.error.message}</p>}
-      <div className="flex gap-2">
-        <Button
-          disabled={!isDirty || update.isPending || draft.java.minMemoryMb > draft.java.maxMemoryMb}
-          onClick={() => update.mutate(draft)}
-        >
-          {t('common:action.save')}
-        </Button>
-        <Button variant="ghost" disabled={!isDirty} onClick={() => setDraft(saved)}>
-          {t('common:action.reset')}
-        </Button>
-      </div>
+      <SaveBar
+        isDirty={isDirty}
+        canSave={!update.isPending && draft.java.minMemoryMb <= draft.java.maxMemoryMb}
+        onSave={() => update.mutate(draft)}
+        onReset={() => setDraft(saved)}
+      />
     </div>
   )
 }

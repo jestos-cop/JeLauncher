@@ -22,7 +22,7 @@ export function FoldersMenu() {
           <Folder /> <ToolbarLabel>{t('folders.title')}</ToolbarLabel> <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start">
+      <DropdownMenuContent align="start" className="w-max">
         {FOLDERS.map((folder) => (
           <DropdownMenuItem key={folder} onSelect={() => void unwrap(commands.openLauncherFolder(folder))}>
             {t(`folders.${folder}`)}

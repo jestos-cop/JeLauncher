@@ -78,5 +78,6 @@
     "textEditor": "テキストエディター",
     "textEditorHint": "インスタンスのファイルを開くコマンドです（例: code、subl）。空欄にするとデフォルトのアプリを使用します。",
     "defaultApp": "デフォルトのアプリ"
-  }
+  },
+  "unsavedChanges": "未保存の変更があります"
 }

@@ -78,5 +78,6 @@
     "textEditor": "Editor de texto",
     "textEditorHint": "Comando que abre os arquivos da instância, por exemplo code ou subl. Deixe vazio para usar o app padrão.",
     "defaultApp": "App padrão"
-  }
+  },
+  "unsavedChanges": "Alterações não salvas"
 }

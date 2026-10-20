@@ -78,5 +78,6 @@
     "textEditor": "文本编辑器",
     "textEditorHint": "用于打开实例文件的命令，例如 code 或 subl。留空则使用默认应用。",
     "defaultApp": "默认应用"
-  }
+  },
+  "unsavedChanges": "有未保存的更改"
 }
