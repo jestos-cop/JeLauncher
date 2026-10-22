@@ -1,12 +1,13 @@
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { ChevronDown, ChevronRight, Gamepad2 } from 'lucide-react'
 import { useMemo, useState, type DragEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSession } from '@/app/sessions'
 import type { InstanceSummary } from '@/bindings'
-import { InstanceIcon } from '@/components/InstanceIcon'
+import { InstanceAvatar } from '@/components/InstanceAvatar'
 import { ContextMenu, ContextMenuTrigger } from '@/components/ui/context-menu'
 import { useSetInstanceGroup } from '@/hooks/use-instance-actions'
 import { useStoredState } from '@/hooks/use-stored-state'
+import { LOADER_LABELS } from '@/lib/loaders'
 import { cn } from '@/lib/utils'
 import { InstanceTileMenu } from '@/pages/main/InstanceTileMenu'
 
@@ -118,7 +119,7 @@ function InstanceGroup({ group, showHeader, isCollapsed, onToggle, children }: I
         </button>
       )}
       {!isCollapsed && (
-        <ul className="grid grid-cols-[repeat(auto-fill,minmax(7rem,1fr))] gap-3">{children}</ul>
+        <ul className="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-3">{children}</ul>
       )}
     </section>
   )
@@ -146,12 +147,21 @@ function InstanceTile({ instance, isSelected, onSelect }: InstanceTileProps) {
             onContextMenu={onSelect}
             onDoubleClick={() => !isActive && void launch()}
             className={cn(
-              'relative flex w-full flex-col items-center gap-2 rounded-md p-3 text-center hover:bg-accent',
-              isSelected && 'bg-accent ring-1 ring-ring',
+              'relative flex w-full items-center gap-3 rounded-2xl border bg-card p-3 text-left transition-colors hover:bg-accent/60',
+              isSelected && 'border-ring bg-accent/60 ring-1 ring-ring',
             )}
           >
-            <InstanceIcon iconKey={instance.iconKey} className="size-12" />
-            <span className="line-clamp-2 text-sm">{instance.name}</span>
+            <InstanceAvatar instance={instance} className="size-12" />
+            <span className="flex min-w-0 flex-col gap-1">
+              <span className="truncate text-sm font-semibold">{instance.name}</span>
+              <span className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground">
+                <Gamepad2 className="size-3.5 shrink-0" />
+                <span className="truncate">
+                  {instance.minecraftVersion}
+                  {instance.loader && ` ${LOADER_LABELS[instance.loader.kind]}`}
+                </span>
+              </span>
+            </span>
             {isActive && <span className="absolute top-2 right-2 size-2.5 rounded-full bg-green-500" />}
           </button>
         </ContextMenuTrigger>

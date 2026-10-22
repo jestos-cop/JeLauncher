@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
 import type { InstanceSummary } from '@/bindings'
-import { InstanceIcon } from '@/components/InstanceIcon'
+import { InstanceAvatar } from '@/components/InstanceAvatar'
 import { LaunchControls } from '@/components/LaunchControls'
 import { Button } from '@/components/ui/button'
 import { openInstanceFolder } from '@/hooks/use-instance-actions'
 import { formatPlayTime } from '@/lib/format'
+import { LOADER_LABELS } from '@/lib/loaders'
 import { type InstanceDialog, InstanceDialogs } from '@/pages/main/InstanceDialogs'
 
 export function InstancePanel({ instance }: { instance: InstanceSummary }) {
@@ -28,15 +29,15 @@ export function InstancePanel({ instance }: { instance: InstanceSummary }) {
         <button
           type="button"
           title={t('actions.changeIcon')}
-          className="rounded-md p-1 hover:bg-accent"
+          className="rounded-2xl p-1 hover:bg-accent"
           onClick={() => setDialog('icon')}
         >
-          <InstanceIcon iconKey={instance.iconKey} className="size-16" />
+          <InstanceAvatar instance={instance} className="size-16 text-2xl" />
         </button>
         <h2 className="font-semibold">{instance.name}</h2>
         <p className="text-sm text-muted-foreground">
           Minecraft {instance.minecraftVersion}
-          {instance.loader && ` · ${instance.loader.kind} ${instance.loader.version}`}
+          {instance.loader && ` · ${LOADER_LABELS[instance.loader.kind]} ${instance.loader.version}`}
         </p>
         <p className="text-xs text-muted-foreground">
           {t('panel.played', { time: formatPlayTime(instance.totalTimePlayed) })}
