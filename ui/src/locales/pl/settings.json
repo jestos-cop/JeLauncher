@@ -16,6 +16,7 @@
     "appearance": "Wygląd",
     "theme": "Motyw",
     "language": "Język",
+    "showNewsBar": "Pokazuj pasek wiadomości",
     "console": "Konsola",
     "showConsole": "Otwieraj dziennik przy uruchomieniu",
     "showConsoleOnError": "Otwieraj dziennik po awarii",

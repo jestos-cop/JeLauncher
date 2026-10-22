@@ -16,6 +16,7 @@
     "appearance": "Apariencia",
     "theme": "Tema",
     "language": "Idioma",
+    "showNewsBar": "Mostrar titular de noticias",
     "console": "Registro",
     "showConsole": "Abrir el registro al iniciar",
     "showConsoleOnError": "Abrir el registro si el juego falla",

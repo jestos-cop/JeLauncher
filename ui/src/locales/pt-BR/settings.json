@@ -16,6 +16,7 @@
     "appearance": "Aparência",
     "theme": "Tema",
     "language": "Idioma",
+    "showNewsBar": "Mostrar manchete de notícias",
     "console": "Console",
     "showConsole": "Abrir registro ao iniciar",
     "showConsoleOnError": "Abrir registro em caso de falha",

@@ -16,6 +16,7 @@
     "appearance": "Изглед",
     "theme": "Тема",
     "language": "Језик",
+    "showNewsBar": "Прикажи траку са вестима",
     "console": "Конзола",
     "showConsole": "Отвори дневник при покретању",
     "showConsoleOnError": "Отвори дневник при паду",

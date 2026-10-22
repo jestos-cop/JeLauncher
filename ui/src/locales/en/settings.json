@@ -16,6 +16,7 @@
     "appearance": "Appearance",
     "theme": "Theme",
     "language": "Language",
+    "showNewsBar": "Show news headline",
     "console": "Console",
     "showConsole": "Open log on launch",
     "showConsoleOnError": "Open log on crash",

@@ -16,6 +16,7 @@
     "appearance": "Colours",
     "theme": "Theme",
     "language": "Tongue",
+    "showNewsBar": "Show the town crier's news",
     "console": "Ship's log",
     "showConsole": "Open log when settin' sail",
     "showConsoleOnError": "Open log on shipwreck",

@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { NewInstanceDialog } from '@/dialogs/NewInstanceDialog'
 import { useInstances } from '@/hooks/use-instances'
+import { useSettings } from '@/hooks/use-settings'
 import { useStoredState } from '@/hooks/use-stored-state'
 import { InstanceGrid, type InstanceSort } from '@/pages/main/InstanceGrid'
 import { InstancePanel } from '@/pages/main/InstancePanel'
@@ -26,6 +27,7 @@ export function MainPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [sort, setSort] = useStoredState<InstanceSort>('instance-sort', 'name')
+  const { data: settings } = useSettings()
   const selected = instances?.find((instance) => instance.id === selectedId)
 
   return (
@@ -75,7 +77,7 @@ export function MainPage() {
           <AccountsMenu />
         </div>
       </header>
-      <NewsBar />
+      {(settings?.appearance.showNewsBar ?? true) && <NewsBar />}
 
       <div className="flex min-h-0 flex-1">
         <main className="flex-1 overflow-auto p-4">

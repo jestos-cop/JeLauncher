@@ -98,6 +98,17 @@ function SettingsForm({ saved, tab }: { saved: GlobalSettings; tab: SettingsTab 
                 }
               />
             </Field>
+            <Field label={t('launcher.showNewsBar')}>
+              <Checkbox
+                checked={draft.appearance.showNewsBar}
+                onCheckedChange={(checked) =>
+                  setDraft((current) => ({
+                    ...current,
+                    appearance: { ...current.appearance, showNewsBar: checked === true },
+                  }))
+                }
+              />
+            </Field>
           </SettingsSection>
           <SettingsSection title={t('launcher.console')}>
             <Field label={t('launcher.showConsole')}>

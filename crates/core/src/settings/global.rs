@@ -78,12 +78,24 @@ pub enum Theme {
     Dark,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize, specta::Type)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(default, rename_all = "camelCase")]
 pub struct AppearanceSettings {
     pub theme: Theme,
     /// Interface language code such as `uk`; `None` follows the system language.
     pub language: Option<String>,
+    /// Shows the latest Minecraft news headline above the instances.
+    pub show_news_bar: bool,
+}
+
+impl Default for AppearanceSettings {
+    fn default() -> Self {
+        Self {
+            theme: Theme::default(),
+            language: None,
+            show_news_bar: true,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, specta::Type)]

@@ -16,6 +16,7 @@
     "appearance": "外観",
     "theme": "テーマ",
     "language": "言語",
+    "showNewsBar": "ニュースの見出しを表示",
     "console": "コンソール",
     "showConsole": "起動時にログを開く",
     "showConsoleOnError": "クラッシュ時にログを開く",

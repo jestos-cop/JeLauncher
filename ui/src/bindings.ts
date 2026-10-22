@@ -848,7 +848,11 @@ export type AppearanceSettings = { theme: Theme;
 /**
  * Interface language code such as `uk`; `None` follows the system language.
  */
-language: string | null }
+language: string | null; 
+/**
+ * Shows the latest Minecraft news headline above the instances.
+ */
+showNewsBar: boolean }
 /**
  * A pack file whose author only allows downloads from the CurseForge website.
  */

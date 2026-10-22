@@ -16,6 +16,7 @@
     "appearance": "Вигляд",
     "theme": "Тема",
     "language": "Мова",
+    "showNewsBar": "Показувати рядок новин",
     "console": "Журнал",
     "showConsole": "Відкривати журнал під час запуску",
     "showConsoleOnError": "Відкривати журнал у разі збою",

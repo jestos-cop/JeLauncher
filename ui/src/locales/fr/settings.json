@@ -16,6 +16,7 @@
     "appearance": "Apparence",
     "theme": "Thème",
     "language": "Langue",
+    "showNewsBar": "Afficher le titre des actualités",
     "console": "Console",
     "showConsole": "Ouvrir le journal au lancement",
     "showConsoleOnError": "Ouvrir le journal en cas de plantage",
