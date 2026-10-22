@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Builds the Linux deb, rpm and AppImage bundles; runs on Linux only.
+set -euo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+if [[ "$(uname -s)" != "Linux" ]]; then
+  echo "bundle-linux only runs on Linux" >&2
+  exit 1
+fi
+
+cd "$root"
+cargo tauri build --bundles deb,rpm,appimage
+
+echo "Done:"
+ls -1 "$root"/target/release/bundle/{deb/*.deb,rpm/*.rpm,appimage/*.AppImage}

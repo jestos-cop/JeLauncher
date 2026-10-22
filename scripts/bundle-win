@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Builds the Windows NSIS installer: natively on Windows, otherwise cross-compiled with
+# cargo-xwin (needs cargo-xwin, nsis and llvm).
+set -euo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+target="x86_64-pc-windows-msvc"
+cd "$root"
+
+case "$(uname -s)" in
+  MINGW* | MSYS* | CYGWIN*)
+    cargo tauri build --bundles nsis
+    bundle_dir="$root/target/release/bundle/nsis"
+    ;;
+  *)
+    cargo tauri build --runner cargo-xwin --target "$target" --bundles nsis
+    bundle_dir="$root/target/$target/release/bundle/nsis"
+    ;;
+esac
+
+echo "Done:"
+ls -1 "$bundle_dir"/*.exe

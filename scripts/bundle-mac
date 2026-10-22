@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Builds JeLauncher.app and puts it in place of the installed one, quitting and reopening
+# the running copy. INSTALL_DIR overrides /Applications.
+set -euo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+install_dir="${INSTALL_DIR:-/Applications}"
+app_name="JeLauncher.app"
+installed="$install_dir/$app_name"
+built="$root/target/release/bundle/macos/$app_name"
+
+if [[ "$(uname -s)" != "Darwin" ]]; then
+  echo "bundle-mac only runs on macOS" >&2
+  exit 1
+fi
+
+cd "$root"
+cargo tauri build --bundles app
+
+running_pids() {
+  pgrep -f "^$installed/Contents/MacOS/" || true
+}
+
+was_running=false
+if [[ -n "$(running_pids)" ]]; then
+  was_running=true
+  echo "Quitting the running $app_name"
+  osascript -e "tell application \"$installed\" to quit" || true
+  for _ in {1..20}; do
+    [[ -z "$(running_pids)" ]] && break
+    sleep 0.5
+  done
+  pids="$(running_pids)"
+  if [[ -n "$pids" ]]; then
+    kill $pids
+  fi
+fi
+
+echo "Installing into $installed"
+rm -rf "$installed"
+ditto "$built" "$installed"
+
+if [[ "$was_running" == true ]]; then
+  open "$installed"
+fi
+echo "Done: $installed"
