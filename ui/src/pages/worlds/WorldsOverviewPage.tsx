@@ -1,6 +1,6 @@
 import { useQueries } from '@tanstack/react-query'
 import { convertFileSrc } from '@tauri-apps/api/core'
-import { Archive, ArrowLeft, Globe, Play, RefreshCw, Trash2 } from 'lucide-react'
+import { Archive, ArrowLeft, FolderOpen, Globe, Play, RefreshCw, Settings2, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@/app/navigation'
@@ -10,7 +10,7 @@ import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { InstanceAvatar } from '@/components/InstanceAvatar'
 import { Button } from '@/components/ui/button'
 import { useInstances } from '@/hooks/use-instances'
-import { useBackupWorld, useDeleteWorld, worldsKey } from '@/hooks/use-worlds'
+import { openSavesFolder, useBackupWorld, useDeleteWorld, worldsKey } from '@/hooks/use-worlds'
 import { unwrap } from '@/lib/command'
 
 /** Worlds of every instance, grouped by instance. */
@@ -64,6 +64,7 @@ export function WorldsOverviewPage() {
 
 function InstanceWorlds({ instance, worlds }: { instance: InstanceSummary; worlds: World[] }) {
   const { t } = useTranslation(['instance', 'common'])
+  const { navigate } = useNavigation()
   const { session, launch } = useSession(instance.id)
   const backup = useBackupWorld(instance.id)
   const remove = useDeleteWorld(instance.id)
@@ -77,6 +78,37 @@ function InstanceWorlds({ instance, worlds }: { instance: InstanceSummary; world
         <span className="font-mono text-xs text-muted-foreground">{instance.minecraftVersion}</span>
         <span className="h-px flex-1 bg-border" />
         <span className="text-xs text-muted-foreground">{t('worlds.count', { count: worlds.length })}</span>
+        <div className="flex items-center">
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            title={t('common:action.openFolder')}
+            aria-label={t('common:action.openFolder')}
+            onClick={() => void openSavesFolder(instance.id)}
+          >
+            <FolderOpen />
+          </Button>
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            title={t('common:action.edit')}
+            aria-label={t('common:action.edit')}
+            onClick={() => navigate({ page: 'instance', instanceId: instance.id, tab: 'worlds' })}
+          >
+            <Settings2 />
+          </Button>
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            className="text-primary"
+            title={t('common:action.launch')}
+            aria-label={t('common:action.launch')}
+            disabled={session.status !== 'idle'}
+            onClick={() => void launch()}
+          >
+            <Play />
+          </Button>
+        </div>
       </div>
       {backup.data && (
         <p className="text-xs text-muted-foreground">{t('worlds.backupSaved', { path: backup.data })}</p>
