@@ -32,7 +32,7 @@ export function InstancePanel({ instance }: { instance: InstanceSummary }) {
           className="rounded-2xl p-1 hover:bg-accent"
           onClick={() => setDialog('icon')}
         >
-          <InstanceAvatar instance={instance} className="size-16 text-2xl" />
+          <InstanceAvatar instance={instance} className="size-14 text-xl" />
         </button>
         <h2 className="font-semibold">{instance.name}</h2>
         <p className="text-sm text-muted-foreground">

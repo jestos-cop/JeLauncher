@@ -119,7 +119,7 @@ function InstanceGroup({ group, showHeader, isCollapsed, onToggle, children }: I
         </button>
       )}
       {!isCollapsed && (
-        <ul className="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-3">{children}</ul>
+        <ul className="grid grid-cols-[repeat(auto-fill,minmax(12rem,14rem))] gap-2">{children}</ul>
       )}
     </section>
   )
@@ -147,22 +147,22 @@ function InstanceTile({ instance, isSelected, onSelect }: InstanceTileProps) {
             onContextMenu={onSelect}
             onDoubleClick={() => !isActive && void launch()}
             className={cn(
-              'relative flex w-full items-center gap-3 rounded-2xl border bg-card p-3 text-left transition-colors hover:bg-accent/60',
-              isSelected && 'border-ring bg-accent/60 ring-1 ring-ring',
+              'relative flex w-full items-center gap-2.5 rounded-xl border bg-card p-2 text-left transition-colors hover:bg-accent/60',
+              isSelected && 'border-primary/70 bg-accent/60',
             )}
           >
-            <InstanceAvatar instance={instance} className="size-12" />
-            <span className="flex min-w-0 flex-col gap-1">
+            <InstanceAvatar instance={instance} className="size-9 rounded-lg text-base" />
+            <span className="flex min-w-0 flex-col gap-0.5">
               <span className="truncate text-sm font-semibold">{instance.name}</span>
-              <span className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground">
-                <Gamepad2 className="size-3.5 shrink-0" />
+              <span className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground">
+                <Gamepad2 className="size-3 shrink-0" />
                 <span className="truncate">
                   {instance.minecraftVersion}
                   {instance.loader && ` ${LOADER_LABELS[instance.loader.kind]}`}
                 </span>
               </span>
             </span>
-            {isActive && <span className="absolute top-2 right-2 size-2.5 rounded-full bg-green-500" />}
+            {isActive && <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-green-500" />}
           </button>
         </ContextMenuTrigger>
         <InstanceTileMenu instance={instance} />
