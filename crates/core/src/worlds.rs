@@ -18,6 +18,8 @@ pub struct World {
     pub last_played: i64,
     pub seed: Option<String>,
     pub game_version: Option<String>,
+    /// The world's `icon.png`, when the game has saved one.
+    pub icon: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, specta::Type)]
@@ -109,6 +111,9 @@ pub fn read_world(dir: &Path) -> Result<World> {
         last_played: data.last_played.unwrap_or(0),
         seed: seed.map(|seed| seed.to_string()),
         game_version: data.version.and_then(|version| version.name),
+        icon: Some(dir.join("icon.png"))
+            .filter(|icon| icon.is_file())
+            .map(|icon| icon.to_string_lossy().into_owned()),
         folder,
     })
 }

@@ -1,4 +1,4 @@
-import { Plus, RefreshCw, Settings } from 'lucide-react'
+import { Globe, Plus, RefreshCw, Settings } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@/app/navigation'
@@ -39,6 +39,14 @@ export function MainPage() {
           <RefreshCw /> <ToolbarLabel>{t('common:action.refresh')}</ToolbarLabel>
         </Button>
         <FoldersMenu />
+        <Button
+          size="sm"
+          variant="ghost"
+          title={t('toolbar.worlds')}
+          onClick={() => navigate({ page: 'worlds' })}
+        >
+          <Globe /> <ToolbarLabel>{t('toolbar.worlds')}</ToolbarLabel>
+        </Button>
         <Button
           size="sm"
           variant="ghost"

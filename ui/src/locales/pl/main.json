@@ -2,6 +2,7 @@
   "toolbar": {
     "addInstance": "Dodaj instancję",
     "settings": "Ustawienia",
+    "worlds": "Światy",
     "searchPlaceholder": "Szukaj instancji",
     "sortByName": "Według nazwy",
     "sortLastPlayed": "Ostatnio grane"
@@ -65,5 +66,11 @@
   "playTime": {
     "hoursMinutes": "{{hours}} godz. {{minutes}} min",
     "minutes": "{{minutes}} min"
+  },
+  "worlds": {
+    "title": "Światy",
+    "summary": "Światy: {{worlds}} · instancje: {{instances}}",
+    "reading": "Wczytywanie światów…",
+    "empty": "Żadna instancja nie ma jeszcze światów."
   }
 }

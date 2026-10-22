@@ -2,6 +2,7 @@
   "toolbar": {
     "addInstance": "Додај инстанцу",
     "settings": "Подешавања",
+    "worlds": "Светови",
     "searchPlaceholder": "Претражи инстанце",
     "sortByName": "По имену",
     "sortLastPlayed": "Последње играно"
@@ -64,5 +65,11 @@
   "playTime": {
     "hoursMinutes": "{{hours}} ч {{minutes}} мин",
     "minutes": "{{minutes}} мин"
+  },
+  "worlds": {
+    "title": "Светови",
+    "summary": "Светова: {{worlds}} · инстанци: {{instances}}",
+    "reading": "Читање светова…",
+    "empty": "Ниједна инстанца још нема светове."
   }
 }

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { commands } from '@/bindings'
 import { unwrap } from '@/lib/command'
 
-const worldsKey = (instanceId: string) => ['worlds', instanceId]
+export const worldsKey = (instanceId: string) => ['worlds', instanceId]
 
 export function useWorlds(instanceId: string) {
   return useQuery({ queryKey: worldsKey(instanceId), queryFn: () => unwrap(commands.listWorlds(instanceId)) })

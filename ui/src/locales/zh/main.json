@@ -2,6 +2,7 @@
   "toolbar": {
     "addInstance": "添加实例",
     "settings": "设置",
+    "worlds": "世界",
     "searchPlaceholder": "搜索实例",
     "sortByName": "按名称",
     "sortLastPlayed": "上次游玩"
@@ -62,5 +63,11 @@
   "playTime": {
     "hoursMinutes": "{{hours}} 小时 {{minutes}} 分钟",
     "minutes": "{{minutes}} 分钟"
+  },
+  "worlds": {
+    "title": "世界",
+    "summary": "世界：{{worlds}} · 实例：{{instances}}",
+    "reading": "正在读取世界…",
+    "empty": "还没有任何实例包含世界。"
   }
 }

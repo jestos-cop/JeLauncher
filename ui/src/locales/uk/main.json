@@ -2,6 +2,7 @@
   "toolbar": {
     "addInstance": "Додати збірку",
     "settings": "Налаштування",
+    "worlds": "Світи",
     "searchPlaceholder": "Пошук збірок",
     "sortByName": "За назвою",
     "sortLastPlayed": "За останнім запуском"
@@ -65,5 +66,11 @@
   "playTime": {
     "hoursMinutes": "{{hours}} год {{minutes}} хв",
     "minutes": "{{minutes}} хв"
+  },
+  "worlds": {
+    "title": "Світи",
+    "summary": "Світів: {{worlds}} · збірок: {{instances}}",
+    "reading": "Читання світів…",
+    "empty": "У жодній збірці ще немає світів."
   }
 }

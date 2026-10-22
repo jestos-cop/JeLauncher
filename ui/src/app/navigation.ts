@@ -20,6 +20,7 @@ export type View =
   | { page: 'main' }
   | { page: 'instance'; instanceId: string; tab: InstanceTab }
   | { page: 'settings'; tab: SettingsTab }
+  | { page: 'worlds' }
 
 interface NavigationContextValue {
   view: View

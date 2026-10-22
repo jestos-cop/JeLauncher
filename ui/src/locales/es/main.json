@@ -2,6 +2,7 @@
   "toolbar": {
     "addInstance": "Añadir instancia",
     "settings": "Ajustes",
+    "worlds": "Mundos",
     "searchPlaceholder": "Buscar instancias",
     "sortByName": "Por nombre",
     "sortLastPlayed": "Jugadas recientemente"
@@ -64,5 +65,11 @@
   "playTime": {
     "hoursMinutes": "{{hours}} h {{minutes}} min",
     "minutes": "{{minutes}} min"
+  },
+  "worlds": {
+    "title": "Mundos",
+    "summary": "Mundos: {{worlds}} · instancias: {{instances}}",
+    "reading": "Leyendo mundos…",
+    "empty": "Ninguna instancia tiene mundos todavía."
   }
 }

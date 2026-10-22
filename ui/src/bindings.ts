@@ -1195,7 +1195,11 @@ folder: string; name: string; gameMode: GameMode; hardcore: boolean;
 /**
  * Unix time in milliseconds.
  */
-lastPlayed: number; seed: string | null; gameVersion: string | null }
+lastPlayed: number; seed: string | null; gameVersion: string | null; 
+/**
+ * The world's `icon.png`, when the game has saved one.
+ */
+icon: string | null }
 
 /** tauri-specta globals **/
 

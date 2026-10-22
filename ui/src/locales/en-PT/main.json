@@ -2,6 +2,7 @@
   "toolbar": {
     "addInstance": "Add Ship",
     "settings": "Ship's Articles",
+    "worlds": "Lands",
     "searchPlaceholder": "Search the fleet",
     "sortByName": "By name",
     "sortLastPlayed": "Last voyage"
@@ -63,5 +64,11 @@
   "playTime": {
     "hoursMinutes": "{{hours}}h {{minutes}}m",
     "minutes": "{{minutes}}m"
+  },
+  "worlds": {
+    "title": "Charted Lands",
+    "summary": "{{worlds}} lands across {{instances}} ships",
+    "reading": "Readin' the charts…",
+    "empty": "No ship has charted any lands yet."
   }
 }

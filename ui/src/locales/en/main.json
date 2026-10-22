@@ -2,6 +2,7 @@
   "toolbar": {
     "addInstance": "Add Instance",
     "settings": "Settings",
+    "worlds": "Worlds",
     "searchPlaceholder": "Search instances",
     "sortByName": "By name",
     "sortLastPlayed": "Last played"
@@ -63,5 +64,11 @@
   "playTime": {
     "hoursMinutes": "{{hours}}h {{minutes}}m",
     "minutes": "{{minutes}}m"
+  },
+  "worlds": {
+    "title": "Worlds",
+    "summary": "{{worlds}} worlds in {{instances}} instances",
+    "reading": "Reading worlds…",
+    "empty": "No instance has worlds yet."
   }
 }
