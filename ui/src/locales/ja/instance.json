@@ -176,7 +176,8 @@
     "players_other": "{{online}}/{{count}} 人のプレイヤー",
     "versionLatency": "{{version}} · {{latency}} ms",
     "join": "参加",
-    "moveUp": "上へ移動"
+    "moveUp": "上へ移動",
+    "copyAddress": "アドレスをコピー"
   },
   "screenshots": {
     "count_other": "{{count}} 枚のスクリーンショット",

@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { useSession } from '@/app/sessions'
 import { commands, type InstanceSummary, type World } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
+import { ContextMenuArea } from '@/components/ContextMenuArea'
+import { WorldMenu } from '@/components/WorldMenu'
 import { Button } from '@/components/ui/button'
 import { useInstances } from '@/hooks/use-instances'
 import { useStoredState } from '@/hooks/use-stored-state'
@@ -79,56 +81,72 @@ function InstanceWorlds({ instance, worlds }: { instance: InstanceSummary; world
       )}
       <ul className="flex flex-col gap-2">
         {worlds.map((world) => (
-          <li key={world.folder} className="flex items-center gap-3 rounded-xl border bg-card p-2.5">
-            <WorldIcon world={world} />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold">{world.name}</p>
-              <p className="truncate text-xs text-muted-foreground">
-                {[
-                  world.gameVersion,
-                  t(`worlds.gameMode.${world.hardcore ? 'hardcore' : world.gameMode}`),
-                  world.lastPlayed ? new Date(world.lastPlayed).toLocaleDateString() : null,
-                ]
-                  .filter(Boolean)
-                  .join(' · ')}
-              </p>
-            </div>
-            <div className="flex items-center gap-1">
-              <Button
-                size="icon"
-                variant="ghost"
-                className="text-primary"
-                title={t('worlds.play')}
-                aria-label={t('item.play', { name: world.name })}
-                disabled={session.status !== 'idle'}
-                onClick={() =>
+          <ContextMenuArea
+            key={world.folder}
+            menu={
+              <WorldMenu
+                instanceId={instance.id}
+                world={world}
+                canPlay={session.status === 'idle'}
+                onPlay={() =>
                   void launch({ quickPlay: { type: 'world', target: world.folder }, demo: false })
                 }
-              >
-                <Play />
-              </Button>
-              <Button
-                size="icon"
-                variant="ghost"
-                title={t('worlds.backUp')}
-                aria-label={t('item.backUp', { name: world.name })}
-                disabled={backup.isPending}
-                onClick={() => backup.mutate(world.folder)}
-              >
-                <Archive />
-              </Button>
-              <Button
-                size="icon"
-                variant="ghost"
-                className="text-destructive hover:text-destructive"
-                title={t('common:action.delete')}
-                aria-label={t('item.delete', { name: world.name })}
-                onClick={() => setPendingRemoval(world)}
-              >
-                <Trash2 />
-              </Button>
-            </div>
-          </li>
+                onBackUp={() => backup.mutate(world.folder)}
+                onDelete={() => setPendingRemoval(world)}
+              />
+            }
+          >
+            <li className="flex items-center gap-3 rounded-xl border bg-card p-2.5">
+              <WorldIcon world={world} />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold">{world.name}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {[
+                    world.gameVersion,
+                    t(`worlds.gameMode.${world.hardcore ? 'hardcore' : world.gameMode}`),
+                    world.lastPlayed ? new Date(world.lastPlayed).toLocaleDateString() : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </p>
+              </div>
+              <div className="flex items-center gap-1">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="text-primary"
+                  title={t('worlds.play')}
+                  aria-label={t('item.play', { name: world.name })}
+                  disabled={session.status !== 'idle'}
+                  onClick={() =>
+                    void launch({ quickPlay: { type: 'world', target: world.folder }, demo: false })
+                  }
+                >
+                  <Play />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  title={t('worlds.backUp')}
+                  aria-label={t('item.backUp', { name: world.name })}
+                  disabled={backup.isPending}
+                  onClick={() => backup.mutate(world.folder)}
+                >
+                  <Archive />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="text-destructive hover:text-destructive"
+                  title={t('common:action.delete')}
+                  aria-label={t('item.delete', { name: world.name })}
+                  onClick={() => setPendingRemoval(world)}
+                >
+                  <Trash2 />
+                </Button>
+              </div>
+            </li>
+          </ContextMenuArea>
         ))}
       </ul>
       {pendingRemoval && (

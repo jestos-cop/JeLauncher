@@ -176,7 +176,8 @@
     "players_other": "{{online}}/{{count}} 名玩家",
     "versionLatency": "{{version}} · {{latency}} ms",
     "join": "加入",
-    "moveUp": "上移"
+    "moveUp": "上移",
+    "copyAddress": "复制地址"
   },
   "screenshots": {
     "count_other": "{{count}} 张截图",

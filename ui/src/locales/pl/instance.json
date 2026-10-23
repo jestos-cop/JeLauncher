@@ -188,7 +188,8 @@
     "players_other": "{{online}}/{{count}} gracza",
     "versionLatency": "{{version}} · {{latency}} ms",
     "join": "Dołącz",
-    "moveUp": "Przenieś wyżej"
+    "moveUp": "Przenieś wyżej",
+    "copyAddress": "Kopiuj adres"
   },
   "screenshots": {
     "count_one": "{{count}} zrzut ekranu",

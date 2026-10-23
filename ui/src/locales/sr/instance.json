@@ -184,7 +184,8 @@
     "players_other": "{{online}}/{{count}} играча",
     "versionLatency": "{{version}} · {{latency}} ms",
     "join": "Придружи се",
-    "moveUp": "Помери нагоре"
+    "moveUp": "Помери нагоре",
+    "copyAddress": "Копирај адресу"
   },
   "screenshots": {
     "count_one": "{{count}} снимак екрана",

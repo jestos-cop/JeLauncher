@@ -188,7 +188,8 @@
     "players_other": "{{online}}/{{count}} игрока",
     "versionLatency": "{{version}} · {{latency}} мс",
     "join": "Подключиться",
-    "moveUp": "Переместить вверх"
+    "moveUp": "Переместить вверх",
+    "copyAddress": "Копировать адрес"
   },
   "screenshots": {
     "count_one": "{{count}} скриншот",

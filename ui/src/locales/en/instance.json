@@ -180,7 +180,8 @@
     "players_other": "{{online}}/{{count}} players",
     "versionLatency": "{{version}} · {{latency}} ms",
     "join": "Join",
-    "moveUp": "Move up"
+    "moveUp": "Move up",
+    "copyAddress": "Copy address"
   },
   "screenshots": {
     "count_one": "{{count}} screenshot",

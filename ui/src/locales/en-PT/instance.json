@@ -180,7 +180,8 @@
     "players_other": "{{online}}/{{count}} sailors",
     "versionLatency": "{{version}} · {{latency}} ms",
     "join": "Dock",
-    "moveUp": "Hoist up"
+    "moveUp": "Hoist up",
+    "copyAddress": "Copy the port's bearings"
   },
   "screenshots": {
     "count_one": "{{count}} sketch",

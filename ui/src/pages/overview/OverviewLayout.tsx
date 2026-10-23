@@ -2,7 +2,9 @@ import { ArrowLeft, RefreshCw } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { type OverviewTab, useNavigation } from '@/app/navigation'
+import { ContextMenuArea } from '@/components/ContextMenuArea'
 import { Button } from '@/components/ui/button'
+import { ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import type { OverviewSort } from '@/pages/overview/sort'
@@ -57,7 +59,17 @@ export function OverviewLayout({
           <RefreshCw /> {t('common:action.refresh')}
         </Button>
       </header>
-      <main className="flex min-h-0 flex-1 flex-col gap-5 overflow-auto p-4">{children}</main>
+      <ContextMenuArea
+        menu={
+          <ContextMenuContent className="w-max">
+            <ContextMenuItem onSelect={onRefresh}>
+              <RefreshCw /> {t('common:action.refresh')}
+            </ContextMenuItem>
+          </ContextMenuContent>
+        }
+      >
+        <main className="flex min-h-0 flex-1 flex-col gap-5 overflow-auto p-4">{children}</main>
+      </ContextMenuArea>
     </div>
   )
 }

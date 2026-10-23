@@ -1,10 +1,13 @@
 import { ArrowUp, Pencil, Play, Plus, RefreshCw, Server as ServerIcon, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { type ComponentProps, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { useSession } from '@/app/sessions'
 import type { Server } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
+import { ContextMenuArea } from '@/components/ContextMenuArea'
+import { ServerMenu } from '@/components/ServerMenu'
+import { ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu'
 import { Button } from '@/components/ui/button'
 import { ServerDialog } from '@/dialogs/ServerDialog'
 import {
@@ -51,24 +54,54 @@ export function ServersPage({ instanceId }: { instanceId: string }) {
 
       {error && <p className="text-sm text-destructive">{error.message}</p>}
 
-      <div className="min-h-0 flex-1 overflow-auto rounded-md border">
-        {servers.map((server, index) => (
-          <ServerRow
-            key={`${index}-${server.address}`}
-            server={server}
-            canMoveUp={index > 0}
-            canJoin={session.status === 'idle'}
-            onJoin={() => void launch({ quickPlay: { type: 'server', target: server.address }, demo: false })}
-            onEdit={() => setAction({ kind: 'edit', index })}
-            onMoveUp={() => moveUp.mutate(index)}
-            onDelete={() => setAction({ kind: 'delete', index })}
-          />
-        ))}
-        {isPending && <p className="p-3 text-sm text-muted-foreground">{t('servers.reading')}</p>}
-        {!isPending && servers.length === 0 && (
-          <p className="p-3 text-sm text-muted-foreground">{t('servers.empty')}</p>
-        )}
-      </div>
+      <ContextMenuArea
+        menu={
+          <ContextMenuContent className="w-max">
+            <ContextMenuItem onSelect={() => setAction({ kind: 'edit', index: null })}>
+              <Plus /> {t('servers.add')}
+            </ContextMenuItem>
+            <ContextMenuItem onSelect={refresh}>
+              <RefreshCw /> {t('common:action.refresh')}
+            </ContextMenuItem>
+          </ContextMenuContent>
+        }
+      >
+        <div className="min-h-0 flex-1 overflow-auto rounded-md border">
+          {servers.map((server, index) => (
+            <ContextMenuArea
+              key={`${index}-${server.address}`}
+              menu={
+                <ServerMenu
+                  server={server}
+                  canJoin={session.status === 'idle'}
+                  onJoin={() =>
+                    void launch({ quickPlay: { type: 'server', target: server.address }, demo: false })
+                  }
+                  onEdit={() => setAction({ kind: 'edit', index })}
+                  onMoveUp={index > 0 ? () => moveUp.mutate(index) : undefined}
+                  onRemove={() => setAction({ kind: 'delete', index })}
+                />
+              }
+            >
+              <ServerRow
+                server={server}
+                canMoveUp={index > 0}
+                canJoin={session.status === 'idle'}
+                onJoin={() =>
+                  void launch({ quickPlay: { type: 'server', target: server.address }, demo: false })
+                }
+                onEdit={() => setAction({ kind: 'edit', index })}
+                onMoveUp={() => moveUp.mutate(index)}
+                onDelete={() => setAction({ kind: 'delete', index })}
+              />
+            </ContextMenuArea>
+          ))}
+          {isPending && <p className="p-3 text-sm text-muted-foreground">{t('servers.reading')}</p>}
+          {!isPending && servers.length === 0 && (
+            <p className="p-3 text-sm text-muted-foreground">{t('servers.empty')}</p>
+          )}
+        </div>
+      </ContextMenuArea>
 
       {action?.kind === 'edit' && (
         <ServerDialog
@@ -92,7 +125,7 @@ export function ServersPage({ instanceId }: { instanceId: string }) {
   )
 }
 
-interface ServerRowProps {
+interface ServerRowProps extends ComponentProps<'div'> {
   server: Server
   canMoveUp: boolean
   canJoin: boolean
@@ -102,13 +135,23 @@ interface ServerRowProps {
   onDelete: () => void
 }
 
-function ServerRow({ server, canMoveUp, canJoin, onJoin, onEdit, onMoveUp, onDelete }: ServerRowProps) {
+/** Extra props, such as a context menu trigger's, go to the row element. */
+function ServerRow({
+  server,
+  canMoveUp,
+  canJoin,
+  onJoin,
+  onEdit,
+  onMoveUp,
+  onDelete,
+  ...props
+}: ServerRowProps) {
   const { t } = useTranslation(['instance', 'common'])
   const status = useServerStatus(server.address)
   const icon = status.data?.favicon ?? (server.icon && `data:image/png;base64,${server.icon}`)
 
   return (
-    <div className="flex items-center gap-3 border-b p-2 last:border-0 hover:bg-accent/50">
+    <div {...props} className="flex items-center gap-3 border-b p-2 last:border-0 hover:bg-accent/50">
       {icon ? (
         <img src={icon} alt="" className="size-12 shrink-0 rounded [image-rendering:pixelated]" />
       ) : (
