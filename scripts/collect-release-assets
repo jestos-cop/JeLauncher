@@ -28,8 +28,14 @@ single() {
 
 case "$platform" in
   macOS)
-    cp "$(single "$bundle/dmg/*.dmg")" "$out/$name-macOS-universal.dmg"
-    ditto -c -k --keepParent "$bundle/macos/JeLauncher.app" "$out/$name-macOS-universal.zip"
+    case "$target" in
+      universal-apple-darwin) arch=universal ;;
+      aarch64-apple-darwin) arch=arm64 ;;
+      x86_64-apple-darwin) arch=x64 ;;
+      *) echo "unknown macOS target $target" >&2; exit 1 ;;
+    esac
+    cp "$(single "$bundle/dmg/*.dmg")" "$out/$name-macOS-$arch.dmg"
+    ditto -c -k --keepParent "$bundle/macos/JeLauncher.app" "$out/$name-macOS-$arch.zip"
     ;;
   Windows)
     cp "$(single "$bundle/nsis/*-setup.exe")" "$out/$name-Windows-x64-Setup.exe"

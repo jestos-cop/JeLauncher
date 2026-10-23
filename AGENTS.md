@@ -43,7 +43,7 @@ ui/                 React + TypeScript + Vite + Tailwind + shadcn/ui
 - Versions: the only version is `[workspace.package] version` in `Cargo.toml` (`tauri.conf.json` reads it).
   `scripts/release <version>` sets it, commits and tags `v<version>`; a pre-release part (`0.2.0-beta.1`)
   makes a beta.
-- Releases: pushing a `v*` tag runs `.github/workflows/release.yml`: it builds macOS (universal dmg and zip),
+- Releases: pushing a `v*` tag runs `.github/workflows/release.yml`: it builds macOS (universal and Apple Silicon dmg and zip),
   Windows x64 (setup exe and portable zip) and Linux x86_64 (AppImage, deb, rpm; betas skip the rpm), names
   them with `scripts/collect-release-assets` and drafts a GitHub release with `SHA256SUMS.txt`, marked as a
   pre-release for betas. Repository secrets `CURSEFORGE_API_KEY` and `MICROSOFT_CLIENT_ID` are baked into the

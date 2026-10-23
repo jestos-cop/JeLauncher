@@ -48,17 +48,27 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: macOS
+          - name: macOS-universal
+            platform: macOS
             os: macos-latest
             target: universal-apple-darwin
             rust-targets: aarch64-apple-darwin,x86_64-apple-darwin
             bundles: app,dmg
+          # A smaller download for Apple Silicon Macs only.
+          - name: macOS-arm64
+            platform: macOS
+            os: macos-latest
+            target: aarch64-apple-darwin
+            rust-targets: aarch64-apple-darwin
+            bundles: app,dmg
           - name: Windows
+            platform: Windows
             os: windows-latest
             target: x86_64-pc-windows-msvc
             rust-targets: x86_64-pc-windows-msvc
             bundles: nsis
           - name: Linux
+            platform: Linux
             os: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
             rust-targets: x86_64-unknown-linux-gnu
@@ -114,7 +124,7 @@ jobs:
         env:
           VERSION: ${{ needs.version.outputs.version }}
           TARGET: ${{ matrix.target }}
-          PLATFORM: ${{ matrix.name }}
+          PLATFORM: ${{ matrix.platform }}
         run: scripts/collect-release-assets "$VERSION" "$TARGET" "$PLATFORM" dist
       - uses: actions/upload-artifact@v4
         with:
