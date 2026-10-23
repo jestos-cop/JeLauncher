@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Sets the launcher version, commits it and tags the commit; pushing the tag starts the
+# release build on GitHub. The version lives only in [workspace.package] of Cargo.toml.
+# Usage: scripts/release 0.2.0-beta.1   (a pre-release part makes a beta)
+#        scripts/release 1.0.0
+set -euo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+version="${1:-}"
+semver='^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
+
+cd "$root"
+current="$(sed -n '/^\[workspace.package\]/,/^\[/s/^version = "\(.*\)"/\1/p' Cargo.toml)"
+if [[ -z "$version" ]]; then
+  echo "current version: $current"
+  echo "usage: scripts/release <version>, e.g. 0.2.0-beta.1 or 1.0.0" >&2
+  exit 1
+fi
+if [[ ! "$version" =~ $semver ]]; then
+  echo "$version is not a version like 1.2.3 or 1.2.3-beta.1" >&2
+  exit 1
+fi
+if [[ -n "$(git status --porcelain)" ]]; then
+  echo "commit or stash your changes first" >&2
+  exit 1
+fi
+if git rev-parse -q --verify "refs/tags/v$version" >/dev/null; then
+  echo "tag v$version already exists" >&2
+  exit 1
+fi
+
+sed -i.bak "/^\[workspace.package\]/,/^\[/s/^version = \".*\"/version = \"$version\"/" Cargo.toml
+rm Cargo.toml.bak
+cargo update --workspace --quiet
+
+git add Cargo.toml Cargo.lock
+git commit --quiet -m "chore: release v$version"
+git tag -a "v$version" -m "JeLauncher $version"
+
+echo "Version $current -> $version, tagged v$version."
+echo "Start the release build with: git push origin HEAD v$version"

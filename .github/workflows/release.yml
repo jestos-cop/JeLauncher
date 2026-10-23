@@ -1,39 +1,86 @@
 name: Release
 
+# Pushing a tag `vX.Y.Z` (or `vX.Y.Z-beta.N`) builds every platform and drafts a GitHub release.
+# Running it by hand only builds, so the bundles can be tried from the run's artifacts.
 on:
   push:
     tags: ["v*"]
   workflow_dispatch:
 
+permissions: {}
+
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
+  version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+      prerelease: ${{ steps.read.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the version from Cargo.toml
+        id: read
+        run: |
+          version=$(sed -n '/^\[workspace.package\]/,/^\[/s/^version = "\(.*\)"/\1/p' Cargo.toml)
+          if [[ -z "$version" ]]; then
+            echo "::error::no version in [workspace.package] of Cargo.toml"
+            exit 1
+          fi
+          if [[ "$GITHUB_REF_TYPE" == "tag" && "$GITHUB_REF_NAME" != "v$version" ]]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match version $version in Cargo.toml"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          # A pre-release part such as -beta.1 marks a beta.
+          if [[ "$version" == *-* ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
   build:
+    needs: version
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
-            target: aarch64-apple-darwin
-          - os: macos-latest
-            target: x86_64-apple-darwin
-          - os: windows-latest
+          - name: macOS
+            os: macos-latest
+            target: universal-apple-darwin
+            rust-targets: aarch64-apple-darwin,x86_64-apple-darwin
+            bundles: app,dmg
+          - name: Windows
+            os: windows-latest
             target: x86_64-pc-windows-msvc
-          - os: ubuntu-22.04
+            rust-targets: x86_64-pc-windows-msvc
+            bundles: nsis
+          - name: Linux
+            os: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
+            rust-targets: x86_64-unknown-linux-gnu
+            bundles: appimage,deb,rpm
     runs-on: ${{ matrix.os }}
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: "1.92"
-          targets: ${{ matrix.target }}
+          targets: ${{ matrix.rust-targets }}
       - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev \
+            libxdo-dev libssl-dev patchelf file
       - uses: pnpm/action-setup@v4
         with:
           version: 10
@@ -43,9 +90,8 @@ jobs:
           cache: pnpm
           cache-dependency-path: ui/pnpm-lock.yaml
       - run: pnpm --dir ui install --frozen-lockfile
-      - uses: tauri-apps/tauri-action@v0
+      - name: Build
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Baked into the build; CurseForge and Microsoft sign-in are disabled without them.
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
           MICROSOFT_CLIENT_ID: ${{ secrets.MICROSOFT_CLIENT_ID }}
@@ -56,10 +102,46 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          PRERELEASE: ${{ needs.version.outputs.prerelease }}
+        shell: bash
+        run: |
+          bundles="${{ matrix.bundles }}"
+          # RPM versions cannot hold a pre-release part like -beta.1, so betas ship without one.
+          if [[ "$PRERELEASE" == true ]]; then bundles="${bundles/,rpm/}"; fi
+          npx --yes @tauri-apps/cli@2 build --target ${{ matrix.target }} --bundles "$bundles"
+      - name: Collect assets
+        shell: bash
+        env:
+          VERSION: ${{ needs.version.outputs.version }}
+          TARGET: ${{ matrix.target }}
+          PLATFORM: ${{ matrix.name }}
+        run: scripts/collect-release-assets "$VERSION" "$TARGET" "$PLATFORM" dist
+      - uses: actions/upload-artifact@v4
         with:
-          projectPath: crates/tauri-app
-          tauriScript: npx --yes @tauri-apps/cli@2
-          args: --target ${{ matrix.target }}
-          tagName: ${{ github.ref_name }}
-          releaseName: JeLauncher ${{ github.ref_name }}
-          releaseDraft: true
+          name: JeLauncher-${{ needs.version.outputs.version }}-${{ matrix.name }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    if: github.ref_type == 'tag'
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Checksums
+        working-directory: dist
+        run: sha256sum * > SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: JeLauncher ${{ needs.version.outputs.version }}
+          draft: true
+          prerelease: ${{ needs.version.outputs.prerelease == 'true' }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: dist/*

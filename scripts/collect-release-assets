@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Copies the bundles of one platform build into OUT_DIR under their release names,
+# JeLauncher-<version>-<platform>-<arch>.<ext>.
+# Usage: collect-release-assets <version> <rust target> <macOS|Windows|Linux> <out dir>
+set -euo pipefail
+
+version="$1"
+target="$2"
+platform="$3"
+out="$4"
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+release="$root/target/$target/release"
+bundle="$release/bundle"
+name="JeLauncher-$version"
+mkdir -p "$out"
+out="$(cd "$out" && pwd)"
+
+# The one file matching a pattern; a build that made none or several is a mistake.
+single() {
+  local matches=($1)
+  if [[ ${#matches[@]} -ne 1 || ! -e "${matches[0]}" ]]; then
+    echo "expected one file matching $1, found: ${matches[*]}" >&2
+    exit 1
+  fi
+  echo "${matches[0]}"
+}
+
+case "$platform" in
+  macOS)
+    cp "$(single "$bundle/dmg/*.dmg")" "$out/$name-macOS-universal.dmg"
+    ditto -c -k --keepParent "$bundle/macos/JeLauncher.app" "$out/$name-macOS-universal.zip"
+    ;;
+  Windows)
+    cp "$(single "$bundle/nsis/*-setup.exe")" "$out/$name-Windows-x64-Setup.exe"
+    portable="$(mktemp -d)"
+    cp "$release/jelauncher.exe" "$portable/JeLauncher.exe"
+    (cd "$portable" && 7z a -tzip "$out/$name-Windows-x64-Portable.zip" JeLauncher.exe >/dev/null)
+    ;;
+  Linux)
+    cp "$(single "$bundle/appimage/*.AppImage")" "$out/$name-Linux-x86_64.AppImage"
+    cp "$(single "$bundle/deb/*.deb")" "$out/$name-Linux-amd64.deb"
+    # Betas are built without an RPM.
+    if compgen -G "$bundle/rpm/*.rpm" >/dev/null; then
+      cp "$(single "$bundle/rpm/*.rpm")" "$out/$name-Linux-x86_64.rpm"
+    fi
+    ;;
+  *)
+    echo "unknown platform $platform" >&2
+    exit 1
+    ;;
+esac
+
+ls -1 "$out"

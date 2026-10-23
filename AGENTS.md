@@ -40,9 +40,14 @@ ui/                 React + TypeScript + Vite + Tailwind + shadcn/ui
   (quitting and reopening it if it runs; `INSTALL_DIR` overrides the folder); `scripts/bundle-win` builds the
   NSIS installer, cross-compiled from macOS/Linux (needs `cargo-xwin`, `nsis` and `llvm`);
   `scripts/bundle-linux` builds deb, rpm and AppImage on Linux. All three are also in `.zed/tasks.json`.
-- Releases: pushing a `v*` tag runs `.github/workflows/release.yml` and drafts a GitHub release with
-  macOS, Windows and Linux bundles. Repository secrets `CURSEFORGE_API_KEY` and `MICROSOFT_CLIENT_ID`
-  are baked into the build; `APPLE_*` secrets enable signing and notarization.
+- Versions: the only version is `[workspace.package] version` in `Cargo.toml` (`tauri.conf.json` reads it).
+  `scripts/release <version>` sets it, commits and tags `v<version>`; a pre-release part (`0.2.0-beta.1`)
+  makes a beta.
+- Releases: pushing a `v*` tag runs `.github/workflows/release.yml`: it builds macOS (universal dmg and zip),
+  Windows x64 (setup exe and portable zip) and Linux x86_64 (AppImage, deb, rpm; betas skip the rpm), names
+  them with `scripts/collect-release-assets` and drafts a GitHub release with `SHA256SUMS.txt`, marked as a
+  pre-release for betas. Repository secrets `CURSEFORGE_API_KEY` and `MICROSOFT_CLIENT_ID` are baked into the
+  build; `APPLE_*` secrets enable signing and notarization.
 - Local builds read the same keys from the git-ignored `.cargo/config.toml` (`[env]` section).
 - App icons: `cargo tauri icon icons/icon.svg -o icons` (from `crates/tauri-app`), then rebuild
   `icons/icon.icns` from `icons/icon-macos.svg`, which follows the macOS icon grid (padding and shadow).
