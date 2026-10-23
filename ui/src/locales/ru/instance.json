@@ -191,7 +191,11 @@
     "versionLatency": "{{version}} · {{latency}} мс",
     "join": "Подключиться",
     "moveUp": "Переместить вверх",
-    "copyAddress": "Копировать адрес"
+    "copyAddress": "Копировать адрес",
+    "morePlayers_one": "и ещё {{count}}",
+    "morePlayers_few": "и ещё {{count}}",
+    "morePlayers_many": "и ещё {{count}}",
+    "morePlayers_other": "и ещё {{count}}"
   },
   "screenshots": {
     "count_one": "{{count}} скриншот",

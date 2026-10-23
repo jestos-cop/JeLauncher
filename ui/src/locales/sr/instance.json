@@ -187,7 +187,10 @@
     "versionLatency": "{{version}} · {{latency}} ms",
     "join": "Придружи се",
     "moveUp": "Помери нагоре",
-    "copyAddress": "Копирај адресу"
+    "copyAddress": "Копирај адресу",
+    "morePlayers_one": "и још {{count}}",
+    "morePlayers_few": "и још {{count}}",
+    "morePlayers_other": "и још {{count}}"
   },
   "screenshots": {
     "count_one": "{{count}} снимак екрана",

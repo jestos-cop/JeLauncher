@@ -179,7 +179,8 @@
     "versionLatency": "{{version}} · {{latency}} ms",
     "join": "参加",
     "moveUp": "上へ移動",
-    "copyAddress": "アドレスをコピー"
+    "copyAddress": "アドレスをコピー",
+    "morePlayers_other": "ほか {{count}} 人"
   },
   "screenshots": {
     "count_other": "{{count}} 枚のスクリーンショット",

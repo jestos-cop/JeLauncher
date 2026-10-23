@@ -23,6 +23,8 @@ pub struct ServerStatus {
     /// `data:image/png;base64,...` URL.
     pub favicon: Option<String>,
     pub latency_ms: u32,
+    /// Names of some of the players online, when the server shares them.
+    pub players: Vec<String>,
 }
 
 #[derive(Deserialize)]
@@ -42,6 +44,13 @@ struct VersionInfo {
 struct Players {
     online: u32,
     max: u32,
+    #[serde(default)]
+    sample: Vec<PlayerSample>,
+}
+
+#[derive(Deserialize)]
+struct PlayerSample {
+    name: String,
 }
 
 /// Queries a server with the Server List Ping protocol.
@@ -101,9 +110,22 @@ async fn query(host: &str, port: u16) -> std::io::Result<ServerStatus> {
             .as_ref()
             .map(|description| strip_formatting(&plain_text(description)))
             .unwrap_or_default(),
+        players: response
+            .players
+            .map(|players| player_names(players.sample))
+            .unwrap_or_default(),
         favicon: response.favicon,
         latency_ms,
     })
+}
+
+/// Names from the player sample. Some servers fill it with text lines instead; those are kept as text.
+fn player_names(sample: Vec<PlayerSample>) -> Vec<String> {
+    sample
+        .into_iter()
+        .map(|player| strip_formatting(&player.name).trim().to_owned())
+        .filter(|name| !name.is_empty())
+        .collect()
 }
 
 pub fn parse_address(address: &str) -> Result<(String, u16)> {
@@ -260,7 +282,7 @@ mod tests {
             let mut payload = vec![0];
             write_string(
                 &mut payload,
-                r#"{"version":{"name":"1.21.4","protocol":769},"players":{"online":3,"max":20},"description":"A §bserver"}"#,
+                r#"{"version":{"name":"1.21.4","protocol":769},"players":{"online":3,"max":20,"sample":[{"name":"Steve","id":"0"},{"name":"§aAlex","id":"1"},{"name":" ","id":"2"}]},"description":"A §bserver"}"#,
             );
             let mut packet = Vec::new();
             write_varint(&mut packet, i32::try_from(payload.len()).unwrap_or(0));
@@ -275,6 +297,7 @@ mod tests {
         assert_eq!(status.version, "1.21.4");
         assert_eq!((status.players_online, status.players_max), (3, 20));
         assert_eq!(status.motd, "A server");
+        assert_eq!(status.players, ["Steve", "Alex"]);
         Ok(())
     }
 }

@@ -1165,7 +1165,11 @@ export type ServerStatus = { version: string; playersOnline: number; playersMax:
 /**
  * `data:image/png;base64,...` URL.
  */
-favicon: string | null; latencyMs: number }
+favicon: string | null; latencyMs: number; 
+/**
+ * Names of some of the players online, when the server shares them.
+ */
+players: string[] }
 export type SortOrder = "relevance" | "downloads" | "updated" | "newest"
 /**
  * A project another one declares on its platform.

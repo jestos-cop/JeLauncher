@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useSession } from '@/app/sessions'
 import type { Server } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
+import { ServerPlayers } from '@/components/ServerPlayers'
 import { ContextMenuArea } from '@/components/ContextMenuArea'
 import { ServerMenu } from '@/components/ServerMenu'
 import { ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu'
@@ -169,6 +170,7 @@ function ServerRow({
               ? status.error.message
               : status.data.motd.replace(/\s+/g, ' ').trim()}
         </p>
+        {status.data && <ServerPlayers status={status.data} />}
       </div>
       {status.data && (
         <div className="shrink-0 text-right text-xs text-muted-foreground">

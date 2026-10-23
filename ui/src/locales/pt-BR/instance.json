@@ -187,7 +187,10 @@
     "versionLatency": "{{version}} · {{latency}} ms",
     "join": "Entrar",
     "moveUp": "Mover para cima",
-    "copyAddress": "Copiar endereço"
+    "copyAddress": "Copiar endereço",
+    "morePlayers_one": "e mais {{count}}",
+    "morePlayers_many": "e mais {{count}}",
+    "morePlayers_other": "e mais {{count}}"
   },
   "screenshots": {
     "count_one": "{{count}} captura de tela",
