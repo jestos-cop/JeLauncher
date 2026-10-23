@@ -2,7 +2,7 @@
   "toolbar": {
     "addInstance": "Додај инстанцу",
     "settings": "Подешавања",
-    "worlds": "Светови",
+    "worlds": "Светови и сервери",
     "searchPlaceholder": "Претражи инстанце",
     "sortByName": "По имену",
     "sortLastPlayed": "Последње играно"
@@ -66,10 +66,18 @@
     "hoursMinutes": "{{hours}} ч {{minutes}} мин",
     "minutes": "{{minutes}} мин"
   },
+  "overview": {
+    "worlds": "Светови",
+    "servers": "Сервери"
+  },
   "worlds": {
-    "title": "Светови",
     "summary": "Светова: {{worlds}} · инстанци: {{instances}}",
     "reading": "Читање светова…",
     "empty": "Ниједна инстанца још нема светове."
+  },
+  "servers": {
+    "summary": "Сервера: {{servers}} · инстанци: {{instances}}",
+    "reading": "Читање сервера…",
+    "empty": "Ниједна инстанца још нема сачуване сервере."
   }
 }

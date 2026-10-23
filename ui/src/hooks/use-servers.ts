@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { commands, type Server } from '@/bindings'
 import { unwrap } from '@/lib/command'
 
-const serversKey = (instanceId: string) => ['servers', instanceId]
+export const serversKey = (instanceId: string) => ['servers', instanceId]
 
 export function useServers(instanceId: string) {
   return useQuery({

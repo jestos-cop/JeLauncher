@@ -14,13 +14,15 @@ export type InstanceTab =
   | 'notes'
   | 'settings'
 
+export type OverviewTab = 'worlds' | 'servers'
+
 export type SettingsTab = 'launcher' | 'accounts' | 'java' | 'minecraft' | 'commands' | 'tools'
 
 export type View =
   | { page: 'main' }
   | { page: 'instance'; instanceId: string; tab: InstanceTab }
   | { page: 'settings'; tab: SettingsTab }
-  | { page: 'worlds' }
+  | { page: 'overview'; tab: OverviewTab }
 
 interface NavigationContextValue {
   view: View

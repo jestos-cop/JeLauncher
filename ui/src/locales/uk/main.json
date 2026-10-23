@@ -2,7 +2,7 @@
   "toolbar": {
     "addInstance": "Додати збірку",
     "settings": "Налаштування",
-    "worlds": "Світи",
+    "worlds": "Світи й сервери",
     "searchPlaceholder": "Пошук збірок",
     "sortByName": "За назвою",
     "sortLastPlayed": "За останнім запуском"
@@ -67,10 +67,18 @@
     "hoursMinutes": "{{hours}} год {{minutes}} хв",
     "minutes": "{{minutes}} хв"
   },
+  "overview": {
+    "worlds": "Світи",
+    "servers": "Сервери"
+  },
   "worlds": {
-    "title": "Світи",
     "summary": "Світів: {{worlds}} · збірок: {{instances}}",
     "reading": "Читання світів…",
     "empty": "У жодній збірці ще немає світів."
+  },
+  "servers": {
+    "summary": "Серверів: {{servers}} · збірок: {{instances}}",
+    "reading": "Читання серверів…",
+    "empty": "У жодній збірці ще немає збережених серверів."
   }
 }

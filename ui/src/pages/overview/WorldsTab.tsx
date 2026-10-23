@@ -1,47 +1,23 @@
 import { useQueries } from '@tanstack/react-query'
 import { convertFileSrc } from '@tauri-apps/api/core'
-import { Archive, ArrowLeft, FolderOpen, Globe, Play, RefreshCw, Settings2, Trash2 } from 'lucide-react'
+import { Archive, Globe, Play, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@/app/navigation'
 import { useSession } from '@/app/sessions'
 import { commands, type InstanceSummary, type World } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
-import { InstanceAvatar } from '@/components/InstanceAvatar'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useInstances } from '@/hooks/use-instances'
 import { useStoredState } from '@/hooks/use-stored-state'
 import { openSavesFolder, useBackupWorld, useDeleteWorld, worldsKey } from '@/hooks/use-worlds'
 import { unwrap } from '@/lib/command'
-
-type WorldSort = 'lastPlayed' | 'name'
-
-interface WorldGroup {
-  instance: InstanceSummary
-  worlds: World[]
-}
-
-const latestPlay = (group: WorldGroup) => Math.max(...group.worlds.map((world) => world.lastPlayed))
-
-function sortGroups(groups: WorldGroup[], sort: WorldSort): WorldGroup[] {
-  const byName = (a: string, b: string) => a.localeCompare(b, undefined, { numeric: true })
-  return groups
-    .map((group) => ({
-      ...group,
-      worlds: [...group.worlds].sort((a, b) =>
-        sort === 'name' ? byName(a.name, b.name) : b.lastPlayed - a.lastPlayed,
-      ),
-    }))
-    .sort((a, b) =>
-      sort === 'name' ? byName(a.instance.name, b.instance.name) : latestPlay(b) - latestPlay(a),
-    )
-}
+import { InstanceGroupHeader } from '@/pages/overview/InstanceGroupHeader'
+import { OverviewLayout } from '@/pages/overview/OverviewLayout'
+import { type OverviewSort, sortGroups } from '@/pages/overview/sort'
 
 /** Worlds of every instance, grouped by instance. */
-export function WorldsOverviewPage() {
-  const { t } = useTranslation(['main', 'common'])
-  const { navigate } = useNavigation()
+export function WorldsTab() {
+  const { t } = useTranslation('main')
   const { data: instances = [] } = useInstances()
   const results = useQueries({
     queries: instances.map((instance) => ({
@@ -49,55 +25,39 @@ export function WorldsOverviewPage() {
       queryFn: () => unwrap(commands.listWorlds(instance.id)),
     })),
   })
-  const [sort, setSort] = useStoredState<WorldSort>('worlds-sort', 'lastPlayed')
+  const [sort, setSort] = useStoredState<OverviewSort>('worlds-sort', 'lastPlayed')
   const groups = sortGroups(
     instances
-      .map((instance, index) => ({ instance, worlds: results[index]?.data ?? [] }))
-      .filter((group) => group.worlds.length > 0),
+      .map((instance, index) => ({ instance, items: results[index]?.data ?? [] }))
+      .filter((group) => group.items.length > 0),
     sort,
+    { name: (world) => world.name, recency: (world) => world.lastPlayed },
+    (group) => Math.max(...group.items.map((world) => world.lastPlayed)),
   )
-  const worldCount = groups.reduce((count, group) => count + group.worlds.length, 0)
+  const worldCount = groups.reduce((count, group) => count + group.items.length, 0)
   const isPending = results.some((result) => result.isPending)
 
   return (
-    <div className="flex h-screen flex-col bg-background text-foreground">
-      <header className="flex items-center gap-3 border-b px-3 py-2">
-        <Button size="sm" variant="ghost" onClick={() => navigate({ page: 'main' })}>
-          <ArrowLeft /> {t('common:action.back')}
-        </Button>
-        <h1 className="font-semibold">{t('worlds.title')}</h1>
-        <span className="text-sm text-muted-foreground">
-          {t('worlds.summary', { worlds: worldCount, instances: groups.length })}
-        </span>
-        <Select value={sort} onValueChange={(value) => setSort(value as WorldSort)}>
-          <SelectTrigger size="sm" className="ml-auto w-36">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="lastPlayed">{t('toolbar.sortLastPlayed')}</SelectItem>
-            <SelectItem value="name">{t('toolbar.sortByName')}</SelectItem>
-          </SelectContent>
-        </Select>
-        <Button size="sm" variant="ghost" onClick={() => results.forEach((result) => void result.refetch())}>
-          <RefreshCw /> {t('common:action.refresh')}
-        </Button>
-      </header>
-      <main className="flex min-h-0 flex-1 flex-col gap-5 overflow-auto p-4">
-        {isPending && <p className="text-sm text-muted-foreground">{t('worlds.reading')}</p>}
-        {!isPending && groups.length === 0 && (
-          <p className="text-sm text-muted-foreground">{t('worlds.empty')}</p>
-        )}
-        {groups.map(({ instance, worlds }) => (
-          <InstanceWorlds key={instance.id} instance={instance} worlds={worlds} />
-        ))}
-      </main>
-    </div>
+    <OverviewLayout
+      tab="worlds"
+      summary={t('worlds.summary', { worlds: worldCount, instances: groups.length })}
+      sort={sort}
+      onSortChange={setSort}
+      onRefresh={() => results.forEach((result) => void result.refetch())}
+    >
+      {isPending && <p className="text-sm text-muted-foreground">{t('worlds.reading')}</p>}
+      {!isPending && groups.length === 0 && (
+        <p className="text-sm text-muted-foreground">{t('worlds.empty')}</p>
+      )}
+      {groups.map(({ instance, items }) => (
+        <InstanceWorlds key={instance.id} instance={instance} worlds={items} />
+      ))}
+    </OverviewLayout>
   )
 }
 
 function InstanceWorlds({ instance, worlds }: { instance: InstanceSummary; worlds: World[] }) {
   const { t } = useTranslation(['instance', 'common'])
-  const { navigate } = useNavigation()
   const { session, launch } = useSession(instance.id)
   const backup = useBackupWorld(instance.id)
   const remove = useDeleteWorld(instance.id)
@@ -105,44 +65,12 @@ function InstanceWorlds({ instance, worlds }: { instance: InstanceSummary; world
 
   return (
     <section className="flex flex-col gap-2">
-      <div className="flex items-center gap-2.5">
-        <InstanceAvatar instance={instance} className="size-7 rounded-md text-xs" />
-        <h2 className="text-sm font-semibold">{instance.name}</h2>
-        <span className="font-mono text-xs text-muted-foreground">{instance.minecraftVersion}</span>
-        <span className="h-px flex-1 bg-border" />
-        <span className="text-xs text-muted-foreground">{t('worlds.count', { count: worlds.length })}</span>
-        <div className="flex items-center">
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            title={t('common:action.openFolder')}
-            aria-label={t('common:action.openFolder')}
-            onClick={() => void openSavesFolder(instance.id)}
-          >
-            <FolderOpen />
-          </Button>
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            title={t('common:action.edit')}
-            aria-label={t('common:action.edit')}
-            onClick={() => navigate({ page: 'instance', instanceId: instance.id, tab: 'worlds' })}
-          >
-            <Settings2 />
-          </Button>
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            className="text-primary"
-            title={t('common:action.launch')}
-            aria-label={t('common:action.launch')}
-            disabled={session.status !== 'idle'}
-            onClick={() => void launch()}
-          >
-            <Play />
-          </Button>
-        </div>
-      </div>
+      <InstanceGroupHeader
+        instance={instance}
+        count={t('worlds.count', { count: worlds.length })}
+        editTab="worlds"
+        onOpenFolder={() => void openSavesFolder(instance.id)}
+      />
       {backup.data && (
         <p className="text-xs text-muted-foreground">{t('worlds.backupSaved', { path: backup.data })}</p>
       )}

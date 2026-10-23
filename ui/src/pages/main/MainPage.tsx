@@ -45,7 +45,7 @@ export function MainPage() {
           size="sm"
           variant="ghost"
           title={t('toolbar.worlds')}
-          onClick={() => navigate({ page: 'worlds' })}
+          onClick={() => navigate({ page: 'overview', tab: 'worlds' })}
         >
           <Globe /> <ToolbarLabel>{t('toolbar.worlds')}</ToolbarLabel>
         </Button>

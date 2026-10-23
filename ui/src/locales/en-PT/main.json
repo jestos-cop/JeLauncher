@@ -2,7 +2,7 @@
   "toolbar": {
     "addInstance": "Add Ship",
     "settings": "Ship's Articles",
-    "worlds": "Lands",
+    "worlds": "Lands & Ports",
     "searchPlaceholder": "Search the fleet",
     "sortByName": "By name",
     "sortLastPlayed": "Last voyage"
@@ -65,10 +65,18 @@
     "hoursMinutes": "{{hours}}h {{minutes}}m",
     "minutes": "{{minutes}}m"
   },
+  "overview": {
+    "worlds": "Lands",
+    "servers": "Ports"
+  },
   "worlds": {
-    "title": "Charted Lands",
     "summary": "{{worlds}} lands across {{instances}} ships",
     "reading": "Readin' the charts…",
     "empty": "No ship has charted any lands yet."
+  },
+  "servers": {
+    "summary": "{{servers}} ports across {{instances}} ships",
+    "reading": "Readin' the port charts…",
+    "empty": "No ship has charted any ports yet."
   }
 }

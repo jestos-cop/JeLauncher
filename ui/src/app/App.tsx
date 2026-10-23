@@ -13,7 +13,8 @@ import { useSettings } from '@/hooks/use-settings'
 import { InstancePage } from '@/pages/instance/InstancePage'
 import { MainPage } from '@/pages/main/MainPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
-import { WorldsOverviewPage } from '@/pages/worlds/WorldsOverviewPage'
+import { ServersTab } from '@/pages/overview/ServersTab'
+import { WorldsTab } from '@/pages/overview/WorldsTab'
 
 const queryClient = new QueryClient()
 
@@ -50,7 +51,7 @@ function CurrentPage() {
       return <InstancePage instanceId={view.instanceId} tab={view.tab} />
     case 'settings':
       return <SettingsPage tab={view.tab} />
-    case 'worlds':
-      return <WorldsOverviewPage />
+    case 'overview':
+      return view.tab === 'worlds' ? <WorldsTab /> : <ServersTab />
   }
 }

@@ -2,7 +2,7 @@
   "toolbar": {
     "addInstance": "Dodaj instancję",
     "settings": "Ustawienia",
-    "worlds": "Światy",
+    "worlds": "Światy i serwery",
     "searchPlaceholder": "Szukaj instancji",
     "sortByName": "Według nazwy",
     "sortLastPlayed": "Ostatnio grane"
@@ -67,10 +67,18 @@
     "hoursMinutes": "{{hours}} godz. {{minutes}} min",
     "minutes": "{{minutes}} min"
   },
+  "overview": {
+    "worlds": "Światy",
+    "servers": "Serwery"
+  },
   "worlds": {
-    "title": "Światy",
     "summary": "Światy: {{worlds}} · instancje: {{instances}}",
     "reading": "Wczytywanie światów…",
     "empty": "Żadna instancja nie ma jeszcze światów."
+  },
+  "servers": {
+    "summary": "Serwery: {{servers}} · instancje: {{instances}}",
+    "reading": "Wczytywanie serwerów…",
+    "empty": "Żadna instancja nie ma jeszcze zapisanych serwerów."
   }
 }

@@ -2,7 +2,7 @@
   "toolbar": {
     "addInstance": "Añadir instancia",
     "settings": "Ajustes",
-    "worlds": "Mundos",
+    "worlds": "Mundos y servidores",
     "searchPlaceholder": "Buscar instancias",
     "sortByName": "Por nombre",
     "sortLastPlayed": "Jugadas recientemente"
@@ -66,10 +66,18 @@
     "hoursMinutes": "{{hours}} h {{minutes}} min",
     "minutes": "{{minutes}} min"
   },
+  "overview": {
+    "worlds": "Mundos",
+    "servers": "Servidores"
+  },
   "worlds": {
-    "title": "Mundos",
     "summary": "Mundos: {{worlds}} · instancias: {{instances}}",
     "reading": "Leyendo mundos…",
     "empty": "Ninguna instancia tiene mundos todavía."
+  },
+  "servers": {
+    "summary": "Servidores: {{servers}} · instancias: {{instances}}",
+    "reading": "Leyendo servidores…",
+    "empty": "Ninguna instancia tiene servidores guardados todavía."
   }
 }

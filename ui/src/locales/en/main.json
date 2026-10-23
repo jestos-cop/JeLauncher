@@ -2,7 +2,7 @@
   "toolbar": {
     "addInstance": "Add Instance",
     "settings": "Settings",
-    "worlds": "Worlds",
+    "worlds": "Worlds & Servers",
     "searchPlaceholder": "Search instances",
     "sortByName": "By name",
     "sortLastPlayed": "Last played"
@@ -65,10 +65,18 @@
     "hoursMinutes": "{{hours}}h {{minutes}}m",
     "minutes": "{{minutes}}m"
   },
+  "overview": {
+    "worlds": "Worlds",
+    "servers": "Servers"
+  },
   "worlds": {
-    "title": "Worlds",
     "summary": "{{worlds}} worlds in {{instances}} instances",
     "reading": "Reading worlds…",
     "empty": "No instance has worlds yet."
+  },
+  "servers": {
+    "summary": "{{servers}} servers in {{instances}} instances",
+    "reading": "Reading servers…",
+    "empty": "No instance has saved servers yet."
   }
 }

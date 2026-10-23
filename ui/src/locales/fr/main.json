@@ -2,7 +2,7 @@
   "toolbar": {
     "addInstance": "Ajouter une instance",
     "settings": "Paramètres",
-    "worlds": "Mondes",
+    "worlds": "Mondes et serveurs",
     "searchPlaceholder": "Rechercher des instances",
     "sortByName": "Par nom",
     "sortLastPlayed": "Dernière partie"
@@ -66,10 +66,18 @@
     "hoursMinutes": "{{hours}} h {{minutes}} min",
     "minutes": "{{minutes}} min"
   },
+  "overview": {
+    "worlds": "Mondes",
+    "servers": "Serveurs"
+  },
   "worlds": {
-    "title": "Mondes",
     "summary": "Mondes : {{worlds}} · instances : {{instances}}",
     "reading": "Lecture des mondes…",
     "empty": "Aucune instance n’a encore de monde."
+  },
+  "servers": {
+    "summary": "Serveurs : {{servers}} · instances : {{instances}}",
+    "reading": "Lecture des serveurs…",
+    "empty": "Aucune instance n’a encore de serveur enregistré."
   }
 }

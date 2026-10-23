@@ -2,7 +2,7 @@
   "toolbar": {
     "addInstance": "添加实例",
     "settings": "设置",
-    "worlds": "世界",
+    "worlds": "世界与服务器",
     "searchPlaceholder": "搜索实例",
     "sortByName": "按名称",
     "sortLastPlayed": "上次游玩"
@@ -64,10 +64,18 @@
     "hoursMinutes": "{{hours}} 小时 {{minutes}} 分钟",
     "minutes": "{{minutes}} 分钟"
   },
+  "overview": {
+    "worlds": "世界",
+    "servers": "服务器"
+  },
   "worlds": {
-    "title": "世界",
     "summary": "世界：{{worlds}} · 实例：{{instances}}",
     "reading": "正在读取世界…",
     "empty": "还没有任何实例包含世界。"
+  },
+  "servers": {
+    "summary": "服务器：{{servers}} · 实例：{{instances}}",
+    "reading": "正在读取服务器…",
+    "empty": "还没有任何实例保存了服务器。"
   }
 }

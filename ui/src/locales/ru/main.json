@@ -2,7 +2,7 @@
   "toolbar": {
     "addInstance": "Добавить сборку",
     "settings": "Настройки",
-    "worlds": "Миры",
+    "worlds": "Миры и серверы",
     "searchPlaceholder": "Поиск сборок",
     "sortByName": "По имени",
     "sortLastPlayed": "По последнему запуску"
@@ -67,10 +67,18 @@
     "hoursMinutes": "{{hours}} ч {{minutes}} мин",
     "minutes": "{{minutes}} мин"
   },
+  "overview": {
+    "worlds": "Миры",
+    "servers": "Серверы"
+  },
   "worlds": {
-    "title": "Миры",
     "summary": "Миров: {{worlds}} · сборок: {{instances}}",
     "reading": "Чтение миров…",
     "empty": "Ни в одной сборке пока нет миров."
+  },
+  "servers": {
+    "summary": "Серверов: {{servers}} · сборок: {{instances}}",
+    "reading": "Чтение серверов…",
+    "empty": "Ни в одной сборке пока нет сохранённых серверов."
   }
 }
