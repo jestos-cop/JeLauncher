@@ -115,6 +115,10 @@ jobs:
           PRERELEASE: ${{ needs.version.outputs.prerelease }}
         shell: bash
         run: |
+          # Secrets that are not set arrive as empty strings, which Tauri takes for real values.
+          for name in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_SIGNING_IDENTITY APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID; do
+            if [[ -z "${!name}" ]]; then unset "$name"; fi
+          done
           bundles="${{ matrix.bundles }}"
           # RPM versions cannot hold a pre-release part like -beta.1, so betas ship without one.
           if [[ "$PRERELEASE" == true ]]; then bundles="${bundles/,rpm/}"; fi
