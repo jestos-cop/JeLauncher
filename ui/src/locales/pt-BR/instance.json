@@ -147,7 +147,9 @@
       "unused": "Dependências que nada mais usa",
       "unusedHint": "As marcadas também são removidas.",
       "confirm": "Remover ({{total}})"
-    }
+    },
+    "enable": "Ativar",
+    "disable": "Desativar"
   },
   "worlds": {
     "count_one": "{{count}} mundo",
@@ -194,7 +196,9 @@
     "reading": "Lendo capturas de tela…",
     "empty": "Nenhuma captura de tela ainda. Pressione F2 no jogo para fazer uma.",
     "renameTitle": "Renomear captura de tela",
-    "deleteDescription": "A captura de tela será removida permanentemente."
+    "deleteDescription": "A captura de tela será removida permanentemente.",
+    "view": "Visualizar",
+    "copyPath": "Copiar caminho do arquivo"
   },
   "notes": {
     "loading": "Carregando notas…",

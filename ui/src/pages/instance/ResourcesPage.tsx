@@ -1,27 +1,25 @@
 import {
   ArrowUpCircle,
   Download,
-  ExternalLink,
   FolderOpen,
-  History,
   Lock,
-  LockOpen,
   MoreHorizontal,
   RefreshCw,
   TriangleAlert,
   ScanSearch,
-  Trash2,
-  Unlink,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { commands, type InstanceSummary, type ResourceFile, type ResourceKind } from '@/bindings'
+import { ContextMenuArea } from '@/components/ContextMenuArea'
 import { ModListExportMenu } from '@/components/ModListExportMenu'
 import { RelatedChangesDialog } from '@/components/RelatedChangesDialog'
+import { type MenuParts, ResourceActions } from '@/components/ResourceActions'
 import { ResourceFilterMenu } from '@/components/ResourceFilterMenu'
 import { SourceBadge } from '@/components/SourceBadge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@/components/ui/context-menu'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -111,6 +109,16 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
     )
   }, [files, search, filters, updates.data])
 
+  const actionsFor = (file: ResourceFile) => ({
+    file,
+    onToggle: () => void toggle(file, !file.enabled),
+    onViewSource: () => file.source && void unwrap(commands.openUrl(file.source.homepage)),
+    onChangeVersion: () => setChanging(file),
+    onToggleLock: () => setLock.mutate({ fileName: file.fileName, locked: !file.source?.lockUpdate }),
+    onForgetSource: () => forgetSource.mutate(file.fileName),
+    onRemove: () => setPendingRemoval(file),
+  })
+
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
@@ -199,150 +207,145 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
         </div>
       )}
 
-      <div className="min-h-0 flex-1 overflow-auto rounded-md border">
-        <table className="w-full text-sm">
-          <thead className="sticky top-0 bg-background text-left text-muted-foreground">
-            <tr className="border-b">
-              <th className="w-10 p-2" />
-              <th className="p-2 font-medium">{t('columns.name')}</th>
-              <th className="p-2 font-medium">{t('columns.version')}</th>
-              {tracksSources && <th className="p-2 font-medium">{t('columns.source')}</th>}
-              <th className="p-2 font-medium">
-                {kind === 'mod' ? t('columns.authors') : t('columns.description')}
-              </th>
-              <th className="p-2 font-medium">{t('columns.file')}</th>
-              <th className="w-10 p-2" />
-            </tr>
-          </thead>
-          <tbody>
-            {visible.map((file) => (
-              <tr
-                key={file.fileName}
-                className={cn(
-                  'border-b last:border-0 hover:bg-accent/50',
-                  !file.enabled && 'text-muted-foreground',
-                )}
-              >
-                <td className="p-2">
-                  <Checkbox
-                    checked={file.enabled}
-                    aria-label={t('item.enable', { name: displayName(file) })}
-                    onCheckedChange={(checked) => void toggle(file, checked === true)}
-                  />
-                </td>
-                <td className="p-2" title={file.metadata?.description}>
-                  <p className="font-medium">{displayName(file)}</p>
-                  {file.requires.length > 0 && (
-                    <p className="text-xs text-muted-foreground">
-                      {t('resources.requires', { names: file.requires.map(nameOf).join(', ') })}
-                    </p>
-                  )}
-                  {file.requiredBy.length > 0 && (
-                    <p className="text-xs text-muted-foreground">
-                      {t('resources.requiredBy', { names: file.requiredBy.map(nameOf).join(', ') })}
-                    </p>
-                  )}
-                </td>
-                <td className="p-2">
-                  {file.incompatible && (
-                    <TriangleAlert
-                      className="mr-1 inline size-3.5 text-amber-500"
-                      aria-label={t('resources.incompatible', { version: instance.minecraftVersion })}
-                    >
-                      <title>{t('resources.incompatible', { version: instance.minecraftVersion })}</title>
-                    </TriangleAlert>
-                  )}
-                  {file.metadata?.version ?? file.source?.versionNumber}
-                  {updateFor(file) && (
-                    <button
-                      type="button"
-                      className="ml-2 inline-flex items-center gap-1 text-xs text-primary hover:underline disabled:opacity-50"
-                      disabled={applyUpdates.isPending}
-                      onClick={() => {
-                        const update = updateFor(file)
-                        if (update) applyUpdates.mutate([update])
-                      }}
-                    >
-                      <ArrowUpCircle className="size-3" /> {updateFor(file)?.version.versionNumber}
-                    </button>
-                  )}
-                </td>
-                {tracksSources && (
-                  <td className="p-2">
-                    <span className="inline-flex items-center gap-1.5">
-                      <SourceBadge source={file.source} />
-                      {file.source?.lockUpdate && (
-                        <Lock
-                          className="size-3 text-muted-foreground"
-                          aria-label={t('resources.updatesLocked')}
-                        >
-                          <title>{t('resources.updatesLocked')}</title>
-                        </Lock>
-                      )}
-                    </span>
-                  </td>
-                )}
-                <td className="p-2">
-                  {kind === 'mod' ? file.metadata?.authors.join(', ') : file.metadata?.description}
-                </td>
-                <td className="p-2 text-muted-foreground">{file.fileName}</td>
-                <td className="p-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        aria-label={t('resources.moreActions')}
-                        className="text-muted-foreground hover:text-foreground"
-                      >
-                        <MoreHorizontal className="size-4" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-max">
-                      {file.source && (
-                        <>
-                          <DropdownMenuItem
-                            onSelect={() => void unwrap(commands.openUrl(file.source!.homepage))}
-                          >
-                            <ExternalLink />
-                            {t('resources.viewOn', { provider: PROVIDER_NAMES[file.source.provider] })}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => setChanging(file)}>
-                            <History /> {t('resources.changeVersion')}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onSelect={() =>
-                              setLock.mutate({ fileName: file.fileName, locked: !file.source?.lockUpdate })
-                            }
-                          >
-                            {file.source.lockUpdate ? <LockOpen /> : <Lock />}
-                            {file.source.lockUpdate
-                              ? t('resources.unlockUpdates')
-                              : t('resources.lockUpdates')}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => forgetSource.mutate(file.fileName)}>
-                            <Unlink /> {t('resources.forgetSource')}
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                        </>
-                      )}
-                      <DropdownMenuItem variant="destructive" onSelect={() => setPendingRemoval(file)}>
-                        <Trash2 /> {t('common:action.remove')}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </td>
+      <ContextMenuArea
+        menu={
+          <ContextMenuContent className="w-max">
+            <ContextMenuItem onSelect={() => setIsDownloading(true)}>
+              <Download /> {t(`resources.${kind}.download`)}
+            </ContextMenuItem>
+            <ContextMenuItem onSelect={() => void refetch()}>
+              <RefreshCw /> {t('common:action.refresh')}
+            </ContextMenuItem>
+            <ContextMenuItem onSelect={() => void openInstanceFolder(instance.id, kind)}>
+              <FolderOpen /> {t('common:action.openFolder')}
+            </ContextMenuItem>
+          </ContextMenuContent>
+        }
+      >
+        <div className="min-h-0 flex-1 overflow-auto rounded-md border">
+          <table className="w-full text-sm">
+            <thead className="sticky top-0 bg-background text-left text-muted-foreground">
+              <tr className="border-b">
+                <th className="w-10 p-2" />
+                <th className="p-2 font-medium">{t('columns.name')}</th>
+                <th className="p-2 font-medium">{t('columns.version')}</th>
+                {tracksSources && <th className="p-2 font-medium">{t('columns.source')}</th>}
+                <th className="p-2 font-medium">
+                  {kind === 'mod' ? t('columns.authors') : t('columns.description')}
+                </th>
+                <th className="p-2 font-medium">{t('columns.file')}</th>
+                <th className="w-10 p-2" />
               </tr>
-            ))}
-          </tbody>
-        </table>
-        {isPending && <p className="p-3 text-sm text-muted-foreground">{t('resources.reading')}</p>}
-        {!isPending && files.length === 0 && (
-          <p className="p-3 text-sm text-muted-foreground">{t(`resources.${kind}.empty`)}</p>
-        )}
-        {files.length > 0 && visible.length === 0 && (
-          <p className="p-3 text-sm text-muted-foreground">{t('resources.nothingMatches')}</p>
-        )}
-      </div>
+            </thead>
+            <tbody>
+              {visible.map((file) => (
+                <ContextMenuArea
+                  key={file.fileName}
+                  menu={
+                    <ContextMenuContent className="w-max">
+                      <ResourceActions parts={CONTEXT_PARTS} {...actionsFor(file)} />
+                    </ContextMenuContent>
+                  }
+                >
+                  <tr
+                    className={cn(
+                      'border-b last:border-0 hover:bg-accent/50',
+                      !file.enabled && 'text-muted-foreground',
+                    )}
+                  >
+                    <td className="p-2">
+                      <Checkbox
+                        checked={file.enabled}
+                        aria-label={t('item.enable', { name: displayName(file) })}
+                        onCheckedChange={(checked) => void toggle(file, checked === true)}
+                      />
+                    </td>
+                    <td className="p-2" title={file.metadata?.description}>
+                      <p className="font-medium">{displayName(file)}</p>
+                      {file.requires.length > 0 && (
+                        <p className="text-xs text-muted-foreground">
+                          {t('resources.requires', { names: file.requires.map(nameOf).join(', ') })}
+                        </p>
+                      )}
+                      {file.requiredBy.length > 0 && (
+                        <p className="text-xs text-muted-foreground">
+                          {t('resources.requiredBy', { names: file.requiredBy.map(nameOf).join(', ') })}
+                        </p>
+                      )}
+                    </td>
+                    <td className="p-2">
+                      {file.incompatible && (
+                        <TriangleAlert
+                          className="mr-1 inline size-3.5 text-amber-500"
+                          aria-label={t('resources.incompatible', { version: instance.minecraftVersion })}
+                        >
+                          <title>{t('resources.incompatible', { version: instance.minecraftVersion })}</title>
+                        </TriangleAlert>
+                      )}
+                      {file.metadata?.version ?? file.source?.versionNumber}
+                      {updateFor(file) && (
+                        <button
+                          type="button"
+                          className="ml-2 inline-flex items-center gap-1 text-xs text-primary hover:underline disabled:opacity-50"
+                          disabled={applyUpdates.isPending}
+                          onClick={() => {
+                            const update = updateFor(file)
+                            if (update) applyUpdates.mutate([update])
+                          }}
+                        >
+                          <ArrowUpCircle className="size-3" /> {updateFor(file)?.version.versionNumber}
+                        </button>
+                      )}
+                    </td>
+                    {tracksSources && (
+                      <td className="p-2">
+                        <span className="inline-flex items-center gap-1.5">
+                          <SourceBadge source={file.source} />
+                          {file.source?.lockUpdate && (
+                            <Lock
+                              className="size-3 text-muted-foreground"
+                              aria-label={t('resources.updatesLocked')}
+                            >
+                              <title>{t('resources.updatesLocked')}</title>
+                            </Lock>
+                          )}
+                        </span>
+                      </td>
+                    )}
+                    <td className="p-2">
+                      {kind === 'mod' ? file.metadata?.authors.join(', ') : file.metadata?.description}
+                    </td>
+                    <td className="p-2 text-muted-foreground">{file.fileName}</td>
+                    <td className="p-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button
+                            type="button"
+                            aria-label={t('resources.moreActions')}
+                            className="text-muted-foreground hover:text-foreground"
+                          >
+                            <MoreHorizontal className="size-4" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-max">
+                          <ResourceActions parts={DROPDOWN_PARTS} {...actionsFor(file)} />
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                </ContextMenuArea>
+              ))}
+            </tbody>
+          </table>
+          {isPending && <p className="p-3 text-sm text-muted-foreground">{t('resources.reading')}</p>}
+          {!isPending && files.length === 0 && (
+            <p className="p-3 text-sm text-muted-foreground">{t(`resources.${kind}.empty`)}</p>
+          )}
+          {files.length > 0 && visible.length === 0 && (
+            <p className="p-3 text-sm text-muted-foreground">{t('resources.nothingMatches')}</p>
+          )}
+        </div>
+      </ContextMenuArea>
 
       {pendingRemoval && (
         <RemoveResourceDialog
@@ -405,6 +408,9 @@ export function ResourcesPage({ instance, kind }: ResourcesPageProps) {
     </div>
   )
 }
+
+const DROPDOWN_PARTS: MenuParts = { Item: DropdownMenuItem, Separator: DropdownMenuSeparator }
+const CONTEXT_PARTS: MenuParts = { Item: ContextMenuItem, Separator: ContextMenuSeparator }
 
 function displayName(file: ResourceFile) {
   return file.metadata?.name ?? file.source?.name ?? file.fileName

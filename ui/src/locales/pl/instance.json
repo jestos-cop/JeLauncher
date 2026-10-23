@@ -148,7 +148,9 @@
       "unused": "Zależności, których nic więcej nie potrzebuje",
       "unusedHint": "Zaznaczone też zostaną usunięte.",
       "confirm": "Usuń ({{total}})"
-    }
+    },
+    "enable": "Włącz",
+    "disable": "Wyłącz"
   },
   "worlds": {
     "count_one": "{{count}} świat",
@@ -199,7 +201,9 @@
     "reading": "Odczytywanie zrzutów ekranu…",
     "empty": "Brak zrzutów ekranu. Naciśnij F2 w grze, aby go zrobić.",
     "renameTitle": "Zmień nazwę zrzutu ekranu",
-    "deleteDescription": "Zrzut ekranu zostanie trwale usunięty."
+    "deleteDescription": "Zrzut ekranu zostanie trwale usunięty.",
+    "view": "Wyświetl",
+    "copyPath": "Kopiuj ścieżkę pliku"
   },
   "notes": {
     "loading": "Wczytywanie notatek…",

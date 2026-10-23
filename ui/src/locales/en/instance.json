@@ -146,7 +146,9 @@
       "unused": "Dependencies nothing else needs",
       "unusedHint": "Checked ones are removed too.",
       "confirm": "Remove ({{total}})"
-    }
+    },
+    "enable": "Enable",
+    "disable": "Disable"
   },
   "worlds": {
     "count_one": "{{count}} world",
@@ -189,7 +191,9 @@
     "reading": "Reading screenshots…",
     "empty": "No screenshots yet. Press F2 in game to take one.",
     "renameTitle": "Rename Screenshot",
-    "deleteDescription": "The screenshot will be permanently removed."
+    "deleteDescription": "The screenshot will be permanently removed.",
+    "view": "View",
+    "copyPath": "Copy file path"
   },
   "notes": {
     "loading": "Loading notes…",

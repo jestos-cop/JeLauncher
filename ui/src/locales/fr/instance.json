@@ -147,7 +147,9 @@
       "unused": "Dépendances dont plus rien n’a besoin",
       "unusedHint": "Celles cochées sont aussi supprimées.",
       "confirm": "Supprimer ({{total}})"
-    }
+    },
+    "enable": "Activer",
+    "disable": "Désactiver"
   },
   "worlds": {
     "count_one": "{{count}} monde",
@@ -194,7 +196,9 @@
     "reading": "Lecture des captures d'écran…",
     "empty": "Aucune capture d'écran pour l'instant. Appuyez sur F2 en jeu pour en prendre une.",
     "renameTitle": "Renommer la capture d'écran",
-    "deleteDescription": "La capture d'écran sera définitivement supprimée."
+    "deleteDescription": "La capture d'écran sera définitivement supprimée.",
+    "view": "Afficher",
+    "copyPath": "Copier le chemin du fichier"
   },
   "notes": {
     "loading": "Chargement des notes…",

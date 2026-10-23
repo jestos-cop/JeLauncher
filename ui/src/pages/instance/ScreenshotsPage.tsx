@@ -1,11 +1,13 @@
 import { convertFileSrc } from '@tauri-apps/api/core'
-import { FolderOpen, Pencil, RefreshCw, Trash2 } from 'lucide-react'
+import { Copy, Eye, FolderOpen, Pencil, RefreshCw, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Screenshot } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
+import { ContextMenuArea } from '@/components/ContextMenuArea'
 import { PromptDialog } from '@/components/PromptDialog'
 import { Button } from '@/components/ui/button'
+import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@/components/ui/context-menu'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
   openScreenshotsFolder,
@@ -42,55 +44,95 @@ export function ScreenshotsPage({ instanceId }: { instanceId: string }) {
 
       {error && <p className="text-sm text-destructive">{error.message}</p>}
 
-      <div className="min-h-0 flex-1 overflow-auto">
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-3">
-          {screenshots.map((screenshot) => (
-            <figure key={screenshot.fileName} className="group relative overflow-hidden rounded-md border">
-              <button
-                type="button"
-                className="block aspect-video w-full bg-muted"
-                onClick={() => setAction({ kind: 'view', screenshot })}
+      <ContextMenuArea
+        menu={
+          <ContextMenuContent className="w-max">
+            <ContextMenuItem onSelect={() => void refetch()}>
+              <RefreshCw /> {t('common:action.refresh')}
+            </ContextMenuItem>
+            <ContextMenuItem onSelect={() => void openScreenshotsFolder(instanceId)}>
+              <FolderOpen /> {t('common:action.openFolder')}
+            </ContextMenuItem>
+          </ContextMenuContent>
+        }
+      >
+        <div className="min-h-0 flex-1 overflow-auto">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-3">
+            {screenshots.map((screenshot) => (
+              <ContextMenuArea
+                key={screenshot.fileName}
+                menu={
+                  <ContextMenuContent className="w-max">
+                    <ContextMenuItem onSelect={() => setAction({ kind: 'view', screenshot })}>
+                      <Eye /> {t('screenshots.view')}
+                    </ContextMenuItem>
+                    <ContextMenuItem onSelect={() => void navigator.clipboard.writeText(screenshot.path)}>
+                      <Copy /> {t('screenshots.copyPath')}
+                    </ContextMenuItem>
+                    <ContextMenuItem onSelect={() => setAction({ kind: 'rename', screenshot })}>
+                      <Pencil /> {t('common:action.rename')}
+                    </ContextMenuItem>
+                    <ContextMenuItem onSelect={() => void openScreenshotsFolder(instanceId)}>
+                      <FolderOpen /> {t('common:action.openFolder')}
+                    </ContextMenuItem>
+                    <ContextMenuSeparator />
+                    <ContextMenuItem
+                      variant="destructive"
+                      onSelect={() => setAction({ kind: 'delete', screenshot })}
+                    >
+                      <Trash2 /> {t('common:action.delete')}
+                    </ContextMenuItem>
+                  </ContextMenuContent>
+                }
               >
-                <img
-                  src={convertFileSrc(screenshot.path)}
-                  alt={screenshot.fileName}
-                  loading="lazy"
-                  className="size-full object-cover"
-                />
-              </button>
-              <figcaption className="flex items-center gap-2 px-2 py-1 text-xs">
-                <span className="truncate" title={screenshot.fileName}>
-                  {screenshot.fileName}
-                </span>
-                <div className="ml-auto flex shrink-0 gap-2 text-muted-foreground">
+                <figure className="group relative overflow-hidden rounded-md border">
                   <button
                     type="button"
-                    title={t('common:action.rename')}
-                    aria-label={t('item.rename', { name: screenshot.fileName })}
-                    className="hover:text-foreground"
-                    onClick={() => setAction({ kind: 'rename', screenshot })}
+                    className="block aspect-video w-full bg-muted"
+                    onClick={() => setAction({ kind: 'view', screenshot })}
                   >
-                    <Pencil className="size-3.5" />
+                    <img
+                      src={convertFileSrc(screenshot.path)}
+                      alt={screenshot.fileName}
+                      loading="lazy"
+                      className="size-full object-cover"
+                    />
                   </button>
-                  <button
-                    type="button"
-                    title={t('common:action.delete')}
-                    aria-label={t('item.delete', { name: screenshot.fileName })}
-                    className="hover:text-destructive"
-                    onClick={() => setAction({ kind: 'delete', screenshot })}
-                  >
-                    <Trash2 className="size-3.5" />
-                  </button>
-                </div>
-              </figcaption>
-            </figure>
-          ))}
+                  <figcaption className="flex items-center gap-2 px-2 py-1 text-xs">
+                    <span className="truncate" title={screenshot.fileName}>
+                      {screenshot.fileName}
+                    </span>
+                    <div className="ml-auto flex shrink-0 gap-2 text-muted-foreground">
+                      <button
+                        type="button"
+                        title={t('common:action.rename')}
+                        aria-label={t('item.rename', { name: screenshot.fileName })}
+                        className="hover:text-foreground"
+                        onClick={() => setAction({ kind: 'rename', screenshot })}
+                      >
+                        <Pencil className="size-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        title={t('common:action.delete')}
+                        aria-label={t('item.delete', { name: screenshot.fileName })}
+                        className="hover:text-destructive"
+                        onClick={() => setAction({ kind: 'delete', screenshot })}
+                      >
+                        <Trash2 className="size-3.5" />
+                      </button>
+                    </div>
+                  </figcaption>
+                </figure>
+              </ContextMenuArea>
+            ))}
+          </div>
+          {isPending && <p className="p-3 text-sm text-muted-foreground">{t('screenshots.reading')}</p>}
+          {!isPending && screenshots.length === 0 && (
+            <p className="p-3 text-sm text-muted-foreground">{t('screenshots.empty')}</p>
+          )}
         </div>
-        {isPending && <p className="p-3 text-sm text-muted-foreground">{t('screenshots.reading')}</p>}
-        {!isPending && screenshots.length === 0 && (
-          <p className="p-3 text-sm text-muted-foreground">{t('screenshots.empty')}</p>
-        )}
-      </div>
+      </ContextMenuArea>
 
       {action?.kind === 'view' && (
         <Dialog open onOpenChange={(open) => !open && close()}>

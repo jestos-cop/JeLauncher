@@ -146,7 +146,9 @@
       "unused": "Riggin' nothin' else needs",
       "unusedHint": "Ticked ones walk the plank too.",
       "confirm": "Scuttle ({{total}})"
-    }
+    },
+    "enable": "Hoist",
+    "disable": "Strike"
   },
   "worlds": {
     "count_one": "{{count}} world",
@@ -189,7 +191,9 @@
     "reading": "Gatherin' sketches…",
     "empty": "No sketches yet. Press F2 in game to draw one.",
     "renameTitle": "Rechristen Sketch",
-    "deleteDescription": "The sketch will be tossed overboard fer good."
+    "deleteDescription": "The sketch will be tossed overboard fer good.",
+    "view": "Take a gander",
+    "copyPath": "Copy the map to it"
   },
   "notes": {
     "loading": "Unrollin' notes…",
