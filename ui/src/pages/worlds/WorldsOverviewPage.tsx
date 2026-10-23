@@ -9,9 +9,34 @@ import { commands, type InstanceSummary, type World } from '@/bindings'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { InstanceAvatar } from '@/components/InstanceAvatar'
 import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useInstances } from '@/hooks/use-instances'
+import { useStoredState } from '@/hooks/use-stored-state'
 import { openSavesFolder, useBackupWorld, useDeleteWorld, worldsKey } from '@/hooks/use-worlds'
 import { unwrap } from '@/lib/command'
+
+type WorldSort = 'lastPlayed' | 'name'
+
+interface WorldGroup {
+  instance: InstanceSummary
+  worlds: World[]
+}
+
+const latestPlay = (group: WorldGroup) => Math.max(...group.worlds.map((world) => world.lastPlayed))
+
+function sortGroups(groups: WorldGroup[], sort: WorldSort): WorldGroup[] {
+  const byName = (a: string, b: string) => a.localeCompare(b, undefined, { numeric: true })
+  return groups
+    .map((group) => ({
+      ...group,
+      worlds: [...group.worlds].sort((a, b) =>
+        sort === 'name' ? byName(a.name, b.name) : b.lastPlayed - a.lastPlayed,
+      ),
+    }))
+    .sort((a, b) =>
+      sort === 'name' ? byName(a.instance.name, b.instance.name) : latestPlay(b) - latestPlay(a),
+    )
+}
 
 /** Worlds of every instance, grouped by instance. */
 export function WorldsOverviewPage() {
@@ -24,9 +49,13 @@ export function WorldsOverviewPage() {
       queryFn: () => unwrap(commands.listWorlds(instance.id)),
     })),
   })
-  const groups = instances
-    .map((instance, index) => ({ instance, worlds: results[index]?.data ?? [] }))
-    .filter((group) => group.worlds.length > 0)
+  const [sort, setSort] = useStoredState<WorldSort>('worlds-sort', 'lastPlayed')
+  const groups = sortGroups(
+    instances
+      .map((instance, index) => ({ instance, worlds: results[index]?.data ?? [] }))
+      .filter((group) => group.worlds.length > 0),
+    sort,
+  )
   const worldCount = groups.reduce((count, group) => count + group.worlds.length, 0)
   const isPending = results.some((result) => result.isPending)
 
@@ -40,12 +69,16 @@ export function WorldsOverviewPage() {
         <span className="text-sm text-muted-foreground">
           {t('worlds.summary', { worlds: worldCount, instances: groups.length })}
         </span>
-        <Button
-          size="sm"
-          variant="ghost"
-          className="ml-auto"
-          onClick={() => results.forEach((result) => void result.refetch())}
-        >
+        <Select value={sort} onValueChange={(value) => setSort(value as WorldSort)}>
+          <SelectTrigger size="sm" className="ml-auto w-36">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="lastPlayed">{t('toolbar.sortLastPlayed')}</SelectItem>
+            <SelectItem value="name">{t('toolbar.sortByName')}</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button size="sm" variant="ghost" onClick={() => results.forEach((result) => void result.refetch())}>
           <RefreshCw /> {t('common:action.refresh')}
         </Button>
       </header>
