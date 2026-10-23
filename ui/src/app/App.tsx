@@ -4,6 +4,7 @@ import { ConsoleBehavior } from '@/app/ConsoleBehavior'
 import { InstanceListSync } from '@/app/InstanceListSync'
 import { LanguageSync } from '@/app/LanguageSync'
 import { MenuActions } from '@/app/MenuActions'
+import { NativeMenuGuard } from '@/app/NativeMenuGuard'
 import { ThemeSync } from '@/app/ThemeSync'
 import { useNavigation } from '@/app/navigation'
 import { NavigationProvider } from '@/app/NavigationProvider'
@@ -27,6 +28,7 @@ export function App() {
           <CliRequests />
           <InstanceListSync />
           <MenuActions />
+          <NativeMenuGuard />
           <ThemeSync />
           <LanguageSync />
           <CurrentPage />

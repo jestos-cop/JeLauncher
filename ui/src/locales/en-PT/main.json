@@ -78,5 +78,9 @@
     "summary": "{{servers}} ports across {{instances}} ships",
     "reading": "Readin' the port charts…",
     "empty": "No ship has charted any ports yet."
+  },
+  "listMenu": {
+    "import": "Salvage a Ship…",
+    "openInstancesFolder": "Open the Shipyard"
   }
 }

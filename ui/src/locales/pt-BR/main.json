@@ -79,5 +79,9 @@
     "summary": "Servidores: {{servers}} · instâncias: {{instances}}",
     "reading": "Lendo servidores…",
     "empty": "Nenhuma instância tem servidores salvos ainda."
+  },
+  "listMenu": {
+    "import": "Importar instância…",
+    "openInstancesFolder": "Abrir pasta de instâncias"
   }
 }

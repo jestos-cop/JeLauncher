@@ -79,5 +79,9 @@
     "summary": "Servidores: {{servers}} · instancias: {{instances}}",
     "reading": "Leyendo servidores…",
     "empty": "Ninguna instancia tiene servidores guardados todavía."
+  },
+  "listMenu": {
+    "import": "Importar instancia…",
+    "openInstancesFolder": "Abrir carpeta de instancias"
   }
 }

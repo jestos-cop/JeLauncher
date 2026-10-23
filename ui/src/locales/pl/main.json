@@ -80,5 +80,9 @@
     "summary": "Serwery: {{servers}} · instancje: {{instances}}",
     "reading": "Wczytywanie serwerów…",
     "empty": "Żadna instancja nie ma jeszcze zapisanych serwerów."
+  },
+  "listMenu": {
+    "import": "Importuj instancję…",
+    "openInstancesFolder": "Otwórz folder instancji"
   }
 }

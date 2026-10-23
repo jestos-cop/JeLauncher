@@ -78,5 +78,9 @@
     "summary": "{{servers}} servers in {{instances}} instances",
     "reading": "Reading servers…",
     "empty": "No instance has saved servers yet."
+  },
+  "listMenu": {
+    "import": "Import Instance…",
+    "openInstancesFolder": "Open Instances Folder"
   }
 }

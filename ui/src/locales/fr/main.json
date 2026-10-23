@@ -79,5 +79,9 @@
     "summary": "Serveurs : {{servers}} · instances : {{instances}}",
     "reading": "Lecture des serveurs…",
     "empty": "Aucune instance n’a encore de serveur enregistré."
+  },
+  "listMenu": {
+    "import": "Importer une instance…",
+    "openInstancesFolder": "Ouvrir le dossier des instances"
   }
 }

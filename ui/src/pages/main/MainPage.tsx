@@ -9,6 +9,7 @@ import { Logo } from '@/components/Logo'
 import { NewsBar } from '@/components/NewsBar'
 import { ToolbarLabel } from '@/components/ToolbarLabel'
 import { Button } from '@/components/ui/button'
+import { ContextMenu, ContextMenuTrigger } from '@/components/ui/context-menu'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { NewInstanceDialog } from '@/dialogs/NewInstanceDialog'
@@ -16,13 +17,14 @@ import { useInstances } from '@/hooks/use-instances'
 import { useSettings } from '@/hooks/use-settings'
 import { useStoredState } from '@/hooks/use-stored-state'
 import { InstanceGrid, type InstanceSort } from '@/pages/main/InstanceGrid'
+import { InstanceListMenu } from '@/pages/main/InstanceListMenu'
 import { InstancePanel } from '@/pages/main/InstancePanel'
 import { StatusBar } from '@/pages/main/StatusBar'
 
 export function MainPage() {
   const { t } = useTranslation(['main', 'common'])
   const { data: instances, error, isPending, refetch } = useInstances()
-  const [isCreating, setIsCreating] = useState(false)
+  const [creating, setCreating] = useState<'new' | 'import' | null>(null)
   const { navigate } = useNavigation()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -34,7 +36,7 @@ export function MainPage() {
     <div className="flex h-screen flex-col bg-background text-foreground">
       <header className="flex items-center gap-1 border-b px-3 py-2">
         <Logo className="mr-1" />
-        <Button size="sm" onClick={() => setIsCreating(true)}>
+        <Button size="sm" onClick={() => setCreating('new')}>
           <Plus /> {t('toolbar.addInstance')}
         </Button>
         <Button size="sm" variant="ghost" title={t('common:action.refresh')} onClick={() => refetch()}>
@@ -65,42 +67,60 @@ export function MainPage() {
       {(settings?.appearance.showNewsBar ?? true) && <NewsBar />}
 
       <div className="flex min-h-0 flex-1">
-        <main className="flex-1 overflow-auto px-4 pb-4">
-          <div className="sticky top-0 z-10 flex items-center gap-2 bg-background py-3">
-            <Input
-              className="h-8 max-w-64"
-              placeholder={t('toolbar.searchPlaceholder')}
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
-            <Select value={sort} onValueChange={(value) => setSort(value as InstanceSort)}>
-              <SelectTrigger size="sm" className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name">{t('toolbar.sortByName')}</SelectItem>
-                <SelectItem value="lastPlayed">{t('toolbar.sortLastPlayed')}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          {isPending && <p className="text-muted-foreground">{t('grid.loading')}</p>}
-          {error && <p className="text-destructive">{error.message}</p>}
-          {instances?.length === 0 && <p className="text-muted-foreground">{t('grid.empty')}</p>}
-          {instances && instances.length > 0 && (
-            <InstanceGrid
-              instances={instances}
-              search={search}
-              sort={sort}
-              selectedId={selectedId}
-              onSelect={setSelectedId}
-            />
-          )}
-        </main>
+        <ContextMenu>
+          <ContextMenuTrigger asChild>
+            <main className="flex-1 overflow-auto px-4 pb-4">
+              <div
+                className="sticky top-0 z-10 flex items-center gap-2 bg-background py-3"
+                onContextMenu={(event) => event.stopPropagation()}
+              >
+                <Input
+                  className="h-8 max-w-64"
+                  placeholder={t('toolbar.searchPlaceholder')}
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                />
+                <Select value={sort} onValueChange={(value) => setSort(value as InstanceSort)}>
+                  <SelectTrigger size="sm" className="w-40">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">{t('toolbar.sortByName')}</SelectItem>
+                    <SelectItem value="lastPlayed">{t('toolbar.sortLastPlayed')}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {isPending && <p className="text-muted-foreground">{t('grid.loading')}</p>}
+              {error && <p className="text-destructive">{error.message}</p>}
+              {instances?.length === 0 && <p className="text-muted-foreground">{t('grid.empty')}</p>}
+              {instances && instances.length > 0 && (
+                <InstanceGrid
+                  instances={instances}
+                  search={search}
+                  sort={sort}
+                  selectedId={selectedId}
+                  onSelect={setSelectedId}
+                />
+              )}
+            </main>
+          </ContextMenuTrigger>
+          <InstanceListMenu
+            onCreate={() => setCreating('new')}
+            onImport={() => setCreating('import')}
+            onRefresh={() => void refetch()}
+          />
+        </ContextMenu>
         {selected && <InstancePanel instance={selected} />}
       </div>
 
       <StatusBar instances={instances ?? []} />
-      <NewInstanceDialog open={isCreating} onOpenChange={setIsCreating} />
+      {creating && (
+        <NewInstanceDialog
+          open
+          initialImport={creating === 'import' ? '' : undefined}
+          onOpenChange={(open) => !open && setCreating(null)}
+        />
+      )}
     </div>
   )
 }

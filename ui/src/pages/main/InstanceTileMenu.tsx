@@ -37,7 +37,7 @@ export function InstanceTileMenu({ instance }: { instance: InstanceSummary }) {
 
   return (
     <>
-      <ContextMenuContent className="w-48">
+      <ContextMenuContent className="w-max">
         {isActive ? (
           <ContextMenuItem onSelect={() => void kill()}>
             <Square /> {session.status === 'preparing' ? t('actions.cancelLaunch') : t('common:action.kill')}

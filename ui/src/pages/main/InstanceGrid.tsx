@@ -144,7 +144,10 @@ function InstanceTile({ instance, isSelected, onSelect }: InstanceTileProps) {
             draggable
             onDragStart={(event) => event.dataTransfer.setData(DRAG_TYPE, instance.id)}
             onClick={onSelect}
-            onContextMenu={onSelect}
+            onContextMenu={(event) => {
+              event.stopPropagation()
+              onSelect()
+            }}
             onDoubleClick={() => !isActive && void launch()}
             className={cn(
               'relative flex w-full items-center gap-2.5 rounded-xl border bg-card p-2 text-left transition-colors hover:bg-accent/60',

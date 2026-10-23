@@ -77,5 +77,9 @@
     "summary": "サーバー：{{servers}} · インスタンス：{{instances}}",
     "reading": "サーバーを読み込み中…",
     "empty": "サーバーを保存したインスタンスはまだありません。"
+  },
+  "listMenu": {
+    "import": "インスタンスをインポート…",
+    "openInstancesFolder": "インスタンスフォルダーを開く"
   }
 }

@@ -77,5 +77,9 @@
     "summary": "服务器：{{servers}} · 实例：{{instances}}",
     "reading": "正在读取服务器…",
     "empty": "还没有任何实例保存了服务器。"
+  },
+  "listMenu": {
+    "import": "导入实例…",
+    "openInstancesFolder": "打开实例文件夹"
   }
 }
